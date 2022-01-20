@@ -25,7 +25,8 @@ export class ClaimCountComponent implements OnInit {
      }  
     ngOnInit() {
       this.buildForm();
-      this.getClaim()
+      //this.getClaim()
+      this.getAging()
     }
     buildForm() {
 
@@ -55,6 +56,30 @@ export class ClaimCountComponent implements OnInit {
       //console.log(e);
     }
     ////
+
+    getAging() {
+      this.isLoading = true;
+      let searchCriteria: SearchCriteria = new SearchCriteria();
+      searchCriteria.practice_id = this.lookupList.practiceInfo.practiceId;
+      searchCriteria.param_list = [
+      { name: "type", value: "all", option: "" }
+      ];
+      this.dashboardService.getDashBoardClaimAging(searchCriteria)
+        .subscribe(
+          data => {
+            debugger;
+            //this.listPendingLabResult = data
+            //this.drawBars(data)
+            this.drawdonut(data)
+            this.isLoading = false;
+          },
+          error => {
+            this.isLoading = false;
+            this.logMessage.log("getcash register Successfull" + error);
+          }
+        );
+    }
+
     getClaim() {
       debugger;
       this.isLoading = true;
@@ -79,6 +104,62 @@ export class ClaimCountComponent implements OnInit {
             this.logMessage.log("getcash register Successfull" + error);
           }
         );
+    }
+    public doughnutChartLabels = [];
+    public doughnutChartData = [];
+    public doughnutChartType = '';
+  
+  
+  
+    drawdonut(values)
+    {
+      debugger;
+       this.doughnutChartLabels = ['Sales Q1', 'Sales Q2', 'Sales Q3', 'Sales Q4'];
+       this.doughnutChartData = [120, 150, 180, 90];
+       this.doughnutChartType = 'doughnut';
+       for (let att of values) 
+      {
+        if(att.col2=='Aging 30')
+        {
+          this.barChartLabels.push('Aging 30');
+          this.barChartData[0].data.push(att.col3);
+        }
+        else if(att.col2=='Aging 60')
+        {
+          this.barChartLabels.push('Aging 60');
+          this.barChartData[0].data.push(att.col3);
+        }
+        else if(att.col2=='Aging 90')
+        {
+          this.barChartLabels.push('Aging 90');
+          this.barChartData[0].data.push(att.col3);
+        }
+        else if(att.col2=='Aging 120')
+        {
+          this.barChartLabels.push('Aging 120');
+          this.barChartData[0].data.push(att.col3);
+        }
+        else if(att.col2=='Aging 120+')
+        {
+          this.barChartLabels.push('Aging 120+');
+          this.barChartData[0].data.push(att.col3);
+        }
+      }
+     
+       this.context = (<HTMLCanvasElement>this.myCanvas.nativeElement).getContext('2d');
+       this.chart = new Chart(this.context,{
+        type:'doughnut',
+        data: {
+          labels: ["Aging 30", "Aging 60","Aging 90","Aging 120","Aging 120+"],
+          datasets:[
+            {
+              label: "",
+
+              backgroundColor: ["#3cba9f","#3e95cd", "#8e5ea2","#e8c3b9","#c45850"],
+              data: this.barChartData[0].data
+            }],
+          }
+      });
     }
     drawBars(values) {
   debugger;
@@ -173,9 +254,12 @@ export class ClaimCountComponent implements OnInit {
     }    
     
     //refresh record
-    refreshRecord() {
-        this.getClaim();
-    }
+    // refreshRecord() {
+    //    // this.getClaim();
+    //    document.getElementById("rdoAll")['checked']=true
+    //    this.getAging();
+       
+    // }
     showHidetoggle(){
       this.showHideSearch = false;
     }

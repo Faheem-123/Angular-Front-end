@@ -550,7 +550,7 @@ font-family: 'Open Sans', sans-serif;
     */
     
     height: 27px;
-    border-bottom: 1px solid #77469a;
+    border-bottom: 1px solid #1a73e8;
     background: #fff;
 }
 
@@ -561,7 +561,7 @@ font-family: 'Open Sans', sans-serif;
     font-weight: bold;
     height: 27px;
    /* border-bottom: 1px solid #e6eff8;*/
-    border-bottom: 1px solid #1a73e8;
+    /* border-bottom: 1px solid #1a73e8; */
     
 }
 

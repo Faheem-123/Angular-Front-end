@@ -27,7 +27,7 @@
     border-radius: 15px;
     width: 70px;
     height: 70px;
-    margin: -20px 119px 20px 29px;
+    margin: -20px 119px 20px 70px;
     padding: 16px;
 }
 .dashboard-summary .icon .icon-img{
@@ -56,7 +56,7 @@
 .dashboard-summary .info .title {
     color: #000;
     margin: 0;
-    font-family: system-ui;
+    font-family: "Montserrat";
     font-size: 16px;
     font-weight: bold;
     padding-bottom: 16px;
@@ -206,7 +206,7 @@
     align-items: center;
     font-size: 16px;
     color: #000;
-    font-family: system-ui;
+    font-family: "Montserrat";
     font-weight: bold;
     padding: 0 6px;
 }

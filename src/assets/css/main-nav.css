@@ -71,14 +71,19 @@
 }
 */
 
-.navbar.main-left-nav > .nav-tabs > .nav-item > .nav-link:hover {
-    background: #1a73e8;
-    color: rgba(255, 255, 255, 1);
-    text-decoration: none;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+.blue{
+    width: 35px;
 }
 
-.navbar.main-left-nav > .nav-tabs > .nav-item > .nav-link i {
+.navbar.main-left-nav  .nav-tabs:hover .blue{
+width: 35px!important;
+}
+
+.navbar.main-left-nav > .nav-tabs > .nav-item > .nav-link :hover  .white {
+width: 35px;
+}
+
+.navbar.main-left-nav > .nav-tabs > .nav-item > .nav-link img {
     font-size: 22px;
     margin-right: 20px;
     margin-left: 12px;
@@ -87,8 +92,25 @@
 .navbar.main-left-nav > .nav-tabs > .nav-item > .nav-link.active {
     background-color: white;
     color: #1a73e8;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
 }
+
+.navbar.main-left-nav > .nav-tabs > .nav-item > .nav-link.active .white{
+    display:none;
+}
+
+.navbar.main-left-nav > .nav-tabs > .nav-item > .nav-link.active .blue{
+    display:block;
+}
+
+
+.white{
+    display:block;
+}
+
+.blue{
+    display: none;
+}
+
 
 /********************* Main Top Nav *********************/
 .main-top-nav {

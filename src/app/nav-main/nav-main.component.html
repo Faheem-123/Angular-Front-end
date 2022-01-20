@@ -2,9 +2,9 @@
   <ngb-tab id="home-tab-main">
     <ng-template ngbTabTitle>
 
-      <i class="ihc-home"></i> <span>Home</span>
+      <!-- <i class="ihc-home"></i>--><img src="./assets/svg/Home-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Home-01.svg" class="blue"> <span>Home</span>
     </ng-template>
-    <ng-template ngbTabContent>
+    <ng-template ngbTabContent> 
       <dashboard-main id="div_dashboard_main" #div_dashboard_main class="main-app d-flex flex-column">
       </dashboard-main>
     </ng-template>
@@ -13,7 +13,7 @@
   <ngb-tab id="scheduelr-tab-main" *ngIf="lookupList.UserRights.scheduler_view">
     <ng-template ngbTabTitle>
 
-      <i class="ihc-appointment"></i> <span>Scheduler</span>
+      <img src="./assets/svg/Schedule-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Schedule-01.svg" class="blue"> <span>Scheduler</span>
     </ng-template>
     <ng-template ngbTabContent>
       <scheduler-main class="main-app d-flex flex-column" *ngIf="loadScheduler"></scheduler-main>
@@ -23,7 +23,7 @@
   <ngb-tab id="patient-tab-main">
     <ng-template ngbTabTitle>
 
-      <i class="ihc-patient"></i> <span>Find/Open Patient</span>
+      <img src="./assets/svg/Find Open-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Find Open-01.svg" class="blue"> <span>Find/Open Patient</span>
 
 
 
@@ -36,7 +36,7 @@
   <ngb-tab id="messages-tab-main" *ngIf="this.lookupList.UserRights.message_view">
     <ng-template ngbTabTitle>
 
-      <i class="ihc-message"></i><span>Internal Messages</span>
+      <img src="./assets/svg/Communication-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Communication-01.svg" class="blue"><span>Internal Messages</span>
 
     </ng-template>
     <ng-template ngbTabContent>
@@ -47,7 +47,7 @@
 
   <ngb-tab id="labs-tab-main" *ngIf="lookupList.UserRights.lab_order_view">
     <ng-template ngbTabTitle>
-      <i class="ihc-lab"></i><span>Lab Order Search</span>
+      <img src="./assets/svg/Lab Order Search-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Lab Order Search-01.svg" class="blue"><span>Lab Order Search</span>
 
     </ng-template>
     <ng-template ngbTabContent>
@@ -57,7 +57,7 @@
 
   <ngb-tab id="letters-tab-main" *ngIf="lookupList.UserRights.letter_view">
     <ng-template ngbTabTitle>
-      <i class="ihc-letter"></i> <span>Patient Letters</span>
+      <img src="./assets/svg/Patient Letters-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Patient Letters-01.svg" class="blue"> <span>Patient Letters</span>
 
     </ng-template>
     <ng-template ngbTabContent>
@@ -68,7 +68,7 @@
 
   <ngb-tab id="reports-tab-main" *ngIf="lookupList.UserRights.view_reports">
     <ng-template ngbTabTitle>
-      <i class="ihc-report"></i><span>Reports</span>
+      <img src="./assets/svg/Actions-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Actions-01.svg" class="blue"><span>Reports</span>
 
     </ng-template>
     <ng-template ngbTabContent>
@@ -78,7 +78,7 @@
 
   <ngb-tab id="admin-tab-main" *ngIf="lookupList.UserRights.administration">
     <ng-template ngbTabTitle>
-      <i class="ihc-admin"></i> <span>Admin Setting</span>
+      <img src="./assets/svg/Admin Setting-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Admin Setting-01.svg" class="blue"> <span>Admin Setting</span>
 
     </ng-template>
     <ng-template ngbTabContent>
@@ -91,7 +91,7 @@
 
   <ngb-tab id="user-admin-tab-main">
     <ng-template ngbTabTitle>
-      <i class="ihc-user-admin"></i> <span>User Admin</span>
+      <img src="./assets/svg/Settings-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Settings-01.svg" class="blue"> <span>User Admin</span>
 
     </ng-template>
     <ng-template ngbTabContent>
@@ -103,7 +103,7 @@
   <ngb-tab id="fax-tab-main" *ngIf="lookupList.UserRights.fax_enable">
     <ng-template ngbTabTitle>
 
-      <i class="ihc-fax"></i> <span>Fax Send/Receive</span>
+      <img src="./assets/svg/Fax Send-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Fax Send-01.svg" class="blue"> <span>Fax Send/Receive</span>
 
     </ng-template>
     <ng-template ngbTabContent>
@@ -113,7 +113,7 @@
   <ngb-tab id="billing-tab-main" *ngIf="(this.lookupList.logedInUser.userType.toUpperCase() == 'BILLING')">
     <ng-template ngbTabTitle>
 
-      <i class="ihc-billing fz-28"></i> <span>Billing</span>
+      <img src="./assets/svg/My Account-01.svg" width="35" class="white"><img src="./assets/svg-Blue/My Account-01.svg" class="blue"> <span>Billing</span>
 
 
     </ng-template>
@@ -123,7 +123,7 @@
   </ngb-tab>
   <ngb-tab id="log-tab-main">
     <ng-template ngbTabTitle>
-      <i class="ihc-log"></i> <span>Log</span>
+      <img src="./assets/svg/Log-01.svg" width="35" class="white"><img src="./assets/svg-Blue/Log-01.svg" class="blue"> <span>Log</span>
 
 
     </ng-template>

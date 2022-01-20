@@ -1,57 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 26.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+	 viewBox="0 0 200 200" style="enable-background:new 0 0 200 200;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:#909090;}
-	.st1{fill:none;stroke:#909090;stroke-width:0.75;stroke-miterlimit:10;}
-	.st2{fill:#909090;stroke:#909090;stroke-width:0.2;stroke-miterlimit:10;}
-	.st3{fill:#909090;stroke:#909090;stroke-width:0.25;stroke-miterlimit:10;}
-	.st4{fill:none;stroke:#909090;stroke-width:0.6;stroke-miterlimit:10;}
-	.st5{fill:#909090;stroke:#909090;stroke-width:0.1;stroke-miterlimit:10;}
+	.st0{fill:#FFFFFF;}
 </style>
 <g>
-	<g id="Path_1418_00000023280990407683472600000011634104949042329008_">
-		<path class="st0" d="M88.99,32.89H32.55V2.42H68.2l-0.06,18.59h20.85V32.89z M37,28.44h47.54v-2.98H63.69L63.7,6.87H37V28.44z"/>
+	<g id="Path_1418_00000040565700744987812160000017945320993472142759_">
+		<path class="st0" d="M181.13,64.39H63.71V1h74.2l-0.17,38.68h43.39V64.39z M72.96,55.14h98.92v-6.21h-43.39l0.03-38.68H72.96
+			V55.14z"/>
 	</g>
 	<g>
-		<path class="st0" d="M96,97.55H25.66V35.51H96V97.55z M30.1,93.1h61.45V39.96H30.1V93.1z"/>
+		<path class="st0" d="M195.72,198.93H49.35V69.85h146.36V198.93z M58.61,189.67h127.86V79.1H58.61V189.67z"/>
 	</g>
 	<g>
-		<rect x="41.83" y="47.58" class="st0" width="38" height="17.12"/>
+		<rect x="83" y="94.96" class="st0" width="79.07" height="35.63"/>
 	</g>
 	<g>
-		<rect x="63.74" y="79.9" class="st0" width="5.13" height="5.11"/>
+		<rect x="128.59" y="162.22" class="st0" width="10.66" height="10.64"/>
 	</g>
 	<g>
-		<rect x="41.84" y="79.91" class="st0" width="5.1" height="5.1"/>
+		<rect x="83.02" y="162.24" class="st0" width="10.62" height="10.61"/>
 	</g>
 	<g>
-		<rect x="52.76" y="79.88" class="st0" width="5.15" height="5.11"/>
+		<rect x="105.75" y="162.18" class="st0" width="10.72" height="10.64"/>
 	</g>
 	<g>
-		<polygon class="st0" points="79.81,79.88 74.7,79.88 74.7,85.02 79.82,85.02 		"/>
+		<polygon class="st0" points="162.03,162.18 151.41,162.18 151.41,172.86 162.05,172.86 		"/>
 	</g>
 	<g>
-		<rect x="52.79" y="70.14" class="st0" width="5.09" height="5.14"/>
+		<rect x="105.81" y="141.9" class="st0" width="10.6" height="10.69"/>
 	</g>
 	<g>
-		<rect x="63.74" y="70.15" class="st0" width="5.15" height="5.08"/>
+		<rect x="128.59" y="141.94" class="st0" width="10.71" height="10.58"/>
 	</g>
 	<g>
-		<rect x="41.84" y="70.14" class="st0" width="5.11" height="5.11"/>
+		<rect x="83.02" y="141.91" class="st0" width="10.64" height="10.64"/>
 	</g>
 	<g>
-		<rect x="74.7" y="70.14" class="st0" width="5.12" height="5.11"/>
+		<polygon class="st0" points="162.06,141.91 151.41,141.91 151.41,152.55 162.05,152.55 		"/>
 	</g>
-	<g id="Rectangle_140_00000031187561970763557880000015952468539217443002_">
-		<path class="st0" d="M21.07,97.58H4V30.17h17.07V97.58z M8.45,93.13h8.18V34.62H8.45V93.13z"/>
+	<g id="Rectangle_140_00000029735648418833520410000017292876671946015672_">
+		<path class="st0" d="M39.81,199H4.28V58.74h35.53V199z M13.54,189.75h17.02V67.99H13.54V189.75z"/>
 	</g>
-	<g id="Path_1420_00000083056430328834892750000015365387361375941001_">
-		<path class="st0" d="M71.19,3.87L85,17.65H71.19V3.87z"/>
+	<g id="Path_1420_00000008856385623913351920000009945227035741111978_">
+		<path class="st0" d="M144.09,4.01l28.74,28.69h-28.74V4.01z"/>
 	</g>
-	<g id="Rectangle_141_00000166654797667331740200000004816593406574308275_">
-		<rect x="47.04" y="52.78" class="st0" width="27.55" height="6.66"/>
+	<g id="Rectangle_141_00000064340162000402958180000011231887487120306871_">
+		<rect x="93.84" y="105.79" class="st0" width="57.33" height="13.86"/>
 	</g>
 </g>
 </svg>

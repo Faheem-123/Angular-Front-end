@@ -488,6 +488,7 @@ export class NavMainComponent implements OnInit {
     //}
 
     (document.getElementById(controlName) as HTMLInputElement).value = pastedText.trim();
+
   }
 
   onMessages() {
