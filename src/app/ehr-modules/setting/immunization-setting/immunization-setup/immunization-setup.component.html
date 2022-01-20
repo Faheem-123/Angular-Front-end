@@ -1,0 +1,250 @@
+<div class="pl-1 d-flex flex-grow-1 overflow-height">
+  <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1">
+    <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+      Immunization List
+    </div>
+
+    <div class="flex-grow-1 overflow-auto max-height-100">
+      <table class="table sm layout-fixed light-striped-border table-sticky-header">
+        <thead>
+          <tr>
+            <th class="width-30"></th>
+            <th class="width-60"  table="immunization_all" scope="col" sortable="cvx_code" type="alpha" (sort)="onSortAll($event)">CVX</th>
+            <th scope="col"  table="immunization_all" sortable="immunization_name" type="alpha" (sort)="onSortAll($event)">Immunization</th>
+          </tr>
+
+          <tr class="table-filter-row" id="filterRowAll">
+            <th class="width-30"></th>
+            <th>
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="cvx_code"
+                    (input)="onFilterAll($event.target.value,'cvx_code')">
+                  <label for="email" class="fa fas fa-filter"></label>
+                </div>
+              </div>
+
+
+            </th>
+            <th>
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100" autocomplete="off"
+                    name="immunization_name" (input)="onFilterAll($event.target.value,'immunization_name')">
+                  <label for="email" class="fa fas fa-filter"></label>
+                </div>
+              </div>
+
+
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr *ngFor="let imm of lstAllImmList"
+            [ngClass]="{'text-danger': (imm.status.toLocaleLowerCase()=='inactive' || imm.status.toLocaleLowerCase()=='never active') }">
+            <td>
+              <button type="button" class="link-btn" (click)="addPracticeImmunization(imm)"><i
+                  class="far fa-plus-square text-success fz-13"></i></button>
+            </td>
+            <td>
+              <ngb-highlight [result]="imm.cvx_code" [term]="getNGHighlightTermAll('cvx_code')"></ngb-highlight>
+            </td>
+            <td title="{{imm.immunization_name}}">
+              <ngb-highlight [result]="imm.immunization_name" [term]="getNGHighlightTermAll('immunization_name')">
+              </ngb-highlight>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 mr-8 ml-8">
+    <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+      Practice Immunizations
+    </div>
+    <div class="flex-grow-1 overflow-auto max-height-100">
+      <table class="table sm layout-fixed light-striped-border table-sticky-header">
+        <thead>
+          <tr>
+            <th class="width-30"></th>
+            <th class="width-60" table="immunization_practice" scope="col" sortable="cvx_code" type="alpha" (sort)="onSortPractice($event)">
+              CVX</th>
+            <th scope="col"  table="immunization_practice" sortable="immunization_name" type="alpha" (sort)="onSortPractice($event)">Immunization
+            </th>
+          </tr>
+
+          <tr class="table-filter-row" id="filterRowPractice">
+            <th></th>
+            <th>
+
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="cvx_code"
+                    (input)="onFilterPractice($event.target.value,'cvx_code')">
+                  <label for="email" class="fa fas fa-filter"></label>
+                </div>
+              </div>
+
+
+
+            </th>
+            <th>
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100" autocomplete="off"
+                    name="immunization_name" (input)="onFilterPractice($event.target.value,'immunization_name')">
+                  <label for="email" class="fa fas fa-filter"></label>
+                </div>
+              </div>
+
+            </th>
+          </tr>
+
+        </thead>
+        <tbody>
+
+          <tr *ngFor="let imm of lstPracticemmList"
+            [ngClass]="{'active' : (imm.practice_immunization_id == selectedPracticeImmId),
+                  'text-danger': (imm.status.toLocaleLowerCase()=='inactive' || imm.status.toLocaleLowerCase()=='never active') }"
+            (click)="selectionChanged(imm.practice_immunization_id,imm.cvx_code)">
+            <td>
+              <button type="button" class="link-btn btn-delete " (click)="deletePracticeImmunization(imm)"><i
+                  class="far fa-trash-alt fz-13"></i></button>
+
+            </td>
+            <td>
+              <ngb-highlight [result]="imm.cvx_code" [term]="getNGHighlightTermPractice('cvx_code')">
+              </ngb-highlight>
+            </td>
+            <td title="{{imm.immunization_name}}">
+              <ngb-highlight [result]="imm.immunization_name" [term]="getNGHighlightTermPractice('immunization_name')">
+              </ngb-highlight>
+
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="flex-1 d-flex flex-column max-height-100">
+    <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 h-25">
+
+      <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+        NDC Code
+      </div>
+
+      <div class="flex-grow-1 overflow-auto max-height-100">
+        <table class="table sm layout-fixed light-striped-border">
+          <tbody>
+            <tr *ngFor="let ndc of lstImmNDC">
+              <td>{{ndc.ndc_code}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 h-25 mt-2">
+
+      <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+        VIS Information
+      </div>
+
+      <div class="flex-grow-1 overflow-auto max-height-100">
+        <table class="table sm layout-fixed light-striped-border">
+          <thead>
+            <tr>
+              <th class="width-60">Status</th>
+              <th class="width-80">Date</th>
+              <th>Name</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let vis of lstImmVIS">
+              <td>{{vis.vis_status}}</td>
+              <td>{{vis.vis_date}}</td>
+              <td title="{{vis.vis_name}}">{{vis.vis_name}}</td>
+
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 h-25 mt-2">
+      <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+        Manufacturer
+      </div>
+
+      <div class="flex-grow-1 overflow-auto max-height-100">
+        <table class="table sm layout-fixed light-striped-border">
+          <thead>
+            <tr>
+              <th class="width-50">MVX</th>
+              <th>Manufacturer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let manf of lstImmManfacturer">
+              <td>{{manf.mvx_code}}</td>
+              <td title="{{manf.manufacturer_name}}"> {{manf.manufacturer_name}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 h-25 mt-2">
+      <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+        Trade Name Information
+      </div>
+
+      <div class="flex-grow-1 overflow-auto max-height-100">
+        <table class="table sm layout-fixed light-striped-border" style="table-layout: auto;">
+          <thead>
+            <tr>
+              <th class="width-50">MVX</th>
+              <th>Trade Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trade of lstImmTradeName">
+              <td title="{{trade.manufacturer_name}}">{{trade.mvx_code}}</td>
+              <td title="{{trade.trade_name}}">{{trade.trade_name}}</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 h-25 mt-2">
+      <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+        Procedures
+      </div>
+      <div class="flex-grow-1 overflow-auto max-height-100">
+        <table class="table sm layout-fixed light-striped-border">
+          <thead>
+            <tr>
+              <th class="width-60">CPT</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cpt of lstImmProcedures">
+              <td>{{cpt.proc_code}}</td>
+              <td title="{{cpt.proc_description}}">{{cpt.proc_description}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

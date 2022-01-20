@@ -1,0 +1,59 @@
+<div class="d-flex flex-column flex-grow-1 mt-0 position-relative">
+  <div class="bg-green-ihc  h-25 px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0"
+  [ngClass]="{'light-title-bar': callingFrom=='billing_reports'}">
+    <div class="fz-15 font-weight-400 " [ngClass]="{'text-white': callingFrom=='reports'}">Daily and MTD Wise Collection<span class="badge badge-pill"></span>
+    </div>
+  </div>
+  <div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+    <!-- ************************************************************** -->
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-0 max-height-100">
+
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Not Bill and Draft Claims are Not Included</h4>
+        <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+            (click)="btnRefreshClicked()">
+            <img class="img-h-18" src="./assets/images/icons/ico_refresh_green.svg">
+          </button>
+        </div>
+      </div>
+
+      <div class="overflow-auto flex-grow-1  overflow-height">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th>Location</th>
+              <th>Daily Charges($)</th>
+              <th>Daily Payments($)</th>
+              <th>Daily Adjustments($)</th>
+              <th>Daily Payments(%)</th>
+              <th>MTD Charges($)</th>
+              <th>MTD Payments($)</th>
+              <th>MTD Adjustments($)</th>
+              <th>MTD Payments(%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let c of acFinalResult">
+              <td>{{c.location}}</td>
+              <td>{{c.DailyCharges}}</td>
+              <td>{{c.DailyPayments}}</td>
+              <td>{{c.DailyAdjustments}}</td>
+              <td>{{c.DailyPaymentsPercent}}</td>
+              <td>{{c.MonthlyCharges}}</td>
+              <td>{{c.MonthlyPayments}}</td>
+              <td>{{c.MonthlyAdjustments}}</td>
+              <td>{{c.MonthlyPaymentsPercent}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+</div>

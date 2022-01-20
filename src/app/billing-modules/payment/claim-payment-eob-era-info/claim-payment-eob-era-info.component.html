@@ -1,0 +1,184 @@
+<div class="modal-header custom"  (keydown.esc)="activeModal.close()">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Claim EOB/ERA Info</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body custom" (keydown.esc)="activeModal.close()">
+
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading" class="border-content-box light-sky-blue border-top-0 rounded d-flex flex-column flex-grow-1">
+    <ngb-tabset class="inner-sub-horizental-tab content-flex d-flex flex-column flex-grow-1 rounded overflow-hidden ">
+      <ngb-tab>
+        <ng-template ngbTabTitle><span>ERA Details</span></ng-template>
+        <ng-template ngbTabContent class="flex-column">
+          <div class="d-flex flex-column flex-grow-1">
+            <div class="no-content p-2" *ngIf="lstERA==undefined || lstERA.length==0">
+              <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No ERA Details Found.
+            </div>
+  
+            <div class="dashboard-sub-nav encounter justify-content-start d-flex flex-row pr-0"
+              *ngIf="lstERA!=undefined && lstERA.length>0">
+  
+              <div class="color-box bg-success"></div>
+              <p>Payment Posted</p>
+  
+              <div class="color-box bg-danger"></div>
+              <p> Denial Posted</p>
+  
+  
+              <div class="color-box bg-dark"></div>
+              <p> Pending</p>
+  
+            </div>
+  
+            <div class="overflow-auto" *ngIf="lstERA!=undefined && lstERA.length>0">
+  
+              <table class="table sm layout-fixed light-striped-border">
+                <thead>
+                  <tr>
+                    <th class="width-80">ERA ID</th>
+                    <th class="width-100">Check Number</th>
+                    <th class="width-80">Check Date</th>
+                    <th class="width-120">Payer Name</th>
+                    <th class="width-80">Begin DOS</th>
+  
+                    <th class="width-100">CPT Charged</th>
+                    <th class="width-100">CPT Paid</th>
+  
+                    <th class="width-75">Paid Units</th>
+  
+                    <th class="width-80 text-right">Billed Amt</th>
+                    <th class="width-90 text-right">Allowed Amt</th>
+                    <th class="width-80 text-right">Deduct Amt</th>
+                    <th class="width-90 text-right">Co. ins. Amt</th>
+                    <th class="width-80 text-right">Copay Amt</th>
+                    <th class="width-100 text-right">Late Filing Red.</th>
+                    <th class="width-80 text-right">Risk Amt</th>
+                    <th class="width-80 text-right">Other Adjusts</th>
+                    <th class="width-120">Adjust Codes</th>
+                    <th class="width-120">Remark Codes</th>
+                    <th class="width-120">Claim ICN</th>
+                    <th class="width-120">Posted By</th>
+                    <th class="width-120">Date Posted</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let era of lstERA ; let i = index" class="text-dark" [ngClass]="{'text-success': era.payment_posted,
+                'text-danger' : era.denial_posted}">
+                    <td class="align-middle">{{era.era_id}}</td>
+                    <td class="align-middle">{{era.check_number}}</td>
+                    <td class="align-middle">{{era.check_date}}</td>
+                    <td class="align-middle">{{era.payer_name}}</td>
+                    <td class="align-middle">{{era.begin_service_date}}</td>
+                    <td class="align-middle">{{era.cpt_charged_with_modifier}}</td>
+                    <td class="align-middle">{{era.cpt_paid_with_modifier}}</td>
+                    <td class="align-middle">{{era.paid_units}}</td>
+  
+  
+                    <td class="align-middle text-right">{{era.billed_amount |
+                              currency:'USD':'symbol-narrow'}}</td>
+                    <td class="align-middle text-right">{{era.allowed_amount |
+                                  currency:'USD':'symbol-narrow'}}</td>
+                    <td class="align-middle text-right">{{era.paid_amount |
+                                      currency:'USD':'symbol-narrow'}}</td>
+  
+                    <td class="align-middle text-right">{{era.deduct_amount |
+                                      currency:'USD':'symbol-narrow'}}</td>
+  
+                    <td class="align-middle text-right">{{era.co_ins_amount |
+                                              currency:'USD':'symbol-narrow'}}</td>
+                    <td class="align-middle text-right">{{era.co_pay_amount |
+                                                  currency:'USD':'symbol-narrow'}}</td>
+                    <td class="align-middle text-right">{{era.late_filing_reduction |
+                                                      currency:'USD':'symbol-narrow'}}</td>
+                    <td class="align-middle text-right">{{era.risk_amount |
+                                                          currency:'USD':'symbol-narrow'}}</td>
+  
+                    <td class="align-middle text-right">{{era.other_adjusts |
+                                                              currency:'USD':'symbol-narrow'}}</td>
+  
+  
+                    <td class="align-middle">{{era.adjust_codes}}</td>
+                    <td class="align-middle">{{era.remark_codes}}</td>
+                    <td class="align-middle">{{era.payer_claim_control_number}}</td>
+                    <td class="align-middle">{{era.posted_by}}</td>
+                    <td class="align-middle">{{era.date_posted}}</td>
+  
+  
+                  </tr>
+                </tbody>
+  
+              </table>
+  
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab>
+        <ng-template ngbTabTitle><span>EOB Details</span></ng-template>
+        <ng-template ngbTabContent>
+
+          <div class="no-content p-2" *ngIf="lstEOB==undefined || lstEOB.length==0">
+            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No EOB Details Found.
+          </div>
+
+          <div class="overflow-auto" style="overflow-x:auto;" *ngIf="lstEOB!=undefined && lstEOB.length>0">
+
+            <table class="table sm layout-fixed light-striped-border">
+              <thead>
+                <tr>
+                  <th class="width-80">EOB ID</th>
+                  <th class="width-80">Filing Date</th>
+                  <th class="width-120">Check/Trans. Date</th>
+                  <th class="width-110">Check Number</th>
+                  <th class="width-95 text-right">Check Amount</th>
+                  <th class="width-80">Source</th>
+                  <th class="width-100">Type</th>
+                  <th class="width-120">Payer</th>
+                  <th class="width-120">Patient Name</th>
+                  <th class="width-60">Posted</th>
+                  <th class="width-60">Deleted</th>
+                  <th class="width-80">Modified By</th>
+                  <th class="width-120">Date Modified</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let eob of lstEOB ; let i = index">
+                  <td class="align-middle">{{eob.eob_id}}</td>
+                  <td class="align-middle">{{eob.eob_date}}</td>
+                  <td class="align-middle">{{eob.check_date}}</td>
+                  <td class="align-middle">{{eob.check_number}}</td>
+                  <td class="align-middle text-right">{{eob.check_amount |
+                      currency:'USD':'symbol-narrow'}}</td>
+                  <td class="align-middle">{{eob.payment_source}}</td>
+                  <td class="align-middle">{{eob.payment_type}}</td>
+                  <td class="align-middle">{{eob.payer_name}}</td>
+                  <td class="align-middle">{{eob.patient_name}}</td>
+                  <td class="align-middle">{{ eob.is_posted  ? 'YES' : 'NO'}}</td>
+                  <td class="align-middle">{{era.deleted ? 'YES' : 'NO'}}</td>
+                  <td class="align-middle">{{era.modified_user}}</td>
+                  <td class="align-middle">{{era.client_date_modified}}</td>
+
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+
+</div>
+<div class="modal-footer custom">
+  <button type="button" style="width: 100px;" class="btn btn-dark btn-sm"
+    (click)="activeModal.close(false)">Close</button>
+</div>

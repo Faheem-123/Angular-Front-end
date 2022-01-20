@@ -1,0 +1,114 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">Patient Not Paid Reason Report
+    </div>
+    <button class="btn btn-link fz-13 font-weight-400 py-0 text-white" (click)="exportAsXLSX()"><i
+      class="fas fa-file-excel fa-md  mr-1"></i>Export to Excel</button>
+
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+    <form [formGroup]="patnotpaidForm">
+      <div class="rounded bg-white flex-shrink-0">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+
+        <div class="p-2 pt-0">
+          <div class="form-row form-dashboard">
+            <div class="form-group col-2">
+              <label class="col-form-label required" for="dpfromDate">From:</label>
+              <div class="input-group">
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dateFrom"
+                  formControlName="dateFrom" ngbDatepicker #dpfromDate="ngbDatepicker">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="form-group col-2">
+              <label class="col-form-label required" for="dptoDate">To:</label>
+              <div class="input-group">
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo"
+                  ngbDatepicker #dptoDate="ngbDatepicker">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dptoDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="input2" class="col-form-label">Patient:</label>
+              <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                  <div class="input-icon d-flex flex-grow-3">
+                    <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                      placeholder="Search Patient" (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                      (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()"
+                      formControlName="txtPatientSearch">
+                    <input type="text" formControlName="txtPatientIdHidden" hidden>
+                    <div class="icon">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </div>
+                    <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                      (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()"></inline-patient-search>
+
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+            <div class="form-group col-2">
+              <label for="cmbLocation" class="col-form-label">Authorized By:</label>
+              <select class="form-control" labelForId="cmbAuthBy" formControlName="cmbAuthBy">
+                <option *ngFor="let auth of acAuthorizedBy" [value]="auth.name">{{auth.name}}</option>
+              </select>
+            </div>
+            <div class="form-group col-1 d-flex justify-content-end align-items-end">
+              <button type="button" class="btn btn-success w-100"
+                (click)="searchNotPaidReason(patnotpaidForm.value)">Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2 overflow-height">
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border table-sticky-header">
+          <thead>
+            <tr>
+              <th class="width-30">PID</th>
+              <th class="width-50">Patient Name</th>
+              <th class="width-40">DOB</th>
+              <th class="width-80">Not Paid Reason</th>
+              <th class="width-40">Authorized By</th>
+              <th class="width-40">Created By</th>
+              <th class="width-40">Created Date</th>
+            </tr>
+          </thead>
+        <tbody>
+            <!-- [ngClass]="{'active': lstCal.row_id==selectedRow}"  -->
+           <tr st-select-row="row" *ngFor="let lstCal of lstnotpaidReason"
+           (click)="onSelectionChange(lstCal)">
+              <td>{{lstCal.alternate_account}}</td>
+              <td>{{lstCal.patient_name}}</td>
+              <td>{{lstCal.dob}}</td>
+              <td>{{lstCal.not_paid_reson}}</td>
+              <td>{{lstCal.authorized_by}}</td>
+              <td>{{lstCal.created_user}}</td>
+              <td>{{lstCal.date_created}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+  </div>
+</div>

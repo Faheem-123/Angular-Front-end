@@ -1,0 +1,93 @@
+<div class="inline-search inline-doc-categ-search">
+  <div class="inline-search-header">
+    <h6 class="title">Document Category Search</h6>
+    <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <!-- <table class="table light-striped-border" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>categories</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let doc of lstDocCategory">
+          <td>
+            <button type="button" class="link-btn" (click)="onDocSelect.emit(doc)">{{doc.category_name}}</button>
+          </td>
+        </tr>
+      </tbody>
+    </table> -->
+
+
+
+
+    
+    <!-- <ul>
+      <li *ngFor="let parentCat of lstParentCategory">
+        {{parentCat.category_name}}
+        <ul>
+          <li *ngFor="let subParentCat of lstSubParentCategory | listFilter : 'parent_category' : parentCat.document_categories_id">
+            {{subParentCat.category_name}}
+            <ul>
+              <li *ngFor="let subCat of lstSubCategory | listFilter : 'parent_category' : subParentCat.document_categories_id">
+                {{subCat.category_name}}
+              </li>
+            </ul>
+          </li>
+          <li>
+            Diagnostic Labs
+            <ul>
+              <li *ngFor="let labCat of lstSubCategory | listFilter : 'parent_category' : 'lab'">
+                {{labCat.category_name}}
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul> -->
+
+
+    
+          <ul>
+              <li *ngFor="let parentCat of lstParentCategory">
+              {{parentCat.category_name}}
+            </li>
+          </ul>
+    
+
+
+
+
+
+
+
+
+
+    <!--
+    <div *ngFor="let mdoc of lstDocCategoryList; let i = index">
+
+
+     
+      <h4 class="form-edit-sub-heading m-1">
+          <button type="button" class="link-btn font-weight-bold" (click)="onDocumentSelect.emit(mdoc)">
+              {{mdoc.parent_cat_name}}</button>       
+      </h4>
+      <table class="table light-striped-border" >       
+          <tbody>
+            <tr *ngFor="let record of SublstDocCategoryList | listFilter : 'parent_category' : mdoc.parent_category">
+              <td style="width: 50px; padding-left:20px;">
+                <button type="button" class="link-btn" (click)="onDocumentSelect.emit(record)">
+                  {{record.category_name}}</button>               
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
+    </div>
+    -->
+  </div>
+</div>

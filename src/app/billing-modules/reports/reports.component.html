@@ -1,0 +1,123 @@
+<ngb-tabset class="inner-vertical-tab white d-flex flex-row max-height-100" [destroyOnHide]="false">
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Denial Report</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-denial class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'></rpt-denial>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Aging Report</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-aging-tab class="d-flex flex-column flex-grow-1" callingFrom='billing_reports'></rpt-aging-tab>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Claim Summary</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-claim-summary class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'></rpt-claim-summary>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Claim Batch Report</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-claim-batch-detail class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'>
+      </rpt-claim-batch-detail>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Bank Deposit Report</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-bankdeposit class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'></rpt-bankdeposit>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Statement</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-patient-statement class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'>
+      </rpt-patient-statement>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Payer Wise Payment</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-payer-wise-payment class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'>
+      </rpt-payer-wise-payment>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>CPT Wise Payment</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-cpt-wise-payment class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'>
+      </rpt-cpt-wise-payment>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Claim Report</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-claim-detail class="d-flex flex-column flex-grow-1" callingFrom='billing_reports'></rpt-claim-detail>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>HCFA Claims</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-hcfa-claims class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'></rpt-hcfa-claims>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Cash Register Entry</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-cashregister-entry class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'>
+      </rpt-cashregister-entry>
+
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Monthly Invoice</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-invoice class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'></rpt-invoice>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Daily and MTD</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-daily-mtd-financial class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'>
+      </rpt-daily-mtd-financial>
+
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>User Audit</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-user-performance class="d-flex flex-column flex-grow-1 " callingFrom='billing_reports'>
+      </rpt-user-performance>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Billing Summary</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-mchc class="d-flex flex-column flex-grow-1 "></rpt-mchc>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Lagged Collection</span></ng-template>
+    <ng-template ngbTabContent>
+      <lagged-collection-report class="d-flex flex-column flex-grow-1 "></lagged-collection-report>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Charges Payment</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-charges-payment-main class="d-flex flex-column flex-grow-1 "></rpt-charges-payment-main>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

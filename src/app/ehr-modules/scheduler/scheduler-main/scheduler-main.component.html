@@ -1,0 +1,465 @@
+<div class="dashboard-container d-flex flex-column position-relative" *ngIf="!addEditPatientFlag">
+  <div class="dashboard dashboard shadow-none m-0 border" *ngIf="showScheduler">
+    <div class="dashboard-title border-bottom">
+
+      <div class="title flex-grow-0 font-weight-400 flex-grow-0 scheduler-header-date-width">
+        {{selectedDateDisplay}}
+      </div>
+
+      <div class="title flex-grow-0 font-weight-400 flex-grow-0 pl-0">
+        <span class="badge badge-pill">
+
+          <span *ngIf="schedulerView=='NORMAL_VIEW'">
+            {{appointmentCountNormalView}}
+          </span>
+
+          <span *ngIf="schedulerView=='MONTH_VIEW'">
+            {{appointmentCountMonthView}}
+          </span>
+
+          <span *ngIf="schedulerView=='LOCATION_VIEW'">
+            {{appointmentCountLocationView}}
+          </span>
+
+          <span *ngIf="schedulerView=='PROVIDER_VIEW'">
+            {{appointmentCountProviderView}}
+          </span>
+        </span>
+
+      </div>
+
+
+      <div class="title flex-grow-0 m-0 px-0" *ngIf="isTempTimingApplied && schedulerView=='NORMAL_VIEW'">
+        <div class="alert alert-info rounded-2 my-0 py-0 px-2 mr-1" role="alert">
+          <i class="fas fa-info-circle mr-1"></i><span class="fz-12">Temp Timing Apply</span>
+        </div>
+      </div>
+
+      <div class="form-flex col pl-1 pr-0 mr-2">
+        <div class="form-group has-search top-main-search flex-grow-1 mb-0">
+          <span class="fa fa-search form-control-feedback text-ihc-green"></span>
+          <input id="txtFindPatient" type="text" class="form-control"
+            placeholder="Find Patient in Scheduler ( Last Name | Last Name, First Name )" autocomplete="off"
+            (keydown.enter)="onFindPatientSearchKeydown($event.currentTarget.value)"
+            (input)="onFindPatientSearchKeydown($event.currentTarget.value)">
+        </div>
+      </div>
+
+
+      <button type="button" class="btn btn-link fz-12 title-bar-blue-btn py-0" (click)="showReport()">
+        Patient Appointments
+      </button>
+
+
+      <button type="button" class="btn btn-link title-bar-blue-btn py-0"
+        *ngIf="lookupList.UserRights.scheduler_view_settings" (click)="showSettings()">
+        <i class="fas fa-cog" aria-hidden="true"></i>
+      </button>
+
+      <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400"
+        (click)="forceViewReload=true ; loadSchedulerView();">
+        <img class="img-h-30" src="./assets/images/icons/ico_refresh_green.svg" alt="">
+      </button>
+
+
+    </div>
+
+    <div class="dashboard-content d-flex flex-row mt-0">
+
+      <div class="scheduler-left">
+        <div class="d-flex flex-column flex-grow-1">
+
+          <form [formGroup]="schedulerForm" class="d-flex flex-column flex-grow-1">
+
+            <ngb-datepicker formControlName="datePicker" #datePicker (ngModelChange)="onDateChange($event)">
+            </ngb-datepicker>
+
+            <div class="d-flex mt-0 justify-content-center flex-shrink-0">
+
+              <div class="btn-group w-100 mt-1">
+                <button class="btn btn-outline-info btn-sm w-100 " type="button" (click)="navigdateToDate('today')">
+                  Select Today
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle dropdown-toggle-split "
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu schedular-card">
+                  <button class="dropdown-item  px-2" (click)="navigdateToDate('2_week')">
+                    2 Week
+                  </button>
+                  <button class="dropdown-item  px-2" (click)="navigdateToDate('4_week')">
+                    4 Week
+                  </button>
+                  <button class="dropdown-item  px-2" (click)="navigdateToDate('6_week')">
+                    6 Week
+                  </button>
+                  <button class="dropdown-item  px-2" (click)="navigdateToDate('8_week')">
+                    8 Week
+                  </button>
+                  <button class="dropdown-item  px-2" (click)="navigdateToDate('12_week')">
+                    12 Week
+                  </button>
+                </div>
+              </div>
+
+              <!--<button class="btn btn-link btn-today" (click)="selectToday()">Select Today</button>-->
+            </div>
+
+            <hr class="mt-4-px mb-4-px w-100 flex-shrink-0">
+
+            <ng-template id="secProviderSelection" [ngIf]="schedulerView=='NORMAL_VIEW' || schedulerView=='MONTH_VIEW'"
+              ]>
+
+              <div class="form-row form-dashboard flex-shrink-0">
+                <div class="form-group col-12">
+                  <label for="cmbLocation">Location</label>
+                  <select class="form-control px-1" labelForId="cmbLocation" formControlName="cmbLocation"
+                    (change)="locationChanged()">
+                    <option *ngFor="let loc of lstLocations" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+                </div>
+              </div>
+
+            </ng-template>
+
+            <ng-template id="secProviderSelection" [ngIf]="schedulerView=='LOCATION_VIEW'" ]>
+
+              <label class="custom-select-label">Location</label>
+              <div class="custom-select-box overflow-height">
+                <table class="table sm table-hover" *ngIf="lstLocations!=undefined && lstLocations.length>0">
+                  <tbody>
+                    <tr *ngFor="let loc of lstLocations" [ngClass]="{'active-green' : (loc.id === locationId)}"
+                      (click)="schedulerForm.get('cmbLocation').setValue(loc.id) ; locationChanged() ;">
+                      <td>
+                        {{loc.name}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </ng-template>
+
+
+            <ng-template id="secProviderSelection" [ngIf]="schedulerView!='LOCATION_VIEW'" ]>
+
+              <label class="custom-select-label">Provider</label>
+              <div class="custom-select-box overflow-height">
+
+                <div class="alert alert-warning rounded-0 m-0 p-1" role="alert"
+                  *ngIf="(lstFileredProviders==undefined || lstFileredProviders.length==0) && !isLoading">
+                  <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+                  <span class="fz-12">Provider Not Found.</span>
+                </div>
+
+                <table class="table sm table-hover"
+                  *ngIf="lstFileredProviders!=undefined && lstFileredProviders.length>0">
+                  <tbody>
+                    <tr *ngFor="let pro of lstFileredProviders"
+                      [ngClass]="{'active-green' : (pro.provider_id === providerId)}">
+                      <td (click)="providerChanged(pro.provider_id)">
+                        {{pro.provider_name}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </ng-template>
+
+
+
+          </form>
+        </div>
+      </div>
+
+
+      <div class="scheduler-right border-left">
+
+
+        <ngb-tabset class="inner-sub-horizental-tab content-flex d-flex flex-column" (tabChange)="onTabChange($event)"
+          [activeId]="schedulerView">
+
+          <ngb-tab id="NORMAL_VIEW">
+            <ng-template ngbTabTitle><span>Normal View</span></ng-template>
+            <ng-template ngbTabContent class="overflow-auto">
+
+
+              <div>
+                <div class="alert alert-warning rounded-0" role="alert" *ngIf="isTimingNotAvailable || isDayOff">
+                  <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+                  <span class="fz-12" *ngIf="isDayOff">Provider day is off</span>
+                  <span class="fz-12" *ngIf="isTimingNotAvailable">Provider Timing Not Avilable</span>
+                </div>
+
+                <table class="scheduler-container table-sticky-filrst-column" cellspacing="1" cellpadding="0"
+                  *ngIf="!isDayOff && !isTimingNotAvailable">
+
+                  <tbody>
+
+                    <tr id="{{t.timing}}" *ngFor="let t of lstSchedulerTiming;">
+                      <td id="breakTD" *ngIf="t.timing==='BREAK_TIME'" [attr.colspan]="totalColoums" class="break-time">
+                        Break : {{t.info}}
+                      </td>
+
+                      <ng-container *ngIf="t.timing!='BREAK_TIME'">
+
+
+                        <td class="scheduler-time">
+                          <button type="button" [disabled]="!this.lookupList.UserRights.scheduler_edit"
+                            class="scheduler-time-btn" [ngClass]="{                    
+          'scheduler-time-btn-disabled' : (!t.enabled && t.timing !== highlightSlotTime),
+          'scheduler-time-btn-higlighted' : (t.timing === highlightSlotTime)
+      }" (click)="addAppointment(t)">{{t.timing}}</button>
+                        </td>
+
+                        <td class="appointment" [attr.rowspan]="app.slot_count"
+                          *ngFor="let app of lstAppointments | listFilter:'appointment_time': t.timing ; ">
+                          <scheduler-card class="d-flex flex-column h-100" [appointment]="app"
+                            [patientIdSearched]="patientIdSearched" [patientNameSearched]="patientNameSearched"
+                            [colIndex]="i" (doSchedulerAction)="doSchedulerAction($event)">
+                          </scheduler-card>
+                        </td>
+
+                        <!-- Insert empty Column in case of no appointment-->
+                        <td *ngIf="appointmentCount==0" class="appointment"></td>
+
+                      </ng-container>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+
+
+
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="LOCATION_VIEW">
+            <ng-template ngbTabTitle><span>Location View</span></ng-template>
+            <ng-template ngbTabContent>
+
+              <scheduler-location-view [locationId]='locationId' [appDate]='selectedDate'
+                (loadingIndicator)='loadingIndicator($event)' [patientNameSearched]='patientNameSearched'
+                [refresh]='refreshView' (doSchedulerAction)='doSchedulerAction($event)'>
+              </scheduler-location-view>
+              <!--
+              <div class="alert alert-warning rounded-0 m-0 p-2 fz-12" role="alert" *ngIf="locationViewNoRecord">
+                <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+                No record found.
+              </div>
+
+              <div class="d-flex" *ngIf="!locationViewNoRecord">
+
+                <table class="scheduler-container-compact table-sticky-header" cellspacing="1" cellpadding="0"
+                  [ngClass]="{'scheduler_odd_column_bg':  (providerIndex%2 ==0),
+                'scheduler_even_column_bg':  !(providerIndex%2 ==0),
+                'border-left': providerIndex>0}"
+                  *ngFor="let provider of lstProviderAppointmentsLocationView; let providerIndex=index;">
+                  <thead>
+                    <tr>
+
+                      <th class="header p-0" *ngIf="providerIndex>0"></th>
+
+                      <th class="header" tyle="width: none;" *ngIf="providerIndex==0">
+                        <span>Timing</span>
+                      </th>
+
+                      <th [attr.colspan]="provider.column_count" class="header">
+
+                        <div class="d-flex">
+                          <span class="pt-1-px">{{provider.name}}</span>
+                          <span class="badge badge-pill">{{provider.total_appointments}}</span>
+                        </div>
+                      </th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <tr id="{{t.timing}}" *ngFor="let t of lstSchedulerTimingLocationView; let timeIndex=index;">
+
+                      <td class="scheduler-time-empty" *ngIf="providerIndex>0"></td>
+
+                      <td class="scheduler-time" *ngIf="providerIndex==0">
+
+                        <span class="scheduler-time-btn">{{t.timing}}</span>
+                      </td>
+
+                      <td class="appointment" [attr.rowspan]="app.slot_count"
+                        *ngFor="let app of provider.appointments | listFilter:'appointment_time': t.timing ; let i=index;">
+                        <scheduler-card-compact class="d-flex flex-column h-100" [appointment]="app" [colIndex]="i"
+                          [patientNameSearched]="patientNameSearched" (doSchedulerAction)="doSchedulerAction($event)">
+                        </scheduler-card-compact>
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+
+              </div>
+
+              -->
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="PROVIDER_VIEW">
+            <ng-template ngbTabTitle><span>Provider View</span></ng-template>
+            <ng-template ngbTabContent>
+
+              <scheduler-provider-view [providerId]='providerId' [appDate]='selectedDate'
+                (loadingIndicator)='loadingIndicator($event)' [patientNameSearched]='patientNameSearched'
+                [refresh]='refreshView' (doSchedulerAction)='doSchedulerAction($event)'>
+              </scheduler-provider-view>
+
+              <!--
+              <div class="alert alert-warning rounded-0 m-0 p-2 fz-12" role="alert" *ngIf="providerViewNoRecord">
+                <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+                No record found.
+              </div>
+
+
+              <div class="d-flex" *ngIf="!providerViewNoRecord">
+                <table class="scheduler-container-compact table-sticky-header" cellspacing="1" cellpadding="0"
+                  [ngClass]="{'scheduler_odd_column_bg':  (locIndex%2 ==0),
+                'scheduler_even_column_bg':  !(locIndex%2 ==0),
+                'border-left': locIndex>0}"
+                  *ngFor="let loc of lstLocationAppointmentsProviderView; let locIndex=index;">
+                  <thead>
+                    <tr>
+
+                      <th class="header p-0" tyle="width: none;" *ngIf="locIndex>0"></th>
+
+                      <th class="header" *ngIf="locIndex==0" s>
+                        <span>Timing</span>
+                      </th>
+
+                      <th [attr.colspan]="loc.column_count" class="header">
+                        <div class="d-flex">
+                          <span class="pt-1-px">{{loc.name}}</span>
+                          <span class="badge badge-pill">{{loc.total_appointments}}</span>
+                        </div>
+                      </th>
+                    </tr>
+
+                  </thead>
+
+                  <tbody>
+
+                    <tr id="{{t.timing}}" *ngFor="let t of lstSchedulerTimingProviderView; let timeIndex=index;">
+
+                      <td class="scheduler-time-empty" *ngIf="locIndex>0"></td>
+
+                      <td class="scheduler-time" *ngIf="locIndex==0">
+                        <span class="scheduler-time-btn">{{t.timing}}</span>
+                      </td>
+
+                      <td class="appointment" [attr.rowspan]="app.slot_count"
+                        *ngFor="let app of loc.appointments | listFilter:'appointment_time': t.timing ; let i=index;">
+                        <scheduler-card-compact class="d-flex flex-column h-100" [appointment]="app" [colIndex]="i"
+                          [patientNameSearched]="patientNameSearched" (doSchedulerAction)="doSchedulerAction($event)">
+                        </scheduler-card-compact>
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+
+              </div>
+              -->
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="MONTH_VIEW">
+            <ng-template ngbTabTitle><span>Month View</span></ng-template>
+            <ng-template ngbTabContent>
+              <scheduler-month-view [providerId]='providerId' [locationId]='locationId' [appDate]='selectedDate'
+                [refresh]='refreshView' [locationName]='locationName' [providerName]='providerName'
+                (loadingIndicator)='loadingIndicator($event)' (loadScheduler)='callBackloadNormalSchedulerView($event)'>
+              </scheduler-month-view>
+            </ng-template>
+          </ngb-tab>
+
+
+
+        </ngb-tabset>
+
+
+
+
+      </div>
+    </div>
+
+
+
+
+
+  </div>
+
+
+  <div *ngIf="showSchedulerReport" class="dashboard rounded-top  dashboard shadow-none m-0 border">
+
+
+    <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+      <button class="left-back-btn" (click)="navigateBackToScheduler()">
+        <i class="fas fa-arrow-left mr-2"></i><span>Back to Scheduler</span>
+      </button>
+    </div>
+
+    <!--
+    <rpt-appointments class="patient-all-comp" [lstData]="lstAppiontmentReportData"
+      [lstLocationProviders]="lstLocationProviders" [lstLocations]="lstLocations"
+      (navigateBack)="navigateBackToScheduler()"></rpt-appointments>
+    -->
+
+    <rpt-appointments class="patient-all-comp" [lstData]="lstAppiontmentReportData"
+      (navigateBack)="navigateBackToScheduler()"></rpt-appointments>
+
+  </div>
+
+  <scheduler-settings-main class="d-flex flex-column flex-grow-1 overflow-height" bac_tabl_title="Back to Scheduler"
+    (onCallBack)="navigateBackToScheduler()" *ngIf="showSchedulerSettings"></scheduler-settings-main>
+
+  <!--
+  <div *ngIf="showSchedulerSettings" class="dashboard rounded-top">
+
+    <div class="top-bar-green rounded-top flex-shrink-0">
+      <button class="left-back-btn" (click)="navigateBackToScheduler()">
+        <i class="fas fa-arrow-left mr-2"></i><span>Back to Scheduler</span>
+      </button>
+    </div>
+   
+  </div>
+  -->
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>
+
+
+<div *ngIf="addEditPatientFlag" class="dashboard rounded-10-top mt-1">
+
+  <div class="top-bar-green rounded-10-top flex-shrink-0">
+    <button class="left-back-btn" (click)="onAddEditPatientCancelled()">
+      <i class="fas fa-arrow-left mr-2"></i><span>Back to Scheduler</span>
+    </button>
+  </div>
+
+  <patient-info class="main-app d-flex flex-column p-0" [addEditOperation]="patientAddEditOperation"
+    callingFrom="scheduler" (onSave)="onAddEditPatientSaved($event)" [patientId]="patientIdSelected"
+    (onCancel)="onAddEditPatientCancelled($event)"></patient-info>
+
+</div>

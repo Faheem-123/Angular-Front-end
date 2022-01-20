@@ -1,0 +1,127 @@
+<!-- <div class="rounded-top">
+  <div class="title pl-8">Closing Summary and Recommendations</div>
+  <ul class="nav color-buttons align-items-center">
+    <button class="nav-link encounter-btn-save px-2 py-0" (click)="saveClosingSummary(closingSessionInfoForm.value)">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+    <button class="nav-link btn-dark px-2 py-0 top-right-radius" (click)="cancelClosingSummary()">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </button>
+  </ul>
+</div> -->
+
+
+<div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Closing Summary and Recommendations</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom" style="height: 395px;">
+  <!-- <div class="div-loader"></div> -->
+  <div class="dashboard-content mt-0">
+      <div class="modal-footer custom">
+      <button type="button" style="width: 80px;" class="btn encounter-btn-cancel btn-sm" (click)="activeModal.dismiss('Cross click')">Cancel</button>
+      <button style="width: 80px;" class="btn btn-success btn-sm"  *ngIf="showHideSave"
+      (click)="saveClosingSummery(closingSessionInfoForm.value)">Save</button>
+    </div>
+    <div class="form-row form-dashboard">
+      <div class="form-group col-12">
+<!-- ///////////////////////////////////////////// -->
+
+<div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue" style="height: 325px;">
+    <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+       
+
+      <form [formGroup]="closingSessionInfoForm">
+      <div class="row p3">
+        <div class="col-8 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Provider</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group col-12">
+                <label for="txt_BGfasting" class="col-form-label">Select Provider:</label>
+  
+                <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider">
+                    <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+                  </select>
+  
+              
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Date</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group col-12">
+                <label class="col-form-label">select Date:</label>
+                <div class="input-group">
+                    <input class="form-control" placeholder="mm/dd/yyyy" name="date" formControlName="date"
+                      ngbDatepicker #date="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn btn-outline-primary" (click)="date.toggle()" type="button">
+                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                      </button>
+                    </span>
+    
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+        
+  
+        <div class="col-12 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Reason for Closing</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+                <div class="form-group col-12">
+                  <label for="txt_BGfasting" class="col-form-label">Select Reason For Closing:</label>
+                  <select class="form-control" labelForId="cmbClosingReason" formControlName="cmbClosingReason"
+                   (change)="enableSpecifyReason($event)">
+                      <option *ngFor="let close of lookupList.lstClosingReason" [value]="close.reson">{{close.reson}}</option>
+                    </select>
+    
+                
+                </div>
+                <div class="form-group col-12">
+                    <label for="txt_BGfasting" class="col-form-label">Specify Reason:</label>
+                    <input type="text" class="form-control" id="txtspecifyReson" formControlName="txtspecifyReson"  [readonly]="isEditable">
+                  </div>
+              </div>
+          </div>
+        </div>
+  
+  
+        <div class="col-12 d-flex flex-column">
+            <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+              <h4 class="form-edit-sub-heading m-1 p-1">Outcome and Recommendations:</h4>
+              <div class="form-row form-dashboard p-2 pt-0">
+                  <div class="form-group col-12">
+      
+                    <textarea class="form-control required" id="txtoutcome" formControlName="txtoutcome" rows="4" maxlength="500"></textarea>
+                  
+                  </div>
+                </div>
+            </div>
+          </div>
+  
+      </div>
+      </form>
+  
+
+      
+    </div>
+</div>
+
+<!-- //////////////////////////////////////////// -->
+      </div>
+    </div>
+  </div>
+</div>

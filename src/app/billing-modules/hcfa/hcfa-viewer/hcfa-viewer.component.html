@@ -1,0 +1,18 @@
+<div class="modal-content custom">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">HCFA Viewer</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom  p-0" style="height: calc(100vh - 100px);">
+    
+    <!--<iframe [src]="safeUrl" id="hcfa_frame" #hcfaFram style="height: 550px !important;" width="100%" height="100%"
+      frameborder="0"> </iframe>
+    -->
+
+      <iframe [src]="safeUrl" id="hcfa_frame" #hcfaFram width="100%" height="100%"
+      frameborder="0"> </iframe>
+    <div>
+    </div>

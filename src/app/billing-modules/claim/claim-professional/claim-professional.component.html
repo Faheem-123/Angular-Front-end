@@ -1,0 +1,2116 @@
+<div
+  class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1 position-relative"
+  *ngIf="!showSuperBill && !showImportICDCPT">
+  <form [formGroup]="claimFormGroup" (keydown.enter)="$event.preventDefault()" class="d-flex flex-column flex-grow-1">
+    <!--<div class="dashboard" *ngIf="isLoading">
+      <div class="div-loader"></div>
+    </div>
+  -->
+    <div class="inner-tool-tab h-25 justify-content-between pr-0 flex-shrink-0 " *ngIf="!isLoading">
+
+      <h4
+        class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400 d-flex d-flex flex-grow-1  ">
+        Claim ( Professional )
+        <span class="v-separtor"></span>
+        <span *ngIf="claimId!=undefined" class="title-other-info">
+          Claim ID: {{claimId}}
+        </span>
+        <span *ngIf="claimId==undefined" class="title-other-info">
+          [ New Claim ]
+        </span>
+      </h4>
+
+      <ul class="nav align-items-center mr-2" *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+        <a class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" [ngClass]="{disabled: isSaving}"
+          (click)="printPatientReceipt()">Print Patient Receipt</a>
+
+        <a class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" [ngClass]="{disabled: isSaving}"
+          (click)="onImportICDCPTFromEncounterClicked()">Import
+          CPT/ICD</a>
+        <a class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" [ngClass]="{disabled: isSaving}"
+          (click)="onSuperBillClicked()">Super Bill</a>
+
+      </ul>
+      <ul class="nav color-buttons align-items-center"
+        *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+
+        <button class="nav-link btn btn-warning rounded-0 px-2 py-0 text-dark" (click)="onSubmit(true)" type="button"
+          *ngIf="!isClaimSavedAndSubmitted " [disabled]="isSaving">
+          Save As Draft
+        </button>
+
+        <button class="nav-link btn green rounded-0 px-2 py-0" (click)="onSubmit(false)" type="submit"
+          [disabled]="isSaving">
+          Save & Submit
+        </button>
+
+
+        <button class="nav-link btn btn-dark rounded-0 px-2 py-0" (click)="onCancel()" type="button"
+          [disabled]="isSaving">
+          Cancel
+        </button>
+
+      </ul>
+    </div>
+
+    <div class="px6-py3 flex-grow-1 overflow-auto overflow-height" *ngIf="!isLoading">
+      <div class="row p8">
+        <div class="col-4 d-flex flex-column">
+          <div class="info-box-stipes rounded flex-grow-1">
+            <div class="p-8 py-6">
+              <div class="form-row form-dashboard">
+
+                <div class="form-group horizental row zero col-12">
+                  <label class="col-sm-4 col-form-label" for="dpDOS">Date Of Service:</label>
+
+                  <div class="input-group col-sm-8">
+                    <input id="dpDOS" class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDOS"
+                      data-container="body" [navigation]="navigation" formControlName="dpDOS" ngbDatepicker
+                      #dpDOS="ngbDatepicker" (ngModelChange)="onDOSChange($event)" (input)="onDOSChangeInput($event)"
+                      (keydown)="onDOSChangeInputKeydown($event)"
+                      (blur)="onDateFocusOut($event.currentTarget.value,'dpDOS')" [ngClass]="{ required : (claimFormGroup.controls.dpDOS.errors?.required),
+                        'is-invalid': (claimFormGroup.controls.dpDOS.errors?.invalidDate)}">
+
+                    <span class="input-group-btn" *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                      <button class="btn date-control-btn" (click)="dpDOS.toggle()" type="button" focusable="false"
+                        tabindex="-1">
+                      </button>
+                    </span>
+
+                  </div>
+
+                  <!--
+                  <input type="date" class="col-sm-8 form-control px-1" id="dpDOS" formControlName="dpDOS"
+                    (change)="DOSChanged($event)" (blur)="DOSFocusOut($event)"
+                    [ngClass]="{'is-invalid': claimFormGroup.controls.dpDOS.errors?.invalidDate}"
+                    (blur)="onDateFocusOut($event.currentTarget.value,'dpDOS')">
+                  -->
+                </div>
+
+                <div class="form-group horizental row zero col-12">
+                  <label class="col-sm-4 col-form-label" for="ddAttendingPhysician">Attending Provider:</label>
+                  <select class="col-sm-8 form-control" id="ddAttendingPhysician"
+                    formControlName="ddAttendingPhysician">
+
+                    <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-12">
+                  <label class="col-sm-4 col-form-label" for="ddBillingPhysician">Billing Provider:</label>
+                  <select class="col-sm-8 form-control" id="ddBillingPhysician" formControlName="ddBillingPhysician"
+                  (change)="onBillingPhysicianChange($event)">
+
+                    <option *ngFor="let pro of lookupList.billingProviderList" [value]="pro.id">{{pro.name}}</option>
+                  </select>
+                </div>
+
+
+                <div class="form-group horizental row zero col-12">
+                  <label class="col-sm-4 col-form-label" for="ddLocation">Location:</label>
+                  <select class="col-sm-8 form-control" id="ddLocation" formControlName="ddLocation"
+                  (change)="onLocationChange($event.target.selectedIndex)">
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+
+                </div>
+
+                <div class="form-group horizental row zero col-12">
+                  <label class="col-sm-4 col-form-label" for="ddFaciliy">Facility:</label>
+                  <select class="col-sm-8 form-control" id="ddFaciliy" formControlName="ddFaciliy"
+                    (change)="onFacilityChange($event.target.selectedIndex)">
+                    <option *ngFor="let facility of lookupList.facilityList" [value]="facility.id">
+                      {{facility.name}}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-12">
+                  <label class="col-sm-4 col-form-label" for="input6">Referring Provider:</label>
+
+                  <div class="col-sm-8 form-group has-search flex-grow-1">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input type="text" class="form-control " placeholder="Search Referring Physician"
+                      (input)="onRefPhysicianSearcInputChange($event)" (focusout)="onRefPhysicianFocusOut()"
+                      autocomplete="off" formControlName="txtRefPhy" #txtRefPhy
+                      (keydown.esc)="closeRefPhysicianSearch()" (keyup.arrowdown)="shiftFocusToRefSearch()">
+                    <input type="text" formControlName="txtRefPhyIDHidden" hidden>
+
+                    <inline-ref-physician-search id="inlineRefSearch" name="inlineRefSearch" #inlineRefSearch
+                      *ngIf="showRefPhySearch" [searchValue]="txtRefPhy.value" (onSelect)="addRefPhysician($event)"
+                      (onClose)="closeRefPhysicianSearch($event)">
+                    </inline-ref-physician-search>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-8 d-flex flex-column">
+          <div class="info-box-stipes rounded p-0 pt-1 flex-grow-1">
+            <div class="form-row form-dashboard">
+
+              <div class="form-flex col-md-9 col-12 py-0">
+                <label class="px-2 fz-14 fw-500">Diagnosis</label>
+                <div class="form-group has-search flex-grow-1"
+                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                  <span class="fa fa-search form-control-feedback"></span>
+                  <input type="text" class="form-control search-highlight"
+                    placeholder="Type Criteria & Press Enter To Search" autocomplete="off" #txtDiagSearch
+                    (keydown.enter)="onDiaghnosisSearcInputChange($event)" (blur)="onDiagnosisSearhBlur($event)"
+                    (keyup.arrowdown)="shiftFocusToDiagSearch()" (keydown.esc)="closeDiagnosisSearch()">
+
+                  <inline-diagnosis-search id="inlineClaimDiagSearch" name="inlineClaimDiagSearch"
+                    #inlineClaimDiagSearch *ngIf="showDiagSearch" [diagSearchCriteria]="diagSearchCriteria"
+                    (onDiagSelect)="addDiagnosisFromSearch($event)" (onClose)="closeDiagnosisSearch()">
+                  </inline-diagnosis-search>
+
+                </div>
+              </div>
+
+
+              <div class="form-check-cont d-flex flex-grow-1 align-item-center mx-1"
+                *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                <div class="custom-control custom-checkbox green-checkbox ">
+                  <input type="checkbox" class="custom-control-input" id="chkDiagnosisSearchAll_{{controlUniqueId}}"
+                    #chkDiagnosisSearchAll (change)="onchkDiagnosisChanged()" checked="true">
+                  <label class="custom-control-label" for="chkDiagnosisSearchAll_{{controlUniqueId}}">All</label>
+                </div>
+              </div>
+
+
+              <div class="form-group col-12 col-md-2"
+                *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                <div class="text-right">
+                  <button type="button" class="btn btn-link p-0"
+                    [disabled]="!(lstClaimDiagnosis!=undefined && lstClaimDiagnosis.length > (selectedDiagnosisRow+1))"
+                    (click)="moveDiagnosis('down')"><i class="fas fa-arrow-alt-circle-down text-info"></i></button>
+                  <button type="button" class="btn btn-link p-0" [disabled]="!(selectedDiagnosisRow > 0)"
+                    (click)="moveDiagnosis('up')"><i class="fas fa-arrow-alt-circle-up text-info"></i></button>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex overflow-auto mt-1">
+
+              <div class="p-0" [ngClass]="{'col-6': showICDCol2 }">
+
+                <table class="table sm layout-fixed light-striped-border ">
+                  <thead>
+                    <tr>
+                      <th class="width-40">Seq.</th>
+                      <th class="width-70">Code</th>
+                      <th>Description</th>
+                      <th class="width-35">&nbsp;</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr
+                      *ngFor="let diag of lstClaimDiagnosis | listFilterWithNumericCondition : 'column' : '=' : 1 ; let i = index"
+                      (click)="diagnosisSelectionChanged(diag.diag_code)"
+                      [ngClass]="{'active': selectedICDCode==diag.diag_code}">
+                      <td title="{{diag.diag_sequence}}">{{diag.diag_sequence}}</td>
+                      <td title="{{diag.diag_code}}">{{diag.diag_code}}</td>
+                      <td title="{{diag.description}}">{{diag.description}}</td>
+                      <td>
+                        <a class="p-0 btn-delete" (click)="removeDiagnosis(diag.diag_code)"
+                          *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted"><i
+                            class="far fa-trash-alt fa-md"></i></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-6 p-0 pl-1" *ngIf="showICDCol2">
+
+                <table class="table sm layout-fixed light-striped-border">
+                  <thead>
+                    <tr>
+                      <th class="width-40">Seq.</th>
+                      <th class="width-70">Code</th>
+                      <th>Description</th>
+                      <th class="width-35">&nbsp;</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr
+                      *ngFor="let diag of lstClaimDiagnosis | listFilterWithNumericCondition : 'column' : '=' : 2 ; let i = index"
+                      (click)="diagnosisSelectionChanged(diag.diag_code)"
+                      [ngClass]="{'active': diag.diag_code==selectedICDCode}">
+                      <td title="{{diag.diag_sequence}}">{{diag.diag_sequence}}</td>
+                      <td title="{{diag.diag_code}}">{{diag.diag_code}}</td>
+                      <td title="{{diag.description}}">{{diag.description}}</td>
+                      <td>
+                        <a class="p-0 btn-delete" (click)="removeDiagnosis(diag.diag_code)"
+                          *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted"><i
+                            class="far fa-trash-alt fa-md"></i></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- <div class="col-4 d-flex flex-column">
+              <div class="info-box-stipes rounded p-1 flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center px-2">
+                  <label class="fz-14 fw-500">Diagnosis</label>
+      
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                    <label class="form-check-label fz-13 v-align-top" for="defaultCheck1">Selfpay</label>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
+      <div class="row p8">
+        <div class="col-12 d-flex flex-column">
+          <div class="info-box-stipes rounded flex-grow-1 pt-1">
+
+
+            <div class="form-row form-dashboard m-0">
+
+              <div class="form-flex col-md-6 col-12 py-0">
+                <label class="px-2 fz-14 fw-500">Procedures</label>
+
+                <div class="form-group has-search flex-grow-1"
+                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                  <span class="fa fa-search form-control-feedback"></span>
+                  <input type="text" class="form-control search-highlight"
+                    placeholder="Type Criteria & Press Enter To Search" autocomplete="off" #txtProcSearch
+                    (keydown.enter)="onProcedureSearchEnter($event)" (input)="onProcedureSearchInputChange($event)"
+                    (blur)="onProcedureSearhBlur($event)" (keyup.arrowdown)="shiftFocusToProcSearch()"
+                    (keydown.esc)="closeProcedureSearch()">
+
+                  <inline-procedure-search id="inlineClaimProcSearch" name="inlineClaimProcSearch"
+                    #inlineClaimProcSearch *ngIf="showProcSearch" [procSearchCriteria]="procedureSearchCriteria"
+                    (onSelect)="addProcedureFromSearch($event)" (onClose)="closeProcedureSearch()">
+                  </inline-procedure-search>
+
+                </div>
+
+              </div>
+
+              <div class="form-check-cont d-flex flex-grow-1 align-item-center mx-1">
+                <div class="custom-control custom-checkbox green-checkbox pt-1"
+                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                  <input type="checkbox" class="custom-control-input" id="chkProcedureSearchAll_{{controlUniqueId}}"
+                    #chkProcedureSearchAll (change)="onchkProcedureChanged()">
+                  <label class="custom-control-label" for="chkProcedureSearchAll_{{controlUniqueId}}">All</label>
+                </div>
+              </div>
+
+             
+
+              <div class="form-group">
+
+                <div class="form-row form-dashboard">
+                  <div class="pr-2" *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                    <button type="button" class="btn btn-link p-0"
+                      [disabled]="!(lstClaimProcedures!=undefined && lstClaimProcedures.length > (selectedProcedureRow+1))"
+                      (click)="moveProcedure('down')"><i class="fas fa-arrow-alt-circle-down text-info"></i></button>
+                    <button type="button" class="btn btn-link p-0" [disabled]="!(selectedProcedureRow > 0)"
+                      (click)="moveProcedure('up')"><i class="fas fa-arrow-alt-circle-up text-info"></i></button>
+                  </div>
+
+
+                  <div class="alert d-flex rounded-3-top-right fz-14 p-1" [ngClass]="{'alert-danger': (claimTotal<=0 || claimDue<0),
+                    'alert-primary': claimTotal > 0 && claimDue > 0,
+                    'alert-success': claimTotal > 0 && claimDue == 0 }" style="margin-top: -4px; margin-bottom: -4px;">
+
+                    <span class="px-1 d-flex pt-2-px">
+                      <span>Claim Total : </span>
+                      <span class="font-weight-bold pl-1">{{claimTotal
+                        | currency:'USD':'symbol-narrow' }}</span>
+                    </span>
+                    <span class="v-separtor"></span>
+                    <span class="px-1 d-flex pt-2-px">
+                      <span>Claim Due : </span>
+                      <span class="font-weight-bold pl-1">{{claimDue
+                          | currency:'USD':'symbol-narrow' }}</span>
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div class="overflow-auto" style="overflow-x:auto;">
+              <table class="table sm light-striped-border table-claim-procedure">
+                <thead>
+                  <tr>
+                    <!--<th width="40">Seq.</th> -->
+
+                    <th class="width-55">Code
+                      <button class="btn btn-sm btn-link p-0 px-1 text-ihc-blue" (click)="showHideProcDescription()"
+                        title="{{lookupList.showClaimProcDescription ? 'Hide Description' : 'Show Description'}}">
+                        <i class="fas"
+                          [ngClass]="{'fa-angle-left': lookupList.showClaimProcDescription,'fa-angle-right': !lookupList.showClaimProcDescription}"></i>
+                      </button>
+                    </th>
+                    <th class="max-width-300" *ngIf="lookupList.showClaimProcDescription">
+                      Description
+                    </th>
+                    <th>DOS From</th>
+                    <th>DOS To</th>
+                    <th>POS</th>
+                    <th>Units</th>
+                    <th>Amount</th>
+                    <th>Total Amt.</th>
+                    <th>Mod1</th>
+                    <th>Mod2</th>
+                    <th>Mod3</th>
+                    <th>Mod4</th>
+                    <th>Dx1</th>
+                    <th>Dx2</th>
+                    <th>Dx3</th>
+                    <th>Dx4</th>
+
+                    <th>NDC</th>
+                    <th>Unit</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+
+
+                    <th>Resubmit</th>
+                    <th>Notes</th>
+                    <th class="border-left width-25"></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let pro of lstClaimProcedures; let i = index" (click)="procedureSelectionChanged(i)"
+                    [ngClass]="{'active': i==selectedProcedureRow}">
+                    <!-- <td>{{pro.proc_sequence}}</td> -->
+
+
+
+
+                    <td class="width-55" [ngClass]="{'active': i==selectedProcedureRow}" [ngbPopover]="popContent"
+                      popoverTitle="{{pro.proc_code}}" container="body" placement="right"
+                      popoverClass="ihc-popover width-300" triggers="mouseenter:mouseleave">
+
+                      <ng-template #popContent>{{pro.description}}</ng-template>
+
+                      {{pro.proc_code}}
+
+                    </td>
+                    <td title="{{pro.description}}" class="max-width-300 text-truncate"
+                      *ngIf="lookupList.showClaimProcDescription">
+                      {{pro.description}}
+                    </td>
+
+                    <td class="align-middle px-0">
+
+                      <div class="input-group table-td-input-group width-90">
+                        <input id="dpDOSFrom_{{pro.claim_procedures_id}}"
+                          class="form-control date-control table-td-date-input " placeholder="mm/dd/yyyy"
+                          name="dpDOSFrom_{{pro.claim_procedures_id}}" ngbDatepicker #dpDOSFrom="ngbDatepicker"
+                          data-container="body" formControlName="dpDOSFrom_{{pro.claim_procedures_id}}"
+                          (blur)="onDateFocusOut($event.currentTarget.value,'dpDOSFrom_'+pro.claim_procedures_id)"
+                          (focus)="procedureFieldFocused(i)">
+
+                        <span class="input-group-btn" *ngIf="!openedClaimInfo.deleted">
+                          <button class="btn date-control-btn table-td-date-button" (click)="dpDOSFrom.toggle()"
+                            type="button" focusable="false" tabindex="-1">
+                          </button>
+                        </span>
+
+                      </div>
+
+                    </td>
+
+                    <td class="align-middle  px-0">
+
+                      <div class="input-group table-td-input-group width-90">
+                        <input id="dpDOSTo_{{pro.claim_procedures_id}}"
+                          class="form-control date-control table-td-date-input " placeholder="mm/dd/yyyy"
+                          name="dpDOSTo_{{pro.claim_procedures_id}}" ngbDatepicker #dpDOSTo="ngbDatepicker"
+                          data-container="body" formControlName="dpDOSTo_{{pro.claim_procedures_id}}"
+                          (blur)="onDateFocusOut($event.currentTarget.value,'dpDOSTo_'+pro.claim_procedures_id)"
+                          (focus)="procedureFieldFocused(i)">
+
+                        <span class="input-group-btn" *ngIf="!openedClaimInfo.deleted">
+                          <button class="btn date-control-btn table-td-date-button" (click)="dpDOSTo.toggle()"
+                            type="button" focusable="false" tabindex="-1">
+                          </button>
+                        </span>
+
+                      </div>
+
+                    </td>
+
+                    <!--
+                    <td>
+                      <div class="input-group width-100">
+                        <input id="dpDOSFrom_{{pro.claim_procedures_id}}"
+                          class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDOSFrom_{{pro.claim_procedures_id}}"
+                          data-container="body" [navigation]="navigation"
+                          formControlName="dpDOSFrom_{{pro.claim_procedures_id}}" ngbDatepicker
+                          #dpDOS="ngbDatepicker" (blur)="onDateFocusOut($event.currentTarget.value,'dpDOSFrom_'{{pro.claim_procedures_id}})"
+                          [ngClass]="{ required : (claimFormGroup.controls['dpDOSFrom_'{{pro.claim_procedures_id}}].errors?.required),
+                            'is-invalid': (claimFormGroup.controls['dpDOSFrom_'{{pro.claim_procedures_id}}].errors?.invalidDate)}">
+
+                        <span class="input-group-btn" *ngIf="lookupList.UserRights.claim_edit">
+                          <button class="btn date-control-btn" (click)="(dpDOSFrom_{{pro.claim_procedures_id}}).toggle()" type="button">
+                          </button>
+                        </span>
+
+                      </div>
+
+                    </td>
+                    -->
+
+
+                    <td>
+                      <select class="table-td-select pl-0 pr-0 width-37" id="ddPOS_{{pro.claim_procedures_id}}"
+                        formControlName="ddPOS_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('ddPOS_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                        <option *ngFor="let pos of lookupList.practicePOSList" [value]="pos.code">
+                          {{pos.code}}&nbsp;&nbsp;{{pos.description}}</option>
+                      </select>
+                    </td>
+
+                    <td class="text-right">
+                      <input type="number" min="1" maxlength="2" class="table-td-input pl-0 pr-0 text-right  width-35"
+                        id="txtUnits_{{pro.claim_procedures_id}}" formControlName="txtUnits_{{pro.claim_procedures_id}}"
+                        (blur)="calculateSingleProcedureCharges(pro.claim_procedures_id)"
+                        (focus)="procedureFieldFocused(i)"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtUnits_'+pro.claim_procedures_id).errors)}"
+                        autocomplete="off">
+                    </td>
+                    <td class="text-right">
+
+                      <div class="input-group table-td-input-group width-70">
+                        <div class="input-group-prepend table-td-input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text ">$</span>
+                        </div>
+                        <input type="text" class="form-control table-td-input text-right  pl-0 pr-1 "
+                          id="txtCharges_{{pro.claim_procedures_id}}"
+                          formControlName="txtCharges_{{pro.claim_procedures_id}}"
+                          (blur)="formateProcedureCurrencyInputs(pro.claim_procedures_id,'txtCharges')"
+                          (focus)="procedureFieldFocused(i)"
+                          [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtCharges_'+pro.claim_procedures_id).errors?.pattern.requiredPattern)}"
+                          autocomplete="off">
+                      </div>
+
+                      <!--
+                        $<input type="text" class="table-td-input text-right w-100" id="txtCharges_{{pro.claim_procedures_id}}"
+                          formControlName="txtCharges_{{pro.claim_procedures_id}}" (blur)="formateProcedureCurrencyInputs(pro.claim_procedures_id,'txtCharges')"
+                          (focus)="procedureFieldFocused(i)" [ngClass]="{ 'is-invalid' : ((claimFormGroup.get('txtCharges_'+pro.claim_procedures_id).errors?.pattern.requiredPattern))}"
+                          autocomplete="off">
+                        -->
+                    </td>
+
+
+                    <td class="text-right font-weight-bold pt-1" [ngClass]="{'td-danger' :  pro.total_charges<=0 }">
+
+
+
+                      <!--
+                      <div class="input-group table-td-input-group width-65">
+                        <div class="input-group-prepend table-td-input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text ">$</span>
+                        </div>
+                        <span
+                          class="form-control table-td-input table-td-input-disabled text-right font-weight-bold pl-0 pr-1"
+                          [ngClass]="{'text-danger' :  pro.total_charges<=0 }">{{pro.total_charges | number :'.2-2'}}</span>
+                     
+
+                     
+            </div>
+                 -->
+
+                      {{pro.total_charges | currency:'USD':'symbol-narrow'}}
+                    </td>
+                    <td>
+                      <select class="table-td-select  pl-0 pr-0 width-43 " id="ddMode1_{{pro.claim_procedures_id}}"
+                        formControlName="ddMode1_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('ddMode1_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                        <option [ngValue]="null"></option>
+                        <option *ngFor="let mod of lookupList.modifierList" [value]="mod.code">
+                          {{mod.code}}&nbsp;&nbsp;{{mod.description}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-td-select  pl-0 pr-0 width-43 " id="ddMode2_{{pro.claim_procedures_id}}"
+                        formControlName="ddMode2_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('ddMode2_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                        <option [ngValue]="null"></option>
+                        <option *ngFor="let mod of lookupList.modifierList" [value]="mod.code">
+                          {{mod.code}}&nbsp;&nbsp;{{mod.description}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-td-select  pl-0 pr-0 width-43 " id="ddMode3_{{pro.claim_procedures_id}}"
+                        formControlName="ddMode3_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('ddMode3_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                        <option [ngValue]="null"></option>
+                        <option *ngFor="let mod of lookupList.modifierList" [value]="mod.code">
+                          {{mod.code}}&nbsp;&nbsp;{{mod.description}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="table-td-select  pl-0 pr-0 width-43 " id="ddMode4_{{pro.claim_procedures_id}}"
+                        formControlName="ddMode4_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('ddMode4_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                        <option [ngValue]="null"></option>
+                        <option *ngFor="let mod of lookupList.modifierList" [value]="mod.code">
+                          {{mod.code}}&nbsp;&nbsp;{{mod.description}}</option>
+                      </select>
+                    </td>
+
+                    <td>
+                      <input type="number" min="1" class="table-td-input pl-0 pr-0 text-right width-33"
+                        id="txtDxPointer1_{{pro.claim_procedures_id}}"
+                        formControlName="txtDxPointer1_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtDxPointer1_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                    </td>
+                    <td>
+                      <input type="number" min="1" class="table-td-input pl-0 pr-0 text-right width-33"
+                        id="txtDxPointer2_{{pro.claim_procedures_id}}"
+                        formControlName="txtDxPointer2_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtDxPointer2_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                    </td>
+                    <td>
+                      <input type="number" min="1" class="table-td-input pl-0 pr-0 text-right width-33"
+                        id="txtDxPointer3_{{pro.claim_procedures_id}}"
+                        formControlName="txtDxPointer3_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtDxPointer3_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                    </td>
+                    <td>
+                      <input type="number" min="1" class="table-td-input pl-0 pr-0 text-right width-33"
+                        id="txtDxPointer4_{{pro.claim_procedures_id}}"
+                        formControlName="txtDxPointer4_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtDxPointer4_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                    </td>
+                    <td>
+                      <input type="text" class="table-td-input text-right width-90 "
+                        id="txtNDCCode_{{pro.claim_procedures_id}}"
+                        formControlName="txtNDCCode_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtNDCCode_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                    </td>
+
+                    <td>
+                      <select class="table-td-select pl-0 pr-0 width-40" id="ddNDCMeasure_{{pro.claim_procedures_id}}"
+                        formControlName="ddNDCMeasure_{{pro.claim_procedures_id}}" (focus)="procedureFieldFocused(i)"
+                        autocomplete="off">
+                        <option [ngValue]="null"></option>
+                        <option *ngFor="let ndcMeasure of lstNDCMeasure" [value]="ndcMeasure">{{ndcMeasure}}</option>
+                      </select>
+                    </td>
+                    <td class="text-right">
+                      <input type="text"  class="table-td-input text-right width-40"
+                        id="txtNDCQuantity_{{pro.claim_procedures_id}}"
+                        formControlName="txtNDCQuantity_{{pro.claim_procedures_id}}"
+                        [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtNDCQuantity_'+pro.claim_procedures_id).errors)}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                    </td>
+
+
+                    <td class="text-right">
+                      <div class="input-group table-td-input-group width-60">
+                        <div class="input-group-prepend table-td-input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text">$</span>
+                        </div>
+                        <input type="text" class="form-control table-td-input text-right  pl-0 pr-1"
+                          id="txtNDCPrice_{{pro.claim_procedures_id}}"
+                          formControlName="txtNDCPrice_{{pro.claim_procedures_id}}"
+                          (blur)="formateProcedureCurrencyInputs(pro.claim_procedures_id,'txtNDCPrice')"
+                          (focus)="procedureFieldFocused(i)"
+                          [ngClass]="{ 'is-invalid' : (claimFormGroup.get('txtNDCPrice_'+pro.claim_procedures_id).errors)}"
+                          autocomplete="off">
+                      </div>
+
+                    </td>
+
+
+
+                    <td class="text-center">
+
+                      <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                        <input type="checkbox" class="custom-control-input"
+                          id="chkIsProcResubmit_{{pro.claim_procedures_id}}_{{controlUniqueId}}"
+                          formControlName="chkIsProcResubmit_{{pro.claim_procedures_id}}"
+                          (focus)="procedureFieldFocused(i)">
+                        <label class="custom-control-label"
+                          for="chkIsProcResubmit_{{pro.claim_procedures_id}}_{{controlUniqueId}}"></label>
+                      </div>
+
+                      <!--
+                      <input class="table-td-checkbox" type="checkbox"
+                        id="chkIsProcResubmit_{{pro.claim_procedures_id}}"
+                        formControlName="chkIsProcResubmit_{{pro.claim_procedures_id}}"
+                        (focus)="procedureFieldFocused(i)" autocomplete="off">
+                        -->
+
+                    </td>
+                    <td>
+                      <input type="text" class="table-td-input  min-width-120"
+                        id="txtProNotes_{{pro.claim_procedures_id}}"
+                        formControlName="txtProNotes_{{pro.claim_procedures_id}}" (focus)="procedureFieldFocused(i)"
+                        autocomplete="off">
+                    </td>
+                    <td class="border-left">
+
+                      <a *ngIf="!pro.is_procedure_paid && lookupList.UserRights.claim_edit && !openedClaimInfo.deleted"
+                        class="p-0 btn-delete" (click)="removeProcedure(i)"><i class="far fa-trash-alt fa-md"></i></a>
+                      <i *ngIf="pro.is_procedure_paid" class="fas fa-info-circle text-info fa-md"
+                        title="There is payment agianst this procedure."></i>
+
+                      <!--
+                      <button type="button" class="btn btn-sm btn-link p-0 btn-delete width-10" [disabled]="pro.is_procedure_paid"
+                        (click)="removeProcedure(i)"><i class="far fa-trash-alt fa-md"></i></button>
+                        -->
+
+                      <!--
+                        <a class="p-0 btn-delete" (click)="removeProcedure(i)" *ngIf="!pro.is_procedure_paid">
+                          <i class="far fa-times-circle fa-md"></i></a>
+                        -->
+                    </td>
+
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="row p8">
+        <div class="col-12 d-flex flex-column">
+          <div class="info-box-stipes rounded p-0 pt-1 flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center px-2 border-bottom ">
+              <label class="fz-14 fw-500 mb-1">Insurances</label>
+
+              <div class="form-check-cont pl-4">
+                <div class="custom-control custom-checkbox green-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="chkSelfPay_{{controlUniqueId}}"
+                    formControlName="chkSelfPay">
+                  <label class="custom-control-label" for="chkSelfPay_{{controlUniqueId}}">Self Pay</label>
+                </div>
+              </div>
+
+
+              <div class="flex-grow-1">&nbsp;
+              </div>
+              <div class="btn-group"
+                *ngIf="claimFormGroup.get('chkSelfPay').value!=true && lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                <button class="btn btn-link fz-14 title-bar-blue-btn font-weight-400 py-0 px-0" type="button"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-bars" aria-hidden="true"></i>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+                  <ng-template id="menAddInusrances"
+                    [ngIf]="(!checkIfInsuranceExist('Primary') || !checkIfInsuranceExist('Secondary') || !checkIfInsuranceExist('Other'))">
+
+                    <a class="dropdown-item cursor-default" (click)="addNewInsurance('ADD','Primary',undefined)"
+                      *ngIf="!checkIfInsuranceExist('Primary')">Add
+                      Primary Insurance</a>
+                    <a class="dropdown-item cursor-default" (click)="addNewInsurance('ADD','Secondary',undefined)"
+                      *ngIf="!checkIfInsuranceExist('Secondary') && checkIfInsuranceExist('Primary')">Add
+                      Secondary Insurance</a>
+                    <a class="dropdown-item cursor-default" (click)="addNewInsurance('ADD','Other',undefined)"
+                      *ngIf="!checkIfInsuranceExist('Other') && checkIfInsuranceExist('Primary') && checkIfInsuranceExist('Secondary')">Add
+                      Other Insurance</a>
+
+                    <div class="dropdown-divider"></div>
+
+                  </ng-template>
+
+                  <a class="dropdown-item cursor-default" (click)="onImportInsurance('active')">Import Patient
+                    Insurance</a>
+                  <a class="dropdown-item cursor-default" (click)="onImportInsurance('inactive')">Patient Inactive
+                    Insurances</a>
+                  <!--
+                  <button class="dropdown-item" type="button" (click)="addNewInsurance('ADD','Primary',undefined)"
+                    *ngIf="!checkIfInsuranceExist('Primary')">
+                    Add Primary
+                    Insurance</button>
+                  <button class="dropdown-item" type="button" (click)="addNewInsurance('ADD','Secondary',undefined)"
+                    *ngIf="!checkIfInsuranceExist('Secondary') && checkIfInsuranceExist('Primary')">
+                    Add
+                    Secondary Insurance</button>
+                  <button class="dropdown-item" type="button" (click)="addNewInsurance('ADD','Other',undefined)" 
+                  *ngIf="!checkIfInsuranceExist('Other') && checkIfInsuranceExist('Primary') && checkIfInsuranceExist('Secondary')">
+                    Add Other
+                    Insurance</button>
+
+                  -->
+
+                </div>
+              </div>
+
+            </div>
+
+            <div *ngIf="isInsuranceExists">
+              <div class="encounter-data-accordian accordian-data rounded-0"
+                [ngClass]="{'bg-disabled': claimFormGroup.get('chkSelfPay').value==true }"
+                *ngFor="let ins of lstClaimInsurance;let i=index">
+                <div class="accordian-header" role="tab" id="headingOne">
+                  <button
+                    *ngIf="claimId!=undefined && this.lookupList.logedInUser.userType.toLocaleLowerCase() == 'billing'"
+                    class="btn btn-link alert-link px-0 text-info" type="button" (click)="showEligibility(ins)">
+                    <i class="fas fa-info-circle fa-sm mr-1"></i>
+                  </button>
+                  <button
+                    *ngIf="this.lookupList.logedInUser.userType.toLocaleLowerCase() == 'billing' && !openedClaimInfo.deleted"
+                    class="btn btn-link alert-link px-0 text-info" type="button" (click)="EligReqProcessing(ins,i)">
+                    Eligibility
+                  </button>
+                  <h5>
+                    <a data-toggle="collapse" href="#claimIns{{ins.claiminsurance_id}}" aria-expanded="false"
+                      class="accordian-link d-flex justify-content-between "
+                      [ngClass]="{disabled: claimFormGroup.get('chkSelfPay').value==true}">
+
+                      <div class="d-flex flex-grow-1">
+                        <span class="accordian-sub-header-title pl-1 width-70">{{ins.insurace_type |
+                              uppercase}}</span>
+                        <span class="v-separtor"></span>
+                        <span *ngIf="ins.name !=undefined" class="accordian-sub-header-title font-weight-500 pr-2"
+                          [ngClass]="{
+                          'text-success':(ins.elig_status=='A' ),
+                          'text-danger':(ins.elig_status=='I' ),
+                          'text-primary':(ins.elig_status=='U')
+                        }">{{ins.name |
+                              uppercase}}</span>
+
+                        <span *ngIf="ins.name ==undefined" class="accordian-sub-header-title">[Please Select
+                          Insurance]</span>
+                      </div>
+
+                      <!--
+                      <div class="d-flex flex-grow-1">
+                        <span *ngIf="ins.name !=undefined" class="accordian-sub-header-title pl-1 width-70">{{ins.insurace_type |
+                              uppercase}}</span>
+                        <span class="v-separtor"></span>
+                        <span *ngIf="ins.name !=undefined" class="accordian-sub-header-title font-weight-500 pr-2">{{ins.name |
+                              uppercase}}</span>
+
+                      </div>
+                      -->
+
+
+                      <!--<span *ngIf="ins.name ==undefined" class="accordian-main-header-title">[New]</span>-->
+                    </a>
+                  </h5>
+
+                  <div class="px-1">
+
+                    <span class="title-other-info">
+                      <i class="fas fa-map-marker-alt pr-1"></i> {{ins.address | uppercase}}
+                    </span>
+                    <span class="v-separtor"></span>
+                    <label class="title-other-info min-width-110">
+                      <i class="fas fa-phone pr-1"></i><strong>{{ins.phone | phonePipe}}</strong>
+                    </label>
+                    <span class="v-separtor"></span>
+                    <label class="title-other-info min-width-130">
+                      Policy No : <strong>{{ins.policy_number | uppercase}}</strong>
+                    </label>
+                  </div>
+
+                  <!--
+                  <a class="pl-1 pr-1 btn-delete" (click)="onRemoveInsurance(ins.claiminsurance_id,ins.name,null)"
+                    *ngIf="lookupList.UserRights.claim_edit"
+                    [ngClass]="{disabled: claimFormGroup.get('chkSelfPay').value==true}">
+                    <i class="far fa-trash-alt fa-md"></i></a>
+                    -->
+
+                  <!--
+                  <button type="button" class="btn btn-link btn-delete" (click)="onRemoveInsurance(ins.claiminsurance_id,ins.name)">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                -->
+
+
+                  <div class="btn-group"
+                    *ngIf="claimFormGroup.get('chkSelfPay').value!=true && lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                    <button class="btn btn-link p-0 title-bar-blue-btn" type="button" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                      <i class="fa fa-bars" aria-hidden="true"></i>
+                    </button>
+
+                    <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+                      <a class="dropdown-item cursor-default" (click)="onMoveInsurance(ins,ins.insurace_type,'Primary')"
+                        *ngIf="ins.insurace_type.toLowerCase()!='primary'">Change Type to Primary</a>
+                      <a class="dropdown-item cursor-default"
+                        (click)="onMoveInsurance(ins,ins.insurace_type,'Secondary')"
+                        *ngIf="ins.insurace_type.toLowerCase()!='secondary'">Change Type to Secondary</a>
+                      <a class="dropdown-item cursor-default" (click)="onMoveInsurance(ins,ins.insurace_type,'Other')"
+                        *ngIf="ins.insurace_type.toLowerCase()!='other'">Change Type to Other</a>
+
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item cursor-default text-danger"
+                        (click)="onRemoveInsurance(ins.claiminsurance_id,ins.name,null)">Delete</a>
+
+
+                    </div>
+                  </div>
+
+
+                  <!--
+
+                  <div class="dropdown btn btn-link title-bar-blue-btn px-0 title-bar-blue-btn"
+                    *ngIf="lookupList.UserRights.claim_edit"
+                    [ngClass]="{disabled: claimFormGroup.get('chkSelfPay').value==true}">
+
+                    <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                      id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+                    </button>
+
+
+                    <div class="dropdown-menu dropdown-menu-left schedular-card" aria-labelledby="dropdownMenuButton">
+                      <button class="dropdown-item fz-12" (click)="onMoveInsurance(ins,ins.insurace_type,'Primary')"
+                        *ngIf="ins.insurace_type.toLowerCase()!='primary'">
+                        Change Insurance Type to Primary
+                      </button>
+                      <button class="dropdown-item fz-12 px-2"
+                        (click)="onMoveInsurance(ins,ins.insurace_type,'Secondary')"
+                        *ngIf="ins.insurace_type.toLowerCase()!='secondary'">
+                        Change Insurance Type to Secondary
+                      </button>
+                      <button class="dropdown-item fz-12 px-2" (click)="onMoveInsurance(ins,ins.insurace_type,'Other')"
+                        *ngIf="ins.insurace_type.toLowerCase()!='other'">
+                        Change Insurance Type to Other
+                      </button>
+                      <div class="dropdown-divider"></div>
+                      <button class="dropdown-item fz-12 text-danger"
+                        (click)="onRemoveInsurance(ins.claiminsurance_id,ins.name,null)">
+                        Delete
+                      </button>
+                    </div>
+
+                  </div>
+                  -->
+                </div>
+
+                <div id="claimIns{{ins.claiminsurance_id}}" class="collapse">
+                  <div class="accordian-body bg-transparent">
+
+                    <div class="form-row form-dashboard">
+                      <div class="col-md-5 col-sm-6 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-row form-dashboard">
+
+                            <div class="form-group horizental row zero col-12">
+                              <label class="width-70 col-form-label"
+                                for="txtInsuranceName_{{ins.claiminsurance_id}}">Insurance:</label>
+
+                              <div class="col form-group has-search flex-grow-1">
+                                <span class="fa fa-search form-control-feedback"></span>
+                                <input type="text" class="form-control " placeholder="Search Insurance"
+                                  (input)="onInsuranceSearchInput($event,ins.claiminsurance_id)"
+                                  (focusout)="onInsuranceSearchFocusOut(ins.claiminsurance_id)"
+                                  (keydown.enter)="onInsuranceSearchEnter($event,ins.claiminsurance_id)"
+                                  (keyup.arrowdown)="shiftFocusToInsSearch(ins.claiminsurance_id)"
+                                  (keydown.esc)="setInsuranceVisiblity(ins.claiminsurance_id,'false')"
+                                  formControlName="txtInsuranceName_{{ins.claiminsurance_id}}" autocomplete="off">
+
+                                <inline-insurance-search id="inlineClaimInsSearch" name="inlineClaimInsSearch"
+                                  #inlineClaimInsSearch *ngIf="showInsuranceSearch(ins.claiminsurance_id)"
+                                  searchValue="{{claimFormGroup.get('txtInsuranceName_'+ins.claiminsurance_id).value}}"
+                                  recordId="{{ins.claiminsurance_id}}" (onSelect)="addInsurance($event)"
+                                  (onClose)="closeInsuranceSearch($event)"></inline-insurance-search>
+
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard">
+
+                            <div class="form-group horizental row zero col-12">
+                              <label class="width-70 col-form-label"
+                                for="txtInsuranceSubscriber_{{ins.claiminsurance_id}}">Subscriber:</label>
+
+
+
+                              <div class="col form-group has-search flex-grow-1">
+                                <span class="fa fa-search form-control-feedback"
+                                  *ngIf="claimFormGroup!=undefined && claimFormGroup.get('ddInsuranceSubscriberRel_'+ins.claiminsurance_id).value !='SELF'"></span>
+
+                                <div class="input-group">
+
+                                  <select class="form-control"
+                                    [ngClass]="{'width-100 flex-grow-0':  claimFormGroup.get('ddInsuranceSubscriberRel_'+ins.claiminsurance_id).value !='SELF' }"
+                                    id="ddInsuranceSubscriberRel_{{ins.claiminsurance_id}}"
+                                    formControlName="ddInsuranceSubscriberRel_{{ins.claiminsurance_id}}">
+                                    <option *ngFor="let rel of this.lookupList.lstSubsciberRelationship" [value]="rel">
+                                      {{rel}}
+                                    </option>
+                                  </select>
+                                  <input
+                                    *ngIf="claimFormGroup.get('ddInsuranceSubscriberRel_'+ins.claiminsurance_id).value !='SELF'"
+                                    type="text" class="form-control" placeholder="Search Subscriber"
+                                    (keydown)="onInsuranceSubscriberSearchKeydown($event,ins.claiminsurance_id)"
+                                    (focusout)="onInsuranceSubscriberFocusOut(ins.claiminsurance_id)"
+                                    formControlName="txtInsuranceSubscriber_{{ins.claiminsurance_id}}"
+                                    autocomplete="off">
+                                </div>
+
+                                <inline-guarantor-search *ngIf="showInsuranceSubscriberSearch(ins.claiminsurance_id)"
+                                  searchValue="{{claimFormGroup.get('txtInsuranceSubscriber_'+ins.claiminsurance_id).value}}"
+                                  recordId="{{ins.claiminsurance_id}}" (onSelect)="addInsuranceSubscriber($event)"
+                                  (onClose)="closeInsuranceSubscriberSearch($event)"></inline-guarantor-search>
+
+                              </div>
+
+                            </div>
+                          </div>
+
+
+                          <div class="form-row form-dashboard">
+
+                            <div class="form-group horizental row zero col-6">
+                              <label class="width-70 col-form-label" for="txtPolicyNo_{{ins.claiminsurance_id}}">Policy
+                                No:</label>
+                              <input type="text" class="form-control col" id="txtPolicyNo_{{ins.claiminsurance_id}}"
+                                (paste)="onPaste($event,'txtPolicyNo_'+ins.claiminsurance_id)"
+                                formControlName="txtPolicyNo_{{ins.claiminsurance_id}}" autocomplete="off">
+                            </div>
+                            <div class="form-group horizental row zero col-6">
+                              <label class="width-70 pl-2 col-form-label"
+                                for="txtGroupNo_{{ins.claiminsurance_id}}">Group
+                                No:</label>
+                              <input type="text" class="form-control col" id="txtGroupNo_{{ins.claiminsurance_id}}"
+                                (paste)="onPaste($event,'txtGroupNo_'+ins.claiminsurance_id)"
+                                formControlName="txtGroupNo_{{ins.claiminsurance_id}}" autocomplete="off">
+                            </div>
+
+
+                          </div>
+
+
+
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-3 col-sm-6 col-12">
+
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-group horizental row zero col-12">
+                              <label class="width-70 col-form-label"
+                                for="dpInsStartDate_{{ins.claiminsurance_id}}">Start
+                                Date:</label>
+
+
+                              <div class="input-group col">
+                                <input id="dpInsStartDate_{{ins.claiminsurance_id}}"
+                                  class="form-control date-control required" placeholder="mm/dd/yyyy"
+                                  name="dpInsStartDate_{{ins.claiminsurance_id}}" data-container="body"
+                                  [navigation]="navigation" formControlName="dpInsStartDate_{{ins.claiminsurance_id}}"
+                                  ngbDatepicker #dpInsStartDate="ngbDatepicker"
+                                  (blur)="onDateFocusOut($event.currentTarget.value,'dpInsStartDate_'+ins.claiminsurance_id)"
+                                  [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls['dpInsStartDate_'+ins.claiminsurance_id].errors?.invalidDate)}">
+
+                                <span class="input-group-btn"
+                                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted ">
+                                  <button class="btn date-control-btn" (click)="dpInsStartDate.toggle()" type="button"
+                                    focusable="false" tabindex="-1">
+                                  </button>
+                                </span>
+
+                              </div>
+
+
+                              <!--
+                              <input type="date" class="col form-control" id="dpInsStartDate_{{ins.claiminsurance_id}}"
+                                formControlName="dpInsStartDate_{{ins.claiminsurance_id}}" autocomplete="off">
+                                -->
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-group horizental row zero col-12">
+                              <label class="width-70 col-form-label" for="dpInsEndDate_{{ins.claiminsurance_id}}">End
+                                Date:</label>
+
+                              <div class="input-group col">
+                                <input id="dpInsEndDate_{{ins.claiminsurance_id}}"
+                                  class="form-control date-control required" placeholder="mm/dd/yyyy"
+                                  name="dpInsEndDate_{{ins.claiminsurance_id}}" data-container="body"
+                                  [navigation]="navigation" formControlName="dpInsEndDate_{{ins.claiminsurance_id}}"
+                                  ngbDatepicker #dpInsEndDate="ngbDatepicker"
+                                  (blur)="onDateFocusOut($event.currentTarget.value,'dpInsEndDate_'+ins.claiminsurance_id)"
+                                  [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls['dpInsEndDate_'+ins.claiminsurance_id].errors?.invalidDate)}">
+
+                                <span class="input-group-btn"
+                                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                                  <button class="btn date-control-btn" (click)="dpInsEndDate.toggle()" type="button"
+                                    focusable="false" tabindex="-1">
+                                  </button>
+                                </span>
+
+                              </div>
+
+
+                              <!--
+                              <input type="date" class="col form-control" id="dpInsEndDate_{{ins.claiminsurance_id}}"
+                                formControlName="dpInsEndDate_{{ins.claiminsurance_id}}" autocomplete="off">
+                                -->
+                            </div>
+                          </div>
+
+
+
+
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-group horizental row zero col-12">
+                              <label class="width-70 col-form-label"
+                                for="txtInsCopy_{{ins.claiminsurance_id}}">Copay:</label>
+
+                              <div class="input-group col">
+                                <div class="input-group-prepend table-td-input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" class="form-control text-right"
+                                  id="txtInsCopy_{{ins.claiminsurance_id}}"
+                                  formControlName="txtInsCopy_{{ins.claiminsurance_id}}" autocomplete="off"
+                                  (blur)="formateCurrencyInputs('txtInsCopy_'+ins.claiminsurance_id)">
+                              </div>
+
+                            </div>
+                          </div>
+
+
+                        </div>
+                      </div>
+
+
+                      <div class="col-md-4 col-sm-6 col-12">
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-group horizental row zero col-12">
+                              <label class="width-90 col-form-label"
+                                for="txtInsOrigClaimNo_{{ins.claiminsurance_id}}">Orig
+                                Claim #:</label>
+                              <input type="text" class="col form-control"
+                                id="txtInsOrigClaimNo_{{ins.claiminsurance_id}}"
+                                formControlName="txtInsOrigClaimNo_{{ins.claiminsurance_id}}" autocomplete="off">
+                            </div>
+                          </div>
+
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-group horizental row zero col-12">
+                              <label class="width-90 col-form-label"
+                                for="ddInsAuthorizationType_{{ins.claiminsurance_id}}">Authorization
+                                #:</label>
+
+                              <div class="col input-group">
+                                <select class="form-control width-105 p-1 flex-grow-0"
+                                  id="ddInsAuthorizationType_{{ins.claiminsurance_id}}"
+                                  formControlName="ddInsAuthorizationType_{{ins.claiminsurance_id}}">
+                                  <option *ngFor="let auth of lstAuthorizationType" [value]="auth">{{auth}}</option>
+                                </select>
+                                <input type="text" class="form-control col"
+                                  id="txtInsAuthorizationNo_{{ins.claiminsurance_id}}"
+                                  formControlName="txtInsAuthorizationNo_{{ins.claiminsurance_id}}" autocomplete="off">
+                              </div>
+
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-group horizental row zero col-12">
+                              <label class="width-90 col-form-label"
+                                for="txtInsPCP_{{ins.claiminsurance_id}}">PCP:</label>
+                              <input type="text" class="col form-control" id="txtInsPCP_{{ins.claiminsurance_id}}"
+                                formControlName="txtInsPCP_{{ins.claiminsurance_id}}" autocomplete="off">
+                            </div>
+                          </div>
+
+
+
+                        </div>
+                      </div>
+
+                    </div>
+
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="col-12 col-md-12 p-0 m-0">
+                        <h6 class="form-edit-sub-heading-small m-0 p-0 pt-1">WORKER'S COMPENSATION</h6>
+                      </div>
+
+                      <div class="form-row form-dashboard col-12 pt-1">
+
+                        <div class="col-md-3 col-sm-6 col-12">
+                          <div class="pl-1 pr-1">
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-group horizental row zero col-12">
+                                <label class="col-sm-2 col-md-2 col-form-label"
+                                  for="txtWorkerCompName_{{ins.claiminsurance_id}}">Name:</label>
+                                <input type="text" class="col-sm-10 col-md-10 form-control"
+                                  id="txtWorkerCompName_{{ins.claiminsurance_id}}"
+                                  formControlName="txtWorkerCompName_{{ins.claiminsurance_id}}" autocomplete="off">
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-12">
+                          <div class="pl-1 pr-1">
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-group horizental row zero col-12">
+                                <label class="col-sm-2 col-md-2 col-form-label"
+                                  for="txtWorkerCompAddress_{{ins.claiminsurance_id}}">Address:</label>
+                                <input type="text" class="col-sm-10 col-md-10 form-control"
+                                  id="txtWorkerCompAddress_{{ins.claiminsurance_id}}"
+                                  formControlName="txtWorkerCompAddress_{{ins.claiminsurance_id}}" autocomplete="off">
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-12">
+                          <div class="pl-1 pr-1">
+
+
+
+
+                            <div class="form-row form-dashboard">
+
+                              <div class="col-md-8 col-sm-8 col-12">
+                                <div class="form-group horizental row zero col-12 pl-0 pr-0">
+                                  <label class="col-sm-1 col-md-2 col-form-label"
+                                    for="txtWCZipCode_{{ins.claiminsurance_id}}">Zip:</label>
+                                  <input type="text" class="col-sm-11 col-md-10 form-control"
+                                    id="txtWCZipCode_{{ins.claiminsurance_id}}" value="{{ins.workercomp_zip}}"
+                                    (focusout)="WCzipFocusOut(ins.claiminsurance_id,$event.target.value)"
+                                    (change)="WCzipChanged(ins.claiminsurance_id)"
+                                    formControlName="txtWCZipCode_{{ins.claiminsurance_id}}" autocomplete="off">
+                                </div>
+                              </div>
+
+                              <div class="col-md-4 col-sm-4 col-12">
+                                <div class="form-group horizental row zero col-12 pl-0 pr-0">
+                                  <label class="col-sm-6 col-md-6 col-form-label">State:</label>
+                                  <input type="text" class="col-sm-6 col-md-6 form-control"
+                                    value="{{ins.workercomp_state | uppercase}}" disabled>
+                                </div>
+
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+
+
+
+                        <div class="col-md-3 col-sm-6 col-12">
+                          <div class="pl-1 pr-1">
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-group horizental row zero col-12">
+                                <label class="col-sm-2 col-md-2 col-form-label"
+                                  for="ddWorkerCompCity_{{ins.claiminsurance_id}}">City:</label>
+
+                                <select class="col-sm-10 col-md-10 form-control"
+                                  id="ddWorkerCompCity_{{ins.claiminsurance_id}}"
+                                  formControlName="ddWorkerCompCity_{{ins.claiminsurance_id}}">
+                                  <option *ngFor="let obj of getWorkerCompCities(ins.claiminsurance_id)"
+                                    value="{{obj.city}}">
+                                    {{obj.city}}
+                                  </option>
+
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="row p8">
+
+        <div class="col-12 d-flex flex-column">
+          <div class="info-box-stipes rounded p-0 flex-grow-1">
+            <!--
+                <div class="d-flex justify-content-between align-items-center px-2">
+                  <label class="fz-14 fw-500 mb-1">Other Information</label>
+                </div>
+              -->
+
+            <div class="encounter-data-accordian accordian-data rounded-0">
+              <div class="accordian-header" role="tab" id="headingOne">
+                <h5>
+                  <a data-toggle="collapse" href="#claimOtherInfo{{patientId}}" aria-expanded="true"
+                    class="accordian-link">
+                    <span class="accordian-main-header-title pl-2 pr-1">Other Information</span>
+                  </a>
+                </h5>
+              </div>
+
+              <div id="claimOtherInfo{{patientId}}" class="collapse show">
+                <div class="accordian-body bg-transparent">
+
+                  <div class="p-6 pt-1">
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="col-md-3 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-row form-dashboard">
+
+                            <div class="form-group col-12">
+                              <label class="col-form-label" for="txtClaimNo">Claim# (box 11b):</label>
+                              <input labelForId="txtClaimNo" class="form-control" type="text"
+                                formControlName="txtClaimNo" autocomplete="off">
+                            </div>
+
+
+
+                            <!--
+                            <div class="form-flex col pb-1">
+                              <label class="pr-6" for="txtClaimNo">Claim# (box 11b):</label>
+                              <input type="text" class="form-control" id="txtClaimNo" formControlName="txtClaimNo">
+                            </div>
+                            -->
+                          </div>
+
+                          <div class="form-row  form-dashboard">
+
+                            <div class="form-group col-6">
+                              <label class="col-form-label" for="txtPaperPayerID">Paper Payer ID:</label>
+                              <input labelForId="txtPaperPayerID" class="form-control" type="text"
+                                formControlName="txtPaperPayerID" autocomplete="off">
+                            </div>
+
+                            <div class="form-group col-6">
+                              <label class="col-form-label" for="txtHCFA_17_A">HCFA-17 A:</label>
+                              <input labelForId="txtHCFA_17_A" class="form-control" type="text"
+                                formControlName="txtHCFA_17_A" autocomplete="off">
+                            </div>
+                            <!--
+                            <div class="form-flex col pb-1">
+                              <label class="pr-6" for="txtPaperPayerID">Paper Payer ID:</label>
+                              <input type="text" class="form-control" id="txtPaperPayerID"
+                                formControlName="txtPaperPayerID">
+                            </div>
+                            -->
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <!--<div class="form-flex col pb-1">-->
+                            <div class="form-group col-6">
+                              <label class="col-form-label" for="dpLMP">LMP:</label>
+                              <div class="input-group">
+                                <input id="dpLMP" class="form-control date-control required" placeholder="mm/dd/yyyy"
+                                  name="dpLMP" data-container="body" [navigation]="navigation" formControlName="dpLMP"
+                                  ngbDatepicker #dpLMP="ngbDatepicker"
+                                  (blur)="onDateFocusOut($event.currentTarget.value,'dpLMP')"
+                                  [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls.dpLMP.errors?.invalidDate)}">
+
+                                <span class="input-group-btn"
+                                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                                  <button class="btn date-control-btn" (click)="dpLMP.toggle()" type="button"
+                                    focusable="false" tabindex="-1">
+                                  </button>
+                                </span>
+
+                              </div>
+
+                              <!--
+                                  <input type="date" class="form-control" id="dpLMP" formControlName="dpLMP">
+                                  -->
+                            </div>
+
+                            <div class="form-group col-6">
+                              <label class="col-form-label" for="dpLastXRay">Last X-Ray:</label>
+
+                              <div class="input-group">
+                                <input id="dpLastXRay" class="form-control date-control required"
+                                  placeholder="mm/dd/yyyy" name="dpLastXRay" data-container="body"
+                                  [navigation]="navigation" formControlName="dpLastXRay" ngbDatepicker
+                                  #dpLastXRay="ngbDatepicker"
+                                  (blur)="onDateFocusOut($event.currentTarget.value,'dpLastXRay')"
+                                  [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls.dpLastXRay.errors?.invalidDate)}">
+
+                                <span class="input-group-btn"
+                                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                                  <button class="btn date-control-btn" (click)="dpLastXRay.toggle()" type="button"
+                                    focusable="false" tabindex="-1">
+                                  </button>
+                                </span>
+
+                              </div>
+
+
+                              <!--
+                                    <input type="date" class="form-control" id="dpLastXRay" formControlName="dpLastXRay">
+                                    -->
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-group col-12">
+                              <label class="col-form-label" for="dpStartCareDate">Current illness/First symptom (box
+                                14):</label>
+
+                              <div class="input-group">
+                                <input id="dpStartCareDate" class="form-control date-control required"
+                                  placeholder="mm/dd/yyyy" name="dpStartCareDate" data-container="body"
+                                  [navigation]="navigation" formControlName="dpStartCareDate" ngbDatepicker
+                                  #dpStartCareDate="ngbDatepicker"
+                                  (blur)="onDateFocusOut($event.currentTarget.value,'dpStartCareDate')"
+                                  [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls.dpStartCareDate.errors?.invalidDate)}">
+
+                                <span class="input-group-btn"
+                                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                                  <button class="btn date-control-btn" (click)="dpStartCareDate.toggle()" type="button"
+                                    focusable="false" tabindex="-1">
+                                  </button>
+                                </span>
+
+                              </div>
+
+                              <!--
+                                    <input type="date" class="form-control" id="dpStartCareDate"
+                                      formControlName="dpStartCareDate">
+                                      -->
+                            </div>
+                          </div>
+
+
+                        </div>
+                      </div>
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-row form-dashboard">
+
+                            <div class="form-group col-12">
+                              <label class="col-form-label" for="txtLUO">LUO:</label>
+                              <input labelForId="txtLUO" class="form-control" type="text" formControlName="txtLUO"
+                                autocomplete="off">
+                            </div>
+
+                            <!--
+                                <div class="form-flex col pb-1">
+                                  <label class="pr-6" for="txtLUO">LUO:</label>
+                                  <input type="text" class="form-control" id="txtLUO" formControlName="txtLUO">
+                                </div>
+                                -->
+                          </div>
+
+                          <div class="form-row form-dashboard">
+
+                            <div class="form-group col-6">
+                              <label class="col-form-label" for="txtPriorAuthNo">Prior Authorization#:</label>
+                              <input type="text" class="form-control" id="txtPriorAuthNo"
+                                formControlName="txtPriorAuthNo">
+                            </div>
+
+                            <div class="form-group col-6">
+                              <label class="col-form-label" for="txtResubmissionCode">Resubmission Code (box
+                                22):</label>
+                              <input type="text" class="form-control" id="txtResubmissionCode"
+                                formControlName="txtResubmissionCode">
+                            </div>
+
+                          </div>
+
+
+
+
+
+                          <div class="form-row form-dashboard pb-1">
+
+                            <div class="form-group col-12">
+
+                              <label class="col-form-label" for="dpFrom">Hospitalized Date (Box 18)</label>
+
+                              <div class="d-flex flex-grow-3">
+
+                                <div class="input-group mr-1">
+
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">From</span>
+                                  </div>
+
+                                  <input id="dpHospitalFrom" class="form-control date-control required"
+                                    placeholder="mm/dd/yyyy" name="dpHospitalFrom" data-container="body"
+                                    [navigation]="navigation" formControlName="dpHospitalFrom" ngbDatepicker
+                                    #dpHospitalFrom="ngbDatepicker"
+                                    (blur)="onDateFocusOut($event.currentTarget.value,'dpHospitalFrom')"
+                                    [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls.dpHospitalFrom.errors?.invalidDate)}">
+
+                                  <span class="input-group-btn"
+                                    *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                                    <button class="btn date-control-btn" (click)="dpHospitalFrom.toggle()" type="button"
+                                      focusable="false" tabindex="-1">
+                                    </button>
+                                  </span>
+
+                                </div>
+
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <span class="input-group-text">To</span>
+                                  </div>
+
+                                  <input id="dpHospitalTo" class="form-control date-control required"
+                                    placeholder="mm/dd/yyyy" name="dpHospitalTo" data-container="body"
+                                    [navigation]="navigation" formControlName="dpHospitalTo" ngbDatepicker
+                                    #dpHospitalTo="ngbDatepicker"
+                                    (blur)="onDateFocusOut($event.currentTarget.value,'dpHospitalTo')"
+                                    [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls.dpHospitalTo.errors?.invalidDate)}">
+
+                                  <span class="input-group-btn"
+                                    *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                                    <button class="btn date-control-btn" (click)="dpHospitalTo.toggle()" type="button"
+                                      focusable="false" tabindex="-1">
+                                    </button>
+                                  </span>
+                                </div>
+
+
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard pb-1">
+                            <div class="form-group col-12">
+                              <label class="col-form-label" for="ddBillingPhysicianTaxonomy">Billing Physician
+                                Taxonomy:
+                                <i class="fas fa-info-circle text-ihc-blue mt-1 ml-1"
+                                title="If mentioned, this will override the default taxonomy in submission"></i>
+                              </label>
+                              <select class="form-control" id="ddBillingPhysicianTaxonomy"
+                                formControlName="ddBillingPhysicianTaxonomy">
+                                <option value=''></option>
+                                <option *ngFor="let taxonomy of lstBillingProviderTaxonomyList"
+                                  [value]="taxonomy.taxonomy_id">
+                                  {{taxonomy.taxonomy_id}}&nbsp;&nbsp;&nbsp;&nbsp;
+                                  ({{taxonomy.taxonomy_type}} 
+                                  {{taxonomy.is_default==true ? ' - Default' : ''}}
+                                  )
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <!--
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex col pb-0">
+
+                              <div class="pr-8 " style="height: 100%;">
+                                <label class="pt-1">Hospitalized Date (Box 18)</label>
+                              </div>
+
+
+
+                              <div class="pl-4 col p-0">
+                                <div class="form-row form-dashboard">
+                                  <div class="form-flex col pb-1">
+                                    <label for="dpHospitalFrom" style="width: 38px; ">From:</label>
+
+                                    <div class="input-group">
+                                      <input id="dpHospitalFrom" class="form-control date-control required"
+                                        placeholder="mm/dd/yyyy" name="dpHospitalFrom" data-container="body"
+                                        [navigation]="navigation" formControlName="dpHospitalFrom" ngbDatepicker
+                                        #dpHospitalFrom="ngbDatepicker"
+                                        (blur)="onDateFocusOut($event.currentTarget.value,'dpHospitalFrom')"
+                                        [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls.dpHospitalFrom.errors?.invalidDate)}">
+
+                                      <span class="input-group-btn" *ngIf="lookupList.UserRights.claim_edit">
+                                        <button class="btn date-control-btn" (click)="dpHospitalFrom.toggle()"
+                                          type="button">
+                                        </button>
+                                      </span>
+
+                                    </div>
+
+                                   
+                                  </div>
+                                </div>
+
+                                <div class="form-row form-dashboard">
+                                  <div class="form-flex col pb-1">
+                                    <label for="dpHospitalTo" style="width: 38px; ">To:</label>
+
+                                    <div class="input-group">
+                                      <input id="dpHospitalTo" class="form-control date-control required"
+                                        placeholder="mm/dd/yyyy" name="dpHospitalTo" data-container="body"
+                                        [navigation]="navigation" formControlName="dpHospitalTo" ngbDatepicker
+                                        #dpHospitalTo="ngbDatepicker"
+                                        (blur)="onDateFocusOut($event.currentTarget.value,'dpHospitalTo')"
+                                        [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls.dpHospitalTo.errors?.invalidDate)}">
+
+                                      <span class="input-group-btn" *ngIf="lookupList.UserRights.claim_edit">
+                                        <button class="btn date-control-btn" (click)="dpHospitalTo.toggle()"
+                                          type="button">
+                                        </button>
+                                      </span>
+
+                                    </div>
+
+
+
+                                  </div>
+                                </div>
+
+
+                              </div>
+
+
+                            </div>
+                          </div>
+                        -->
+
+
+
+                        </div>
+                      </div>
+
+                      <div class="col-md-2 col-12 mt-3">
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex col pb-1">
+                              <div class="form-check-cont">
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                  <input type="checkbox" class="custom-control-input"
+                                    id="chkLabClaim_{{controlUniqueId}}" formControlName="chkLabClaim">
+                                  <label class="custom-control-label" for="chkLabClaim_{{controlUniqueId}}">Lab
+                                    Claim</label>
+                                </div>
+
+
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex form-group col pb-1 form-row px-2">
+                              <div class="form-check-cont col p-0">
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                  <input type="checkbox" class="custom-control-input"
+                                    id="chkOutsideLab_{{controlUniqueId}}" formControlName="chkOutsideLab">
+                                  <label class="custom-control-label" for="chkOutsideLab_{{controlUniqueId}}">OutSide
+                                    Lab</label>
+                                </div>
+
+                              </div>
+
+                              <div class="form-flex" *ngIf="claimFormGroup.get('chkOutsideLab').value==true">
+                                <label class="pr-2" for="txtOutsideLabCharges">Charges (box 20):</label>
+                                <div class="input-group ">
+                                  <div class="input-group-prepend table-td-input-group-prepend">
+                                    <span class="input-group-text px-1"><i class="fas fa-dollar-sign"></i></span>
+                                  </div>
+                                  <input type="text" class="form-control text-right" autocomplete="off"
+                                    id="txtOutsideLabCharges" formControlName="txtOutsideLabCharges"
+                                    (blur)="formateCurrencyInputs('txtOutsideLabCharges')">
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex col pb-1">
+                              <div class="form-check-cont">
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                  <input type="checkbox" class="custom-control-input" id="chkEPSDT_{{controlUniqueId}}"
+                                    formControlName="chkEPSDT">
+                                  <label class="custom-control-label" for="chkEPSDT_{{controlUniqueId}}">EPSDT</label>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex col pb-1">
+                              <div class="form-check-cont d-flex">
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                  <input type="checkbox" class="custom-control-input" id="chkAA_{{controlUniqueId}}"
+                                    formControlName="chkAA">
+                                  <label class="custom-control-label" for="chkAA_{{controlUniqueId}}">AA</label>
+                                </div>
+
+                                <i class="fas fa-info-circle text-ihc-blue mt-1 ml-1"
+                                  title="Provider Accept Assignment"></i>
+                             
+                              </div>
+                            </div>
+                          </div>
+
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex col pb-1">
+                              <div class="form-check-cont">
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                  <input type="checkbox" class="custom-control-input"
+                                    id="chkIsCorrected_{{controlUniqueId}}" formControlName="chkIsCorrected">
+                                  <label class="custom-control-label" for="chkIsCorrected_{{controlUniqueId}}">Is
+                                    Corrected</label>
+                                </div>
+                              
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex col pb-1">
+                              <div class="form-check-cont d-flex">
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                  <input type="checkbox" class="custom-control-input" id="chkEAP_{{controlUniqueId}}"
+                                    formControlName="chkEAP">
+                                  <label class="custom-control-label" for="chkEAP_{{controlUniqueId}}">EAP</label>
+                                </div>
+
+                                <i class="fas fa-info-circle text-ihc-blue mt-1 ml-1"
+                                  title="(Employee Assistance Program) If Checked then claim will be exluded from e-submission"></i>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-3 col-12">
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-group col-12 px-0">
+                              <label class="col-form-label" for="txtNotes">Notes:</label>
+                              <textarea class="form-control required" id="txtNotes" formControlName="txtNotes" rows="10"
+                                maxlength="500"></textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="encounter-data-accordian accordian-data rounded-0 ">
+              <div class="accordian-header" role="tab" id="headingOne">
+                <h5>
+                  <a data-toggle="collapse" href="#claimSubmissionOption{{patientId}}" aria-expanded="false"
+                    class="accordian-link">
+                    <span class="accordian-main-header-title pl-2 pr-1">Submission Option</span>
+                  </a>
+                </h5>
+                <!--
+                <div class="btn-group"
+                  *ngIf="claimId!=undefined && claimFormGroup.get('rbSubmissionOption').value=='hcfa'">
+                  <button class="btn btn-link p-0 title-bar-blue-btn" type="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                  </button>
+
+                 
+                  <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+                    <a class="dropdown-item cursor-default" (click)="printHCFA('Primary')"
+                      *ngIf="checkIfInsuranceExist('Primary')">Print Primary HCFA</a>
+                    <a class="dropdown-item cursor-default" (click)="printHCFA('Secondary')"
+                      *ngIf="checkIfInsuranceExist('Secondary')">Print Secondary HCFA</a>
+
+                  </div>
+                 
+                </div>
+                 -->
+              </div>
+
+              <div id="claimSubmissionOption{{patientId}}" class="collapse" class="collapse">
+                <div class="accordian-body bg-transparent">
+
+                  <div class="p-6 pt-1">
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="col-md-6 col-sm-6 col-12 p-0">
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-row form-dashboard">
+
+
+                            <div class="form-check-cont d-flex align-item-center mx-1">
+
+
+                              <div class="custom-control custom-radio green-radio">
+                                <input class="custom-control-input" type="radio"
+                                  id="rbElectronicSubmission_{{controlUniqueId}}" formControlName="rbSubmissionOption"
+                                  name="rbSubmissionOption" value="electronic">
+                                <label class="custom-control-label"
+                                  for="rbElectronicSubmission_{{controlUniqueId}}">Electronic</label>
+                              </div>
+
+
+                              <div class="custom-control custom-radio green-radio">
+                                <input class="custom-control-input" type="radio"
+                                  id="rbHCFASubmission_{{controlUniqueId}}" formControlName="rbSubmissionOption"
+                                  name="rbSubmissionOption" value="hcfa">
+                                <label class="custom-control-label"
+                                  for="rbHCFASubmission_{{controlUniqueId}}">HCFA</label>
+                              </div>
+
+
+                            </div>
+
+
+                            <div class="form-flex pl-4" *ngIf="claimFormGroup.get('rbSubmissionOption').value=='hcfa'">
+                              <label class="pr-2" for="ddHCFAInsurance">Insurance:</label>
+
+
+                              <div class="form-group flex-grow-1 ">
+                                <div class="input-group">
+
+                                  <select class="form-control" id="ddHCFAInsurance" formControlName="ddHCFAInsurance">
+                                    <option value=""></option>
+                                    <option value="Primary" *ngIf="checkIfInsuranceExist('Primary')">Primary</option>
+                                    <option value="Secondary" *ngIf="checkIfInsuranceExist('Secondary')">Secondary
+                                    </option>
+                                  </select>
+
+
+                                  <div class="input-group-append" id="button-addon"
+                                    *ngIf="claimFormGroup.get('ddHCFAInsurance').value=='Primary' || claimFormGroup.get('ddHCFAInsurance').value=='Secondary'">
+                                    <button class="btn btn-sm fz-12 pt-0 pb-0 btn-outline-secondary" type="button"
+                                      (click)="printHCFA(claimFormGroup.get('ddHCFAInsurance').value)">
+                                      <i class="fas fa-print"></i> Print</button>
+                                  </div>
+
+
+
+
+                                </div>
+                              </div>
+
+
+                              <!--
+                              <select class="form-control" id="ddHCFAInsurance" formControlName="ddHCFAInsurance">
+                                <option [ngValue]="null"></option>
+                                <option [value]="Primary" *ngIf="checkIfInsuranceExist('Primary')">Primary</option>
+                                <option [value]="Secondary" *ngIf="checkIfInsuranceExist('Secondary')">Secondary
+                                </option>
+                              </select>
+                              -->
+
+                            </div>
+
+
+
+                          </div>
+
+
+                        </div>
+                      </div>
+
+
+                      <div class="col-md-6 col-sm-6 col-12 p-0">
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex">
+                              <div class="form-check-cont form-row ">
+
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                  <input type="checkbox" class="custom-control-input"
+                                    id="chkDoNotBill_{{controlUniqueId}}" formControlName="chkDoNotBill">
+                                  <label class="custom-control-label" for="chkDoNotBill_{{controlUniqueId}}">Do Not
+                                    Bill</label>
+                                </div>
+
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                  <input type="checkbox" class="custom-control-input"
+                                    id="chkFolowUp_{{controlUniqueId}}" formControlName="chkFolowUp">
+                                  <label class="custom-control-label" for="chkFolowUp_{{controlUniqueId}}">Follow
+                                    Up</label>
+                                </div>
+
+                              
+                              </div>
+
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="encounter-data-accordian accordian-data rounded-0 border-top-0">
+              <div class="accordian-header" role="tab" id="headingOne">
+                <h5>
+                  <a data-toggle="collapse" href="#claimAccidentInfo{{patientId}}" aria-expanded="false"
+                    class="accordian-link">
+                    <span class="accordian-main-header-title pl-2 pr-1">Accident Information</span>
+                  </a>
+                </h5>
+              </div>
+
+              <div id="claimAccidentInfo{{patientId}}" class="collapse" class="collapse">
+                <div class="accordian-body bg-transparent">
+
+                  <div class="p-6 pt-0">
+
+                    <div class="form-row form-dashboard">
+                      <div class="col-md-4 col-sm-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-row form-dashboard">
+                            <div class="form-check-cont">
+
+
+                              <div class="custom-control custom-checkbox green-checkbox">
+                                <input type="checkbox" class="custom-control-input"
+                                  id="chkEmployment_{{controlUniqueId}}" formControlName="chkEmployment">
+                                <label class="custom-control-label" for="chkEmployment_{{controlUniqueId}}">Employment
+                                  (box 10a)</label>
+                              </div>
+                           
+                            </div>
+                          </div>
+                          <div class="form-row form-dashboard">
+                            <div class="form-check-cont">
+
+                              <div class="custom-control custom-checkbox green-checkbox">
+                                <input type="checkbox" class="custom-control-input"
+                                  id="chAutoAccident_{{controlUniqueId}}" formControlName="chAutoAccident">
+                                <label class="custom-control-label" for="chAutoAccident_{{controlUniqueId}}">Auto
+                                  Accident (box 10b)</label>
+                              </div>
+
+                          
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4 col-sm-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-row form-dashboard">
+                            <div class="form-check-cont">
+
+                              <div class="custom-control custom-checkbox green-checkbox">
+                                <input type="checkbox" class="custom-control-input"
+                                  id="chkOtherAccident_{{controlUniqueId}}" formControlName="chkOtherAccident">
+                                <label class="custom-control-label" for="chkOtherAccident_{{controlUniqueId}}">Other
+                                  Accident (box 10c)</label>
+                              </div>
+
+                            
+                            </div>
+                          </div>
+                          <div class="form-row form-dashboard">
+                            <div class="form-check-cont">
+
+                              <div class="custom-control custom-checkbox green-checkbox">
+                                <input type="checkbox" class="custom-control-input"
+                                  id="chkEmergencey_{{controlUniqueId}}" formControlName="chkEmergencey">
+                                <label class="custom-control-label"
+                                  for="chkEmergencey_{{controlUniqueId}}">Emergency</label>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4 col-sm-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex pb-1">
+                              <label class="pr-6" for="dpAccidentDate">Accident Date:</label>
+
+                              <div class="input-group col">
+                                <input id="dpAccidentDate" class="form-control date-control required"
+                                  placeholder="mm/dd/yyyy" name="dpAccidentDate" data-container="body"
+                                  [navigation]="navigation" formControlName="dpAccidentDate" ngbDatepicker
+                                  #dpAccidentDate="ngbDatepicker"
+                                  (blur)="onDateFocusOut($event.currentTarget.value,'dpAccidentDate')"
+                                  [ngClass]="{ 'is-invalid': (claimFormGroup!=undefined && claimFormGroup.controls.dpAccidentDate.errors?.invalidDate)}">
+
+                                <span class="input-group-btn"
+                                  *ngIf="lookupList.UserRights.claim_edit && !openedClaimInfo.deleted">
+                                  <button class="btn date-control-btn" (click)="dpAccidentDate.toggle()" type="button"
+                                    focusable="false" tabindex="-1">
+                                  </button>
+                                </span>
+
+                              </div>
+
+                              <!--
+                              <input type="date" class="form-control" id="dpAccidentDate"
+                                formControlName="dpAccidentDate">
+                                -->
+                            </div>
+                          </div>
+                          <div class="form-row form-dashboard">
+                            <div class="form-flex">
+                              <label class="pr-6" for="ddStates">Accident Sate:</label>
+                              <select class="form-control" id="ddStates" formControlName="ddStates">
+                                <option [ngValue]="null"></option>
+                                <option *ngFor="let state of lookupList.statesList" [value]="state.col1">{{state.col1}}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+
+    <!--
+    <div class="div-loader-message-box" *ngIf="isLoading">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+
+    <div class="div-loader-message-box" *ngIf="isSaving">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Saving Claim...
+    </div>
+    -->
+
+
+  </form>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isSaving">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Saving Claim
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isProcessing">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-cog fa-spin mr-1"></i>Processing
+    </div>
+  </div>
+
+
+</div>
+
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1"
+  *ngIf="showImportICDCPT">
+  <import-icd-cpt class="d-flex flex-column flex-grow-1 single-col" [patientId]="patientId"
+    [providerId]=" claimFormGroup.get('ddAttendingPhysician').value"
+    [locationId]="claimFormGroup.get('ddLocation').value" [dos]="selectedDOSYYYYMMDD"
+    [patientClaimRuleInfo]="patientClaimRuleInfo" (onCancel)="onImportIcdCdptCancelCallBack()"
+    (onImport)="onImportIcdCptCallBack($event)"></import-icd-cpt>
+</div>
+
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1"
+  *ngIf="showSuperBill">
+  <claim-super-bill class="d-flex flex-column flex-grow-1 single-col" [claimDiagCount]="claimDiagCount"
+    [dos]="selectedDOSYYYYMMDD" [controlUniqueId]="controlUniqueId" (onImport)="onImportIcdCptCallBack($event)"
+    [eap]="claimFormGroup.get('chkEAP').value" (onCancel)="onImportIcdCdptCancelCallBack()">
+  </claim-super-bill>
+</div>
+
+<!--
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1"
+  *ngIf="showImportICDCPT">
+  <import-icd-cpt class="d-flex flex-column flex-grow-1 single-col" [patientId]="patientId"
+    [providerId]=" claimFormGroup.get('ddAttendingPhysician').value"
+    [locationId]="claimFormGroup.get('ddLocation').value" [dos]="claimFormGroup.get('dpDOS').value"
+    [patientClaimRuleInfo]="patientClaimRuleInfo" (onImport)="onImportCallBack($event,'import')"></import-icd-cpt>
+</div>
+-->
+<!--
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1"
+  *ngIf="showSuperBill">
+  <claim-super-bill class="d-flex flex-column flex-grow-1 single-col" [claimDiagCount]="claimDiagCount"
+    [dos]="claimFormGroup.get('dpDOS').value" (onImport)="onImportCallBack($event,'super_bill')"></claim-super-bill>
+</div>
+-->

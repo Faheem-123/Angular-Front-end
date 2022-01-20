@@ -1,0 +1,131 @@
+<div class="dashboard-container d-flex flex-column mb-0 position-relative">
+    <div class="dashboard mx-1">
+        <div class="dashboard-title justify-content-between h-30">
+            <div class="title">Correspondence</div>
+
+            <div class="flex-grow-1"></div>
+            <div class="d-flex">
+                <div class="d-flex" *ngIf="!showHideButtons">
+                    <button class="btn btn-link fz-13 title-bar-blue-btn" (click)="showAddEdit()">
+                        <i class="fas fa-plus mr-1"></i>Add</button>
+                </div>
+
+
+                <ul class="nav color-buttons align-items-center">
+                    <button class="btn btn-sub-nav rounded-0 btn-success"
+                        (click)="savePatientCommunications(correspondenceForm.value)"
+                        *ngIf="showHideButtons">Save</button>
+                    <button class="btn btn-sub-nav rounded-0 btn-dark" (click)="cancelAddEdit()"
+                        *ngIf="showHideButtons">Cancel</button>
+                </ul>
+
+
+
+            </div>
+        </div>
+
+        <div class="dashboard-content border-top-0 light-gray-bg mt-0 d-flex flex-column">
+            <div class="bg-white p-8 pt-0" [class.hide]="!showHideButtons">
+                <form [formGroup]="correspondenceForm">
+                    <div class="form-row form-dashboard">
+                        <div class="form-group col-md-3 col-sm-6 col-12">
+                            <label for="input1">Correspondence With</label>
+                            <select class="form-control" labelForId="input1" formControlName="ddlCorrWith">
+                                <option value=""></option>
+                                <option value="Audit">Audit</option>
+                                <option value="Government">Government</option>
+                                <option value="Insurance">Insurance</option>
+                                <option value="Legal">Legal</option>
+                                <option value="Patient Request">Patient Request</option>
+                                <option value="Patient">Patient</option>
+                                <option value="Provider">Provider</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Physician Request">Physician Request</option>
+                                <option value="Referral">Referral</option>
+                                <option value="Nursing Home">Nursing Home</option>
+                                <option value="Assisted Livin">Assisted Living</option>
+                                <option value="Homecare">Homecare</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3 col-sm-6 col-12">
+                            <label for="input2">Date</label>
+                            <div class="input-group">
+                                <input id="txtDate" formControlName="txtCorrDate" class="form-control"
+                                    placeholder="mm/dd/yyyy" name="txtCorrDate" [displayMonths]="'displayMonths'"
+                                    [navigation]='navigation' ngbDatepicker #txtCorrDate="ngbDatepicker">
+
+                                <span class="input-group-btn">
+                                    <button class="btn btn-outline-primary" (click)="txtCorrDate.toggle()"
+                                        type="button">
+                                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+
+                            </div>
+
+                        </div>
+                        <div class="form-group col-md-6 col-sm-6 col-12">
+                            <label for="input3">Document</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="input3" placeholder="Document">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-sm btn-success fz-13"
+                                        (click)="openAttachmentDialog('New','')" type="button">Add</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 col-sm-12 col-12">
+                            <label for="input4">Correspondence Detail</label>
+                            <textarea class="form-control" id="input4" rows="2" formControlName="txtCorrDetails"
+                                required></textarea>
+                        </div>
+                      
+                    </div>
+                </form>
+            </div>
+
+            <div class="overflow-auto bg-white flex-grow-1">
+                <table class="table light-striped-border" [ngClass]="{'disabled': showHideButtons}">
+                    <thead>
+                        <tr>
+                            <th>Correspondence</th>
+                            <th>Correspondence With</th>
+                            <th>Name</th>
+                            <th>Comments</th>
+                            <th>Created By</th>
+                            <th>Date Created</th>
+                            <th width="60px">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr st-select-row="row" *ngFor="let corr of listCorrespondenceResult"
+                            (click)="selectionChange(corr)"
+                            [ngClass]="{'active' : (corr.communication_id === isSelectedRowID)}">
+                            <td>{{corr.communication}}</td>
+                            <td>{{corr.communicate_with }}</td>
+                            <td><a class="nav-link" href="#" (click)="openPatientCommDocument(corr)">{{corr.name}}</a>
+                            </td>
+                            <td>{{corr.comment}}</td>
+                            <td>{{corr.created_user}}</td>
+                            <td>{{corr.client_date_created}}</td>
+                            <td class="text-right">
+                                <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                                    (click)="editRow(corr)">
+                                    <i class="far fa-edit" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                          
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+        </div>
+    </div>
+
+</div>

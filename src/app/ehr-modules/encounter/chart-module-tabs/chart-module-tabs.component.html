@@ -1,0 +1,67 @@
+<!-- <div class="dashboard-container d-flex flex-column encounter-main-bgcolor mb-0"> -->
+
+<div class="flex-grow-1 mr-8 overflow-y-scroll overflow-x-hidden max-height-100 scroll-smooth"
+  id="div_modules_main_{{objencounterToOpen.chart_id}}">
+
+  <div>
+    <div class="pr-1" *ngFor="let s of lstchartModulesettingFiltered"
+      id="{{objencounterToOpen.chart_id+'_'+s.position}}">
+      <encounter-main [moduleName]="s.module_name" (dataUpdated)="dataGet($event)"
+        [objencounterToOpen]="objencounterToOpen"></encounter-main>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="flex-shrink-0 d-flex flex-column">
+  <div class="green-gray-tabs">
+    <ul class="nav">
+      <li class="nav-item" *ngFor="let setting of enc_pages">
+        <a class="nav-link" (click)="onPageChange(setting.page_no)"
+          [ngClass]="{'active':setting.page_no==pageNoToBeOpened}">
+          {{setting.page_no}}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="encounter-modules rounded-bottom flex-grow-1 overflow-height p-0">
+    <a *ngFor="let s of lstchartModulesettingFiltered" (click)="navigateModule(s.position)" class="btn"
+      title="{{s.display_name}}" [ngClass]="{
+            'data':(s.oper == '1')
+          }"> {{s.display_name}}</a>
+  </div>
+</div>
+
+
+<!--
+<div class="div-ui-blocker" id="uiBlocker" *ngIf="modulesLoadedCount < lstchartModulesettingFiltered.length">
+  <div class="div-ui-blocker-message-box ">
+    <i class="fas fa-spinner fa-spin mr-1"></i>
+    Loading ({{modulesLoadedCount}} of
+    {{lstchartModulesettingFiltered.length}})
+  </div>
+</div>
+-->
+
+<!-- <div id="encounter-module-list" class="encounter-modules">
+      <div class="dashboard-sub-nav encounter justify-content-end">
+        <table style="width: 100px">
+          <tbody>
+            <tr style="text-align: left; text-decoration: underline;" class="link-btn">
+              <td *ngFor="let setting of enc_pages">
+                <a (click)="onPageChange(setting.page_no)" style="font-weight: bold">
+                  {{setting.page_no}}
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <a *ngFor="let s of lstchartModulesettingFiltered" class="btn default" [ngClass]="{
+          'data':(s.oper == '1')
+        }"> {{s.display_name}}</a>
+    </div>
+  </div> -->

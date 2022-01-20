@@ -1,0 +1,81 @@
+<form [formGroup]="messageComposeForm">
+  <div class="position-relative">
+    <ul class="nav message-bar flex-shrink-0 align-items-center justify-content-between">
+      <a class="pl-1 text-info" ngbPopover="Click To/Cc, to add or update recipient in To/Cc list."
+        triggers="mouseenter:mouseleave" container="body" placement="left" popoverClass="ihc-popover">
+        <i class="fas fa-info-circle fa-lg"></i>
+      </a>
+      <div class="d-flex">
+        <div class="mr-2">
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="priorFlag" name="priorFlag"
+              formControlName="prior_Flag">
+            <label class="custom-control-label" for="priorFlag">Priority Flag</label>
+          </div>
+        </div>
+        <div class="mr-2">
+          <button class="btn btn-sm bg-success" type='button' (click)="sendMail('send')">Send</button>
+        </div>
+        <div class="mr-2">
+          <button class="btn btn-sm bg-info" type='button' (click)="sendMail('draft')">Save as draft</button>
+        </div>
+        <div class="mr-2">
+          <button class="btn btn-sm btn-danger" type='button' (click)="onDiscard()">Discard</button>
+        </div>
+      </div>
+    </ul>
+    <div class="message-detail flex-grow-1 p-3">
+
+      <div class="">
+        <div class="input-group group-md mb-2">
+          <div class="input-group-prepend">
+            <button class="btn bg-rounded-green" type="button" id="button-addon1" title="Click to open recipient list."
+              [disabled]="canReplyorAll" (click)="openRecipient('to')">To</button>
+          </div>
+          <input type="text" class="form-control" placeholder="to" formControlName="txtRecipientTo" [readOnly]="true">
+        </div>
+        <div class="input-group group-md mb-2">
+          <div class="input-group-prepend">
+            <button class="btn bg-rounded-green" type="button" id="button-addon1" title="Click to open recipient list."
+              [disabled]="canReplyorAll" (click)="openRecipient('cc')">Cc</button>
+          </div>
+          <input type="text" class="form-control" placeholder="cc" formControlName="txtRecipientCC" [readOnly]="true">
+        </div>
+        <div class="form-group mb-2">
+          <input type="text" class="form-control control-md" placeholder="Subject" formControlName="txtSubject">
+        </div>
+        <div class="form-group mb-2">
+          <div class="input-icon d-flex flex-grow-3">
+
+            <input labelForId="txtPatientSearch" class="form-control flex-grow-3 search-highlight" type="text"
+              #txtPatientSearch formControlName="txtPatientSearch" placeholder="Search Patient"
+              (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+              (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+            <input type="text" formControlName="txtPatientIdHidden" hidden>
+            <div class="icon">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+
+            <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+              (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+            </inline-patient-search>
+          </div>
+        </div>
+
+        <div class="form-group mb-2">
+          <div class="form-group horizental " style="height: 240px;">
+            <quill-editor id="messageRichEditorEdit" #messageRichEditorEdit [required]="true" format="text|html"
+              [formControl]="txtMessageEdit"></quill-editor>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoadingSend">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+
+  </div>
+</form>

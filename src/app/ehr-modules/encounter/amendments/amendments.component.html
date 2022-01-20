@@ -1,0 +1,81 @@
+<div class="modal-header custom">
+  <h4 class="modal-title">Encounter Amendments</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body p-0">
+  <div class="rounded-top" [ngClass]="{
+      'encounter-header-highlight': addEditView==true,
+      'encounter-header': addEditView==false}">
+    <div class="title pl-8">Amendments</div>
+
+
+    <ul class="nav color-buttons align-items-center">
+      <button [disabled]="!canAddEdit" *ngIf="!addEditView" class="nav-link green px-2 py-0" (click)="onAdd()">
+        <i class="far fa-plus-square pr-1"></i>Add New
+      </button>
+      <a *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="onSave(inputForm.value)">
+        <i class="far fa-save pr-1"></i>Save
+      </a>
+      <a *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="onCancel()">
+        <i class="fas fa-times pr-1"></i>Cancel
+      </a>
+    </ul>
+
+  </div>
+
+
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+  <!-- <div *ngIf="!isLoading " class="border-content-box border-top-0 rounded-bottom norecord-found">
+  <p class="no-content p-6">
+    <i class="text-danger fas fa-ban mr-2"></i> Access Denied</p>
+</div> -->
+  <div *ngIf="!isLoading &&  noRecordFound &&  !addEditView"
+    class="norecord-found mt-0 border-content-box border-top-0 rounded-bottom">
+    <div class="no-content p-6">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+  </div>
+
+  <div *ngIf="!noRecordFound && !addEditView" class="border-content-box border-top-0 rounded-bottom bg-white">
+    <div class="p-0">
+      <table class="table light-blue-striped" *ngIf="!isLoding">
+        <thead>
+          <tr class="encounter-data-accordian accordian-data">
+            <th>Date</th>
+            <th>Notes</th>
+            <th>Created user</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of lstAmendments" class="encounter-data-accordian accordian-data">
+            <td>{{a.date_created}}</td>
+            <td>{{a.notes}}</td>
+            <td>{{a.created_user}}</td>
+            <td class="text-right">
+              <button [disabled]="!canAddEdit" type="button" class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEdit(a)">
+                <i class="far fa-edit"></i>
+              </button>
+              <button [disabled]="!canAddEdit" type="button" class="btn btn-link btn-sm text-danger line-height-1 p-0" (click)="onDelete(a)">
+                <i class="far fa-trash-alt"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div *ngIf="addEditView" class="border-content-box border-top-0 rounded-bottom light-sky-blue p-6">
+    <form [formGroup]="inputForm">
+      <div class="form-group col-md-12 col-sm-12 col-12">
+        <label for="input3">Notes:</label>
+        <textarea class="form-control" id="txtNotes" rows="4" formControlName="txtNotes"></textarea>
+      </div>
+    </form>
+  </div>
+</div>

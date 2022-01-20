@@ -1,0 +1,426 @@
+<div class="dashboard-container d-flex flex-column mb-0 position-relative"
+    *ngIf="!isOpenClick && openExternalModule==''">
+    <div class="dashboard mx-1">
+        <div class="dashboard-title h-30">
+            <div class="title">Encounter Summary</div>
+
+            <div class="d-flex mx-0  col-8 px-0">
+
+                <div class="form-group my-0 mr-1 col px-2">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Appointments</span>
+                        </div>
+
+                        <select class="form-control" #drpappointment
+                            [disabled]="!lookupList.UserRights.CanAddChart || isNewInProgress">
+                            <option>Select Appointment to Create New Encounter</option>
+                            <option *ngFor="let s of lstAppDates" [value]="s.chart_id">
+                                {{s.appointment_date_time}} &nbsp;&nbsp;|&nbsp;&nbsp; {{s.provider_name}}</option>
+                        </select>
+
+                        <span class="input-group-btn">
+                            <button class="btn btn-success fz-12" (click)="newchart(drpappointment)"
+                                [disabled]="!lookupList.UserRights.CanAddChart || isNewInProgress">
+                                <i class="fas fa-plus mr-1" aria-hidden="true"></i>New
+                            </button>
+                        </span>
+
+                    </div>
+                </div>
+
+
+
+                <button type="button" class="btn btn-link fz-13 title-bar-blue-btn" (click)="openGrowthChart()"><i
+                        class="fas fa-chart-line" aria-hidden="true"></i>
+                    Growth Chart</button>
+                <button type="button" class="btn btn-link fz-13 title-bar-blue-btn" (click)="faxEncounter()">
+                    <i class="fas fa-fax"></i>
+                    Fax</button>
+
+                <button type="button" class="btn btn-link fz-13 title-bar-blue-btn" (click)="printMultipleCharts()">
+                    <i class="fas fa-print"></i>
+                    Print</button>
+
+
+            </div>
+        </div>
+        <div class="dashboard-sub-nav encounter justify-content-between" state="">
+            <div class="d-flex">
+                <div class="color-box bg-info"></div>
+                <p> Annual Wellness Visit</p>
+            </div>
+
+            <div>
+                <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                    (click)="onTaskClick()">Task</button>
+                <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                    (click)="PrintDischargeSummary()">
+                    Discharge Summary</button>
+                <button *ngIf="lookupList.UserRights.CanUnSignChart"
+                    class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="onUnsignChart()">
+                    UnSign Encounter</button>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+
+            <table class="table light-striped-border sm table-sticky-header">
+                <thead>
+                    <tr>
+
+                        <th class="width-25"></th>
+
+                        <th class="width-20">&nbsp;</th>
+                        <th class="width-135" scope="col" sortable="visit_date" type="datetime"
+                            formate="MM/DD/YYYY hh:mm A" (sort)="onSort($event)">Visit Date</th>
+                        <th scope="col" sortable="provider_name" type="alpha" (sort)="onSort($event)">Provider</th>
+                        <th scope="col" sortable="location_name" type="alpha" (sort)="onSort($event)">Location</th>
+                        <th scope="col" sortable="reason_detail" type="alpha" (sort)="onSort($event)">Visit Reason</th>
+                        <th scope="col" sortable="primary_diag" type="alpha" (sort)="onSort($event)">Primary Diagnosis
+                        </th>
+                        <th width="60px" scope="col" sortable="signed" type="alpha" (sort)="onSort($event)">Signed</th>
+                        <th width="80px" scope="col" sortable="co_signed" type="alpha" (sort)="onSort($event)">Co-Signed
+
+                        <th width="160px">&nbsp;</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let pat of lstEncounter" (click)="EncounterSelectionChanged(pat)"
+                        [ngClass]="{'active': pat.chart_id==chartId}">
+
+
+                        <td class="width-30">
+
+
+                            <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                <input type="checkbox" class="custom-control-input" id="chk_{{pat.chart_id}}"
+                                    (change)="onEncounterSelection($event,pat)">
+                                <label class="custom-control-label" for="chk_{{pat.chart_id}}"></label>
+                            </div>
+
+
+
+                        </td>
+
+                        <td class="px-0">
+
+
+
+                            <button class="btn btn-link fz-14 text-info line-height-1 p-0" (click)="openSnapShot(pat)"
+                                title="SnapShot">
+                                <i class="ihc-summary" aria-hidden="true"></i>
+                            </button>
+                        </td>
+
+                        <td>
+                            <span [ngClass]="{  
+                                        'fw-500 text-info' : (pat.app_type === '500101001')
+                                       }">
+                                {{pat.visit_date}}
+                            </span>
+
+
+                        </td>
+                        <td>
+                            <button [disabled]="!lookupList.UserRights.canViewChart" type="button" class="link-btn"
+                                (click)="openChart(pat)">
+                                {{pat.provider_name}}
+                            </button>
+                        </td>
+
+                        <td>
+                            {{pat.location_name}}
+                        </td>
+                        <td title="{{pat.reason_detail}}">
+
+                            {{pat.reason_detail}}
+                        </td>
+                        <td>
+
+                            {{pat.primary_diag}}
+
+                        </td>
+                        <td class="text-center">
+                            <i class="fas fa-md text-success" [ngClass]="{  
+                                        'fa-check-circle ' : (pat.signed === true)
+                                       }" aria-hidden="true"
+                                ngbPopover="Signed By: {{pat.signed_provider}} on {{pat.signed_date}}"
+                                popoverTitle="Provider Sign Info" triggers="mouseenter:mouseleave" container="body"
+                                placement="right" popoverClass="ihc-popover"></i>
+                        </td>
+                        <td class="text-center">
+                            <i class="fas fa-md text-success" [ngClass]="{  
+                                            'fa-check-circle' : (pat.co_signed === true)
+                                           }" aria-hidden="true"
+                                ngbPopover="Co-Signed By: {{pat.co_signed_provider}} on {{pat.co_signed_date}}"
+                                popoverTitle="Provider Co-Sign Info" triggers="mouseenter:mouseleave" container="body"
+                                placement="right" popoverClass="ihc-popover"></i>
+                        </td>
+
+                        <td class="text-right">
+
+
+
+                            <button [disabled]="!this.lookupList.UserRights.ViewAmendments" *ngIf="pat.signed"
+                                class="btn btn-link fz-14 text-info line-height-1 p-0 mr-2"
+                                (click)="openAmendments(pat)" title="Amendments">
+                                <i class="far fa-comments" aria-hidden="true"></i>
+                            </button>
+
+                            <button
+                                *ngIf="(this.lookupList.UserRights.AddModifySessionInfo && lookupList.UserRights.ViewSessionInfo) && pat.encounter_closing_id == '0'"
+                                class="btn btn-link fz-14 text-info line-height-1 p-0 mr-2"
+                                (click)="closeEncounterSession(pat)" title="Session Open">
+                                <img class="img-h-18" src="./assets/images/icons/ico_open_session.svg" alt="">
+                            </button>
+
+
+                            <button *ngIf="lookupList.UserRights.ViewSessionInfo && pat.encounter_closing_id !='0'"
+                                class="btn btn-link fz-14 text-info line-height-1 p-0 mr-2"
+                                (click)="closeEncounterSession(pat)" title="Session Closed">
+                                <img class="img-h-18" src="./assets/images/icons/ico_close_session.svg" alt="">
+                            </button>
+
+                            <button [disabled]="!lookupList.UserRights.CanPrintChart"
+                                class="btn btn-link fz-14 text-primary line-height-1 p-0 mr-2"
+                                (click)="printEncounterFromGrid(pat)">
+                                <i class="fas fa-print" aria-hidden="true" title="Print Encounter"></i>
+                            </button>
+
+                            <button [disabled]="!lookupList.UserRights.CanDeleteChart"
+                                class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="DeleteEncounter(pat)">
+                                <i class="far fa-trash-alt" title="Delete Encounter"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isNewInProgress">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Creating Encounter...
+        </div>
+    </div>
+
+
+</div>
+
+<!-- New -->
+
+<div class="d-flex flex-column flex-grow-1 mt-1" *ngIf="isOpenClick && openExternalModule==''">
+    <div class="encounter-detail-top-bar rounded-top flex-shrink-0 overflow-inherit">
+        <button class="left-back-btn" (click)="navigateBackToSSummary()">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Summary
+        </button>
+
+        <div class="d-flex flex-row flex-grow-1 justify-content-between align-items-center ml-12 ">
+            <p class="m-0 text-white font-weight-light"><strong>Visit Date: </strong>{{objEncounterToOpen.visit_date}}
+            </p>
+            <p class="m-0 text-white font-weight-light"><strong>Visit Provider:
+                </strong>{{objEncounterToOpen.provider_name}}</p>
+            <p class="m-0 mr-2 text-white font-weight-light" *ngIf="!selectedSignedProvider==''">
+                <i class="fas fa-info-circle fa-md mr-1"></i>
+                <strong> Signed by:
+                </strong>{{selectedSignedProvider}}({{selectedSignedDate}})
+            </p>
+            <ul class="nav white-text align-items-center">
+
+                <a class="nav-link px-2 py-0" (click)="onTemplateClick()">
+                    <i class="fas fa-file-medical pr-1"></i>
+                    Template
+                </a>
+
+                <a class="nav-link px-2 py-0"
+                    *ngIf="lookupList.UserRights.CanSignChart && !this.objEncounterToOpen.co_signed"
+                    (click)="onChartSign()" title="Sign Chart">
+                    <i class="fas fa-pen-nib" aria-hidden="true"></i>
+                </a>
+                <a class="nav-link px-2 py-0" title="Print Setting">
+                    <i class="fas fa-cog " aria-hidden="true" data-toggle="modal" data-target="#encPrintSettingModal"
+                        (click)="openModal()"></i>
+                </a>
+                <a *ngIf="lookupList.UserRights.CanPrintChart" class="nav-link px-2 py-0" title="Print Encounter"
+                    (click)="printEncounter()">
+                    <i class="fas fa-print" aria-hidden="true" title="Print Encounter"></i>
+                </a>
+
+                <div class="btn-group">
+
+                    <a class="nav-link px-2 py-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+                        <a class="dropdown-item cursor-default" (click)="openClaim()">
+                            Create Claim
+                        </a>
+
+                        <a class="dropdown-item cursor-default" (click)="generatePHSSyndromicSurveillanceMessage()">
+                            PHS - Syndrome Surveillance
+                        </a>
+                        <a class="dropdown-item cursor-default" (click)="onFollowUpClick()">
+                            Follow Up
+                        </a>
+
+                        <a class="dropdown-item cursor-default" (click)="addToTask()">
+                            Add To Task
+                        </a>
+
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </div>
+
+    <chart-module-tabs [objencounterToOpen]="objEncounterToOpen"
+        class="border-content-box light-sky-blue border-top-0 rounded-0 d-flex flex-row flex-grow-1 overflow-height p-1 text-dark position-relative">
+    </chart-module-tabs>
+    <!-- Encounter Footer -->
+    <div class="dashboard-sub-nav footer h-25 d-flex rounded-3-bottom ">
+
+        <form [formGroup]="frmNoKnown" class="d-flex flex-grow-1 justify-content-between">
+
+            <div class="d-flex flex-grow-1 text-dark h-20 px-2 mt-2-px-reverse">
+
+                <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chknoAllergy_{{patientId}}" type="checkbox"
+                        formControlName="chknoAllergy">
+                    <label class="custom-control-label" for="chknoAllergy_{{patientId}}">No
+                        Known Allergy</label>
+                </div>
+
+                <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chknoMedication_{{patientId}}"
+                        type="checkbox" formControlName="chknoMedication">
+                    <label class="custom-control-label" for="chknoMedication_{{patientId}}">No
+                        Known Medication</label>
+                </div>
+
+                <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chknoProblem_{{patientId}}" type="checkbox"
+                        formControlName="chknoProblem">
+                    <label class="custom-control-label" for="chknoProblem_{{patientId}}">No
+                        Known Problem</label>
+                </div>
+
+                <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chkEducation_{{patientId}}" type="checkbox"
+                        formControlName="chkEducation">
+                    <label class="custom-control-label" for="chkEducation_{{patientId}}">Education
+                        Provided</label>
+                </div>
+
+
+                <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chkMedicationReviewed_{{patientId}}"
+                        type="checkbox" formControlName="chkMedicationReviewed">
+                    <label class="custom-control-label" for="chkMedicationReviewed_{{patientId}}">Medication
+                        Reviewed</label>
+                </div>
+
+
+            </div>
+
+            <div class="d-flex flex-shrink-0">
+                <button class="btn btn-sm btn-outline-success" (click)="onEncounterEducationClick()">Patient
+                    Education</button>
+            </div>
+        </form>
+
+
+    </div>
+    <!-- </div> -->
+    <!-- Modal section -->
+    <div id="encPrintSettingModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header custom">
+                    <img class="logo" src="./assets/images/logo-small.png">
+                    <h4 class="modal-title">Encounter Print Setting</h4>
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <!-- model body section -->
+                <div class="modal-body" style="height: 400px !important; padding: 0;">
+                    <div>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-link p-0"
+                                [disabled]="!(acPrintSettingAll!=undefined && acPrintSettingAll.length > (printSettingSelectedModuleRow+1))"
+                                (click)="moveDiagnosis('down')"><i
+                                    class="fas fa-arrow-alt-circle-down text-info"></i></button>
+                            <button type="button" class="btn btn-link p-0"
+                                [disabled]="!(printSettingSelectedModuleRow > 0)" (click)="moveDiagnosis('up')"><i
+                                    class="fas fa-arrow-alt-circle-up text-info"></i></button>
+                        </div>
+                    </div>
+                    <div class="encounter-module-scrollable" style="height: 400px !important;">
+
+                        <table class="table layout-fixed light-striped-border">
+                            <thead>
+                                <tr>
+                                    <th width="35px">
+                                        <input class="table-td-checkbox" type="checkbox"
+                                            (click)="IsPrintSettingSelectAll($event.currentTarget.checked)">
+                                    </th>
+                                    <th>Items to include in Print</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let enc of acPrintSettingAll" (click)="onprintSettingClick(enc.module_id)"
+                                    [ngClass]="{'active': printSettingSelectedModuleId==enc.module_id}">
+                                    <td width="35px">
+                                        <input class="table-td-checkbox" type="checkbox"
+                                            (click)="IsPrintSettingSelect($event.currentTarget.checked,enc)"
+                                            value={{enc.in_print}} [checked]="enc.in_print">
+                                    </td>
+                                    <td>{{enc.display_name}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="modal-footer mt-3">
+                    <button type="submit" class="btn btn-sm btn-primary" data-dismiss="modal"
+                        (click)="testSelected()">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 mt-1" *ngIf="openExternalModule!=''">
+    <div class="encounter-detail-top-bar rounded-10-top flex-shrink-0 h-25">
+        <button class="left-back-btn" (click)="backFromExternalModule()">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Summary
+        </button>
+        <div class="d-flex flex-row flex-grow-1 justify-content-between align-items-center ml-12">
+            <p class="m-0 text-white font-weight-light"><strong>Claim Of
+                </strong>{{openPatientInfo.last_name+', '+openPatientInfo.first_name}}</p>
+        </div>
+    </div>
+    <patient-growth-chart [patientId]="patientId" [openPatientInfo]="openPatientInfo" *ngIf="openExternalModule=='GC'"
+        class="border-content-box light-sky-blue border-top-0 rounded-bottom d-flex flex-row flex-grow-1 p-0">
+    </patient-growth-chart>
+    <claim-professional class="d-flex flex-column flex-grow-1 single-col" *ngIf="openExternalModule=='claim'"
+        [openedClaimInfo]="openedClaimInfo" (onClaimSaved)="onClaimSaved($event)"></claim-professional>
+</div>

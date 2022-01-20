@@ -1,0 +1,408 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc  h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">Day wise Encounter Count</div>
+    <span class="badge badge-pill text-white">Total Record(s): {{recordCount}}</span>
+  </div>
+
+  <div>
+    <form [formGroup]="radioForm">
+      <div class="btn-group radio-btn-tabs px-1">
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'daywise')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+            value="Day Wise Encounters" (ngModelChange)="onRadioOptionChange($event)"> Day Wise Encounters
+        </label>
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'providerwise')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+            value="Provider Month Wise" (ngModelChange)="onRadioOptionChange($event)"> Provider Month Wise
+        </label>
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'locationwise')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+            value="Location Month Wise" (ngModelChange)="onRadioOptionChange($event)"> Location Month Wise
+        </label>
+      </div>
+    </form>
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+    <div *ngIf="showReport=='daywise'" class="d-flex flex-column flex-grow-1">
+      <!-- ************************************************************** -->
+
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaDayWiseEncounterCount" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+
+        <div id="SearchCriteriaDayWiseEncounterCount" class="show">
+          <div class="accordian-body bg-transparent">
+
+            <form [formGroup]="dayWiseEncCountReportForm" (ngSubmit)="onSubmit(dayWiseEncCountReportForm.value)">
+
+              <div class="p-2 pt-0">
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-4">
+                    <label for="cmbMonthsdaywise" class="col-form-label">Month:</label>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <select class="form-control" id="cmbMonthsdaywise" formControlName="cmbMonthsdaywise">
+                          <option *ngFor="let month of lookupList.lstMonths" [value]="month.month_no">
+                            {{month.month_name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-2">
+                    <label for="txtYeardaywise" class="col-form-label">Year:</label>
+                    <input class="form-control" name="txtYeardaywise" formControlName="txtYeardaywise"
+                      placeholder="YYYY">
+                  </div>
+                  <div class="form-group col-4 d-flex align-items-end">
+                    <button type="button" ng-disabled="btnHide" class="btn btn-success"
+                      (click)="searchEncCountRpt(dayWiseEncCountReportForm.value,'daywise')">Search</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <!-- ************************************************************** -->
+        <div class="border  d-flex flex-column flex-grow-1 ">
+          <h4 class="form-edit-sub-heading flex-shrink-0 m-1 mb-1 pl-1">Details</h4>
+
+          <div class="overflow-auto flex-grow-1">
+            <table class="table light-striped-border layout-fixed">
+              <thead>
+                <!-- <section> -->
+                <tr>
+                  <th class="width-150">Location</th>
+                  <th class="width-150">Provider</th>
+                  <th class="width-50">01</th>
+                  <th class="width-50">02</th>
+                  <th class="width-50">03</th>
+                  <th class="width-50">04</th>
+                  <th class="width-50">05</th>
+                  <th class="width-50">06</th>
+                  <th class="width-50">07</th>
+                  <th class="width-50">08</th>
+                  <th class="width-50">09</th>
+                  <th class="width-50">10</th>
+                  <th class="width-50">11</th>
+                  <th class="width-50">12</th>
+                  <th class="width-50">13</th>
+                  <th class="width-50">14</th>
+                  <th class="width-50">15</th>
+                  <th class="width-50">16</th>
+                  <th class="width-50">17</th>
+                  <th class="width-50">18</th>
+                  <th class="width-50">19</th>
+                  <th class="width-50">20</th>
+                  <th class="width-50">21</th>
+                  <th class="width-50">22</th>
+                  <th class="width-50">23</th>
+                  <th class="width-50">24</th>
+                  <th class="width-50">25</th>
+                  <th class="width-50">26</th>
+                  <th class="width-50">27</th>
+                  <th class="width-50">28</th>
+                  <th class="width-50" *ngIf="colday29" id="colH_day29">29</th>
+                  <th class="width-50" *ngIf="colday30" id="colH_day30">30</th>
+                  <th class="width-50" *ngIf="colday31" id="colH_day31">31</th>
+                  <th class="font-weight-bold">Total</th>
+                </tr>
+                <!-- </section> -->
+              </thead>
+              <tbody>
+                <section *ngFor="let total1 of lstLocationWiseTotal" style="width: fit-content;">
+
+                  <section *ngFor="let day of lstdayWise | listFilter : 'location_name' : total1.location_name"
+                    style="width: max-content;">
+                    <tr>
+                      <td class="width-150">{{day.location_name}}</td>
+                      <td class="width-150">{{day.provider_name}}</td>
+                      <td class="width-50">{{day.day_01}}</td>
+                      <td class="width-50">{{day.day_02}}</td>
+                      <td class="width-50">{{day.day_03}}</td>
+                      <td class="width-50">{{day.day_04}}</td>
+                      <td class="width-50">{{day.day_05}}</td>
+                      <td class="width-50">{{day.day_06}}</td>
+                      <td class="width-50">{{day.day_07}}</td>
+                      <td class="width-50">{{day.day_08}}</td>
+                      <td class="width-50">{{day.day_09}}</td>
+                      <td class="width-50">{{day.day_10}}</td>
+                      <td class="width-50">{{day.day_11}}</td>
+                      <td class="width-50">{{day.day_12}}</td>
+                      <td class="width-50">{{day.day_13}}</td>
+                      <td class="width-50">{{day.day_14}}</td>
+                      <td class="width-50">{{day.day_15}}</td>
+                      <td class="width-50">{{day.day_16}}</td>
+                      <td class="width-50">{{day.day_17}}</td>
+                      <td class="width-50">{{day.day_18}}</td>
+                      <td class="width-50">{{day.day_19}}</td>
+                      <td class="width-50">{{day.day_20}}</td>
+                      <td class="width-50">{{day.day_21}}</td>
+                      <td class="width-50">{{day.day_22}}</td>
+                      <td class="width-50">{{day.day_23}}</td>
+                      <td class="width-50">{{day.day_24}}</td>
+                      <td class="width-50">{{day.day_25}}</td>
+                      <td class="width-50">{{day.day_26}}</td>
+                      <td class="width-50">{{day.day_27}}</td>
+                      <td class="width-50">{{day.day_28}}</td>
+                      <td class="width-50" *ngIf="colday29" id="col_day29">{{day.day_29}}</td>
+                      <td class="width-50" *ngIf="colday30" id="col_day30">{{day.day_30}}</td>
+                      <td class="width-50" *ngIf="colday31" id="colday31">{{day.day_31}}</td>
+                      <td class="width-50 font-weight-bold">{{day.total}}</td>
+                    </tr>
+                  </section>
+
+                  <tr class="font-weight-bold">
+                    <th class="width-150">TOTAL: </th>
+                    <th class="width-150"></th>
+                    <th class="width-50">{{total1.day_01}}</th>
+                    <th class="width-50">{{total1.day_02}}</th>
+                    <th class="width-50">{{total1.day_03}}</th>
+                    <th class="width-50">{{total1.day_04}}</th>
+                    <th class="width-50">{{total1.day_05}}</th>
+                    <th class="width-50">{{total1.day_06}}</th>
+                    <th class="width-50">{{total1.day_07}}</th>
+                    <th class="width-50">{{total1.day_08}}</th>
+                    <th class="width-50">{{total1.day_09}}</th>
+                    <th class="width-50">{{total1.day_10}}</th>
+                    <th class="width-50">{{total1.day_11}}</th>
+                    <th class="width-50">{{total1.day_12}}</th>
+                    <th class="width-50">{{total1.day_13}}</th>
+                    <th class="width-50">{{total1.day_14}}</th>
+                    <th class="width-50">{{total1.day_15}}</th>
+                    <th class="width-50">{{total1.day_16}}</th>
+                    <th class="width-50">{{total1.day_17}}</th>
+                    <th class="width-50">{{total1.day_18}}</th>
+                    <th class="width-50">{{total1.day_19}}</th>
+                    <th class="width-50">{{total1.day_20}}</th>
+                    <th class="width-50">{{total1.day_21}}</th>
+                    <th class="width-50">{{total1.day_22}}</th>
+                    <th class="width-50">{{total1.day_23}}</th>
+                    <th class="width-50">{{total1.day_24}}</th>
+                    <th class="width-50">{{total1.day_25}}</th>
+                    <th class="width-50">{{total1.day_26}}</th>
+                    <th class="width-50">{{total1.day_27}}</th>
+                    <th class="width-50">{{total1.day_28}}</th>
+                    <th class="width-50" *ngIf="colday29" id="col_day29">{{total1.day_29}}</th>
+                    <th class="width-50" *ngIf="colday30" id="col_day30">{{total1.day_30}}</th>
+                    <th class="width-50" *ngIf="colday31" id="colday31">{{total1.day_31}}</th>
+                    <th></th>
+                  </tr>
+                </section>
+              </tbody>
+            </table>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ############################################################################# -->
+    <div *ngIf="showReport=='providerwise'" class="d-flex flex-column flex-grow-1">
+      <!-- ************************************************************** -->
+
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaProviderMontWieCount" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+
+        <div id="SearchCriteriaProviderMontWieCount" class="show">
+          <div class="accordian-body bg-transparent">
+            <form [formGroup]="providerWiseEncCountReportForm"
+              (ngSubmit)="onSubmit(providerWiseEncCountReportForm.value)">
+
+
+              <div class="p-2 pt-0">
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-2">
+                    <label for="txtYearProviderWise" class="col-form-label">Year:</label>
+                    <input class="form-control" name="txtYearProviderWise" formControlName="txtYearProviderWise"
+                      placeholder="YYYY">
+                  </div>
+                  <div class="form-group col-4 d-flex align-items-end">
+                    <button type="button" ng-disabled="btnHide" class="btn btn-success"
+                      (click)="searchEncCountRpt(providerWiseEncCountReportForm.value,'provwise')">Search</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <!-- ************************************************************** -->
+        <div class="border  d-flex flex-column flex-grow-1">
+          <h4 class="form-edit-sub-heading border-bottom-0 flex-shrink-0 m-1 mb-0 pl-1">Details</h4>
+          <div class="overflow-auto flex-grow-1">
+            <table class="table light-striped-border">
+              <thead>
+                <tr>
+                  <th>Provider</th>
+                  <th>Jan</th>
+                  <th>Feb</th>
+                  <th>Mar</th>
+                  <th>Apr</th>
+                  <th>May</th>
+                  <th>Jun</th>
+                  <th>Jul</th>
+                  <th>Aug</th>
+                  <th>Sep</th>
+                  <th>Oct</th>
+                  <th>Nov</th>
+                  <th>Dec</th>
+                  <th class="font-weight-bold">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let pro of lstProvWise">
+                  <td>{{pro.provider_name}}</td>
+                  <td>{{pro.jan}}</td>
+                  <td>{{pro.feb}}</td>
+                  <td>{{pro.mar}}</td>
+                  <td>{{pro.apr}}</td>
+                  <td>{{pro.may}}</td>
+                  <td>{{pro.jun}}</td>
+                  <td>{{pro.jul}}</td>
+                  <td>{{pro.aug}}</td>
+                  <td>{{pro.sep}}</td>
+                  <td>{{pro.oct}}</td>
+                  <td>{{pro.nov}}</td>
+                  <td>{{pro.dec}}</td>
+                  <td class="font-weight-bold">{{pro.total}}</td>
+                </tr>
+                <tr class="font-weight-bold" st-select-row="row" *ngFor="let tes of test">
+                  <td>{{tes.provider_name}}</td>
+                  <td>{{tes.jan}}</td>
+                  <td>{{tes.feb}}</td>
+                  <td>{{tes.mar}}</td>
+                  <td>{{tes.apr}}</td>
+                  <td>{{tes.may}}</td>
+                  <td>{{tes.jun}}</td>
+                  <td>{{tes.jul}}</td>
+                  <td>{{tes.aug}}</td>
+                  <td>{{tes.sep}}</td>
+                  <td>{{tes.oct}}</td>
+                  <td>{{tes.nov}}</td>
+                  <td>{{tes.dec}}</td>
+                  <td>{{tes.total}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ################################################################ -->
+    <div *ngIf="showReport=='locationwise'" class="d-flex flex-column flex-grow-1">
+      <!-- ************************************************************** -->
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaLocationMonthWieCount" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+
+        <div id="SearchCriteriaLocationMonthWieCount" class="show">
+          <div class="accordian-body bg-transparent">
+
+            <form [formGroup]="locationWiseEncCountReportForm"
+              (ngSubmit)="onSubmit(locationWiseEncCountReportForm.value)">
+
+              <div class="p-2 pt-0">
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-2">
+                    <label for="txtYearLocationWise" class="col-form-label">Year:</label>
+                    <input class="form-control" name="txtYearLocationWise" formControlName="txtYearLocationWise"
+                      placeholder="YYYY">
+                  </div>
+                  <div class="form-group col-4 d-flex align-items-end">
+                    <button type="button" ng-disabled="btnHide" class="btn btn-success"
+                      (click)="searchEncCountRpt(locationWiseEncCountReportForm.value,'locwise')">Search</button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <!-- ************************************************************** -->
+        <div class="border d-flex flex-column flex-grow-1">
+          <h4 class="form-edit-sub-heading border-bottom-0 flex-shrink-0 m-1 mb-0 pl-1">Details</h4>
+          <div class="overflow-auto flex-grow-1">
+            <table class="table light-striped-border">
+              <thead>
+                <tr>
+                  <th>Location</th>
+                  <th>Jan</th>
+                  <th>Feb</th>
+                  <th>Mar</th>
+                  <th>Apr</th>
+                  <th>May</th>
+                  <th>Jun</th>
+                  <th>Jul</th>
+                  <th>Aug</th>
+                  <th>Sep</th>
+                  <th>Oct</th>
+                  <th>Nov</th>
+                  <th>Dec</th>
+                  <th class="font-weight-bold">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr st-select-row="row" *ngFor="let loc of lstLocWise">
+                  <td>{{loc.location_name}}</td>
+                  <td>{{loc.jan}}</td>
+                  <td>{{loc.feb}}</td>
+                  <td>{{loc.mar}}</td>
+                  <td>{{loc.apr}}</td>
+                  <td>{{loc.may}}</td>
+                  <td>{{loc.jun}}</td>
+                  <td>{{loc.jul}}</td>
+                  <td>{{loc.aug}}</td>
+                  <td>{{loc.sep}}</td>
+                  <td>{{loc.oct}}</td>
+                  <td>{{loc.nov}}</td>
+                  <td>{{loc.dec}}</td>
+                  <td class="font-weight-bold">{{loc.total}}</td>
+                </tr>
+                <tr class="font-weight-bold" st-select-row="row" *ngFor="let te of test1">
+                  <td>{{te.location_name}}</td>
+                  <td>{{te.jan}}</td>
+                  <td>{{te.feb}}</td>
+                  <td>{{te.mar}}</td>
+                  <td>{{te.apr}}</td>
+                  <td>{{te.may}}</td>
+                  <td>{{te.jun}}</td>
+                  <td>{{te.jul}}</td>
+                  <td>{{te.aug}}</td>
+                  <td>{{te.sep}}</td>
+                  <td>{{te.oct}}</td>
+                  <td>{{te.nov}}</td>
+                  <td>{{te.dec}}</td>
+                  <td>{{te.total}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

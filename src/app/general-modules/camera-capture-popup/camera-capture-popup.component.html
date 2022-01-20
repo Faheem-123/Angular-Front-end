@@ -1,0 +1,34 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">{{title}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div id="app" class="d-flex justify-content-center border rounded-3" *ngIf="!isCameraNotFound && !isOnlyView">
+    <video #video id="video" width="250" height="200" autoplay></video>
+    <canvas hidden #canvas id="canvas" height="200" width="200"></canvas>
+
+  </div>
+
+  <div class="alert alert-danger d-flex justify-content-center rounded-3 m-0 h-200 width-250 d-flex flex-column"
+    *ngIf="isCameraNotFound && !isOnlyView">
+    <span class="py-2 d-flex justify-content-center"><i class="fa fas fa-exclamation-triangle fa-4x mr-3"></i></span>
+    <span class="py-3"> There is no connected camera.</span>
+
+  </div>
+  <div class="d-flex justify-content-center rounded-3  h-200 width-250 d-flex flex-column"
+*ngIf="isOnlyView">
+<!-- <iframe [src]="pic_url" id="picframe" #picframe style="height: 550px !important;" width="100%" height="100%" frameborder="0"> </iframe> -->
+<img height="200" width="250" src="{{current_url}}">
+</div>
+</div>
+<div *ngIf="errorMsg!='' && !isCameraNotFound && !isOnlyView" class="alert alert-danger rounded-0 py-1 fz-12 m-0" role="alert">
+  {{errorMsg}}
+</div>
+<div class="modal-footer d-flex justify-content-center h-35" *ngIf="!isCameraNotFound">
+  <button [disabled]="errorMsg!=''" type="button" id="snap" class="btn btn-info btn-sm" (click)="capture()"><i
+      class="fas fa-camera"></i> Capture Photo</button>
+</div>
+

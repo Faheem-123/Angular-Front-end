@@ -1,0 +1,99 @@
+<div class="d-flex flex-column flex-grow-1">
+    <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+      <div class="fz-15 font-weight-400 text-white">CSS Call Log
+      </div>
+    </div>
+  
+    <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+      <form [formGroup]="frmInput">
+        <div class="rounded bg-white flex-shrink-0">
+          <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+  
+          <div class="p-2 pt-0">
+            <div class="form-row form-dashboard">
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="dpfromDate">From:</label>
+                <div class="input-group">
+                  <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dateFrom"
+                    formControlName="dateFrom" ngbDatepicker #dpfromDate="ngbDatepicker">
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button">
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="dptoDate">To:</label>
+                <div class="input-group">
+                  <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo"
+                    ngbDatepicker #dptoDate="ngbDatepicker">
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dptoDate.toggle()" type="button">
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div class="form-group col-2">
+                <label for="cmbProvider" class="col-form-label">User:</label>
+                <select class="form-control" labelForId="cmbProvider" formControlName="cmbUser">
+                  <option value='ALL'>All</option>
+                  <option *ngFor="let user of lookupList.billingUsersList" [value]="user.id">{{user.name}}</option>
+                </select>
+              </div>
+              <div class="form-group col-2">
+                <label for="cmbLocation" class="col-form-label">Type:</label>
+                <select class="form-control" labelForId="cmbLocation" formControlName="cmbType">
+                  <option [selected]="true" value='ALL'>ALL</option>
+                  <option>Follow Up</option>
+                  <option>No Show</option>
+                  <option>Patient Notes</option>
+                  <option>Referral</option>
+                  <option>Balance Reminder Calls</option>
+                </select>
+              </div>
+              <div class="form-group col-1 d-flex justify-content-end align-items-end">
+                <button type="button" class="btn btn-success w-100"
+                  (click)="searchLog(frmInput.value)">Search</button>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </form>
+  
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2 overflow-height">
+        <h4 class="form-edit-sub-heading border-bottom-0 flex-shrink-0 m-1 mb-0 pl-1">Details ({{recordCount}})</h4>
+        <div class="overflow-auto flex-grow-1">
+          <table class="table light-striped-border table-sticky-header">
+            <thead>
+              <tr>
+                <th>PID</th>
+                <th>Patient</th>
+                <th>User</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr st-select-row="row" *ngFor="let eleg of listrpt">
+                <td>{{eleg.pid}}</td>
+                <td>{{eleg.pat_name}}</td>
+                <td>{{eleg.created_user}}</td>
+                <td>{{eleg.date_created}}</td>
+                <td>{{eleg.type}}</td>
+                <td>{{eleg.details}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+      <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+          <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+        </div>
+      </div>
+  
+    </div>
+  </div>

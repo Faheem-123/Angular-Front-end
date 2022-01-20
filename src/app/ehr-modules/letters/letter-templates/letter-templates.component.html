@@ -1,0 +1,166 @@
+<div class="dashboard" *ngIf="isLetterTemplate">
+
+    <div class="bg-green-ihc rounded-10-top h-30 d-flex align-items-center justify-content-between flex-shrink-0">
+
+        <div class="d-flex">
+            <button class="btn new-meesage flex-shrink-0 rounded-10-top-left" (click)="onBackToTemplate()">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Home</button>
+            <div class="fz-15 font-weight-400 text-white ml-2 mt-1">Add/Modify Letter Templates</div>
+        </div>
+
+
+        <div class="d-flex">
+            <button class="btn btn-link fz-12 title-bar-white-btn font-weight-400" *ngIf="!showSavebtns"
+                (click)="addNewTemplate()"><i class="far fa-file pr-1"></i>New</button>
+            <button class="btn btn-link fz-12 title-bar-white-btn font-weight-400"  *ngIf="!showSavebtns"
+                (click)="modifyTemplate(temp)"><i class="far fa-edit pr-1"></i>Modify</button>
+            <button class="btn btn-link fz-12 title-bar-white-btn font-weight-400"  *ngIf="!showSavebtns"
+                (click)="onTemplateSetting()"><i class="fas fa-cog pr-1"></i>Setting</button>
+
+            <ul class="nav align-items-center" *ngIf="showSavebtns">
+                <button class="btn h-30 rounded-0 btn-green py-0 text-white" (click)="saveTemplate()">Save</button>
+                <button class="btn h-30 rounded-0 rounded-10-top-right btn-dark py-0" (click)="cancelAll()">Cancel</button>
+            </ul>
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+    <form [formGroup]="FrmLetterTemplate" class="d-flex flex-column flex-grow-1">
+        <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+            <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+
+                <div class="col-md-2 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                    <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                        <div class="rounded-box-title-bar justify-content-between">
+                            <span>Templates</span>
+                        </div>
+
+                        <div class="d-flex flex-column flex-grow-1">
+                            <div class="border-top bg-white flex-grow-1 overflow-auto">
+                                <table class="table layout-fixed sm light-striped-border">
+                                    <tbody>
+                                        <tr st-select-row="row" *ngFor="let temp of lstLetterTemplates"
+                                            (click)="PopLetterTemplate(temp)"
+                                            [ngClass]="{'active' : (temp.template_id === isSelectedTempID)}">
+                                            <td width="80%">{{temp.name}}</td>
+                                            <td class="text-right">
+                                                <a class="text-danger" href="" (click)="deleteSeletedTemplate(temp)"
+                                                    href="#">
+                                                    <i class="far fa-trash-alt"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+
+                    <div class="bg-white d-flex flex-column flex-grow-1">
+                        <div class="border border-bottom-0 rounded-top bg-white px-2 py-1 flex-shrink-0">
+                            <div class="form-row form-dashboard">
+                                <div class="form-group horizental row zero col-9">
+                                    <label class="col-sm-3 col-form-label " for="input2">Template Name:</label>
+                                    <input type="text" class="form-control col-sm-9" formControlName="txt_TemplateName"
+                                        [readonly]="!isTemplateShow">
+                                </div>
+                                <div class="form-group horizental row zero col-3">
+                                    <div class="form-check-cont">
+                                        <div class="form-check form-check-inline pt-1">
+                                            <input class="form-check-input" labelForId="chkbox_includePatInfo" type="checkbox"
+                                            id="chkbox_includePatInfo"
+                                                [disabled]="true" value="option1"
+                                                formControlName="chkbox_includePatInfo">
+                                            <label class="form-check-label" for="chkbox_includePatInfo">Include Patient
+                                                Info</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rounded-bottom d-flex flex-grow-1 overflow-auto" *ngIf="!showHideLtrTemplate">
+                            <quill-editor [modules]="{toolbar: false}" [readOnly]="!isTemplateShow"
+                                id="templateRichEditorView" #templateRichEditorView [required]="true"
+                                [formControl]="lettertempTextView" class="d-flex flex-column">
+                            </quill-editor>
+                        </div>
+
+                        <div class="rounded mt-1 d-flex flex-grow-1 overflow-auto" *ngIf="showHideLtrTemplate">
+                            <quill-editor [readOnly]="!isTemplateShow" id="templateRichEditorEdit"
+                                #templateRichEditorEdit [required]="true" [formControl]="lettertempTextEdit"
+                                class="d-flex flex-column">
+                            </quill-editor>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-2 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                    <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                        <div class="rounded-box-title-bar justify-content-between">
+                            <span>Template Sections</span>
+                        </div>
+
+                        <div class="d-flex flex-column flex-grow-1">
+                            <div class="border-top  bg-white flex-grow-1 overflow-auto">
+                                <table class="table layout-fixed sm light-striped-border">
+                                    <tbody>
+                                        <tr st-select-row="row" *ngFor="let sec of lstTemplateSections; let i = index">
+                                            <td width="15%">
+                                                <input class="v-align-middle"
+                                                    (change)="checkChkBox(sec.section_id,$event.currentTarget.checked)"
+                                                    type="checkbox" [checked]="sec.chk">
+                                            </td>
+                                            <td>{{sec.section_name}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                    <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                        <div class="rounded-box-title-bar justify-content-between">
+                            <span>Template Sub Sections</span>
+                        </div>
+
+                        <div class="d-flex flex-column flex-grow-1">
+                            <div class="border-top bg-white flex-grow-1 overflow-auto">
+                                <table class="table layout-fixed sm light-striped-border">
+                                    <tbody>
+                                        <tr st-select-row="row"
+                                            *ngFor="let subsec of lstTemplateSubSections; let i = index">
+                                            <td width="15%"><input class="v-align-middle" type="checkbox"
+                                                    (change)="checkChkBoxSubSection(subsec.sub_section_id,$event.currentTarget.checked)"
+                                                    [checked]="subsec.chk"></td>
+                                            <td>{{subsec.sub_section_name}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="dashboard-container d-flex flex-column flex-grow-1" *ngIf="!isLetterTemplate">
+    <letter-templates-settings class="d-flex flex-column flex-grow-1" (backToLettersTemplate)="backToLettersTemplate()"
+        lstTemplateSectionsSettings="lstTemplateSectionsSettings"></letter-templates-settings>
+</div>

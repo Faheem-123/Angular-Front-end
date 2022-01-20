@@ -1,0 +1,121 @@
+<ngb-tabset [destroyOnHide]="false" class="inner-horizental-green-tab d-flex flex-column rounded-10-top" [activeId]="selectedTab"
+  (tabChange)="onTabChange($event)">
+
+  <ngb-tab id="tab_back_from_scheduler_settings">
+    <ng-template ngbTabTitle>
+      <span><i class="fas fa-arrow-left mr-2"></i>{{bac_tabl_title}}</span>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="tab-office-timing">
+    <ng-template ngbTabTitle><span>Office Timing</span></ng-template>
+    <ng-template ngbTabContent>
+
+
+      <div class="border-content-box light-sky-blue border-top-0 d-flex flex-column flex-grow-1 p-2">
+        <ngb-tabset [destroyOnHide]="false"
+          class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden rounded-3">
+          <ngb-tab id="tab_office_timing">
+            <ng-template ngbTabTitle><span>Office Timing</span></ng-template>
+            <ng-template ngbTabContent>
+              <provider-office-timing class="d-flex flex-column flex-grow-1 overflow-height">
+              </provider-office-timing>
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="tab_temp_office_timing">
+            <ng-template ngbTabTitle><span>Temporary Office Timing</span>
+            </ng-template>
+            <ng-template ngbTabContent>
+              <provider-temp-office-timing class="d-flex flex-column flex-grow-1 overflow-height">
+              </provider-temp-office-timing>
+            </ng-template>
+          </ngb-tab>
+
+        </ngb-tabset>
+      </div>
+
+      <!--
+      <div class="dashboard-container d-flex flex-column ">
+        <div class="dashboard no-border">
+          <ngb-tabset class="dashboard-tabs d-flex flex-column flex-grow-1 " [destroyOnHide]="false">
+            <ngb-tab>
+              <ng-template ngbTabTitle>Office Timing</ng-template>
+              <ng-template ngbTabContent>
+                <provider-office-timing class="d-flex flex-column flex-grow-1 "></provider-office-timing>
+              </ng-template>
+            </ngb-tab>
+
+            <ngb-tab>
+              <ng-template ngbTabTitle>Temporary Office Timing</ng-template>
+              <ng-template ngbTabContent>
+                <provider-temp-office-timing class="d-flex flex-column flex-grow-1 "></provider-temp-office-timing>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+        </div>
+      </div>
+      -->
+
+
+
+      <!--
+      <ngb-tabset [destroyOnHide]="false" class="nav pateint-nav">
+          <ngb-tab id="tab-provider-office-timing">
+              <ng-template ngbTabTitle>Office Timing</ng-template>
+              <ng-template ngbTabContent>
+                <provider-office-timing class="patient-all-comp"></provider-office-timing>
+              </ng-template>
+          </ngb-tab>
+          <ngb-tab id="tab-provider-temp-office-timing" >
+              <ng-template ngbTabTitle>Temporary Office Timing</ng-template>
+              <ng-template ngbTabContent>
+                <provider-temp-office-timing class="patient-all-comp"></provider-temp-office-timing>
+              </ng-template>
+          </ngb-tab>
+      </ngb-tabset>
+    -->
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-location-providers">
+    <ng-template ngbTabTitle><span>Location Providers</span></ng-template>
+    <ng-template ngbTabContent>
+      <location-provider-setup class="d-flex flex-column flex-grow-1"></location-provider-setup>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-app-source">
+    <ng-template ngbTabTitle><span>Appointment Source</span></ng-template>
+    <ng-template ngbTabContent>
+      <appointment-source-setting class="d-flex flex-column flex-grow-1"></appointment-source-setting>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="tab-app-types">
+    <ng-template ngbTabTitle><span>Appointment Types</span></ng-template>
+    <ng-template ngbTabContent>
+      <appointment-types-setting class="d-flex flex-column flex-grow-1"></appointment-types-setting>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="tab-app-status">
+    <ng-template ngbTabTitle><span>Apppointment Status</span></ng-template>
+    <ng-template ngbTabContent>
+      <appointment-status-setting class="d-flex flex-column flex-grow-1"></appointment-status-setting>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="tab-app-rules">
+    <ng-template ngbTabTitle><span>Apppointment Rules</span></ng-template>
+    <ng-template ngbTabContent>
+      <appointment-rules class="d-flex flex-column flex-grow-1"></appointment-rules>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="tab-app-rooms">
+    <ng-template ngbTabTitle><span>Rooms</span></ng-template>
+    <ng-template ngbTabContent>
+      <rooms-setting class="d-flex flex-column flex-grow-1"></rooms-setting>
+    </ng-template>
+  </ngb-tab>
+
+</ngb-tabset>

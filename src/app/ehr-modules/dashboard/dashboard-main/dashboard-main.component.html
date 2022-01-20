@@ -1,0 +1,215 @@
+<div class="dashboard-summary-container" [hidden]="loadmodule" *ngIf="!isLoading">
+
+    <div class="row m-0" >
+
+        <div class="col-lg-2 col-md-3 col-6 p-0" *ngFor="let w of lstCountWidgets"
+            id="div_top_dashboard_{{w.moduleName}}">
+            <!-- 2 -->
+            <div class="dashboard-summary" *ngIf="w.moduleName=='cashregister'">
+                <div class="icon " title="Today's Schedule">
+
+                    <img class="img-h-70" src="./assets/images/icons/Dashboard_today_schedule.png" alt=""
+                        (click)="onPendingClaim('div_dashboard_cashregister')">
+                        <div class="info">
+                            <h3 class="title">Today's Schedule</h3>
+                        </div>
+
+                    <!--
+                       <i class="ihc-cash" class="img-h-70" (click)="onPendingClaim('div_dashboard_cashregister')"></i>
+                       -->
+
+
+                </div>
+
+                <div class="" style="margin-top: -25px;">
+                    <div>
+                        <h4 class="count" style="float: left;position: relative;left: 9px;">{{widget_UnreadFax}}</h4>
+                        <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_UnreadFax}}</h4> -->
+                    </div>
+                        <progress id="file" value="32" max="100"> 32% </progress>
+                    </div>
+
+            </div>
+
+            <div class="dashboard-summary" *ngIf="w.moduleName=='refills'">
+                <div class="icon" title="Refill Request Assigned to Logined User/Provider">
+                    <!-- 5 -->
+                    <!-- <i class="ihc-refill-request"></i> -->
+                    <img (click)="onPendingClaim('div_dashboard_refills')" class="img-h-70"
+                        src="./assets/images/icons/Dashboard_ico_refill.png" alt="" style="opacity:0.9">
+                        <div class="info">
+                            <h3 class="title">Refill Request(s)</h3>
+                            <!-- <h2 class="count">{{widget_Refill}}</h2> -->
+                        </div>
+                </div>
+                <div class="" style="margin-top: -25px;">
+                <div>
+                    <h4 class="count" style="float: left;position: relative;left: 9px;">{{widget_Refill}}</h4>
+                    <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_Refill}}</h4> -->
+                </div>
+                    <progress id="file" value="32" max="100"> 32% </progress>
+                </div>
+            </div>
+
+            <div class="dashboard-summary" *ngIf="w.moduleName=='unreadfaxes'">
+                <div class="icon" title="Faxes Assigned to Logined User">
+                    <!-- 6 -->
+                    <!-- <i class="ihc-fax"></i> -->
+                    <img class="img-h-70" (click)="onPendingClaim('div_dashboard_unreadfaxes')"
+                        src="./assets/images/icons/Dashboard_fax.png" alt="">
+                        <div class="info">
+                            <h3 class="title">Unread Faxes</h3>
+                        </div>
+                </div>
+                <div class="" style="margin-top: -25px;">
+                    <div>
+                        <h4 class="count" style="float: left;position: relative;left: 9px;">{{widget_UnreadFax}}</h4>
+                        <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_UnreadFax}}</h4> -->
+                    </div>
+                        <progress id="file" value="32" max="100"> 32% </progress>
+                    </div>
+            </div>
+
+            <div class="dashboard-summary" *ngIf="w.moduleName=='pendingclaims'">
+                <!-- <div class="icon green">
+                            <img class="img-h-40" src="./assets/images/icons/Dashboard_ico_pending_claim-white.png" alt="" style="opacity:.9;">
+                        </div> -->
+                <div class="icon " title="Draft Claims">
+                    <img (click)="onPendingClaim('div_dashboard_pendingclaims')" class="img-h-70"
+                        src="./assets/images/icons/Dashboard_unsigned_notes.png" alt="">
+                        <div class="info">
+                            <h3 class="title">Unsigned Notes</h3>
+                        </div>
+                </div>
+                <div class="" style="margin-top: -25px;">
+                    <div>
+                        <h4 class="count" style="float: left;position: relative;left: 9px;">65</h4>
+                        <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">65</h4> -->
+                    </div>
+                        <progress id="file" value="32" max="100"> 32% </progress>
+                    </div>
+            </div>
+
+            <div class="dashboard-summary" *ngIf="w.moduleName=='pendingresults'">
+                <div class="icon" title="UnSigned Lab Results">
+                    <!-- <i class="ihc-report"></i> -->
+                    <img class="img-h-70" (click)="onPendingClaim('div_dashboard_pendingresults')"
+                        src="./assets/images/icons/Dashboard_PendingResults.png" alt="">
+                        <div class="info">
+                            <h3 class="title">Pending Result</h3>
+                            <!-- <h2 class="count">{{widget_PendingResult}}</h2> -->
+                        </div>
+                    </div>
+                    <div class="" style="margin-top: -25px;">
+                        <div>
+                            <h4 class="count" style="float: left;position: relative;left: 9px;">{{widget_PendingResult}}</h4>
+                            <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_PendingResult}}</h4> -->
+                        </div>
+                            <progress id="file" value="32" max="100"> 32% </progress>
+                        </div>
+            </div>
+
+            <div class="dashboard-summary" *ngIf="w.moduleName=='checkedinpatient'">
+                <div class="icon" title="Todays Checked In Patient(s)">
+                    <!-- <i class="ihc-patient"></i> -->
+                    <img (click)="onPendingClaim('div_dashboard_checkedinpatient')" class="img-h-70"
+                        src="./assets/images/icons/Dashboard_checked_in_patient.png" alt="">
+                        <div class="info">
+                            <h3 class="title">Checkedin Patients</h3>
+                        </div>
+                </div>
+                <div class="" style="margin-top: -25px;">
+                    <div>
+                        <h4 class="count" style="float: left;position: relative;left: 9px;">{{widget_CheckedInPatient}}</h4>
+                        <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_CheckedInPatient}}</h4> -->
+                    </div>
+                        <progress id="file" value="32" max="100"> 32% </progress>
+                    </div>
+                </div>
+        </div>
+
+
+    </div>
+</div>
+<div class="dashboard-container" *ngIf="!isLoading" [hidden]="loadmodule" id="div_dashboard_modules">
+    <div class="row m-0" id="div_dashboard_modules_row">
+
+        <div class="col-12 col-md-6 p-0" *ngFor="let m of lstModules" id="div_dashboard_{{m.name}}">
+            <dashboard-cashregister *ngIf="m.name=='cashregister'" (widgetUpdate)=refreshWidgets($event)>
+            </dashboard-cashregister>
+            <dashboard-pendingresults *ngIf="m.name=='pendingresults' " (openModule)=openLab($event)
+                (widgetUpdate)=refreshWidgets($event)></dashboard-pendingresults>
+            <dashboard-pendingencounter *ngIf="m.name=='pendingencounter'" (widgetUpdate)=refreshWidgets($event)>
+            </dashboard-pendingencounter>
+            <dashboard-checkedinpatient *ngIf="m.name=='checkedinpatient'" (widgetUpdate)=refreshWidgets($event)>
+            </dashboard-checkedinpatient>
+            <dashboard-unreadmessages *ngIf="m.name=='unreadmessages'" (widgetUpdate)=refreshWidgets($event)>
+            </dashboard-unreadmessages>
+            <dashboard-unreadfaxes *ngIf="m.name=='unreadfaxes'" (widgetUpdate)=refreshWidgets($event)>
+            </dashboard-unreadfaxes>
+            <dashboard-gynedd *ngIf="m.name=='gynedd'" (widgetUpdate)=refreshWidgets($event)></dashboard-gynedd>
+            <dashboard-pendingclaims *ngIf="m.name=='pendingclaims'" (openModule)=openClaim($event)
+                (widgetUpdate)=refreshWidgets($event)></dashboard-pendingclaims>
+            <dashboard-refills *ngIf="m.name=='refills'" (widgetUpdate)=refreshWidgets($event) (openModule)=enlargeRefill($event)></dashboard-refills>
+            <payment-summary *ngIf="m.name=='BillingModules/DashboardPaymentSummary.swf'"></payment-summary>
+            <claim-aging *ngIf="m.name=='BillingModules/DashboardClaimAging.swf'"></claim-aging>
+            <claim-count *ngIf="m.name=='BillingModules/DashboardClaimCount.swf'"></claim-count>
+            <claim-denial *ngIf="m.name=='BillingModules/DashBoardDenial.swf'"></claim-denial>
+            <dashboard-tasks *ngIf="m.name=='pending_tasks'"></dashboard-tasks>
+
+        </div>
+        <!-- <div class="col-12 col-md-6" id="div_dashboard_cashregister">
+            <dashboard-cashregister></dashboard-cashregister>
+        </div>  
+        <div class="col-12 col-md-6" id="div_dashboard_pendingresults">
+            <dashboard-pendingresults (openModule)=openLab($event)></dashboard-pendingresults>
+        </div>
+        <div class="col-12 col-md-6" id="div_dashboard_pendingencounter">
+            <dashboard-pendingencounter></dashboard-pendingencounter>
+        </div>
+        <div class="col-12 col-md-6" id="div_dashboard_checkedinpatient">
+            <dashboard-checkedinpatient></dashboard-checkedinpatient>
+        </div>
+        <div class="col-12 col-md-6">
+            <dashboard-unreadmessages></dashboard-unreadmessages>
+        </div>
+        <div class="col-12 col-md-6" id="div_dashboard_unreadfaxes">
+            <dashboard-unreadfaxes></dashboard-unreadfaxes>
+        </div>
+        <div class="col-12 col-md-6">
+            <dashboard-gynedd></dashboard-gynedd>
+        </div>
+        <div class="col-12 col-md-6" id="div_dashboard_pendingclaims">
+            <dashboard-pendingclaims (openModule)=openClaim($event)></dashboard-pendingclaims>
+        </div>
+        <div class="col-12 col-md-6" id="div_dashboard_refills">
+            <dashboard-refills></dashboard-refills>
+        </div> -->
+    </div>
+</div>
+<div class="d-flex flex-column flex-grow-1 mt-8" *ngIf="loadmodule">
+    <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+        <button class="left-back-btn" (click)="navigateBackToSSummary()">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Main
+        </button>
+
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400 d-flex d-flex flex-grow-1  pt-2-px"
+            *ngIf="patientName!=undefined">
+            <span class="title-other-info text-light">
+                Patient: {{patientName}}
+            </span>
+        </h4>
+
+
+
+    </div>
+    <lab-result class="d-flex flex-column flex-grow-1" *ngIf="module_name=='Result'" [order_Id]=order_id
+        [patient_Id]=patient_id></lab-result>
+    <lab-attachment class="d-flex flex-column flex-grow-1" *ngIf="module_name=='Attachment'" [order_Id]=order_id
+        [patient_Id]=patient_id></lab-attachment>
+    <claim-professional class="d-flex flex-column flex-grow-1 single-col" *ngIf="module_name=='claim'"
+        [openedClaimInfo]="openedClaimInfo" (onClaimSaved)="onClaimSaved($event)"></claim-professional>
+
+        <dashboard-refills class="d-flex flex-column flex-grow-1" *ngIf="module_name=='refill'"></dashboard-refills>
+
+</div>

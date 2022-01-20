@@ -1,0 +1,292 @@
+<div *ngIf="showHide" class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">PayerWise Patient Report
+    </div>
+   <button class="btn btn-link fz-13 font-weight-400 py-0 text-white" (click)="exportAsXLSXmain()"><i
+      class="fas fa-file-excel fa-md  mr-1"></i>Export to Excel</button> 
+
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+    <form [formGroup]="frmPayerSubmit">
+      <div class="rounded bg-white flex-shrink-0">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+
+        <div class="p-2 pt-0">
+          <div class="form-row form-dashboard">
+            
+            <div class="form-group col-5">
+              <label for="txtPayerSearch" class="col-form-label">Payer:</label>
+              <div class="input-icon d-flex flex-grow-3">
+    
+                <input id="txtPayerSearch" class="form-control flex-grow-3" type="text" #txtPayerSearch formControlName="txtPayerSearch"
+                  placeholder="Search by Payer Name or Payer number." (keydown)="onPayerSearchKeydown($event)" autocomplete="off"
+                  (input)="onPayerSearchInputChange(txtPayerSearch.value)" (blur)="onPatientSearchBlur()">
+                <div class="icon">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </div>
+                <inline-payer-search *ngIf="showPayerSearch" [searchValue]="txtPayerSearch.value" 
+                (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()"></inline-payer-search>
+              </div>
+    
+            </div>
+    
+            <div class="form-group">
+    
+              <label for="cmbCriteria" class="col-form-label">Select Criteria:</label>
+              <select class="form-control" formControlName="cmbCriteria" (change)="cmbChagne($event)">
+                <option [selected]="true">Primary</option>
+                <option>Secondary</option>
+                <option>Other</option>
+                <option>SelfPay</option>
+              </select>
+            </div>
+            
+            <div class="form-group col-1 d-flex justify-content-end align-items-end">
+              <button type="button" class="btn btn-success w-100"
+              
+                (click)="searchPatientPayer(frmPayerSubmit.value)">Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2 overflow-height">
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th>Payer Name</th>
+              <th>No of Patient</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr st-select-row="row" *ngFor="let lst of lstPatientPayer"
+             [ngClass]="{'active': lst.payer_id==selectedRow}"
+             (click)="onSelectionChangerpt(lst)">
+                  <td>{{lst.name}}</td>
+                  <td>{{lst.total_patient}}</td>
+                  <td class="link-btn" (click)="patientDetails(frmPayerSubmit.value,false,lst)">Detials</td>
+                </tr> 
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+<!-- 
+<div class="encounter-module">
+  <div class="header">
+    <div class="title">Payer Wise Patient</div>
+    <span class="badge badge-pill">{{recordCount}}</span>
+  </div>
+<div *ngIf="showHide">
+  <form [formGroup]="frmPayerSubmit">
+    <div class="custom-select-box pb-1" style="overflow: visible;">
+      <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-5">
+          <label for="txtPayerSearch" class="col-form-label">Payer:</label>
+          <div class="input-icon d-flex flex-grow-3">
+
+            <input id="txtPayerSearch" class="form-control flex-grow-3" type="text" #txtPayerSearch formControlName="txtPayerSearch"
+              placeholder="Search by Payer Name or Payer number." (keydown)="onPayerSearchKeydown($event)" autocomplete="off"
+              (input)="onPayerSearchInputChange(txtPayerSearch.value)" (blur)="onPatientSearchBlur()">
+            <div class="icon">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+            <inline-payer-search *ngIf="showPayerSearch" [searchValue]="txtPayerSearch.value" 
+            (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()"></inline-payer-search>
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="cmbCriteria" class="col-form-label">Select Criteria:</label>
+          <select class="form-control" formControlName="cmbCriteria" (change)="cmbChagne($event)">
+            <option [selected]="true">Primary</option>
+            <option>Secondary</option>
+            <option>Other</option>
+            <option>SelfPay</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <button type="button" ng-disabled="btnHide" class="btn btn-success ml-2 mt-3" (click)="searchPatientPayer(frmPayerSubmit.value)">Search</button>
+     
+        </div>
+
+      </div>
+      
+    </div>
+  </form>
+  <div class="custom-select-box pb-1 mt-2">
+    <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+    <div class="form-row form-dashboard">
+      <table class="table light-striped-border">
+        <thead>
+          <tr>
+            <th>Payer Name</th>
+            <th>No of Patient</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+           <tr st-select-row="row" *ngFor="let lst of lstPatientPayer">
+                <td>{{lst.name}}</td>
+                <td>{{lst.total_patient}}</td>
+                <td class="link-btn" (click)="patientDetails(frmPayerSubmit.value,false,lst)">Detials</td>
+              </tr> 
+        </tbody>
+      </table>
+
+
+    </div>
+  </div>
+</div>
+<div *ngIf="!showHide">
+  <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+      <button class="left-back-btn" (click)="patientDetails(frmPayerSubmit.value,true,'')">
+          <i class="fas fa-arrow-left mr-2"></i>Back 
+      </button>
+      <div class="d-flex align-items-center ml-12 text-white">{{payerDisplayName}}</div>
+</div>
+<div class="custom-select-box pb-1 mt-2">
+  <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+  <div class="form-row form-dashboard">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>DOB</th>
+          <th>SSN</th>
+          <th>Patient ID</th>
+          <th>Home Phone</th>
+          <th>Cell Phone</th>
+          <th>Gender</th>
+          <th>Address</th>
+        </tr>
+      </thead>
+      <tbody>
+         <tr st-select-row="row" *ngFor="let lst of lstPatientPayerDetials">
+              <td>{{lst.name}}</td>
+              <td>{{lst.dob}}</td>
+              <td>{{lst.ssn}}</td>
+              <td>{{lst.patient_id}}</td>
+              <td>{{lst.home_phone}}</td>
+              <td>{{lst.cell_phone}}</td>
+              <td>{{lst.gender}}</td>
+              <td>{{lst.address}}</td>
+            </tr> 
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+</div> -->
+
+<div *ngIf="!showHide" class="d-flex flex-column flex-grow-1">
+  <!-- <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <button class="left-back-btn" (click)="patientDetails(frmPayerSubmit.value,true,'')">
+      <i class="fas fa-arrow-left mr-2"></i>Back 
+  </button>
+  <div class="d-flex align-items-center ml-12 text-white">{{payerDisplayName}}</div>
+    <button class="btn btn-link fz-13 font-weight-400 py-0 text-white" (click)="exportAsXLSX()"><i
+      class="fas fa-file-excel fa-md  mr-1"></i>Export to Excel</button>
+
+  </div> -->
+  <div class="rounded bg-white flex-shrink-0">
+    <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+      <button class="left-back-btn" (click)="patientDetails(frmPayerSubmit.value,true,'')">
+          <i class="fas fa-arrow-left mr-2"></i>Back 
+      </button>
+      <div class="d-flex align-items-center ml-12 text-white" style="width: 100%;">{{payerDisplayName}}</div>
+
+
+      <button class="btn btn-link fz-13 font-weight-400 py-0 text-white" (click)="exportAsXLSX()"><i
+        class="fas fa-file-excel fa-md  mr-1"></i>Export to Excel</button>
+
+    </div>
+    
+</div>
+
+
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+    <!-- <div class="rounded bg-white flex-shrink-0">
+        <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+          <button class="left-back-btn" (click)="patientDetails(frmPayerSubmit.value,true,'')">
+              <i class="fas fa-arrow-left mr-2"></i>Back 
+          </button>
+          <div class="d-flex align-items-center ml-12 text-white">{{payerDisplayName}}</div>
+        </div>
+    </div> -->
+  
+  
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2 overflow-height">
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th>Patient Name</th>
+              <th>DOB</th>
+              <th>SSN</th>
+              <th>Patient ID</th>
+              <th>Home Phone</th>
+              <th>Cell Phone</th>
+              <th>Gender</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr st-select-row="row" *ngFor="let lst of lstPatientPayerDetials"
+             [ngClass]="{'active': lst.patient_id==selectedRowDetail}"
+             (click)="onSelectionChangeDetail(lst)">
+                  <td>{{lst.name}}</td>
+                  <td>{{lst.dob}}</td>
+                  <td>{{lst.ssn}}</td>
+                  <td>{{lst.patient_id}}</td>
+                  <td>{{lst.home_phone}}</td>
+                  <td>{{lst.cell_phone}}</td>
+                  <td>{{lst.gender}}</td>
+                  <td>{{lst.address}}</td>
+                </tr> 
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading2">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+  </div>
+
+</div>
+

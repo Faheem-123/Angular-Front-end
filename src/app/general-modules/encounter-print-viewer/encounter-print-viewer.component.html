@@ -1,0 +1,59 @@
+<!-- <div style="width:750px !important; height: 600px !important;" class="modal-lg"> -->
+<div class="modal-content custom " (keydown.esc)="activeModal.dismiss('Cross click')">
+  <div class="modal-header custom" (keydown.esc)="activeModal.dismiss('Cross click')">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">{{header}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!-- <div class="modal-body custom p-0 rounded-0 m-0" style="height: 600px !important"
+    (keydown.esc)="activeModal.dismiss('Cross click')"> -->
+  <div class="modal-body custom dashboard p-0 m-0 rounded-0" style="height: calc(100vh - 100px);"
+    (keydown.esc)="activeModal.dismiss('Cross click')">
+    <div class="dashboard-sub-nav encounter h-25 justify-content-end">
+      <div class="title-link justify-content-start">
+        <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+          (click)="printDiv(printpnl.innerHTML)"><i class="fas fa-print pr-1"></i>Print</button>
+      </div>
+      <div class="title-link  justify-content-end">
+        <button *ngIf="callingModule=='order'" class="btn btn-sm btn-link p-0 mr-3" type="button"
+          (click)="onSign()">Sign</button>
+      </div>
+      <div class="title-link justify-content-end">
+        <!-- <button *ngIf="callingModule=='order'" class="btn btn-link" type="button" (click)="onFollowup()">Follow Up</button> -->
+        <div class="dropdown nav color-buttons align-items-center">
+          <button *ngIf="callingModule=='order'" type="button" class="nav-link blue px-2 py-0" data-toggle="dropdown"
+            aria-expanded="false">
+            Follow Up
+            <i class="fas fa-caret-down ml-1"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right mt-1 light-gray-bg" role="menu">
+            <form class="px-2 py-2" [formGroup]="followupForm">
+              <div class="form-group">
+                <label for="exampleDropdownFormEmail1">Follow Up</label>
+                <select class="form-control col-12" formControlName="drpFollowUp">
+                  <option *ngFor="let s of lookupList.arrFollowNote">{{s}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleDropdownFormPassword1">Action</label>
+                <select class="form-control" formControlName="drpFollowUpaction">
+                  <option *ngFor="let s of lookupList.arrFollowAction">{{s}}</option>
+                </select>
+              </div>
+              <button class="nav-link btn btn-success rounded-0 px-2 py-0" (click)="onSaveFollowUp()">
+                <i class="far fa-save pr-1"></i>Save
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="dashboard-content bg-white p-2" [innerHTML]="print_html" #printpnl>
+
+    </div>
+  </div>
+</div>

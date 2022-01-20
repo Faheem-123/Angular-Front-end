@@ -1,0 +1,164 @@
+<!-- <div class="light-title-bar rounded-top h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400">Template Setup</div>
+    <div class="d-flex align-items-center">
+      <a class="fz-13 font-weight-400 mr-3" href=""><i class="fas fa-plus"></i> Add</a>
+      <a class="fz-13 font-weight-400 mr-3" href=""><i class="far fa-edit"></i> Edit</a>
+      <a class="fz-13 font-weight-400 mr-3" href=""><i class="far fa-trash-alt"></i> Delete</a>
+      <button class="btn btn-sm bg-green-ihc mr-2">Save</button>
+      <button class="btn btn-sm btn-dark">Cancel</button>
+    </div>
+  </div> -->
+
+
+<div class="dashboard rounded">
+   
+    <div >
+        <form [formGroup]="radioForm">
+            <div class="btn-group radio-btn-tabs px-1">
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (optionSelect === 'Reason For Visit')}">
+                    <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                        value="Reason For Visit" (ngModelChange)="changeTemplateTab($event)"> Reason For Visit
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (optionSelect === 'HPI')}">
+                    <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                        value="HPI" (ngModelChange)="changeTemplateTab($event)"> HPI
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (optionSelect === 'PMH')}">
+                    <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                        value="PMH" (ngModelChange)="changeTemplateTab($event)"> PMH
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (optionSelect === 'ROS')}">
+                    <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                        value="ROS" (ngModelChange)="changeTemplateTab($event)"> ROS
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (optionSelect === 'Physical Exam')}">
+                    <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                        value="Physical Exam" (ngModelChange)="changeTemplateTab($event)"> Physical Exam
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (optionSelect === 'Plan')}">
+                    <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                        value="Plan" (ngModelChange)="changeTemplateTab($event)"> Plan
+                </label>
+            </div>
+        </form>
+    </div>
+    <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+        <form [formGroup]="tempSetUpForm">
+            <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+
+                <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                    <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                        <div class="rounded-box-title-bar justify-content-between">
+                            <span>{{gridName}}</span>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-sm btn-link line-height-1 p-0 mr-2" (click)="addNewTemplate()"
+                                    *ngIf="newTemplate">New</button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-column flex-grow-1">
+                            <div class="border-top bg-white flex-grow-1 overflow-auto d-flex overflow-height">
+                                <table class="table layout-fixed sm light-striped-border" id="tbl">
+                                    <tbody>
+                                        <tr st-select-row="row" *ngFor="let temp of listTemplateResult"
+                                            (click)="PopTemplateSetup(temp)"
+                                            [ngClass]="{'active' : (temp.id === isSelectedID)}">
+                                            <td width="70%">{{temp.name}}</td>
+                                            <td class="text-right">
+                                                <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                                                    (click)="editSeletedTemplate(temp)"><i
+                                                        class="far fa-edit"></i></button>
+                                                <button class="btn btn-link fz-14 text-danger line-height-1 p-0"
+                                                    (click)="deleteSeletedTemplate(temp)"><i
+                                                        class="far fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+
+                    <div class="bg-white d-flex flex-column flex-grow-1">
+                        <div class="border border-bottom-0 rounded-top bg-white px-2 py-1 flex-shrink-0">
+                            <div class="form-row form-dashboard">
+                                <div class="form-group horizental row zero col-12">
+                                    <label class="col-sm-3 col-form-label " for="input2">Template Name chk:</label>
+                                    <input type="text" class="form-control col-sm-9 mr-2" 
+                                        formControlName="txt_TemplateName" [readonly]="newTemplate">
+                                    <div class="d-flex align-items-center" *ngIf="!newTemplate">
+                                        <button class="btn rounded-0 btn-sm bg-green-ihc text-white mr-1" (click)="saveTemplateSetup()">Save</button>
+                                        <button class="btn btn-sm btn-dark top-right-radius"
+                                            (click)="cancelNewTemplate()">Cancel</button>
+                                    </div>
+                                </div>
+                              
+                            </div>
+                        </div>
+
+                        <div class="rounded-bottom d-flex flex-grow-1 overflow-auto">
+                            <textarea name="txt_TemplateText" id="txt_TemplateText" cols="65" [readOnly]="newTemplate"
+                                rows="50" formControlName="txt_TemplateText">
+                            </textarea>
+                           
+                        </div>
+
+                        <div class="rounded mt-1 d-flex flex-grow-1 overflow-auto">
+                           
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                    <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                        <div class="rounded-box-title-bar justify-content-between">
+                            
+                            <div>
+                                <input *ngIf="!enableDisableCheckBox" formcontrolname="chkIsProvider" id="chkProviderAll" type="checkbox" 
+                                (change)="onChkIsProviderChange($event)">
+                                <span class="ml-2">Providers</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-sm btn-link line-height-1 p-0 mr-2" (click)="editProvider()"
+                                    *ngIf="enableDisableCheckBox">Edit</button>
+                                <button class="btn rounded-0 btn-sm bg-green-ihc text-white" (click)="saveSelectedProvider()"
+                                    *ngIf="!enableDisableCheckBox">Save</button>
+                                <button class="btn btn-sm btn-dark top-right-radius" (click)="cancelProvider()"
+                                    *ngIf="!enableDisableCheckBox">Cancel</button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-column flex-grow-1">
+                            <div class="border-top  bg-white flex-grow-1 overflow-auto d-flex overflow-height">
+                                <table class="table layout-fixed sm light-striped-border">
+                                    <tbody>
+                                            <tr st-select-row="row"
+                                            (click)="providerschange(prov)" 
+                                            [ngClass]="{'active' : (prov.provider_id === selectedProvidersID)}"
+                                            *ngFor="let prov of listProvidersClone; let i = index">
+                                            <td class="width-30">
+                                                <!-- <input class="v-align-middle" [disabled]="enableDisableCheckBox"
+                                                    (change)="checkChkBox(prov.id,$event.currentTarget.checked)"
+                                                    type="checkbox" [checked]="prov.chkbox"></td> -->
+                                            <input class="v-align-middle" [disabled]="enableDisableCheckBox"
+                                                    (change)="checkChkBox(prov.provider_id,$event.currentTarget.checked)"
+                                                    type="checkbox" [checked]="prov.chkbox"></td>
+                                            <td>{{prov.provider_name}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </form>
+    </div>
+</div>

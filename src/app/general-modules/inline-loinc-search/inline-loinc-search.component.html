@@ -1,0 +1,33 @@
+<div class="inline-search" >
+  <div class="inline-search-header">    
+    <h6 class="title">Lab Search</h6>
+    <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <table class="table layout-fixed light-striped-border" *ngIf="!isLoading">
+      <thead>
+          <tr>
+              <th style="width: 10px;">Code</th>
+              <th style="width: 35px;">Name</th>
+              <th style="width: 35px;">Component</th>
+              <th style="width: 15px;">System</th>
+              <th style="width: 15px;">Related Name</th>
+            </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let pat of lstvalue">
+              <td title="{{pat.loinc_code}}">
+                <button type="button" class="link-btn" (click)="onLionicSelect.emit(pat)">{{pat.loinc_code}}</button>
+              </td>
+              <td title="{{pat.shortname}}" >{{pat.shortname}}</td>
+              <td title="{{pat.component}}" >{{pat.component}}</td>
+              <td title="{{pat.loinc_system}}" >{{pat.loinc_system}}</td>
+              <td title="{{pat.related_names}}" >{{pat.related_names}}</td>
+            </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

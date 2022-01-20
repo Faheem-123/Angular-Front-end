@@ -1,0 +1,248 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="d-flex flex-grow-1 overflow-height">
+    <div class="w-30 d-flex flex-column ">
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 max-height-100">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          Users
+        </div>
+        <div class="d-flex flex-grow-1 overflow-auto ">
+          <table class="table sm layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>Role</th>
+                <!-- <th></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of lstUserData;" (click)="userChagned(user)"
+                [ngClass]="{'active': selectedUserId == user.user_id}">
+                <td>{{user.user_name}}</td>
+                <td>{{user.role_name}}</td>
+                <!-- <td>
+                      <a class="p-0 text-primary mr-2" (click)="onEdit()">
+                          <i class="far fa-edit"></i>
+                      </a>
+                      <a class="text-danger" href="#">
+                          <i class="far fa-trash-alt"></i>
+                      </a>
+                  </td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="w-70 d-flex flex-column">
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 ml-6 max-height-100">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0">
+          User Details
+          <div class="d-flex align-items-center">
+            <button type="button" (click)="onAdd()"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="fas fa-plus"></i>
+              Add</button>
+            <button type="button" (click)="onEdit()"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="far fa-edit"></i>
+              Edit</button>
+            <button type="button" (click)="onDelete()" *ngIf="!addEditView"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="far fa-trash-alt"></i>
+              Delete</button>
+            <button *ngIf="addEditView" class="btn rounded-0 btn-sm bg-green-ihc text-white h-20" type="button"
+              (click)="saveBillingUser(billingUserFormGroup.value)">Save</button>
+            <button *ngIf="addEditView" class="btn btn-sm btn-dark top-right-radius h-20" type="button"
+              (click)="onCancel()">
+              Cancel</button>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-grow-1 overflow-auto ">
+          <div class="border rounded-3 bg-white m-2">
+            <!-- *ngIf="selectedUserDetail !=undefined || addEditView" -->
+            <div class="p-8 py-6">
+              <form [formGroup]="billingUserFormGroup">
+                <div class="form-row form-dashboard">
+                  <div class="col-6 px-2">
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-8 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="txtfirstName">First Name:</label>
+                        <label class="form-control pt-1 bg-disabled" *ngIf="!addEditView">{{objFirst_name}}</label>
+                        <input type="text" class="form-control col" formControlName="txtfirstName" *ngIf="addEditView">
+                      </div>
+                      <div class="form-group col-4 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="txtmiddleName">Middle Name:</label>
+                        <label class="form-control pt-1 bg-disabled" *ngIf="!addEditView">{{objMname}}</label>
+                        <input type="text" class="form-control col" formControlName="txtmiddleName" *ngIf="addEditView">
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditOperation=='add'}"
+                          for="txtuserName">User Name:</label>
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView || addEditOperation=='edit'">{{objUser_name}}</label>
+                        <div class="input-group " *ngIf="addEditView && addEditOperation=='add'">
+                          <input type="text" class="form-control" formControlName="txtuserName">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">@IHC</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddlDefaultPhysician">Default Physician:</label>
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{objDefault_phy_name}}</label>
+                        <select class="form-control col" labelForId="ddlDefaultPhysician"
+                          formControlName="ddlDefaultPhysician" *ngIf="addEditView">
+                          <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="ddLocation">Location:</label>
+                        <label class="form-control pt-1 bg-disabled" *ngIf="!addEditView">{{objLoc_name}}</label>
+                        <select class="form-control col" labelForId="ddLocation" formControlName="ddLocation"
+                          *ngIf="addEditView">
+                          <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="ddlDefaultChartSetting">Default Chart Setting:</label>
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{objChart_setting_name}}</label>
+                        <select class="form-control" labelForId="ddlDefaultChartSetting"
+                          formControlName="ddlDefaultChartSetting" *ngIf="addEditView">
+                          <option *ngFor="let loc of lstChartSettings" [value]="loc.setting_id">{{loc.setting_name}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddlDefaultSuperBill">Default Super Bill:</label>
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{objDefault_bill_name}}</label>
+                        <select class="form-control" labelForId="ddlDefaultSuperBill"
+                          formControlName="ddlDefaultSuperBill" *ngIf="addEditView">
+                          <option *ngFor="let bill of lstSuperBills" [value]="bill.id">{{bill.name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6 px-2">
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="txtlastName">Last Name:</label>
+                        <label class="form-control pt-1 bg-disabled" *ngIf="!addEditView">{{objLast_name}}</label>
+                        <input type="text" class="form-control col" formControlName="txtlastName" *ngIf="addEditView">
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard" *ngIf="addEditView">
+                      <div class="form-group col-12">
+                        <label for="txtpassword">Password</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend" *ngIf="addEditOperation=='edit'">
+                            <div class="input-group-text bg-white">
+                              <input type="checkbox" id="chkChangePwd" (change)="onChkChangePwdChange($event)">
+                              <label class="form-check-label pl-1" for="chkChangePwd">Change</label>
+                            </div>
+                          </div>
+                          <input type="password" class="form-control"  formControlName="txtpassword">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddBilingProvider">Billing Physician:</label>
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{objBilling_phy_name}}</label>
+                        <select class="form-control col" labelForId="ddBilingProvider"
+                          formControlName="ddBilingProvider" *ngIf="addEditView">
+                          <option *ngFor="let pro of lookupList.billingProviderList" [value]="pro.id">{{pro.name}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="ddRole">Default Role:</label>
+                        <label class="form-control pt-1 bg-disabled" *ngIf="!addEditView">{{objRole_name}}</label>
+                        <select class="form-control" labelForId="ddRole" formControlName="ddRole" *ngIf="addEditView">
+                          <option *ngFor="let rol of BroleList" [value]="rol.role_id">{{rol.role_name}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddlPrescriptionRole">Prescription Role:</label>
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{objDefault_prescription_role}}</label>
+                        <select class="form-control" labelForId="ddlPrescriptionRole"
+                          formControlName="ddlPrescriptionRole" *ngIf="addEditView">
+                          <option *ngFor="let loc of arrPrescriptionList" [value]="loc">{{loc}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddlUserType">User Type:</label>
+                        <label class="form-control pt-1 bg-disabled" *ngIf="!addEditView">{{objUser_type}}</label>
+                        <select class="form-control" labelForId="ddlUserType" formControlName="ddlUserType"
+                          *ngIf="addEditView">
+                          <option *ngFor="let utype of arrUserTypeList" [value]="utype">{{utype}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="border rounded-3 bg-white d-flex flex-column flex-grow-1 m-2 mt-0 overflow-height">
+            <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100 d-flex flex-row">
+              <table class="table sm layout-fixed light-striped-border">
+                <thead>
+                  <tr>
+                    <td class="width-40"></td>
+                    <td>Practice Name</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let prac of lstAllPractices;">
+                    <td class="text-right width-40 align-middle">
+                      <input class="v-align-middle" (change)="practiceCheckBoxChk(prac.id,$event.currentTarget.checked)"
+                        type="checkbox" [checked]="prac.address">
+                    </td>
+                    <td class="width-100">{{prac.name}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

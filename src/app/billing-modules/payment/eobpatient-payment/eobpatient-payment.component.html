@@ -1,0 +1,143 @@
+<div class="modal-header custom" (keydown.esc)="activeModal.dismiss('Cross click')">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Post Patient Payment</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom" (keydown.esc)="activeModal.dismiss('Cross click')">
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div class="flex-grow-1 overflow-auto">
+    <div>
+
+      <!-- <div class="no-content p-2" *ngIf="(lstPostingDetails==undefined || lstPostingDetails.length==0 )">
+        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+      </div> -->
+      <form [formGroup]="searchForm">
+        <div class="border bg-white flex-shrink-0 px-2 py-1">
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental row zero col-12">
+              <div class="form-view form-view zero px-0 col-12">
+                  <div class=" title-normal">Patient</div>
+              <div class="value">{{patient_name}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row form-dashboard">
+          <div class="form-group horizental row zero col-4">
+            <div class="form-view form-view zero px-0">
+              <div class="title-normal">Check Date</div>
+              <div class="value">{{check_date}}</div>
+            </div>
+          </div>
+          <div class="form-group horizental row zero col-4">
+            <div class="form-view form-view zero px-0">
+              <div class="title-normal">Check Number</div>
+              <div class="value">{{check_no}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row form-dashboard">
+          <div class="form-group horizental row zero col-4">
+            <div class="form-view form-view zero px-0">
+              <div class="title-normal">Check Amount</div>
+              <div class="value">$ {{check_amount}}</div>
+            </div>
+          </div>
+          <div class="form-group horizental row zero col-4">
+            <div class="form-view form-view zero px-0">
+              <div class="title-normal">Posted Amount</div>
+              <div class="value"> {{posted_amount | currency:'USD':'symbol-narrow'}}</div>
+            </div>
+          </div>
+          <div class="form-group horizental row zero col-4">
+            <div class="form-view form-view zero px-0">
+              <div class="title-normal">Pending</div>
+              <div class="value"> {{pending_amount | currency:'USD':'symbol-narrow'}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row form-dashboard">
+          <div class="form-group horizental row zero col-12">
+            <label for="code" class="col-form-label col-1">Claims</label>
+            <select class="col-form-label col-11"  (change)="onDropDownChange($event.target.value)" formControlName="cmbClaim">
+              <option value="-1">Select Claim</option>
+                  <option *ngFor="let c of acClaims"
+                    [value]="c.claim_id">
+                    Claim ID: &nbsp;{{c.claim_id}} &nbsp;| &nbsp; DOS: &nbsp;{{c.dos}} &nbsp; | &nbsp; Claim Total: &nbsp; ${{c.claim_total}} &nbsp; |  &nbsp;Pat Paid:  &nbsp;${{c.patient_paid}}  &nbsp;| &nbsp; Amt Due:  &nbsp;${{c.amt_due}}
+                  </option>
+                </select> 
+          </div>
+        </div>
+    </div>
+    </form>
+
+      <div class="border border-top-0 bg-white flex-grow-1 overflow-auto mt-2 h-200">
+        <table class="table light-striped-border table-sticky-header">
+        <thead>
+          <tr>
+            <td>Procedure Code</td>
+            <td>Total Charges</td>
+            <td>CPT Balance</td>
+            <td>Patient Paid</td>
+            <td>Payment</td>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let c of acClaimsCPT; let i=index;" (click)="onCptRowClick(i)"
+          [ngClass]="{'active': i==selectedCptRow}" >
+            <td>{{c.proc_code}}</td>
+            <td>{{c.cpt_charges | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{c.cpt_balance | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{(c.patient_paid==null?0:c.patient_paid) | currency:'USD':'symbol-narrow'}}</td>
+            <td>
+            <input type="text" class="form-control flex-grow-3 required width-60" 
+            id="txt_eob_post_patient_payment{{c.claim_procedures_id}}" value={{c.paid_amount}}
+            (focusout)="ontxt_eob_post_patient_paymentChange($event.currentTarget.value,i)" >
+          </td>
+            <!-- {{c.paid_amount | currency:'USD':'symbol-narrow'}} -->
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="form-row form-dashboard ml-1 justify-content-between">
+          <div class="form-view form-view zero px-0 justify-content-start">
+              <div class="title-normal">Amount to Post</div>
+              <div class="value">{{total_paid_tansfer | currency:'USD':'symbol-narrow'}}</div>
+            </div>
+            <div class="justify-content-end">
+              <button class="btn btn-sm btn-info mr-1 px-2 py-0 top-right-radius" (click)="onSave()">Post </button>
+              <button class="btn btn-sm btn-info mr-1 px-2 py-0 top-right-radius" (click)="activeModal.dismiss('Cross click')">Cancel </button>
+            </div>
+      </div>
+      <div class="light-title-bar h-30 pl-2 d-flex align-items-center justify-content-between flex-shrink-0">
+          <div class="fz-15 font-weight-400">Previous Posting of Current Check
+          </div>
+        </div>
+      <div class="border border-top-0 bg-white flex-grow-1 overflow-auto h-200">
+          <table class="table light-striped-border table-sticky-header">
+          <thead>
+            <tr>
+              <td>Claim ID</td>
+              <td>DOS</td>
+              <td>CPT Code</td>
+              <td>Amount Paid</td>
+            </tr>
+          </thead>
+  
+          <tbody>
+            <tr *ngFor="let c of lstPostingDetails; let i=index;">
+              <td>{{c.claim_id}}</td>
+              <td>{{c.dos}}</td>
+              <td>{{c.proc_code}}</td>
+              <td>{{c.paid_amount | currency:'USD':'symbol-narrow'}}</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,120 @@
+<div class="d-flex flex-column flex-grow-1 mt-0 position-relative">
+    <div class="bg-green-ihc  h-25 px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0"
+    [ngClass]="{'light-title-bar': callingFrom=='billing_reports'}">
+      <div class="fz-15 font-weight-400 " [ngClass]="{'text-white': callingFrom=='reports'}">User Audit Report<span class="badge badge-pill"></span></div>
+    </div>
+    <div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+      <form [formGroup]="searchForm">
+        <div class="rounded bg-white flex-shrink-0">
+          <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+            <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Search Criteria</h4>
+            <button type="button" class="btn btn-link fz-14 px-2 py-0 line-height-normal"
+              (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="searchCriteria"><i
+                class="fas fa-chevron-circle-down"></i></button>
+          </div>
+          <div class="m-2 mt-0 pt-1 border-top" id="searchCriteria" [ngbCollapse]="isCollapsed">
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col-2">
+                <label class="col-form-label col-3" for="dpfromDate">From:</label>
+                <div class="input-group col-9">
+                  <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpfromDate" ngbDatepicker
+                    #dpfromDate="ngbDatepicker" formControlName="dpfromDate">
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button">
+                    </button>
+                  </span>
+                </div>
+              </div>
+              <div class="form-group horizental row zero col-2">
+                <label class="col-form-label col-3" for="dptoDate">To:</label>
+                <div class="input-group col-9">
+                  <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dptoDate" ngbDatepicker
+                    #dptoDate="ngbDatepicker" formControlName="dptoDate">
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dptoDate.toggle()" type="button">
+                    </button>
+                  </span>
+                </div>
+              </div>
+  
+              <div class="form-group horizental row zero col-2">
+                  <button type="button" ng-disabled="btnHide" class="btn btn-success" [disabled]="isLoading"
+                  (click)="onSearch(searchForm.value)">Search</button>
+              </div>
+              <div class="form-group horizental row zero col-6">
+                <div class="form-group col-12 d-flex justify-content-end align-items-end">
+                      <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" ><i
+                        class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export</button>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </form>
+      <!-- ************************************************************** -->
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-0 max-height-100">
+  
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details
+            <span *ngIf="lstClaimDetails!=undefined" class="fz-12">({{lstClaimDetails.length}})</span> </h4>
+  
+        </div>
+  
+        <div class="overflow-auto flex-grow-1  overflow-height">
+          <table class="table light-striped-border">
+            <thead>
+              <tr>
+                <th scope="col" sortable="user"type="datetime" type="alpha" >User</th>
+                <th scope="col" sortable="claim_notes" type="alpha" (sort)="onSort($event)">Claim Notes</th>
+                <th scope="col" sortable="patient_notes"  type="alpha"(sort)="onSort($event)">Patient Notes</th>
+                <th scope="col" sortable="claims" type="alpha"  (sort)="onSort($event)">Claims</th>
+                <th scope="col" sortable="era_payment" type="numeric" (sort)="onSort($event)">ERA Payment</th>
+                <th scope="col" sortable="eob_payment" type="alpha" (sort)="onSort($event)">EOB Payment</th>
+                <th scope="col" sortable="cashRegister_payment" type="alpha" (sort)="onSort($event)">Cash Register Payment</th>
+                <th scope="col" sortable="denail_posted" type="alpha" (sort)="onSort($event)">Denail Posted</th>
+                <th scope="col" sortable="denail_resolved" type="alpha" (sort)="onSort($event)">Denail Resolved</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr st-select-row="row" *ngFor="let c of lstClaimDetails">
+                <td class="dashboard-sub-nav">{{c.user}}</td>
+                <td>{{c.claim_notes}}</td>
+                <td>{{c.patient_notes}}</td>
+                <td>{{c.claims}}</td>
+                <td>{{c.era_payment}}</td>
+                <td>{{c.eob_payment}}</td>
+                <td>{{c.cashRegister_payment}}</td>
+                <td>{{c.denail_posted}}</td>
+                <td>{{c.denail_resolved}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>  
+    <div class="border-content-box border-top-0 rounded-bottom flex-shrink-0 overflow-auto bg-white">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th>Total:</th>
+              <th>{{total_claim_notes}}</th>
+              <th>{{total_pat_notes}}</th>
+              <th>{{total_claims}}</th>
+              <th>{{total_era_payment}}</th>
+
+              <th>{{total_eob_payment}}</th>
+              <th>{{total_cashregister_payment}}</th>
+              <th>{{total_denail_posted}}</th>
+              <th>{{total_denail_resolved}}</th>
+            </tr>
+          </thead>
+          
+        </table>
+      </div> 
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,95 @@
+<div class="dashboard-container d-flex flex-column mb-0">
+    <div class="dashboard mx-1">
+
+
+        <ng-template id="noAccessView" [ngIf]="!lookupList.UserRights.cashregister_view">
+
+            <div class="dashboard-content p-0">
+                <div class="border-content-box border-top-0 rounded-bottom norecord-found">
+                    <p class="no-content p-6">
+                        <i class="text-danger fas fa-ban mr-2"></i> Access Denied
+                    </p>
+                </div>
+            </div>
+
+        </ng-template>
+
+
+        <ng-template id="normalView" [ngIf]="lookupList.UserRights.cashregister_view">
+            <ngb-tabset class="inner-sub-horizental-tab" [destroyOnHide]="false" (tabChange)="onTabChange($event)">
+                <ngb-tab id="tab-pat-payment">
+                    <ng-template ngbTabTitle>Payment</ng-template>
+                    <ng-template ngbTabContent>
+                        <patient-payment [patientId]="patientId" class="d-flex flex-column flex-grow-1">
+                        </patient-payment>
+                    </ng-template>
+                </ngb-tab>
+
+
+                <ngb-tab id="tab-pat-refunds">
+                    <ng-template ngbTabTitle>Refunds</ng-template>
+                    <ng-template ngbTabContent>
+                        <patient-refunds [patientId]="patientId" class="d-flex flex-column flex-grow-1"
+                            *ngIf="loadRefund">
+                        </patient-refunds>
+                    </ng-template>
+                </ngb-tab>
+
+
+                <ngb-tab id="tab-not-paid-reason">
+                    <ng-template ngbTabTitle>Not Paid Reason</ng-template>
+                    <ng-template ngbTabContent>
+                        <div class="dashboard-sub-nav encounter justify-content-between pr-0">
+                            <p>Not Paid Reason</p>
+                            <div class="flex-grow-1">&nbsp;</div>
+
+                            <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"><img alt=""
+                                    class="img-h-20" src="./assets/images/icons/ico_refresh_green.svg"
+                                    (click)="getNotPaidReason()"></button>
+
+
+                        </div>
+
+                        <div class="dashboard-container d-flex flex-column m-0 p-0 position-relative">
+                            <div class="dashboard no-border m-0 p-0 rounded-0">
+
+                                <div class="dashboard-content p-0">
+
+                                    <div *ngIf="isLoading" class="div-loader"></div>
+                                    <table class="table light-striped-border">
+                                        <thead>
+                                            <tr>
+                                                <th class="flex-grow-1">Not Paid Reason</th>
+                                                <th style="width: 200px">Authorized By</th>
+                                                <th style="width: 100px">Date Created</th>
+                                                <th style="width: 200px">Create By</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let record of lstNotPaidReason; let i=index;">
+                                                <td>
+                                                    <pre>{{record.col1}}</pre>
+                                                </td>
+                                                <td>{{record.col2}}</td>
+                                                <td>{{record.col3}}</td>
+                                                <td>{{record.col4}}</td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoadingReason">
+                                <div class="div-ui-blocker-message-box ">
+                                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
+        </ng-template>
+    </div>
+</div>

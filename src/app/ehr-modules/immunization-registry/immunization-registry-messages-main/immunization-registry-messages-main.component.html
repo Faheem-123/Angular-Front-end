@@ -1,0 +1,21 @@
+<div class="border-content-box light-sky-blue border-top-0 rounded-custom d-flex flex-column flex-grow-1">
+  <ngb-tabset  [destroyOnHide]="false"
+    class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden rounded-custom">
+    <ngb-tab id="imm_reg_update_message">
+      <ng-template ngbTabTitle><span>Immunization Update Messages (VXU)</span></ng-template>
+      <ng-template ngbTabContent>
+        <immunization-registry-update-messages class="d-flex flex-column flex-grow-1 overflow-height">
+        </immunization-registry-update-messages>
+      </ng-template>
+    </ngb-tab>
+
+    <ngb-tab id="imm_reg_history_forecast_message">
+      <ng-template ngbTabTitle><span>Evaluated Immunization History and Immunization Forecast (QBP)</span></ng-template>
+      <ng-template ngbTabContent>
+        <immunization-registry-history-forecast-messages class="d-flex flex-column flex-grow-1 overflow-height">
+        </immunization-registry-history-forecast-messages>
+      </ng-template>
+    </ngb-tab>
+
+  </ngb-tabset>
+</div>

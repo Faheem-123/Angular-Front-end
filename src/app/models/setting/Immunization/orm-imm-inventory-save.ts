@@ -1,0 +1,23 @@
+export class ORMImmInventorySave {
+    inventory_id:number;
+    cvx_code:string;
+    mvx_code:string;
+    trade_name:string;
+    lot_number:string;
+    expiry_date:string;
+    inventory:number;
+    inventory_status:string;
+    location_id:number;
+    clinic_id:string;
+    practice_id:number;
+    created_user:string;
+    modified_user:string;
+    date_created:string;
+    date_modified:string;
+    client_date_created:string;
+    client_date_modified:string;
+    system_ip:string;
+    deleted:boolean;
+    trade_description:string;
+    ndc:string;
+}

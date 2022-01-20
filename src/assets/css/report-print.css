@@ -1,0 +1,1157 @@
+.report {
+	padding: 5px 0.9rem;
+	background-color: #FFFF;
+}
+
+.report .p {
+	font-weight: 400;
+	font-size: 1rem;
+}
+
+.form-group>label {
+	font-weight: 400;
+	font-size: 1rem;
+	margin-bottom: 0;
+}
+
+.report .table td,
+.table th {
+	padding: 4px 8px;
+}
+
+.report .table td,
+.table th {
+	padding: 4px 8px;
+}
+
+.report .table td,
+.table th {
+	padding: .75rem;
+	vertical-align: top;
+	border-top: 1px solid #dee2e6;
+}
+
+.report .table.light-blue-striped-row-column-border {
+	font-family: 'Roboto';
+}
+
+.report .table.light-blue-striped-row-column-border,
+.report .table.light-blue-striped-row-column-border thead tr,
+.report .table.light-blue-striped-row-column-border thead th,
+.report .table.light-blue-striped-row-column-border tbody tr,
+.report .table.light-blue-striped-row-column-border tbody td {
+	color: black !important;
+	/*border: 1px solid #00823a !important;   */
+	border: 1px solid #b9bfc5 !important;
+}
+
+.report .header {
+	display: flex;
+	padding-bottom: 8px;
+	padding-top: 8px;
+}
+
+.report .border-bottom-green {
+	border-bottom: 1px solid #00823a;
+}
+
+.report .border-top-green {
+	border-top: 1px solid #00823a;
+}
+
+
+/*
+.report .header .title{      
+    padding-left: 18px;
+}
+*/
+
+.report .header .title .maintitle {
+	font-weight: 500;
+	font-size: 1.5rem;
+	margin-bottom: 2px;
+	margin-top: 0px;
+}
+
+.report .header .title .subtitle {
+	font-weight: 400;
+	font-size: 0.9rem;
+	margin-bottom: 1px;
+	color: #215c8c;
+	margin-top: 0px;
+}
+
+.report .header .title .subtitle .small {
+	font-weight: 90%;
+}
+
+.report .header .logo {
+	width: 175;
+	align-items: center;
+	vertical-align: top;
+	padding-right: 18px;
+}
+
+.report .content .content-header {
+	display: flex;
+	padding-bottom: 4px;
+	padding-top: 4px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.report .content .content-header .content-header-title {
+	font-weight: 500;
+	font-size: 1.10rem;
+	margin-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.report .content .content-header .content-header-title small {
+	font-weight: 400;
+	font-size: 0.8rem;
+}
+
+.report .content .content-header .content-header-title strong {
+	font-weight: 500;
+}
+
+.report .content .body {
+	font-size: 1.10rem;
+}
+
+.report .patient-summary-report {
+	height: 56px;
+	margin: 0;
+	border-radius: 1px;
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+}
+
+.report .patient-summary-report .summary-info {
+	height: 56px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-shrink: 0;
+	border-radius: 3px;
+	border: 1px solid #2e7fc1;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+.report .patient-summary-report .patient-info-box {
+	font-size: 1.20rem;
+	flex-grow: 1;
+}
+
+.report .patient-summary-report .patient-info-box h3 {
+	font-size: 1.20rem;
+	font-weight: 400;
+	margin: 0;
+}
+
+.report .patient-summary-report .patient-info-box p {
+	font-size: 1.10rem;
+	margin: 0;
+	font-weight: 400;
+}
+
+.report .patient-summary-report .patient-info-box p i {
+	padding-right: 8px;
+}
+
+.report .patient-summary-report .patient-info-box p strong {
+	margin: 0;
+	font-weight: 500;
+}
+
+.report pre {
+	font-family: inherit;
+	font-size: 1.10rem;
+	margin-bottom: 2px;
+	border: none;
+}
+
+.report .footer-credential {
+	font-size: 1rem;
+	font-style: italic;
+	border: none;
+	display: flex;
+	-webkit-box-align: center;
+	align-items: center;
+	-webkit-box-pack: end;
+	justify-content: flex-end;
+	border-top: 1px solid #2e7fc1;
+}
+
+.report-sub-nav {
+	background-color: #c1d9ed;
+	height: 25px;
+	padding: 0 5px;
+	font-size: 1.10rem;
+	color: #ffffff;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+}
+
+.report-sub-nav .btnSmall {
+	font-size: 1.10rem;
+	line-height: 0.9rem;
+	padding: 4px 0px;
+	border-radius: 2px;
+}
+
+.report-sub-nav p {
+	font-weight: 500;
+	color: #252525;
+	margin: 0 0.9rem 0 4px;
+	padding: 0 8px;
+	font-size: 1.10rem;
+}
+
+.report .group-box {
+	border: 1px solid #2e7fc1;
+}
+
+.report .group-box .group-header {
+	border-bottom: 1px solid #2e7fc1;
+	color: black;
+}
+
+.table.report-row-column-border {
+	margin-bottom: 0;
+	font-family: 'Roboto';
+	font-size: 1.10rem;
+}
+
+.table.report-row-column-border,
+.table.report-row-column-border thead th,
+.table.report-row-column-border tbody td {
+	border: 1px solid #8ab7da;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 1.10rem;
+}
+
+.table.report-row-column-border thead tr {
+	color: #000000;
+	font-weight: 500;
+	background-color: rgba(213, 229, 243, 0.8);
+	height: 27px;
+	border: 1px solid #8ab7da;
+}
+
+.table.report-row-column-border tbody tr {
+	color: #000000;
+	font-weight: 400;
+	height: 27px;
+	border: 1px solid #8ab7da;
+}
+
+.table.report-row-column-border tbody tr:nth-of-type(odd) {
+	background-color: rgba(235, 242, 249, 0.5);
+}
+
+.table.report-row-column-border tbody tr.active {
+	color: #101010;
+	background-color: #8ab7da;
+}
+
+.table.layout-fixed.report-row-column-border {
+	margin-bottom: 0;
+	table-layout: fixed;
+}
+
+
+/* FAIZAN vertical drop down */
+
+.reports-main-sidebar,
+.left-side {
+	position: absolute;
+	top: 0;
+	left: 0;
+	min-height: 100%;
+	width: 204px;
+	z-index: 810;
+	-webkit-transition: -webkit-transform 0.3s ease-in-out, width 0.3s ease-in-out;
+	-moz-transition: -moz-transform 0.3s ease-in-out, width 0.3s ease-in-out;
+	-o-transition: -o-transform 0.3s ease-in-out, width 0.3s ease-in-out;
+	transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.reports-main-sidebar {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+@media (max-width: 767px) {
+	.reports-main-sidebar,
+	.left-side {
+		padding-top: 100px;
+	}
+}
+
+@media (max-width: 767px) {
+	.reports-main-sidebar,
+	.left-side {
+		-webkit-transform: translate(-230px, 0);
+		-ms-transform: translate(-230px, 0);
+		-o-transform: translate(-230px, 0);
+		transform: translate(-230px, 0);
+	}
+}
+
+@media (min-width: 768px) {
+	.sidebar-collapse .reports-main-sidebar,
+	.sidebar-collapse .left-side {
+		-webkit-transform: translate(-230px, 0);
+		-ms-transform: translate(-230px, 0);
+		-o-transform: translate(-230px, 0);
+		transform: translate(-230px, 0);
+	}
+}
+
+@media (max-width: 767px) {
+	.sidebar-open .reports-main-sidebar,
+	.sidebar-open .left-side {
+		-webkit-transform: translate(0, 0);
+		-ms-transform: translate(0, 0);
+		-o-transform: translate(0, 0);
+		transform: translate(0, 0);
+	}
+}
+
+.reports-sidebar {
+	padding-bottom: 0.9rem;
+}
+
+.sidebar-form input:focus {
+	border-color: transparent;
+}
+
+.user-panel {
+	position: relative;
+	width: 100%;
+	padding: 0.9rem;
+	overflow: hidden;
+}
+
+.user-panel:before,
+.user-panel:after {
+	content: " ";
+	display: table;
+}
+
+.user-panel:after {
+	clear: both;
+}
+
+.user-panel>.image>img {
+	width: 100%;
+	max-width: 45px;
+	height: auto;
+}
+
+.user-panel>.info {
+	padding: 5px 5px 5px 15px;
+	line-height: 1;
+	position: absolute;
+	left: 55px;
+}
+
+.user-panel>.info>p {
+	font-weight: 600;
+	margin-bottom: 9px;
+}
+
+.user-panel>.info>a {
+	text-decoration: none;
+	padding-right: 5px;
+	margin-top: 3px;
+	font-size: 0.9rem;
+}
+
+.user-panel>.info>a>.fa,
+.user-panel>.info>a>.ion,
+.user-panel>.info>a>.glyphicon {
+	margin-right: 3px;
+}
+
+.reports-sidebar-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.reports-sidebar-menu>li {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	/* border-bottom: 1px solid #2ebd6b; */
+}
+
+.reports-sidebar-menu>li+li {
+	margin-top: 1px;
+}
+
+.reports-sidebar-menu>li>a {
+	padding: 6px 4px 6px 8px;
+	display: block;
+	background-color: #0073aa;
+	color: rgba(255, 255, 255, .9);
+	line-height: 18px;
+}
+
+.reports-sidebar-menu>li>a:hover {
+	padding: 6px 4px 6px 8px;
+	display: block;
+	background-color: #0073aa;
+	color: rgba(255, 255, 255, 1);
+}
+
+.reports-sidebar-menu>li.active>a {
+	background-color: #2ebd6b;
+}
+
+.reports-sidebar-menu>li>a>.fa,
+.reports-sidebar-menu>li>a>.glyphicon,
+.reports-sidebar-menu>li>a>.ion {
+	width: 20px;
+}
+
+.reports-sidebar-menu>li .label,
+.reports-sidebar-menu>li .badge {
+	margin-right: 5px;
+}
+
+.reports-sidebar-menu>li .badge {
+	margin-top: 3px;
+}
+
+.reports-sidebar-menu li.header {
+	padding: 0.9rem 25px 0.9rem 15px;
+	font-size: 1rem;
+}
+
+.reports-sidebar-menu li>a>.fa-angle-left,
+.reports-sidebar-menu li>a>.pull-right-container>.fa-angle-left {
+	width: auto;
+	height: auto;
+	padding: 0;
+	margin-right: 0.9rem;
+}
+
+.reports-sidebar-menu li>a>.fa-angle-left {
+	position: absolute;
+	top: 50%;
+	right: 0.9rem;
+	margin-top: -8px;
+}
+
+.reports-sidebar-menu li.active>a>.fa-angle-left,
+.reports-sidebar-menu li.active>a>.pull-right-container>.fa-angle-left {
+	-webkit-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+
+.reports-sidebar-menu li.active>.reports-treeview-menu {
+	display: block;
+	/* background-color: #f1f4fa; */
+}
+
+.reports-sidebar-menu .reports-treeview-menu {
+	display: none;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.reports-sidebar-menu .reports-treeview-menu .reports-treeview-menu {
+	padding-left: 20px;
+}
+
+.reports-sidebar-menu .reports-treeview-menu>li {
+	margin: 0;
+	border-bottom: 1px solid #dee2e6;
+}
+
+.reports-sidebar-menu .reports-treeview-menu>li>a {
+	padding: 5px 5px 5px 20px;
+	display: block;
+	font-size: 13px;
+	color: #252525;
+}
+
+.reports-sidebar-menu .reports-treeview-menu>li>a>.fa,
+.reports-sidebar-menu .reports-treeview-menu>li>a>.glyphicon,
+.reports-sidebar-menu .reports-treeview-menu>li>a>.ion {
+	width: 20px;
+}
+
+.reports-sidebar-menu .reports-treeview-menu>li>a>.pull-right-container>.fa-angle-left,
+.reports-sidebar-menu .reports-treeview-menu>li>a>.pull-right-container>.fa-angle-down,
+.reports-sidebar-menu .reports-treeview-menu>li>a>.fa-angle-left,
+.reports-sidebar-menu .reports-treeview-menu>li>a>.fa-angle-down {
+	width: auto;
+}
+
+.reports-treeview-menu li a {
+	color: #0056b3;
+}
+
+.reports-treeview-menu li a:hover {
+	color: #2ebd6b;
+}
+
+.enc-count-col {
+	width: 10% !important;
+}
+
+.rpt-pointer.active {
+	color: #ffffff;
+	background-color: #b3d5e5;
+}
+
+.rpt-pointer {
+	cursor: pointer;
+	color: #0056b3;
+}
+
+.rpt-pointer:hover {
+	cursor: pointer;
+	color: #2ebd6b;
+}
+
+.help {
+	cursor: help;
+}
+
+.reports-sidebar-menu li.active>a>.fas {
+	transform: rotate(90deg);
+}
+
+.multiselect-dropdown .dropdown-btn {
+	background-color: #fcfcfc;
+	font-size: 1rem;
+	line-height: normal !important;
+	padding: 2px 4px 2px 8px !important;
+	min-height: 24px;
+	border-radius: 3px;
+	height: auto;
+	resize: none;
+	border: 1px solid #ced4da !important;
+}
+
+.multiselect-dropdown .dropdown-btn .dropdown-down {
+	display: inline-block;
+	top: 0.9rem !important;
+	width: 0;
+	height: 0;
+	border-top: 6px solid #656565 !important;
+	border-left: 5px solid transparent !important;
+	border-right: 5px solid transparent !important;
+}
+
+.multiselect-dropdown .dropdown-btn .dropdown-up {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	border-bottom: 6px solid #656565 !important;
+	border-left: 5px solid transparent !important;
+	border-right: 5px solid transparent !important;
+}
+
+.dropdown-list {
+	position: absolute;
+	padding-top: 0px !important;
+	width: 100%;
+	z-index: 9999;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: #fff;
+	margin-top: 0px !important;
+	box-shadow: 0 1px 5px #959595;
+}
+
+.multiselect-itrem-checkbox input[type=checkbox]+div {
+	font-size: 1rem;
+	padding-left: 26px !important;
+	color: #333333 !important;
+}
+
+.dropdown-list .filter-textbox {
+	padding: 5px 8px !important;
+}
+
+.dropdown-list .filter-textbox input {
+	font-size: 13px;
+	padding: 0 0 0 4px !important;
+}
+
+.report-print-heading-01 {
+	font-family: Arial;
+	font-size: 16px;
+	color: #000000;
+	font-weight: bold;
+	margin: 0;
+}
+
+.report-print-heading-03 {
+	font-family: Arial;
+	font-size: 1rem;
+	color: #000000;
+	font-weight: bold;
+	margin: 0;
+}
+
+.report-print-heading-04 {
+	font-family: Arial;
+	font-size: 0.9rem;
+	color: #000000;
+	font-weight: bold;
+	margin: 0;
+}
+
+.report-print-label {
+	font-family: Arial;
+	font-size: 0.9rem;
+	color: #000000;
+	font-weight: bold;
+	margin: 0;
+}
+
+.report-print-value {
+	font-family: Arial;
+	font-size: 0.9rem;
+	color: #000000;
+	font-weight: normal;
+	margin: 0;
+}
+
+.report-print-details {
+	font-size: 0.9rem;
+}
+
+.report-print-footer-details {
+	font-size: 0.75rem;
+	color: #939393;
+	font-style: italic;
+	line-height: 1.2;
+	margin: 0;
+}
+
+.report-form-group-title {
+	color: #215c8c;
+	/*color: #2972ad;  */
+}
+
+.report-form-group-value {
+	flex-grow: 1;
+	color: #101010;
+	display: flex;
+	padding-top: 8px;
+	min-height: 18px;
+}
+
+.font-weight-500 {
+	font-weight: 500 !important;
+}
+
+.report .patient-summary-report .patient-info-box h3 {
+	font-size: 1.25rem;
+	font-weight: 400;
+	margin: 0;
+}
+
+.w-7 {
+	width: 7% !important;
+}
+
+.w-10 {
+	width: 10% !important;
+}
+
+.w-12 {
+	width: 12% !important;
+}
+
+.w-13 {
+	width: 13% !important;
+}
+
+.w-14 {
+	width: 14% !important;
+}
+
+.w-15 {
+	width: 15% !important;
+}
+
+
+/* Encounter Style */
+
+.styleTopHeader {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 1.5rem;
+	color: #000000;
+}
+
+.styleTopSubHeader {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 0.9rem;
+	color: #0f4977;
+}
+
+.styleMainHeading {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 13px;
+	color: #0f4977;
+}
+
+.styleNormal {
+	font-size: 0.9rem;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+}
+
+.styleNormalBold {
+	font-size: 0.9rem;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+.styleSubHeading {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	font-weight: bold;
+}
+
+.tableMain {
+	font-size: 0.9rem;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	border: .1px solid #5bb6d0;
+}
+
+.tableMain td {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: .1px solid #5bb6d0;
+	padding: 3px 7px 2px 7px;
+}
+
+.tableMain tr {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: .1px solid #5bb6d0;
+}
+
+.tableMain th {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	text-align: left;
+	padding: 3px 7px 2px 7px;
+	background-color: #5bb6d0;
+	color: #000000;
+}
+
+.tableNoBorder {
+	font-size: 0.9rem;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	border: 0px;
+}
+
+.tableNoBorder td {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: 0px;
+	padding: 3px 5px 2px 5px;
+	vertical-align: top;
+}
+
+.tableNoBorder tr {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: 0px;
+}
+
+.tableNoBorder th {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	vertical-align: center;
+	background-color: #edfbf6;
+	color: #000000;
+	font-weight: bold;
+	font-size: 0.9rem;
+	border: .1px solid #5bb6d0;
+	padding: 3px 5px 2px 5px;
+}
+
+.styleModuleHeader {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	text-align: left;
+	font-weight: bold;
+	background-color: #5bb6d0;
+	color: #000000;
+}
+
+.styleModuleSubHeader {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	vertical-align: center;
+	background-color: #d4eeee;
+	color: #000000;
+	font-weight: bold;
+}
+
+.styleAlternateRowColor {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	background-color: #f4fafd;
+}
+
+.styleTopSubHeader {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 0.9rem;
+	color: black;
+}
+
+.customers {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	font-size: 0.9rem;
+}
+
+.customers td,
+#customers th {
+	border: 1px solid #0376a8;
+	padding: 3px 7px 2px 7px;
+}
+
+.customers th {
+	font-size: 1.4rem;
+	text-align: left;
+	padding-top: 5px;
+	padding-bottom: 4px;
+	background-color: #0376a8;
+	color: #fff;
+}
+
+.styleNormal {
+	font-size: 0.9rem;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+}
+
+.styleAbnormal {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	font-weight: bold;
+	color: red;
+}
+
+.tableMain {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	font-family: Calibri;
+	border-collapse: collapse;
+	border: .1px solid #333333;
+}
+
+.tableMain td {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: .1px solid #333333;
+	padding: 3px 5px 2px 5px;
+}
+
+.tableMain tr {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: .1px solid #333333;
+}
+
+.tableMain tr {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: .1px solid #333333;
+}
+
+.tableNoBorder {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	font-family: Arial;
+	border-collapse: collapse;
+	border: 0px;
+}
+
+.tableNoBorder td {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: 0px;
+	padding: 3px 5px 2px 5px;
+	vertical-align: top;
+}
+
+.tableNoBorder tr {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: 0px;
+}
+
+.tableNoBorder th {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	vertical-align: center;
+	text-align: left;
+	background-color: #f4fafd;
+	color: #000000;
+	font-weight: bold;
+	font-size: 0.9rem;
+	border: .1px solid #333333;
+	padding: 3px 5px 2px 5px;
+}
+
+.tablewrite tr,
+.tblvitals tr {
+	height: 20px;
+}
+
+.tblvitals {
+	border: 1px solid black;
+	border-bottom: 0;
+	border-collapse: collapse;
+	height: 20px;
+}
+
+.tblvitals td {
+	border-left: 1px solid black;
+}
+
+
+/* Report Lab Result */
+
+.styleTopHeader {
+	font-family: Calibri;
+	font-weight: bold;
+	font-size: 1.5rem;
+	color: #0376a8;
+}
+
+.styleTopSubHeader {
+	font-family: Calibri;
+	font-weight: bold;
+	font-size: 1rem;
+	color: #0376a8;
+}
+
+.styleMainHeading {
+	font-family: Calibri;
+	font-weight: bold;
+	font-size: 1rem;
+	color: #0376a8;
+}
+
+.styleNormal {
+	font-size: 0.9rem;
+	font-family: Calibri;
+}
+
+.styleSubHeading {
+	font-family: Calibri;
+	font-size: 0.9rem;
+	font-weight: bold;
+}
+
+.customers {
+	font-size: 0.9rem;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+}
+
+.customers td,
+.customers th {
+	border: 1px solid #0376a8;
+	padding: 3px 7px 2px 7px;
+}
+
+.customers th {
+	font-size: 1.4rem;
+	text-align: left;
+	padding-top: 5px;
+	padding-bottom: 4px;
+	background-color: #0376a8;
+	color: #fff;
+}
+
+.el08 {
+	width: 1.2rem;
+	height: 1.2rem;
+}
+
+.styleAbnormal {
+	font-family: Calibri;
+	font-size: 0.9rem;
+	font-weight: bold;
+	color: #C5381C;
+}
+
+
+/* Discharge */
+
+.tableMain {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	font-family: Calibri;
+	border-collapse: collapse;
+	border: .1px solid #333333;
+}
+
+.tableMain td {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: 1px solid #333333;
+	padding: 3px 5px 2px 5px;
+}
+
+.tableMain tr {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: 1px solid #333333;
+}
+
+.tableMain th {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	text-align: left;
+	padding: 3px 5px 2px 5px;
+	background-color: #f4fafd;
+	color: #000000;
+}
+
+.tableNoBorder {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-size: 0.9rem;
+	font-family: Arial;
+	border-collapse: collapse;
+	border: 0px;
+}
+
+.tableNoBorder td {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: 0px;
+	padding: 3px 5px 2px 5px;
+	vertical-align: top;
+}
+
+.tableNoBorder tr {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	border: 0px;
+}
+
+.tableNoBorder th {
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	vertical-align: center;
+	text-align: left;
+	background-color: #f4fafd;
+	color: #000000;
+	font-weight: bold;
+	font-size: 0.9rem;
+	border: .1px solid #333333;
+	padding: 3px 5px 2px 5px;
+}
+
+.pre {
+	white-space: pre-wrap;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+}
+
+.hcfa-print .page+.page {
+	page-break-before: always;
+}
+
+.tabletest {
+	border-collapse: collapse;
+	font-size: 0.9rem;
+	font-family: Verdana;
+}
+
+.super_bill {
+	font-size: 13px !important;
+}
+
+
+.super_bill td,
+.super_bill th {
+	padding: 3px 5px 3px 5px;
+}
+
+.super_bill td label,
+.super_bill th label,
+.tabletestwoBorder  td label,
+.tabletestwoBorder  th label{
+	margin:0;
+}
+
+
+.tabletestwoBorder {
+	border-collapse: collapse;
+	font-size: 13px;
+	font-family: Verdana;
+	width: 100%;
+}
+
+.tabletest,
+.tabletest td,
+.tabletest th {
+	border: 1px solid black;
+}
+
+.tablewrite tr,
+.tblvitals tr {
+	height: 20px;
+}
+
+.tblvitals {
+	border: 1px solid black;
+	border-bottom: 0;
+	border-collapse: collapse;
+	height: 20px;
+	font-family: Verdana;
+	font-size: 9px;
+}
+
+.tblvitals td {
+	border-left: 1px solid black;
+}
+
+.superBillrowHeader {
+	background-color: #c0c0c0;
+	border: 1px solid black;
+	text-align: center;
+}
+
+.superbilltdWidth-12 {
+	width: 12.5%;
+}
+
+.imctable tr {
+	height: 20px;
+}
+
+.fz-inherit{
+	font-size: inherit;
+}
+
+.report.letter {
+	font-size: 120%;
+	margin-top: 8px;
+}
+
+.report.letter  p {
+	margin: 0;
+}
+
+.pagebreak { page-break-before: always; }
+
+.ql-align-center{
+    text-align: center;
+}

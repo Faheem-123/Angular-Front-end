@@ -1,0 +1,411 @@
+<div class="border-content-box light-gray-bg border-0 d-flex flex-column flex-grow-1">
+  <div class="inner-tool-tab h-auto  d-flex justify-content-between pr-0 flex-shrink-0">
+
+
+    <div class="legend-container">
+      <div class="color-box bg-success"></div>
+      <p class="text-success"> Successfull</p>
+
+      <div class="color-box bg-danger"></div>
+      <p class="text-danger"> Error/Failure</p>
+
+      <div class="color-box bg-brown"></div>
+      <p class="text-brown"> Queued</p>
+
+      <div class="color-box bg-primary"></div>
+      <p class="text-primary"> Transmitted</p>
+    </div>
+
+    <div class="btn-group pr-2">
+      <button class="btn btn-link p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false"><i class="fa fa-bars" aria-hidden="true"></i>
+      </button>
+
+      <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+        <input id="responseFile" type="file" style="display:none;" (change)="onResponseFileChange($event)"
+          accept=".txt" />
+
+
+        <!--
+        <a class="dropdown-item cursor-default"
+          onclick="document.getElementById('responseFile').value = null;document.getElementById('responseFile').click();">
+          Proceess Response File
+        </a>
+        -->
+
+        <a class="dropdown-item cursor-default" (click)="processAcknowledgementMessageFromDirectory()">
+          Get Registry Response
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+
+  <div class="p-6 d-flex flex-column flex-grow-1 light-gray-bg">
+    <div class="d-flex flex-column mb-8">
+      <div class="border rounded-3 bg-white d-block">
+
+        <div class="encounter-data-accordian accordian-data rounded-0 border-top-0">
+          <div class="accordian-header" role="tab" id="headingOne">
+            <h5>
+              <a data-toggle="collapse" href="#SearchCriteriaVXU" aria-expanded="true" class="accordian-link">
+                <span class="accordian-main-header-title pl-1 pr-1">Search Criteria</span>
+              </a>
+            </h5>
+          </div>
+
+          <div id="SearchCriteriaVXU" class="collapse show ">
+            <div class="accordian-body bg-transparent">
+
+              <form [formGroup]="searchFormGroup" (ngSubmit)="onSearchSubmit(searchFormGroup.value)"
+                (keydown.enter)="$event.preventDefault()">
+
+                <div class="p-6 pt-0">
+
+                  <div class="form-row form-dashboard pb-1">
+
+                    <div class="form-group col-7">
+                      <label class="col-form-label" for="ddClinic">Clinic (Code |
+                        Name)</label>
+                      <select class="col form-control px-1 required" id="ddClinic" formControlName="ddClinic"
+                        (change)="clinicChanged($event.currentTarget.value)">
+                        <option *ngIf="lookupList.lstImmRegClinics !=undefined && lookupList.lstImmRegClinics.length>1">
+                          Select
+                          Clinic
+                        </option>
+                        <option *ngFor="let clinic of lookupList.lstImmRegClinics" [value]="clinic.clinic_id">
+                          {{clinic.clinic_code.padEnd(15, '&#160;')}}|&nbsp;&nbsp;{{clinic.clinic_name}}
+                        </option>
+                      </select>
+                    </div>
+
+
+                    <div class="form-group col-4">
+                      <div class="btn-group radio-btn-tabs required">
+
+                        <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'message_date')}">
+                          <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                            value="message_date" (ngModelChange)="onDateTypeChange($event)"> Message Date
+                        </label>
+                        <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'dose_date')}">
+                          <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                            value="dose_date" (ngModelChange)="onDateTypeChange($event)"> Dose Date
+                        </label>
+                      </div>
+
+
+
+                      <div class="d-flex flex-grow-3">
+
+                        <div class="input-group mr-1">
+
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">From</span>
+                          </div>
+
+                          <input id="dpFrom" formControlName="dpFrom" class="form-control date-control required"
+                            placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker #dpFrom="ngbDatepicker">
+
+                          <span class="input-group-btn">
+                            <button class="btn date-control-btn" (click)="dpFrom.toggle()" type="button">
+                            </button>
+                          </span>
+
+                        </div>
+
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">To</span>
+                          </div>
+
+                          <input id="dpTo" formControlName="dpTo" class="form-control date-control required"
+                            placeholder="mm/dd/yyyy" name="dpTo" ngbDatepicker #dpTo="ngbDatepicker">
+
+                          <span class="input-group-btn">
+                            <button class="btn date-control-btn" (click)="dpTo.toggle()" type="button">
+                            </button>
+                          </span>
+
+                        </div>
+
+
+                      </div>
+                    </div>
+
+
+
+                  </div>
+
+                  <div class="form-row form-dashboard pb-1">
+                    <div class="form-group col-7">
+                      <label for="txtPatientSearch" class="col-form-label">Patient</label>
+
+                      <div class="form-row form-dashboard">
+                        <div class="form-group col-12">
+                          <div class="input-icon d-flex flex-grow-3">
+
+                            <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text"
+                              #txtPatientSearch formControlName="txtPatientSearch" placeholder="Search Patient"
+                              (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                              (input)="onPatientSearchInputChange(txtPatientSearch.value)"
+                              (blur)="onPatientSearchBlur()">
+                            <input type="text" formControlName="txtPatientIdHidden" hidden>
+                            <div class="icon">
+                              <i class="fa fa-search" aria-hidden="true"></i>
+                            </div>
+
+                            <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                              (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                            </inline-patient-search>
+
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                    <div class="form-group col-4">
+                      <label class="col-form-label" for="ddStatus">Status</label>
+                      <select class="col form-control px-1" id="ddStatus" formControlName="ddStatus">
+                        <option></option>
+                        <option *ngFor="let status of lstStatus" [value]="status.code">
+                          {{status.description}}
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-1 d-flex flex-column justify-content-end">
+                      <button type="submit" class="btn btn-success w-100"
+                        [disabled]="!searchFormGroup.valid">Search</button>
+                    </div>
+                  </div>
+
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+    <div class="d-flex flex-grow-1 overflow-height mb-8">
+
+
+      <div class="border rounded-3  w-75 flex-grow-1 d-flex flex-column bg-white mr-8">
+        <div class="rounded-box-title-bar flex-shrink-0">
+          Registry Messages
+          <span class="badge-sm badge-pill text-dark">{{regMessagesCount}}</span>
+        </div>
+
+
+        <!--
+        <div class="w-75 flex-grow-1 d-flex flex-column bg-white mr-8">
+          <div class="rounded-box-title-bar flex-shrink-0">
+            Registry Messages
+            <span class="badge-sm badge-pill">{{regMessagesCount}}</span>
+          </div>
+          -->
+
+        <div class="overflow-auto flex-grow-1 max-height-100" *ngIf="regMessagesCount>0">
+
+
+          <table class="table sm layout-fixed light-striped-border">
+            <thead>
+              <tr>
+
+                <th class="width-120">Status</th>
+                <th class="width-150">Patient</th>
+                <th class="width-100">Message ID</th>
+                <th class="width-135">Date Time Sent</th>
+                <th class="width-120">Sent By</th>
+                <th class="width-120">Resloved By</th>
+                <th class="width-135">Date Resloved</th>
+                <th class="width-70">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let msg of lstRegMessages" [ngClass]="{
+                  'active' : (msg.message_id == selectedMessageId),
+                  'text-brown' : (msg.message_status == 'AQ'),
+                  'text-primary' : (msg.message_status == 'AT'),
+                  'text-danger' : (msg.message_status == 'TF' || msg.message_status == 'AE' || msg.message_status == 'AR' || msg.message_status == 'AF'),
+                  'text-success' : (msg.message_status == 'AA' || msg.message_status == 'AA_IW')
+                }" (click)="selectionChanged(msg)">
+                <td class="text-white" [ngClass]="{                                        
+                    'bg-brown' : (msg.message_status == 'AQ'),
+                    'bg-primary' : (msg.message_status == 'AT'),
+                    'bg-danger' : (msg.message_status == 'TF' || msg.message_status == 'AE' || msg.message_status == 'AR' || msg.message_status == 'AF'),
+                    'bg-success' : (msg.message_status == 'AA' || msg.message_status == 'AA_IW')
+                  }">{{msg.message_status_description}}</td>
+                <td>
+                  <button type="button" class="link-btn d-flex align-items-center" (click)="openPatient(msg)">
+                    {{msg.patient_name}}
+                  </button>
+                </td>
+                <td>{{msg.message_id}}</td>
+                <td>{{msg.message_sent_date}}</td>
+                <td>{{msg.message_sent_by}}</td>
+                <td>{{msg.resolved_by}}</td>
+                <td>{{msg.date_resolved}}</td>
+
+                <td>
+                  <button type="button" class="btn btn-outline-primary px-2 py-0 fz-12 mr-1" *ngIf="(msg.message_status=='AE' 
+                  || msg.message_status=='AR' || msg.message_status=='AF'
+                  || msg.message_status=='TF') && msg.resolved!=true"
+                    (click)="markAsResolved(msg.message_id)">Resolve</button>
+                  <!--<button type="button" class="btn btn-outline-primary px-2 py-0 fz-12 mr-1">Resend</button>-->
+                </td>
+
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+      <div class="border-content-box rounded-3 w-25 flex-grow-1 d-flex flex-column bg-white overflow-auto">
+        <div
+          class="alert alert-primary fz-12 py-1 px-2 rounded-0 rounded-top border-top-0 border-left-0 border-right=0 mb-1"
+          role="alert" [ngClass]="{
+              'alert-primary': (messageStatusCode==undefined || messageStatusCode==''),
+              'alert-warning': (messageStatusCode=='AQ' || messageStatusCode=='AT'),
+              'alert-success': (messageStatusCode=='AA' || messageStatusCode=='AA_IW'),
+              'alert-danger': (messageStatusCode=='TF' || messageStatusCode=='AE' || messageStatusCode=='AR' || messageStatusCode=='AR')            
+          }">
+
+          <strong>Status: &nbsp;</strong>
+          <span *ngIf="messageStatusCode=='AQ' || messageStatusCode=='AT'"> Pending for Registry Response.</span>
+          <span *ngIf="messageStatusCode=='AA' || messageStatusCode=='AA_IW'"> Application Accept.</span>
+          <span *ngIf="messageStatusCode=='TF'"> Transport Failed.</span>
+          <span *ngIf="messageStatusCode=='AE'"> Application Error.</span>
+          <span *ngIf="messageStatusCode=='AR'"> Application Reject.</span>
+          <span *ngIf="messageStatusCode=='AF'"> Application Fail.</span>
+        </div>
+
+        <div class="overflow-auto flex-grow-1 mb-1 alert alert-danger rounded-0 p-0 " style="overflow-x:auto;">
+
+          <div class="alert-heading pl-2 pb-1 fz-12">
+            <strong> Errors <span *ngIf="lstMsgErrors!=undefined"> ({{lstMsgErrors.length}})</span></strong>
+          </div>
+
+          <table class="table sm layout-fixed light-striped-border table-danger">
+            <tbody>
+              <tr *ngFor="let error of lstMsgErrors; let i = index">
+                <td class="width-20">{{i+1}}</td>
+                <td title="{{error.user_message}}">{{error.user_message}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+        <div class="overflow-auto flex-grow-1 mb-1 alert alert-warning rounded-0 p-0 " style="overflow-x:auto;">
+
+          <div class="alert-heading pl-2 pb-1 fz-12">
+            <strong> Warnings <span *ngIf="lstMsgWarnings!=undefined"> ({{lstMsgWarnings.length}})</span></strong>
+          </div>
+
+          <table class="table sm layout-fixed light-striped-border table-warning">
+            <tbody>
+              <tr *ngFor="let warining of lstMsgWarnings; let i = index">
+                <td class="width-20">{{i+1}}</td>
+                <td title="{{warining.user_message}}">{{warining.user_message}}</td>
+              </tr>
+
+            </tbody>
+
+          </table>
+        </div>
+
+        <div class="overflow-auto flex-grow-1 mb-1 alert alert-info rounded-0 p-0 " style="overflow-x:auto;">
+
+          <div class="alert-heading pl-2 pb-1 fz-12">
+            <strong> Informations <span *ngIf="lstMsgInfo!=undefined"> ({{lstMsgInfo.length}})</span></strong>
+          </div>
+
+          <table class="table sm layout-fixed light-striped-border table-info">
+            <tbody>
+              <tr *ngFor="let info of lstMsgInfo; let i = index">
+                <td class="width-20">{{i+1}}</td>
+                <td title="{{info.user_message}}">{{info.user_message}}</td>
+              </tr>
+
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="d-flex flex-column">
+
+      <div class="border rounded-3 bg-white overflow-auto">
+        <div class="rounded-box-title-bar flex-shrink-0">
+          Vaccine Detail
+          <span class="badge-sm badge-pill  text-dark"
+            *ngIf="lstRegMessagesImmunizations!=undefined">{{lstRegMessagesImmunizations.length}}</span>
+        </div>
+
+
+        <!--
+        <div class="rounded-box-title-bar">
+          Vaccine Detail
+          <span class="badge-sm badge-pill"
+            *ngIf="lstRegMessagesImmunizations!=undefined">{{lstRegMessagesImmunizations.length}}</span>
+        </div>-->
+
+        <div class="overflow-auto flex-grow-1" style="overflow-x:auto;"
+          *ngIf="lstRegMessagesImmunizations!=undefined && lstRegMessagesImmunizations.length>0">
+
+          <table class="table sm layout-fixed light-striped-border">
+            <thead>
+              <tr>
+
+                <th class="width-80">Date</th>
+                <th class="width-200">Vaccine Name</th>
+                <th class="width-100">Manufacturer</th>
+                <th class="width-80">Lot Number</th>
+                <th class="width-80">Expiry Date</th>
+                <th class="width-80">Dose</th>
+                <th class="width-100">Route</th>
+                <th class="width-100">Site</th>
+                <th class="width-200">Administered Description</th>
+                <th class="width-90">Action Code</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let imm of lstRegMessagesImmunizations">
+                <td>{{imm.date_administered}}</td>
+                <td>{{imm.imm_name}}</td>
+                <td>{{imm.manufacturer}}</td>
+                <td>{{imm.lot_no}}</td>
+                <td>{{imm.expirty_date}}</td>
+                <td>{{imm.dose}}</td>
+                <td>{{imm.route}}</td>
+                <td>{{imm.site}}</td>
+                <td>{{imm.administering_note}}</td>
+                <td>{{imm.action_code}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

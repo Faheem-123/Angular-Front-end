@@ -1,0 +1,68 @@
+<div class="light-title-bar  h-25 pl-3 pr-2 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Payer Type</div>
+  <div class="d-flex align-items-center">
+
+    <!-- <button *ngIf="operation==''" class="btn btn-link fz-14 text-blue-ihc px-2 py-0" (click)="onAddNew()">Add</button>
+    <button *ngIf="operation==''" class="btn btn-link fz-14 text-blue-ihc px-2 py-0"  (click)="onEdit()">Edit</button>
+     <button *ngIf="operation==''" class="btn btn-link fz-14 text-blue-ihc px-2 py-0"  (click)="onDelete()">Delete</button> 
+    <button *ngIf="operation!=''" class="btn btn-link fz-14 text-blue-ihc px-2 py-0"  (click)="onSave()">Save</button>
+    <button *ngIf="operation!=''" class="btn btn-link fz-14 text-blue-ihc px-2 py-0"  (click)="onCancel()">Cancel</button> -->
+    
+    <!-- <button class="btn btn-link fz-15 text-blue-ihc px-2 py-0">
+      <i class="fas fa-sync-alt"></i>
+    </button> -->
+
+    <button *ngIf="operation=='' && lookupList.UserRights.insurance_payer_type_add" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onAddNew()">Add</button>
+    <button *ngIf="operation=='' && lookupList.UserRights.insurance_payer_type_edit" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onEdit()">Edit</button>
+    <button *ngIf="operation!=''" class="btn btn-link fz-12 text-blue-ihc px-2 py-0"  (click)="onSave()">Save</button>
+    <button *ngIf="operation!=''" class="btn btn-link fz-12 text-blue-ihc px-2 py-0"  (click)="onCancel()">Cancel</button>
+    <!-- <button class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0">Delete</button> -->
+    <!-- <button *ngIf="operation==''" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0">
+      <i class="fas fa-sync-alt"></i>
+    </button> -->
+  </div>
+</div>
+
+<div class="p-8 d-flex flex-column flex-grow-1 overflow-height rounded-bottom border-content-box border-top-0 light-sky-blue">
+  <form [formGroup]="frmInput">
+    <div class="border rounded bg-white flex-shrink-0 px-2 py-1">
+      <div class="form-row form-dashboard">
+        <div class="form-group horizental row zero col-5">
+          <label for="name" class="col-form-label col-2">Name:</label>
+          <input type="text" class="form-control col-10" id="name" formControlName="txtName">
+        </div>
+
+        <div class="form-group horizental row zero col-3">
+          <label for="code" class="col-form-label col-3">Code:</label>
+          <input type="text" class="form-control col-9" id="code" formControlName="txtCode">
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="border border-top-0 rounded bg-white flex-grow-1 overflow-auto mt-2">
+    <table class="table light-striped-border table-sticky-header">
+      <thead>
+        <tr>
+          <td width="50%">Name</td>
+          <td width="50%">Code</td>
+          <td>&nbsp;</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr st-select-row="row" *ngFor="let lstdetails of listInsType  let i = index" (click)="onselectionChange(i)"
+        [ngClass]="{'active': i==selectedRow,
+        'disabled': isDisable}" >
+          <td>{{lstdetails.name}}</td>
+          <td>{{lstdetails.payertype_code}}</td>
+          <td class="text-right">
+              <button *ngIf="lookupList.UserRights.insurance_payer_type_delete"
+              class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDelete()">
+                <i class="far fa-trash-alt"></i></button>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

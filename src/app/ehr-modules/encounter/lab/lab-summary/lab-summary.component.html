@@ -1,0 +1,184 @@
+<div class="mt-8">
+  <div class="flex-grow-1 overflow-auto" *ngIf="!addEditView">
+    <div class="rounded-top" [ngClass]="{
+      'encounter-header-highlight': addEditView==true,
+      'encounter-header': addEditView==false
+    }">
+      <p class="title pl-8">Lab Order Summary</p>
+
+      <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+        <button *ngIf="!addEditView  && canAddEdit"  class="nav-link green px-2 py-0 top-right-radius"
+          (click)="addNew()">
+          <i aria-hidden="true" class="far fa-plus-square pr-1"></i> Add
+        </button>
+
+        <!--
+        <a class="nav-link green px-2 py-0 top-right-radius" (click)="addNew()"
+          *ngIf="!addEditView && canAddEdit && canView">
+          <i class="far fa-plus-square pr-1"></i>New Lab Order
+        </a>
+        -->
+      </ul>
+    </div>
+
+
+    <div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+      <div  *ngIf="canView && !isLoading &&  !addEditView">
+        <form [formGroup]="radioForm">
+
+          <div class="btn-group radio-btn-tabs px-1">
+            <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'all')}">
+              <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                value="all" (ngModelChange)="onRadioOptionChange($event)"> All
+            </label>
+            <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'inside_facility')}">
+              <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                value="inside_facility" (ngModelChange)="onRadioOptionChange($event)"> Inside Facility
+            </label>
+            <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'outside_facility')}">
+              <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                value="outside_facility" (ngModelChange)="onRadioOptionChange($event)"> Outside Facility
+            </label>
+
+
+          </div>
+
+        </form>
+
+      </div>
+
+      <div *ngIf="isLoading" class="div-loader"></div>
+
+
+      <div *ngIf="!isLoading && !canView" class="access-denied">
+        <i class="fas fa-ban mr-2"></i> Access Denied
+      </div>
+
+
+      <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content">
+        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+      </div>
+
+
+
+      <table class="table layout-fixed light-striped-border"
+        *ngIf="!isLoading && canView && !noRecordFound && !addEditView">
+        <thead>
+          <tr>
+            <th width="5%">&nbsp;</th>
+            <th>Order Date</th>
+            <th>Provider</th>
+            <th>Location</th>
+            <th>Lab</th>
+            <th>Follow Up</th>
+            <th>Order Type</th>
+            <th>Status</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let s of lstOrderSummaryViewFiltered">
+            <td>
+              <a class="p-0 text-info" [ngbPopover]="popContent" popoverTitle="CPTs" triggers="mouseenter:mouseleave"
+                container="body" placement="right" popoverClass="ihc-popover">
+                <i class="fas fa-info-circle fa-md"></i>
+                <ng-template #popContent>
+                  <ul class="pl-4 pr-2">
+                    <li *ngFor="let cpt of getTooltipCptsAsList(s.cpt)">
+                      {{cpt}}
+                    </li>
+                  </ul>
+                </ng-template>
+              </a>
+            </td>
+            <td>{{s.order_date}}</td>
+            <td>{{s.provider_name}}</td>
+            <td>{{s.location_name}}</td>
+            <td>{{s.lab_name}}</td>
+            <td>{{s.follow_up_notes}}</td>
+            <td>{{s.order_type}}</td>
+            <td [ngClass]="{ 
+              'text-primary' : (s.order_status=='SIGNED'),
+              'text-danger' : (s.order_status=='ABNORMAL'),
+              'text-success' : (s.order_status=='COMPLETED'),
+              'text-warning' : (s.order_status=='CANCELED'),
+              'text-warning' : (s.order_status=='OUTDATED'),
+              'text-info' : (s.order_status=='PERFORMED')
+          }">
+              <!-- <span _ngcontent-c12="" class="fw-400 text-success">SIGNED</span> -->
+              {{s.order_status}}
+            </td>
+            <td class="text-right">
+              <button type="button" class="btn btn-link btn-md text-primary  p-0 mr-2" (click)="onOpenOrder(s)"><i
+                  class="far fa-folder-open"></i></button>
+              <button type="button" [disabled]="!canDelete" class="btn btn-link btn-md btn-delete p-0"
+                (click)="onDelete(s)"><i class="far fa-trash-alt"></i></button>
+            </td>
+          </tr>
+
+
+        </tbody>
+      </table>
+
+
+
+
+    </div>
+  </div>
+
+
+  <div *ngIf="addEditView">
+    <!-- <div class="encounter-detail-top-bar rounded-top flex-shrink-0 ">
+                 <p class="title pl-8">Lab Order Add/Edit</p>
+                 <button class="left-back-btn" (click)="backtoSummary()">
+                <i class="fas fa-arrow-left mr-2" ></i>Back to Order Summary
+            </button>
+            </div> -->
+    <ngb-tabset class="inner-sub-horizental-tab d-flex flex-column rounded-top overflow-hidden pl-0"
+      [activeId]="selectedTab" #labMaintab (tabChange)="onTabChange($event)">
+      <ngb-tab id="lab-home">
+        <ng-template ngbTabTitle>
+          <span class="back-button"><i class="fas fa-arrow-alt-circle-left fa-lg mr-1"></i>Back to Order Summary</span>
+          <!-- <div class="encounter-detail-top-bar rounded-top flex-shrink-0 ">
+                            <button class="left-back-btn" (click)="backtoSummary()">
+                           <i class="fas fa-arrow-left mr-2" ></i>Back to Order Summary
+                       </button>
+                       </div> -->
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab id="lab-edit">
+        <ng-template ngbTabTitle><span>Lab Order</span></ng-template>
+        <ng-template ngbTabContent>
+          <lab-order class="d-flex flex-column flex-grow-1" [isNewOrder]="isNew" [order_Id]="openedOrderId"
+            [objencounterToOpen]="objencounterToOpen" (updateSummary)=onSaveOrderCallback($event)></lab-order>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab id="lab-specimen" *ngIf="isNew==false">
+        <ng-template ngbTabTitle><span>Specimen</span></ng-template>
+        <ng-template ngbTabContent>
+          <lab-specimen class="d-flex flex-column flex-grow-1" [order_Id]="openedOrderId"></lab-specimen>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab id="lab-results" *ngIf="isNew==false" [disabled]="!this.lookupList.UserRights.lab_result_view">
+        <ng-template ngbTabTitle><span>Results</span></ng-template>
+        <ng-template ngbTabContent>
+          <lab-result class="d-flex flex-column flex-grow-1" [patient_Id]="this.objencounterToOpen.patient_id"
+            [order_Id]="openedOrderId"></lab-result>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab id="lab-attachment" *ngIf="isNew==false" [disabled]="!this.lookupList.UserRights.lab_attachment_view">
+        <ng-template ngbTabTitle><span>Attachments</span></ng-template>
+        <ng-template ngbTabContent>
+          <lab-attachment class="d-flex flex-column flex-grow-1" [patient_Id]="this.objencounterToOpen.patient_id"
+            [order_Id]="openedOrderId"></lab-attachment>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

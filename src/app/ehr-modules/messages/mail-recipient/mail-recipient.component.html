@@ -1,0 +1,138 @@
+<div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Add Recipient</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom">
+  <!-- <div class="div-loader"></div> -->
+  <div class="dashboard-content mt-0">
+      <div class="modal-footer custom">
+      <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="activeModal.dismiss('Cross click')">Cancel</button>
+      <button style="width: 80px;" class="btn btn-success btn-sm" (click)="getAllSelected()">Ok</button>
+    </div>
+    <div class="form-row form-dashboard">
+      <div class="form-group col-12">
+<!-- ///////////////////////////////////////////// -->
+
+<div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue" style="height: 325px;">
+    <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+        <div style="height: 320px;" class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                    <div class="rounded-box-title-bar justify-content-between border-bottom">
+                        <span>Users</span>
+                        <div class="custom-control custom-checkbox green-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="selectAllUsers" name="selectAllUsers"
+                            (click)="selectAllUsers($event.currentTarget.checked)">
+                            <label class="custom-control-label" for="selectAllUsers">All</label>
+                          </div>
+                        <div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-grow-1" style="height: 280px;">
+                      <div class=" bg-white flex-grow-1 overflow-auto">
+                            <table class="table layout-fixed sm light-striped-border">
+                                <tbody>
+                                    <tr st-select-row="row" *ngFor="let s of arrPracticeUsers">
+                                        <td width="15%">
+                                            <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                                <input class="custom-control-input v-align-middle" type="checkbox" [checked]="s.chkbox"
+                                                id="chk_{{s.id}}"
+                                                (change)="checkChkBox(s.id,$event.currentTarget.checked,'users')">
+                                                <label class="custom-control-label" for="chk_{{s.id}}"></label>
+                                            </div>
+                                        </td>
+                                        <td>{{s.name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <div style="height: 320px;" class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                    <div class="rounded-box-title-bar justify-content-between border-bottom">
+                        <span>Location</span>
+                        <div class="custom-control custom-checkbox green-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="selectAllLocation" name="selectAllLocation"
+                            (click)="selectAllLocation($event.currentTarget.checked)">
+                            <label class="custom-control-label" for="selectAllLocation">All</label>
+                          </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-grow-1" style="height: 280px;">
+                        <div class=" bg-white flex-grow-1 overflow-auto">
+                            <table class="table layout-fixed sm light-striped-border">
+                                <tbody>
+                                    <tr st-select-row="row" *ngFor="let loc of arrLocations">
+                                        <td width="15%">
+                                            <!-- <input class="v-align-middle" type="checkbox" [checked]="loc.chkbox"
+                                            (change)="checkChkBox(loc.id,$event.currentTarget.checked,'location')"> -->
+                                            <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                                    <input class="custom-control-input v-align-middle" type="checkbox" [checked]="loc.chkbox"
+                                                    id="chk_Loc_{{loc.id}}"
+                                                    (change)="checkChkBox(loc.id,$event.currentTarget.checked,'location')">
+                                                    <label class="custom-control-label" for="chk_Loc_{{loc.id}}"></label>
+                                            </div>
+                                        </td>
+                                        <td>{{loc.name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <div style="height: 320px;" class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+            
+                <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                    <div class="rounded-box-title-bar justify-content-between border-bottom">
+                        <span>Role</span>
+                        <div>
+                            <div class="custom-control custom-checkbox green-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="selectAllRole" name="selectAllRole"
+                                (click)="selectAllRole($event.currentTarget.checked)">
+                                <label class="custom-control-label" for="selectAllRole">All</label>
+                              </div>
+                        </div>
+
+                    </div>
+
+                    <div class="  d-flex flex-column flex-grow-1" style="height: 280px;">
+                          <div class=" bg-white flex-grow-1 overflow-auto">
+                            <table class="table layout-fixed sm light-striped-border">
+                                <tbody>
+                                    <tr st-select-row="row" *ngFor="let role of arrRoles">
+                                        <td width="15%">
+                                            <!-- <input class="v-align-middle" type="checkbox" [checked]="role.chkbox"
+                                            (change)="checkChkBox(role.role_id,$event.currentTarget.checked,'role')"> -->
+                                            <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                                    <input class="custom-control-input v-align-middle" type="checkbox" [checked]="role.chkbox"
+                                                    id="chk_Role_{{role.role_id}}"
+                                                    (change)="checkChkBox(role.role_id,$event.currentTarget.checked,'role')">
+                                                    <label class="custom-control-label" for="chk_Role_{{role.role_id}}"></label>
+                                            </div>
+                                        </td>
+                                        <td>{{role.role_name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- //////////////////////////////////////////// -->
+      </div>
+    </div>
+  </div>
+</div>

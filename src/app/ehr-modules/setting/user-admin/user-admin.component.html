@@ -1,0 +1,130 @@
+<div class="dashboard-container d-flex flex-column">
+  <div class="dashboard m-2">
+    <div class="dashboard-title">
+      <div class="title">User Admin</div>
+    </div>
+
+    <div class="dashboard-content d-flex flex-row mt-0">
+
+      <div class="scheduler-left width-205">
+        <div class="d-flex flex-column flex-grow-1">
+          <!-- ******************** -->
+          <aside class="reports-main-sidebar">
+            <section class="reports-sidebar">
+              <ul class="reports-sidebar-menu">
+                <li class="active treeview">
+                  <ul class="reports-treeview-menu">
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Balance Reminder Calls'}">
+                      <a (click)="generalOnChange('Balance Reminder Calls')">Balance Reminder Calls</a>
+                    </li>
+
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='CSS Call Log'}">
+                      <a (click)="generalOnChange('CSS Call Log')">CSS Call Log</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='DashBoard Settings'}">
+                      <a (click)="generalOnChange('DashBoard Settings')">DashBoard Settings</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Encounter Settings'}">
+                      <a (click)="generalOnChange('Encounter Settings')">Encounter Settings</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='EOB'}">
+                      <a (click)="generalOnChange('EOB')">EOB's</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Fax Contact List'}">
+                      <a (click)="generalOnChange('Fax Contact List')">Fax Contact List</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='ICD10 GuideLine'}">
+                      <a (click)="generalOnChange('ICD10 GuideLine')">ICD-10 GuideLine</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Immunization Inventory'}">
+                      <a (click)="generalOnChange('Immunization Inventory')">Immunization Inventory</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Immunization Registry'}">
+                      <a (click)="generalOnChange('Immunization Registry')">Immunization Registry</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Insurance Sites'}">
+                      <a (click)="generalOnChange('Insurance Sites')">Insurance Sites</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Insurances'}">
+                      <a (click)="generalOnChange('Insurances')">Insurances</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Issue Tracker'}">
+                      <a (click)="generalOnChange('Issue Tracker')">Issue Tracker</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='My CDS Rules'}">
+                      <a (click)="generalOnChange('My CDS Rules')">My CDS Rules</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='My List'}">
+                      <a (click)="generalOnChange('My List')">My List</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Patient Summary Modules'}">
+                      <a (click)="generalOnChange('Patient Summary Modules')">Patient Summary Modules</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Practice Insurances'}">
+                      <a (click)="generalOnChange('Practice Insurances')">Practice Insurances</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Provider Templates'}">
+                      <a (click)="generalOnChange('Provider Templates')">Provider Templates</a>
+                    </li>
+                    <!-- <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Referral Info'}">
+                      <a (click)="generalOnChange('Referral Info')">Referral Info</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Referral Request'}">
+                      <a (click)="generalOnChange('Referral Request')">Referral Request</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Referring Provider'}">
+                      <a (click)="generalOnChange('Referring Provider')">Referring Provider</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Routes Info'}">
+                      <a (click)="generalOnChange('Routes Info')">Routes Info</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Schedule Appointments'}">
+                      <a (click)="generalOnChange('Schedule Appointments')">Schedule Appointments</a>
+                    </li>
+                    <li class=" rpt-pointer" [ngClass]="{'active': componentName=='Statement'}">
+                      <a (click)="generalOnChange('Statement')">Statement</a>
+                    </li> -->
+                  </ul>
+                </li>
+              </ul>
+            </section>
+          </aside>
+          <!-- ******************* -->
+        </div>
+      </div>
+      <div class="scheduler-right pl-0 d-flex flex-column flex-grow-1">
+
+        <encounter-setting class="d-flex flex-column flex-grow-1" *ngIf="componentName=='Encounter Settings'">
+        </encounter-setting>
+        <dashboard-setting class="d-flex flex-column flex-grow-1" *ngIf="componentName=='DashBoard Settings'">
+        </dashboard-setting>
+        <cds-setup class="d-flex flex-column flex-grow-1" *ngIf="componentName=='My CDS Rules'">
+        </cds-setup>
+        <add-new-insurance class="d-flex flex-column flex-grow-1" *ngIf="componentName=='Insurances'">
+        </add-new-insurance>
+        <fax-contacts-setup class="d-flex flex-column flex-grow-1" *ngIf="componentName=='Fax Contact List'">
+        </fax-contacts-setup>
+        <mylist-icd class="d-flex flex-column flex-grow-1" *ngIf="componentName=='My List'">
+        </mylist-icd>
+
+        <!-- 
+      
+      <patient-api-users class="d-flex flex-column flex-grow-1 overflow-height p-8" callingFrom="settings">
+      </patient-api-users>
+      <patient-api-users class="d-flex flex-column flex-grow-1 overflow-height p-8" callingFrom="settings">
+      </patient-api-users>
+      <patient-api-users class="d-flex flex-column flex-grow-1 overflow-height p-8" callingFrom="settings">
+      </patient-api-users>
+      <patient-api-users class="d-flex flex-column flex-grow-1 overflow-height p-8" callingFrom="settings">
+        </patient-api-users> -->
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- *********************************************************************************
+********************************************************************************* -->

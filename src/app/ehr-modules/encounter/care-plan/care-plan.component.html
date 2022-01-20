@@ -1,0 +1,177 @@
+<div class="mt-8 rounded-top" [ngClass]="{
+      'encounter-header-highlight': addEditView==true,
+      'encounter-header': addEditView==false}">
+  <div class="title pl-8">Care Plan</div>
+  <div class="flex-grow-1">&nbsp;</div>
+  <div class="nav color-buttons align-items-center" *ngIf="!isLoading">
+    <button [disabled]="!canAddEdit" *ngIf="!addEditView" (click)="addNew()"
+      class="nav-link green px-2 py-0 top-right-radius">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </button>
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="saveplan()"
+      [disabled]="!inputForm.valid">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0" (click)="onCancel()">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </button>
+  </div>
+</div>
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <p>
+      <i class="fas fa-ban"></i> Access Denied</p>
+  </div>
+
+  <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content ml-2 p-6">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+  <div *ngIf="canView && !noRecordFound && !addEditView" class="encounter-view flex-grow-1 mt-0">
+    <div class="encounter-data-accordian accordian-data" *ngFor="let problem of arrcarePlanView ">
+      <div class="accordian-header" role="tab" id="headingOne">
+          <h5>
+              <a data-toggle="collapse" href="#summaryCarePlan{{problem.chart_careplanid}}" aria-expanded="false">
+                <span class="accordian-header-date-time">{{problem.date}}</span>
+                <span class="icd-code">{{problem.plan_type}}</span>
+              </a>
+            </h5>
+
+          
+        <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md text-primary" (click)="onEdit(problem)">
+          <i class="far fa-edit"></i>
+        </button>
+        <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md btn-delete" (click)="onDelete(problem)">
+          <i class="far fa-trash-alt"></i>
+        </button>
+      </div>
+      <div id="summaryCarePlan{{problem.chart_careplanid}}" class="collapse" class="collapse">
+        <div class="accordian-body">
+          <div class="row">
+            <div class="col col-9">
+              <p>Plan Date:
+                <strong class="mr-5">{{problem.date}}</strong>
+              </p>
+              <p>{{problem.code_type}}:
+                <strong>{{problem.code}}</strong>
+                <strong>{{problem.description}}</strong>
+              </p>
+              <p>Instruction:
+                <strong>{{problem.instruction}}</strong>
+              </p>
+            </div>
+          </div>
+          <div class="accordian-footer">
+            <!-- <p class="form-text text-muted">Last Modified by {{problem.modified_user}} at {{problem.date_modified}} -->
+              <p class="form-text text-muted">Last Modified by {{problem.modified_user}} at {{problem.client_date_modified}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="addEditView" class="p-2 pt-1">
+    <form [formGroup]="inputForm">
+      <div class="form-row form-dashboard">
+        <div class="form-group col-8">
+          <div class="input-icon d-flex flex-grow-3">
+            <div class="form-group col-8">
+              <label for="cmbProbType">Type</label>
+              <select class="form-control flex-grow-1" id="input6" formControlName="drpType">
+                <option *ngFor="let r of arrType" [value]="r">{{r}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-2">
+          <label class="col-form-label required" for="dpDate">Date</label>
+          <div class="input-group">
+            <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDate"
+              formControlName="dpDate" ngbDatepicker #dpDate="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="dpDate.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-dashboard mt-1">
+        <div class="form-group col-6">
+          <label for="tpProblemTime" class="col-form-label ">Condition</label>
+          <div class="input-group form-control">
+            <div class="form-check-inline">
+              <input class="form-check-input" type="radio" name="rbCondition" id="rbicd" value="icd"
+                formControlName="rbCondition">
+              <label class="form-check-label" for="rbicd">ICD</label>
+            </div>
+            <div class="form-check-inline">
+              <input class="form-check-input" type="radio" name="rbCondition" id="rbcpt" value="cpt"
+                formControlName="rbCondition">
+              <label class="form-check-label" for="rbcpt">CPT</label>
+            </div>
+            <div class="form-check-inline">
+              <input class="form-check-input" type="radio" name="rbCondition" id="rbsnomed" value="snomed"
+                formControlName="rbCondition">
+              <label class="form-check-label" for="rbsnomed">SnomedCT</label>
+            </div>
+            <div class="form-check-inline">
+              <input class="form-check-input" type="radio" name="rbCondition" id="rbmedicine" value="medicine"
+                formControlName="rbCondition">
+              <label class="form-check-label" for="rbmedicine">Medicine</label>
+            </div>
+            <div class="form-check-inline">
+              <input class="form-check-input" type="radio" name="rbCondition" id="rbloinc" value="loinc"
+                formControlName="rbCondition">
+              <label class="form-check-label" for="rbloinc">Loinc</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard mt-1">
+        <div class="form-group input-icon d-flex flex-grow-3">
+          <input id="txtSearch" class="form-control flex-grow-3  bl-0" type="text" #txtSearch
+            formControlName="txtSearch" placeholder="Search Plan" (keydown)="onProblemSearchKeydown($event)"
+            autocomplete="off" (input)="onProblemSearcInputChange(txtSearch.value)" (blur)="onProblemSearcBlur()">
+          <div class="icon">
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </div>
+          <div class="inline-search" *ngIf="showSearch">
+            <div class="body m-0">
+              <div *ngIf="isLoading" class="div-loader"></div>
+              <table class="table light-striped-border" *ngIf="!isLoading">
+                <thead>
+                  <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let diag of arrSearchResult;let i=index">
+                    <td>
+                      <button type="button" class="link-btn" (click)="onSelect(diag)">{{diag.name}}</button>
+                      <!-- <i *ngIf="diag.is_expired" class="fas fa-info-circle text-info fa-md" title="Code is Expired."></i> -->
+                    </td>
+                    <td>{{diag.address}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-dashboard mt-1">
+        <div class="form-group col-8">
+          <label for="txtComments">Instruction:</label>
+          <textarea class="form-control" id="txtComments" rows="4" placeholder="Comments"
+            formControlName="txtComments"></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && !addEditView">
+      <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLog()">View Log</button>
+    </div>
+</div>

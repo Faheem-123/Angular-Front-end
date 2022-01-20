@@ -1,0 +1,135 @@
+<form [formGroup]="fileUploadForm" (ngSubmit)="onSubmit(fileUploadForm.value)">
+
+        <div class="modal-header custom">
+                <img class="logo" src="./assets/images/logo-small.png">
+                <h4 class="modal-title">Add Document</h4>
+                <br>
+                <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                </button>
+        </div>
+
+
+
+
+        <div class="modal-body custom">
+                <div class="form-row form-dashboard">
+
+
+                        <div class="form-group horizental row zero col-12"
+                                *ngIf="(this.operation==='New' || docRemove==true)">
+                                <label for="txtDocCategorySearch"
+                                        class="col-form-label required col-sm-2 ">Name:</label>
+
+                                <div class="input-group d-flex col-sm-10">
+
+                                        <label class="form-control pt-1 bg-disabled">
+                                                {{selectedDocName}}</label>
+
+                                        <input id="txtFile" type="file" style="display:none;"
+                                                (change)="onFileChange($event)" formControlName="txtFile" />
+
+                                        <span class="input-group-btn">
+                                                <button class="btn btn-sm btn-outline-primary fz-12 width-80"
+                                                        onclick="document.getElementById('txtFile').click();"
+                                                        type="button"> <i class="far fa-folder-open"></i>
+                                                        Browse</button>
+                                        </span>
+
+
+                                </div>
+
+                                <p *ngIf="fileUploadForm.controls.txtFile.errors?.required"
+                                        class="text-danger p-0 m-0 w-100 text-right pt-1">
+                                        Please select file to upload!</p>
+
+                        </div>
+
+
+
+                        <div class="form-group horizental row zero col-12"
+                                *ngIf="(this.operation!='New' && docRemove==false)">
+                                <label for="txtDocCategorySearch"
+                                        class="col-form-label required col-sm-2 ">Name:</label>
+
+                                <div class="input-group d-flex col-sm-10">
+
+                                        <label class="form-control pt-1 bg-disabled">
+                                                {{selectedDocObj.original_file_name}}</label>
+
+                                        <span class="input-group-btn">
+                                                <button class="btn btn-sm btn-outline-primary fz-12 width-80"
+                                                        (click)="onDocRemove()" type="button">Remove</button>
+                                        </span>
+
+                                </div>
+
+                        </div>
+
+
+                        <div class="form-group horizental row zero col-12">
+
+                                <span class="col-sm-2 col-form-label required" id="doc_date-addon">Date</span>
+                                <div class="input-group col-sm-10">
+                                        <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtDate"
+                                                aria-label="Document Date" aria-describedby="doc_date-addon"
+                                                name="dpDocDate" ngbDatepicker #dDocDate="ngbDatepicker" maxlength="10">
+                                        <span class="input-group-btn">
+                                                <button class="btn btn-outline-primary fz-12 width-80"
+                                                        (click)="dDocDate.toggle()" type="button">
+                                                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                                </button>
+                                        </span>
+
+                                </div>
+                        </div>
+
+                        <div class="form-group horizental row zero col-12">
+                                <label for="txtDocCategorySearch"
+                                        class="col-form-label required col-sm-2 ">Category:</label>
+
+                                <div class="input-group d-flex col-sm-10">
+
+
+                                        <label class="form-control pt-1 bg-disabled">{{docCatName}}</label>
+
+                                        <input type="text" class="form-control" id="txtDocCategoryIdHidden" hidden
+                                                placeholder="Document" formControlName="txtDocCategoryIdHidden">
+                                        <span class="input-group-btn">
+                                                <button class="btn btn-sm btn-outline-primary fz-12 width-80"
+                                                        (click)="openCateogrySearch()" type="button">Category</button>
+                                        </span>
+
+
+
+                                        <inline-doc-category-search *ngIf="showDocCategorySearch"
+                                                (onCategorySelect)="onDocCategorySelect($event)"
+                                                (onClose)="closeDocCategorySearch()">
+
+                                        </inline-doc-category-search>
+                                </div>
+
+                                <p *ngIf="fileUploadForm.controls.txtDocCategoryIdHidden.errors?.required"
+                                        class="text-danger p-0 m-0 w-100 text-right pt-1">
+                                        Please select category for Document.</p>
+
+                        </div>
+
+
+                        <div class="form-group horizental row zero col-12">
+                                <span class="col-sm-2 col-form-label" id="comments-addon">Comments</span>
+                                <textarea rows="3" class="form-control col-sm-10" aria-label="Emergency Contact"
+                                        aria-describedby="comments-addon" formControlName="txtComments"></textarea>
+                        </div>
+                </div>
+
+        </div>
+
+        <div class="modal-footer custom">
+                <button type="button" type="button" class="btn btn-sm btn-dark"
+                        (click)="activeModal.close(false)">Cancel</button>
+
+                <button [disabled]="!fileUploadForm.valid" class="btn btn-success btn-sm"
+                        type="submit">{{btnUpload}}</button>
+        </div>
+</form>

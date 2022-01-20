@@ -1,0 +1,25 @@
+<form [formGroup]="deleteForm" (ngSubmit)="onSubmit(deleteForm.value)">
+
+  <div class="modal-header custom">
+    <h4 class="modal-title">Inactive Patient Notes of {{title}}</h4>
+    <button type="button" class="close" aria-label="Close" data-dismiss="modal" (click)="activeModal.close('')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <!-- model body section -->
+  <div class="modal-body">
+    <div class="form-row form-dashboard">
+      <div class="form-group col-12">
+        <label for="txtComments">Comments</label>
+        <textarea class="form-control" id="txtComments" formControlName="txtComments" rows="3"></textarea>
+      </div>
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" type="button" class="btn btn-danger btn-sm" (click)="activeModal.close('')">Cancel</button>
+    <button [disabled]="!deleteForm.valid" class="btn btn-success btn-sm" type="submit">Save</button>
+  </div>
+  </form>
+ 

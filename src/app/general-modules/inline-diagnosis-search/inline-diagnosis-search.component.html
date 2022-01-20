@@ -1,0 +1,66 @@
+<div class="inline-search">
+  <div class="inline-search-header">
+    <h6 class="title">{{title}}</h6>
+    <!-- <button *ngIf="lstChartDiagnosis!=null" class="btn btn-sm btn-link" (click)="onAdd()" style="color: wheat">Add</button> -->
+    <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <table class="table sm light-striped-border" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>
+          </th>
+          <th *ngIf="lstChartDiagnosis!=null" style="width: 50px"></th>
+          <th>Code</th>
+          <th>
+            <!-- <div class="justify-content-between d-flex text-left">
+              Description
+              <div class="justify-content-end text-right d-flex">
+                <div class="bg-purple h-10 width-10 mb-1  mr-1"></div>
+                HCC
+              </div>
+          </div>   -->
+          <div  class=" d-flex text-left"> Description
+              <div class="justify-content-between" style="width: 235px;"></div>
+                <div  class="bg-purple h-10 width-10 mb-1  ml-1 mr-2"></div>
+              HCC</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="tr_{{i}}" *ngFor="let diag of lstDiagnosis;let i=index" [ngClass]="{'text-danger': diag.is_expired,
+      active: i==selectedIndex }" (click)="diagRowClick(i)">
+      <td>
+          <div *ngIf="diag.hcc_flag" class="bg-purple h-10 width-10 mt-1"></div>     
+      </td>
+          <td *ngIf="lstChartDiagnosis!=null" style="width: 50px">
+            <input class="form-check-input" type="checkbox" style="width: 50px;height: 14px;"
+              (change)="ondiagCheckBox(i,$event)" *ngIf="!diag.is_expired">
+            <i *ngIf="diag.is_expired" class="fas fa-info-circle text-info fa-md" title="Code is Expired."></i>
+          </td>
+          <td>
+            <button #buttons type="button" class="link-btn" id="btn_{{i}}" name="btn_{{i}}"
+              [ngClass]="{'text-danger': diag.is_expired}" 
+              (click)="!diag.is_expired ? onDiagSelect.emit(diag) : return ;" (keyup.arrowdown)="shiftFocusDown(i)"
+              (keydown.enter)="!diag.is_expired ? onDiagSelect.emit(diag) : return ;"  
+              (keydown.esc) ="onClose.emit()"           
+              (keyup.arrowup)="shiftFocusUp(i)">
+              {{diag.diag_code}}
+              <i *ngIf="diag.is_expired" class="fas fa-info-circle text-info fa-md pl-1" title="Code is Expired."></i>
+            </button>
+
+          </td>
+
+          <td title="{{diag.diag_description}}">{{diag.diag_description}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <button *ngIf="lstChartDiagnosis!=null" class="btn btn-sm btn-link" (click)="onAdd()">Add</button>
+
+</div>

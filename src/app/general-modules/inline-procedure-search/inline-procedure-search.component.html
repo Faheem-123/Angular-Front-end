@@ -1,0 +1,43 @@
+<div class="inline-search">
+  <div class="inline-search-header">
+    <h6 class="title">Procedure Search</h6>
+    <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <table class="table sm light-striped-border" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="tr_{{i}}" *ngFor="let proc of lst ; let i=index" [ngClass]="{'text-danger': proc.is_expired ,
+        active: i==selectedIndex }" (click)="procRowClick(i)" (keydown.esc) ="onClose.emit()">
+          <td>
+            <button #buttons type="button" class="link-btn" id="btn_{{i}}" name="btn_{{i}}"
+              [ngClass]="{'text-danger': proc.is_expired}" 
+              (click)="!proc.is_expired ? onSelect.emit(proc) : rturn ;"            
+              (keydown.enter)="!proc.is_expired ? onSelect.emit(proc) : rturn ;"   
+              (keyup.arrowdown)="shiftFocusDown(i)"                
+              (keyup.arrowup)="shiftFocusUp(i)"
+              (keydown.esc) ="onClose.emit()"    >
+              {{proc.code}}
+              <i *ngIf="proc.is_expired" class="fas fa-info-circle text-info fa-md pl-1" title="Code is Expired."></i>
+            </button>
+
+
+            <!--
+            <button type="button" class="link-btn" (click)="onSelect.emit(proc)">{{proc.code}}</button>
+            <i *ngIf="proc.is_expired" class="fas fa-info-circle text-info fa-md" title="Code is Expired."></i>
+            -->
+          </td>
+          <td title="{{proc.description}}">{{proc.description}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

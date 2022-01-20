@@ -1,0 +1,16 @@
+<ngb-tabset class="dashboard-container nav pateint-nav" [destroyOnHide]="true">
+  <ngb-tab id="Temp-general">
+    <ng-template ngbTabTitle>Templates</ng-template>
+    <ng-template ngbTabContent>
+      <provider-wise-templates  class="dashboard-container d-flex flex-column mb-0 mt-8-px"></provider-wise-templates>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="Temp-problem">
+    <ng-template ngbTabTitle>Problem Based Template</ng-template>
+    <ng-template ngbTabContent>
+      <!-- <provider-wise-problem-based-templates class="dashboard-container d-flex flex-column mb-0 mt-1"></provider-wise-problem-based-templates> -->
+      <problem-based-template-setup class="dashboard-container d-flex flex-column mb-0 mt-1" callingFrom='user_admin'></problem-based-template-setup>
+      
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

@@ -1,0 +1,40 @@
+<div class="inline-search width-600">
+  <div class="inline-search-header">
+    <h6 class="title">Insurance Search</h6>
+    <button type="button" class="close" aria-label="Close" (click)="onClose.emit(recordId)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <table class="table sm light-striped-border" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Payer Number</th>
+          <!-- <th>City</th>
+          <th>Zip</th>
+          <th>Satate</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="tr_{{i}}" *ngFor="let ins of lstInsurance ; let i=index" [ngClass]="{active: i==selectedIndex}"
+          (click)="insRowClick(i)">
+          <td>
+            <button #buttons type="button" class="link-btn" (click)="onInsuranceSelect(ins,recordId)"
+              (keydown.enter)="onInsuranceSelect(ins,recordId)" (keyup.arrowdown)="shiftFocusDown(i)"
+              (keyup.arrowup)="shiftFocusUp(i)" (keydown.esc)="onClose.emit()">{{ins.insurance_name}}</button>
+          </td>
+          <td>{{ins.phone | phonePipe }}</td>
+          <td>{{ins.address}}, {{ins.city}}, {{ins.state}} {{ins.zip}}</td>
+          <td>{{ins.payer_number}}</td>
+          <!-- <td>{{ins.city}}</td>
+          <td>{{ins.zip}}</td>
+          <td>{{ins.state}}</td> -->
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

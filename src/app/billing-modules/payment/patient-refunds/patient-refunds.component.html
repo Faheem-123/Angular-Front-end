@@ -1,0 +1,77 @@
+<div class="dashboard-sub-nav encounter justify-content-between pr-0">
+
+  <p>Patient Refunded</p>
+
+  <div class="flex-grow-1">&nbsp;</div>
+
+    <button *ngIf="lookupList.UserRights.cashregister_view"
+        class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"><img alt="" class="img-h-20"
+          src="./assets/images/icons/ico_refresh_green.svg" (click)="getPatientRefund()"></button>
+
+</div>
+
+
+<div class="dashboard-container d-flex flex-column m-0 p-0 position-relative" style="padding-top: 1px">
+  <div class="dashboard no-border m-0 p-0 rounded-0">
+    <div class="dashboard-content p-0">
+
+      <ng-template id="noAccessView" [ngIf]="!lookupList.UserRights.cashregister_view">
+        <div class="border-content-box border-top-0 rounded-bottom norecord-found">
+          <p class="no-content p-6">
+            <i class="text-danger fas fa-ban mr-2"></i> Access Denied</p>
+        </div>
+      </ng-template>
+
+      <ng-template id="noAccessView" [ngIf]="lookupList.UserRights.cashregister_view">
+        
+
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th>Entry Date Time</th>
+              <th>Refund Method</th>
+              <th>Refund Amount</th>
+              <th>Check Number</th>
+              <th>Check Date</th>
+              <th>Transaction ID</th>
+              <th>Auth. Code</th>
+              <th>Notes</th>
+              <th>Entered By</th>
+
+              <th>Modified By</th>
+              <th>Date Modified</th>
+              <th>Modification Notes</th>
+
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let refund of lstPatientRefund">
+              <td>{{refund.date_created}}</td>
+              <td>{{refund.refund_method}}</td>
+              <td class="text-right">
+                {{refund.refund_amount | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{refund.check_number}}</td>
+              <td>{{refund.check_date}}</td>
+              <td>{{refund.transaction_id}}</td>
+              <td>{{refund.authcode}}</td>
+              <td>{{refund.notes}}</td>
+              <td>{{refund.created_user}}</td>
+
+              <td>{{refund.modified_user}}</td>
+              <td>{{refund.date_modified}}</td>
+              <td>{{refund.modification_notes}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </div>
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+</div>

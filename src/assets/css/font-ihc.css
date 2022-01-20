@@ -1,0 +1,118 @@
+@font-face {
+  font-family: 'font-ihc';
+  src:  url('../fonts/ihc/font-ihc.eot?lk7iyu');
+  src:  url('../fonts/ihc/font-ihc.eot?lk7iyu#iefix') format('embedded-opentype'),
+    url('../fonts/ihc/font-ihc.ttf?lk7iyu') format('truetype'),
+    url('../fonts/ihc/font-ihc.woff?lk7iyu') format('woff'),
+    url('../fonts/ihc/font-ihc.svg?lk7iyu#font-ihc') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="ihc-"], [class*=" ihc-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'font-ihc' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ihc-home:before {
+  content: "\e900";
+}
+.ihc-appointment:before {
+  content: "\e901";
+}
+.ihc-patient:before {
+  content: "\e902";
+}
+.ihc-message:before {
+  content: "\e903";
+}
+.ihc-lab:before {
+  content: "\e904";
+}
+.ihc-letter:before {
+  content: "\e905";
+}
+.ihc-report:before {
+  content: "\e906";
+}
+.ihc-user-admin:before {
+  content: "\e907";
+}
+.ihc-admin:before {
+  content: "\e908";
+}
+.ihc-fax:before {
+  content: "\e909";
+}
+.ihc-log:before {
+  content: "\e90a";
+}
+.ihc-cash:before {
+  content: "\e90b";
+}
+.ihc-refill-request:before {
+  content: "\e90c";
+}
+.ihc-pending-claim:before {
+  content: "\e90d";
+}
+.ihc-current-day:before {
+  content: "\e90e";
+}
+.ihc-summary:before {
+  content: "\e90f";
+}
+.ihc-notes:before {
+  content: "\e910";
+}
+.ihc-print:before {
+  content: "\e911";
+}
+.ihc-print-setting:before {
+  content: "\e911";
+}
+.ihc-sign:before {
+  content: "\e913";
+}
+.ihc-billing:before {
+  content: "\e921";
+}
+
+.ihc-seprator{
+    border-left: 1px solid #2ebd6b;
+    height: 15px;
+    margin: 5px;
+}
+.ihc-btn-cross-win{
+  position: relative;
+  float: right;
+  background: red;
+  color: white;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  margin-right: -10px;
+}
+.ihc-btn-cross-win i{
+  margin-top: 7px;
+}
+.ihc-btn-cross-win:hover{
+  position: relative;
+  float: right;
+  background: #d20303;
+  color: white;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+}
+
+

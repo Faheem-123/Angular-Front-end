@@ -1,0 +1,161 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)" (keydown.enter)="$event.preventDefault()">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">{{title}}</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom position-relative">
+
+    <div class="form-row form-dashboard" *ngIf="errorMsg!=''">
+      <div class="form-group col-12">
+        <div class="alert alert-danger rounded-0 m-0" role="alert">
+          {{errorMsg}}
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="!isLoading" class="dashboard-content p-2 border">
+
+      <div class="form-row form-dashboard mb-1">
+
+        <div class="form-group col-4">
+          <label class="col-form-label required " for="dpIssueDate">Prescription Date</label>
+          <div class="input-group ">
+            <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpIssueDate"
+              formControlName="dpIssueDate" ngbDatepicker #dpIssueDate="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="dpIssueDate.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group col-8">
+          <label class="col-form-label required" for="ddPrescriber">Prescriber</label>
+          <select formControlName="ddPrescriber" class="form-control required">
+            <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group col-12">
+          <label class="col-form-label  required" for="txtDrugName">Drug Name</label>
+          <input class="form-control col required" id="txtDrugName" formControlName="txtDrugName" />
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group col-12">
+          <label class="col-form-label required" for="txtSig">Sig</label>
+          <input class="form-control col required" id="txtSig" formControlName="txtSig" />
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard mb-1">
+
+
+
+        <div class="form-group col-4">
+          <label class="col-form-label required " for="dpStartDate">Start Date</label>
+          <div class="input-group ">
+            <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpStartDate"
+              formControlName="dpStartDate" ngbDatepicker #dpStartDate="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="dpStartDate.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group col-4">
+          <label class="col-form-label " for="dpEndDate">End Date</label>
+          <div class="input-group ">
+            <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpEndDate"
+              formControlName="dpEndDate" ngbDatepicker #dpEndDate="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="dpEndDate.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group col-4">
+          <label class="col-form-label " for="txtRefills">Refill</label>
+          <input class="form-control col" type="number" id="txtRefills" formControlName="txtRefills" min="0" />
+        </div>
+
+
+      </div>
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group col">
+          <label class="col-form-label " for="txtPharmacyNotes">Pharmacy Notes</label>
+          <input class="form-control col" id="txtPharmacyNotes" formControlName="txtPharmacyNotes" />
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard mb-1">
+
+        <div class="form-group col-4">
+          <label class="col-form-label required" for="ddStatus">Status</label>
+
+          <select class="col form-control px-1 required" id="ddStatus" formControlName="ddStatus" labelForId="ddStatus">
+            <option value="N">Active</option>
+            <option value="Y">In Active</option>
+          </select>
+
+
+        </div>
+
+
+        <!--
+        <div class="form-group  col-2 mt-3" >
+
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="chkPRN" formControlName="chkPRN">
+            <label class="custom-control-label" for="chkPRN">PRN</label>
+          </div>
+
+        </div>
+
+       
+        <div class="form-group col-2 mt-3">
+
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="chkDAW" formControlName="chkDAW">
+            <label class="custom-control-label" for="chkDAW">DAW</label>
+          </div>
+
+        </div>
+-->
+
+
+
+      </div>
+
+
+
+
+
+    </div>
+
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer custom">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+    <button style="width: 80px;" class="btn btn-success btn-sm" type="submit">Save</button>
+  </div>
+</form>

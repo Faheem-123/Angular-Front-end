@@ -1,0 +1,264 @@
+<div class="dashboard-container d-flex flex-column mb-0 position-relative">
+    <div class="dashboard" [ngClass]="{ 'border-0': callingFrom=='scheduler',
+    'mx-1': callingFrom == 'patient',
+    'shadow-none rounded-0 m-0':callingFrom == 'reports'}">
+
+        <div class="dashboard-title h-30" *ngIf="callingFrom=='patient'">
+            <div class="title">Appointments</div>
+        </div>
+        <div class="dashboard-content light-gray-bg mt-0 d-flex flex-column"
+            [ngClass]="{ 'rounded-10': (callingFrom=='scheduler') }">
+
+            <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0"
+                *ngIf="callingFrom=='scheduler' || callingFrom=='reports'">
+                <div class="accordian-header" role="tab" id="headingOne">
+                    <h5 class="mb-0">
+                        <a data-toggle="collapse" href="#SearchCriteriaAppointmentReport" aria-expanded="true"
+                            class="accordian-link rounded-0">
+                            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+                        </a>
+                    </h5>
+                </div>
+
+                <div id="SearchCriteriaAppointmentReport" class="show">
+                    <div class="accordian-body bg-transparent p-2 pt-0">
+                        <form [formGroup]="searchForm">
+
+                            <div class="form-row form-dashboard">
+
+                                <div class="form-group col-md-6 col-sm-6 col-12">
+                                    <label class="col-form-label required" for="dateFrom">Date Range:</label>
+                                    <div class="d-flex flex-grow-3">
+
+                                        <div class="input-group mr-1">
+
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">From</span>
+                                            </div>
+
+                                            <input id="dpDateFrom" formControlName="dpDateFrom"
+                                                class="form-control date-control " placeholder="mm/dd/yyyy"
+                                                name="dpDateFrom" ngbDatepicker #dpDateFrom="ngbDatepicker">
+
+                                            <span class="input-group-btn">
+                                                <button class="btn date-control-btn" (click)="dpDateFrom.toggle()"
+                                                    type="button" focusable="false" tabindex="-1">
+                                                </button>
+                                            </span>
+
+                                        </div>
+
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">To</span>
+                                            </div>
+
+                                            <input id="dpDateTo" formControlName="dpDateTo"
+                                                class="form-control date-control " placeholder="mm/dd/yyyy"
+                                                name="dpDateTo" ngbDatepicker #dpDateTo="ngbDatepicker">
+
+                                            <span class="input-group-btn">
+                                                <button class="btn date-control-btn" (click)="dpDateTo.toggle()"
+                                                    type="button" focusable="false" tabindex="-1">
+                                                </button>
+                                            </span>
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-3 col-sm-6 col-12">
+                                    <label for="cmbLocation">Location</label>
+                                    <select class="form-control" labelForId="cmbLocation" (change)="locationChanged()"
+                                        formControlName="cmbLocation">
+                                        <option [value]=-1>All</option>
+                                        <option *ngFor="let loc of lstLocations" [value]="loc.id">{{loc.name}}</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group col-md-3 col-sm-6 col-12">
+                                    <label for="cmbProvider">Provider</label>
+                                    <select class="form-control" labelForId="cmbProvider" (change)="providerChanged()"
+                                        formControlName="cmbProvider">
+                                        <option [value]=-1>All</option>
+                                        <option *ngFor="let pro of lstFileredProviders" [value]="pro.provider_id">
+                                            {{pro.provider_name}}</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group col-md-3 col-sm-6 col-12">
+                                    <label for="txtPatientSearch">Search Patient </label>
+                                    <div class="input-icon d-flex flex-grow-3">
+                                        <input labelForId="txtPatientSearch" class="form-control flex-grow-3"
+                                            type="text" #txtPatientSearch placeholder="Search Patient"
+                                            (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                                            (input)="onPatientSearchInputChange(txtPatientSearch.value)"
+                                            (blur)="onPatientSearchBlur()" formControlName="txtPatientSearch">
+                                        <input type="text" formControlName="txtPatientIdHidden" hidden>
+                                        <div class="icon">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </div>
+
+                                        <inline-patient-search *ngIf="showPatientSearch"
+                                            [searchValue]="txtPatientSearch.value"
+                                            (onPatientSelect)="openSelectPatient($event)"
+                                            (onClose)="closePatientSearch()">
+                                        </inline-patient-search>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-3 col-sm-6 col-12">
+                                    <label for="cmbStatus">Status</label>
+                                    <select class="form-control" id="cmbStatus" formControlName="cmbStatus">
+                                        <option [value]=-1>All</option>
+                                        <option *ngFor="let status of lookupList.appStatusList" [value]="status.id">
+                                            {{status.description}}</option>
+                                    </select>
+                                </div>
+
+
+
+
+                                <div class="form-group col-md-3 col-sm-6 col-12">
+                                    <label for="cmbType">Type</label>
+                                    <select class="form-control" id="cmbType" (change)="providerChanged()"
+                                        formControlName="cmbType">
+                                        <option [value]=-1>All</option>
+                                        <option *ngFor="let type of lookupList.appTypesList" [value]="type.id">
+                                            {{type.description}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-3 col-sm-6 col-12">
+                                    <label for="cmbSource">Source</label>
+                                    <select class="form-control" id="cmbSource" (change)="providerChanged()"
+                                        formControlName="cmbSource">
+                                        <option [value]=-1>All</option>
+                                        <option *ngFor="let source of lookupList.appSourcesList" [value]="source.id">
+                                            {{source.description}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-12 text-right mt-2">
+                                    <button type="button" class="btn btn-success mr-1"
+                                        (click)="onSearch(searchForm.value)">Search</button>
+                                    <button type="button" class="btn btn-dark" (click)="hideAddEdit()">Clear</button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border rounded-0 bg-white d-flex flex-column flex-grow-1 mt-0 max-height-100 border-top-0">
+                <div class="dashboard-sub-nav encounter justify-content-between">
+                    <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details
+                        <span *ngIf="lstAppointments!=undefined" class="fz-12">({{totalRecords}})</span>
+                    </h4>
+                    <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+
+                        <button class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 " (click)="exportAsXLSX()"><i
+                                class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export to Excel</button>
+                        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 " type="button"
+                            (click)="onPrintClick()"><i class="fas fa-print fa-md  mr-1"></i>Print</button>
+
+
+                        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 "
+                            *ngIf="callingFrom==='patient'" title="Refresh Apppointments" (click)="getAppointments()">
+                            <i class="fas fa-redo"></i>
+                        </button>
+
+                        <!--
+                        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                            (click)="getAppointments()" *ngIf="callingFrom==='patient'"><img _ngcontent-c3="" alt=""
+                                class="img-h-18" src="./assets/images/icons/ico_refresh_green.svg"
+                                (click)="btnRefreshClicked()"></button>
+                                -->
+                    </div>
+                </div>
+
+
+                <div class="overflow-auto flex-grow-1 overflow-height">
+                    <table class="table sm layout-fixed light-striped-border table-sticky-header">
+                        <thead>
+                            <tr>
+                                <th class="width-120" *ngIf="callingFrom!='patient'">Patient</th>
+                                <th class="width-80" *ngIf="callingFrom!='patient'">Gender</th>
+                                <th class="width-100" *ngIf="callingFrom!='patient'">DOB</th>
+                                <th class="width-100" *ngIf="callingFrom!='patient'">Cell Phone</th>
+                                <th class="width-100" *ngIf="callingFrom!='patient'">Home Phone</th>
+                                <th class="width-100">App. Date</th>
+                                <th class="width-80">App. Time</th>
+                                <th class="width-110">App. Status</th>
+                                <th class="width-110">App. Source</th>
+                                <th class="width-110">App. Type</th>
+                                <th class="width-120">Provider</th>
+                                <th class="width-120">Location</th>
+                                <th class="width-120">Insurance</th>
+                                <th class="width-80">Copy</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let app of lstAppointments; let i=index;" (click)="onRowSelection(i)"
+                                [ngClass]="{'active': i==selectedRow}">
+                                <td *ngIf="callingFrom!='patient'">
+                                    <button type="button" class="link-btn"
+                                        (click)="openPatient(app)">{{app.patient_name}}</button>
+                                </td>
+                                <td *ngIf="callingFrom!='patient'">{{app.gender}}</td>
+                                <td *ngIf="callingFrom!='patient'">{{app.dob}}</td>
+                                <td *ngIf="callingFrom!='patient'">{{app.cell_phone | phonePipe}}</td>
+                                <td *ngIf="callingFrom!='patient'">{{app.home_phone | phonePipe}}</td>
+                                <td>
+                                    <button type="button" class="link-btn"
+                                        (click)="openScheduler(app)">{{app.appointment_date}}</button>
+                                </td>
+                                <td>{{app.appointment_time}}</td>
+                                <td>
+                                    <button type="button" class="link-btn"
+                                        (click)="showCallLog(app)">{{app.status}}</button>
+                                </td>
+                                <td>{{app.source}}</td>
+                                <td>{{app.app_type}}</td>
+                                <td>{{app.provider_name}}</td>
+                                <td>{{app.location_name}}</td>
+                                <td>{{app.insurance_name}}</td>
+                                <td>{{app.copay}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between flex-shrink-0  border-top">
+                <ngb-pagination class="mb0" [collectionSize]="totalPages" [(page)]="page" [pageSize]="pageSize"
+                    (pageChange)="pageChange($event)" [maxSize]="10" [rotate]="true" [boundaryLinks]="true" size="sm">
+                </ngb-pagination>
+
+                <div class="form-group mb-0 mr-1">
+                    <select class="form-control pagination-custom-select mt-1 " name="pageSize" [(ngModel)]="pageSize"
+                        (change)="pageOptionChaged()">
+                        <option [ngValue]="10">10 items per page</option>
+                        <option [ngValue]="20">20 items per page</option>
+                        <option [ngValue]="50">50 items per page</option>
+                        <option [ngValue]="100">100 items per page</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+            <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+            </div>
+        </div>
+
+
+    </div>

@@ -1,0 +1,100 @@
+<div
+  class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+
+  <div class="d-flex flex-column flex-shrink-0">
+
+    <div class="border border-left-0 border-right-0 border-top-0 rounded-0 bg-white flex-shrink-0">
+      <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+      <div class="pl-2 pr-2 pb-1 pt-0">
+
+        <form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+          <div class="p-6 pt-0">
+
+            <div class="form-row form-dashboard pb-1">
+
+              <div class="form-group col-2">
+                <label for="cmbMonthsdaywise" class="col-form-label">Month:</label>
+                <select class="form-control" id="cmbMonthsdaywise" formControlName="cmbMonthsMTD">
+                  <option value="full_year">Full Year</option>
+                  <option *ngFor="let month of lookupList.lstMonths" [value]="month.month_no">
+                    {{month.month_name}}</option>
+                </select>
+              </div>
+
+              <div class="form-group col-2">
+                <label for="txtYeardaywise" class="col-form-label">Year:</label>
+                <input class="form-control" name="txtYeardaywise" formControlName="txtYearMTD" placeholder="YYYY">
+              </div>
+
+
+              <div class="form-group col-1 d-flex justify-content-end align-items-end">
+                <button type="button" class="btn btn-success w-100"
+                  (click)="onSearch(searchFormGroup.value)">Search</button>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <div class="d-flex flex-grow-1 overflow-height overflow-auto">
+
+    <div class="d-flex flex-grow-1 flex-column  border-0 rounded-0 bg-white overflow-auto ">
+      <div class="d-flex flex-grow-1 align-items-center justify-content-between flex-shrink-0 border-0">
+
+        <div class="d-flex flex-grow-1 justify-content-between">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 ">
+            Detail
+
+            <span class="v-separtor"></span>
+            <span *ngIf="yearMonthDisplay!=''" class="title-other-info">
+              {{yearMonthDisplay}}
+            </span>
+          </h4>
+          <button class="btn btn-link fz-13 text-decoration-none line-height-1 p-0 mr-2" (click)="exportToExcel()"><i
+              class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i>
+            Export to Excel</button>
+        </div>
+
+      </div>
+
+      <div class="overflow-auto h-100">
+
+        <table class="table sm table-sticky-header light-striped-border">
+          <thead>
+            <tr>
+              <th class="width-150">Description</th>
+              <th class="width-120 text-right">Total</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr st-select-row="row" *ngFor="let data of lstSummary">
+              <td>{{data.col1}}</td>
+              <td class="text-right">{{data.col2}}</td>
+              <td></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+</div>
+

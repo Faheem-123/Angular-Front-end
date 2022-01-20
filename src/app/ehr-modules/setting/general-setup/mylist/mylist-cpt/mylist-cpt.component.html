@@ -1,0 +1,105 @@
+<div class="light-title-bar rounded-top h-25  d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-14 font-weight-500 pl-2">My List CPT Setup</div>
+    <div class="d-flex align-items-center">
+      <button *ngIf="operation==''" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onAdd()">
+        <i class="fas fa-plus"></i>
+        Add</button>
+      <button *ngIf="operation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" (click)="onSave()">Save</button>
+      <button *ngIf="operation!=''" class="btn btn-sm btn-dark top-right-radius h-30" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+  
+  <div class="bg-white d-flex flex-row flex-grow-1 pt-1">
+  
+    <div class="border rounded bg-white d-flex flex-column flex-3 max-height-100">
+      <table class="table light-striped-border">
+        <thead>
+          <tr>
+            <th>Provider Name</th>
+          </tr>
+        </thead>
+  
+        <tbody>
+          <tr *ngFor="let prov of lookupList.providerList;let i = index" (click)="onProviderSelectionChange(i,prov)"
+            [ngClass]="{ 'active': i==selectedProviderIndex,
+                'disabled': isDisable
+                }">
+            <td>{{prov.name}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="bg-white d-flex flex-column flex-9 ml-8">
+  
+      <div class="border rounded bg-white d-flex flex-column">
+        <div class="d-flex flex-grow-1 border-top px-2 py-1">
+          <form [formGroup]="inputForm">
+            <div class="form-row form-dashboard align-items-start">
+              <div class="form-group horizental d-flex col-md-12 col-sm-12 col-12">
+                <label class="col-form-label label-w-70" for="input1">Procedure</label>
+                <input class="form-control col-sm-10 search-highlight" placeholder="Enter Procedure Code or Description to Search" type="text"
+                  id="txtcodeSearch" #txtcodeSearch formControlName="txtcodeSearch" 
+                  (keydown)="onCodeSearchKeydown($event)" (input)="onSearchInputChange(txtcodeSearch.value)"
+                  (blur)="onSearchBlur()" autocomplete="off">
+  
+                  <inline-procedure-search *ngIf="showDiagSearch" [procSearchCriteria]="procSearchCriteria"
+                  (onSelect)="onDiagnosisSelect($event)" (onClose)="closeDiagSearch()"></inline-procedure-search>
+  
+              </div>
+  
+              <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+                <label class="col-form-label label-w-70" for="input1">Code:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtCode" readonly>
+              </div>
+  
+              <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+                <label class="col-form-label label-w-50" for="input1">Desc:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtDesc">
+              </div>
+            </div>
+          </form>
+        </div>
+  
+        <div class="bg-light rounded-bottom px-2 py-1 border-top d-flex align-items-center justify-content-between">
+          <span class="fz-11 text-muted">&nbsp;</span>
+          <button *ngIf="operation=='New'" class="btn btn-sm btn-success" (click)="onAddToList()">Add</button>
+        </div>
+  
+      </div>
+      <div class="border rounded bg-white d-flex flex-column flex-1 mt-2">
+          <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+            <span>My List Detail</span>
+          </div>
+          <div class="overflow-auto p-0 flex-grow-1 h-350">
+            <table class="table sm light-striped-border">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th style="width: 250px">Description</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let c of arrCodeDetail;let i = index"
+                  (click)="onCodeDetailSelectionChange(i)" [ngClass]="{ 'active': i==codeDetailSelectedIndex,
+                  'disabled': isDisable
+                  }">
+                  <td>{{c.proc_code}}</td>
+                  <td style="width: 250px">{{c.proc_description}}</td>
+                  <td class="text-right">
+                    <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEditDetail(c)">
+                      <i class="far fa-edit"></i>
+                    </button>
+                    <button class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDeleteDetail(c)">
+                      <i class="far fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+  
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+  </div>

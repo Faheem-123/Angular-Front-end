@@ -1,0 +1,37 @@
+export class ORMCDSSave{
+    rule_id:number;
+	rule_group:string;
+	rule_name:string;
+	notification:string;
+	description_html:string;
+	description:string;
+	reference_link:string;
+	comments:string;
+	practice_id:number;
+	system_ip:string;
+	deleted:boolean;
+	created_user:string;
+	client_date_created:string;
+	modified_user:string;
+	client_date_modified:string;
+	date_created:string;
+	date_modified:string;
+	sp_name:string;
+	built_in:boolean;
+	criteria_description:string;
+	is_demographics:boolean;
+	is_vitals:boolean;
+	is_diagnosis:boolean;
+	is_labs:boolean;
+	is_allergy:boolean;
+	is_medication:boolean;
+	is_procedures:boolean;
+	is_lifestyle:boolean;
+	is_healthmaintenance:boolean;
+	is_immunization:boolean;
+	intervention_developer:string;
+	funding_source:string;
+	release_version:string;
+	diagnostic_therapeutic_link:string;
+	citation:string;
+}

@@ -1,0 +1,253 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">Appointment Reminder Report
+    </div>
+    <button class="btn btn-link fz-13 font-weight-400 py-0 text-white" (click)="exportAsXLSX()"><i
+      class="fas fa-file-excel fa-md  mr-1"></i>Export to Excel</button>
+
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+    <form [formGroup]="frmCallSubmit">
+      <div class="rounded bg-white flex-shrink-0">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+
+        <div class="p-2 pt-0">
+          <div class="form-row form-dashboard">
+            <!-- <div class="form-group col-2">
+              <label class="col-form-label required" for="dpfromDate">From:</label>
+              <div class="input-group">
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dateFrom"
+                  formControlName="dateFrom" ngbDatepicker #dpfromDate="ngbDatepicker">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+            </div> -->
+            <!-- <div class="form-group col-2">
+              <label class="col-form-label required" for="dptoDate">To:</label>
+              <div class="input-group">
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo"
+                  ngbDatepicker #dptoDate="ngbDatepicker">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dptoDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+            </div> -->
+
+            <div class="form-group col-4">
+              <div class="btn-group radio-btn-tabs ">
+
+                <label class="btn btn-secondary" [ngClass]="{'active' : (rptType === 'call')}">
+                  <input type="radio" name="rptType" autocomplete="off" checked formControlName="rptType"
+                    value="call" (ngModelChange)="onrptTypeChange($event)"> Reminder Call
+                </label>
+                <label class="btn btn-secondary" [ngClass]="{'active' : (rptType === 'sms')}">
+                  <input type="radio" name="rptType" autocomplete="off" checked formControlName="rptType"
+                    value="sms" (ngModelChange)="onrptTypeChange($event)"> Reminder SMS
+                </label>
+              </div>
+
+
+
+              <div class="d-flex flex-grow-3">
+
+                <div class="input-group mr-1">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">From</span>
+                  </div>
+
+                  <input id="dpfromDate" formControlName="dateFrom" class="form-control date-control "
+                    placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker #dpfromDate="ngbDatepicker"
+                    >
+
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button" focusable="false"
+                      tabindex="-1">
+                    </button>
+                  </span>
+
+                </div>
+
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">To</span>
+                  </div>
+
+                  <input id="dateTo" formControlName="dateTo" class="form-control date-control "
+                    placeholder="mm/dd/yyyy" name="dateTo" ngbDatepicker #dateTo="ngbDatepicker"
+                    >
+
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dateTo.toggle()" type="button" focusable="false"
+                      tabindex="-1">
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-2">
+              <label for="cmbLocation" class="col-form-label">Location:</label>
+              <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                <option [value]=-1>All</option>
+                <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+              </select>
+            </div>
+            <div class="form-group col-1 d-flex justify-content-end align-items-end">
+              <button type="button" class="btn btn-success w-100"
+                (click)="searchCallData(frmCallSubmit.value)">Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2 overflow-height">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details
+        <span *ngIf="lstCallDetails!=undefined" class="fz-12">({{lstCallDetails.length}})</span> </h4>
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border table-sticky-header" *ngIf="rptType=='call'">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Appointment Date</th>
+              <th>PID</th>
+              <th>Patient Name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+        <tbody>
+           <tr st-select-row="row" *ngFor="let lstCal of lstCallDetails"
+           [ngClass]="{'active': lstCal.row_id==selectedRow}" (click)="onSelectionChange(lstCal)">
+              <td>{{lstCal.call_date}}</td>
+              <td>{{lstCal.appointment_date}}</td>
+              <td>{{lstCal.alternate_account}}</td>
+              <td>{{lstCal.pat_name}}</td>
+              <td>{{lstCal.status}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table light-striped-border table-sticky-header" *ngIf="rptType=='sms'">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Appointment Date</th>
+              <th>PID</th>
+              <th>Patient Name</th>
+              <th>Status</th>
+              <th>Response</th>
+            </tr>
+          </thead>
+        <tbody>
+           <tr st-select-row="row" *ngFor="let lstCal of lstCallDetails"
+           [ngClass]="{'active': lstCal.row_id==selectedRow}" (click)="onSelectionChange(lstCal)">
+              <td>{{lstCal.message_date}}</td>
+              <td>{{lstCal.appointment_date}}</td>
+              <td>{{lstCal.alternate_account}}</td>
+              <td>{{lstCal.pat_name}}</td>
+              <td>{{lstCal.msgdetailstatus}}</td>
+              <td>{{lstCal.responsemessage}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- <div class="encounter-module">
+  <div class="header" >
+    <div class="title">Reminder Calls Details</div>
+    <span class="badge badge-pill">{{recordCount}}</span>
+  </div>
+  
+  <form [formGroup]="frmCallSubmit" >
+    <div class="custom-select-box pb-1" style="overflow: visible;">
+      <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+      <div class="form-row form-dashboard">
+        <div class="form-group">
+          <label for="dateFrom" class="col-form-label required">From:</label>
+          <div class="form-row form-dashboard">
+            <div class="form-group">
+
+                <div class="input-group">
+                    <input class="form-control" placeholder="mm/dd/yyyy" name="dateFrom"
+                      formControlName="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker">
+                      <span class="input-group-btn">
+                          <button class="btn btn-outline-primary" (click)="dateFrom.toggle()" type="button">
+                            <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                          </button>
+                        </span>
+                  </div>
+                
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dateTo" class="col-form-label required">To:</label>
+          
+          <div class="input-group">
+              <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" 
+              formControlName="dateTo" ngbDatepicker #dateTo="ngbDatepicker">
+              <span class="input-group-btn">
+                  <button class="btn btn-outline-primary" (click)="dateTo.toggle()" type="button">
+                    <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                  </button>
+                </span>
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            <label for="input2" class="col-form-label">Location:</label>
+             <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation" ng-model="data.singleSelect">
+             <option *ngFor="let loc of mylocation" [value]="loc.id">{{loc.name}}</option>
+             </select>
+            </div>
+        <div class="form-group col-sm-4 text-right">
+          <button type="button" ng-disabled="btnHide" class="btn btn-success ml-2 mt-3" (click)="searchCallData(frmCallSubmit.value)">Search</button>
+        </div>
+      </div>
+    </div>
+    </form>
+    <div class="custom-select-box pb-1 mt-2">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+        <div class="form-row form-dashboard">
+          <table class="table light-striped-border">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Appointment Date</th>
+                <th>PID</th>
+                <th>Patient Name</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+          <tbody>
+             <tr st-select-row="row" *ngFor="let lstCal of lstCallDetails">
+                <td>{{lstCal.call_date}}</td>
+                <td>{{lstCal.appointment_date}}</td>
+                <td>{{lstCal.alternate_account}}</td>
+                <td>{{lstCal.pat_name}}</td>
+                <td>{{lstCal.status}}</td>
+              </tr>
+            </tbody> 
+          </table>
+    
+         
+        </div>
+      </div>
+
+  </div> -->

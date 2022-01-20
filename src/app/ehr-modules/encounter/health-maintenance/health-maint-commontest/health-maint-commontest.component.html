@@ -1,0 +1,321 @@
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  <div class="rounded-top encounter-header-highlight justify-content-end">
+    <ul class="nav color-buttons align-items-center">
+        <a class="nav-link encounter-btn-save px-2 py-0"  (click)="onSave(inputForm.value)">
+            <i class="far fa-save pr-1"></i>Save
+        </a>
+      <a class="nav-link encounter-btn-cancel px-2 py-0" (click)="dataUpdated.emit()">
+        <i class="fas fa-times pr-1" ></i>Cancel
+      </a>
+    </ul>
+  </div>
+
+  <div class="p-0">
+    <div class="pt-1-px bg-white overflow-auto">
+      <form [formGroup]="inputForm">
+      <table class="table td-height td-vertical-align-middle light-striped-border">
+        <thead>
+          <tr>
+            <th width="10%">&nbsp;</th>
+            <th width="15%" class="text-center">Complete Date</th>
+            <th width="15%" class="text-center">Due Date</th>
+            <th width="9%" class="text-center">Refused</th>
+            <th width="56%" class="text-center">Comments</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td class="form-edit-sub-heading">Creat</td>
+            <td>
+                <div class="form-group mb-0">
+                <div class="input-group">
+                    <input class="form-control"  name="txtCreatComplDate" formControlName="txtCreatComplDate"  
+                        ngbDatepicker #txtCreatComplDate="ngbDatepicker" >
+                    <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtCreatComplDate.toggle()" type="button">
+                            <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                    </span>
+                </div>
+                </div>
+              
+            </td>
+            <td>
+                <div class="form-group mb-0">
+                <div class="input-group">
+                  <input class="form-control date-control" name="txtCreatDueDate" formControlName="txtCreatDueDate" 
+                  ngbDatepicker #txtCreatDueDate="ngbDatepicker">
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="txtCreatDueDate.toggle()" type="button">
+                      <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                    </button>
+                  </span>
+                </div>
+               </div>
+            </td>
+            <td class="text-center">
+              <!-- <div class="custom-checkbox green-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkCreatRefused" formControlName="chkCreatRefused">
+                <label class="custom-control-label" for="chkCreatRefused">&nbsp;</label>
+              </div> -->
+              <input type="checkbox"  formControlName="chkCreatRefused">
+            </td>
+            <td>
+              <input class="form-control" type="text" formControlName="txtCreatComments" > 
+            </td>
+          </tr>
+
+          <tr>
+            <td class="form-edit-sub-heading">AIC</td>
+            <td>
+                <div class="form-group mb-0">
+                  <div class="input-group">
+                    <input formControlName="txtAICComplDate" class="form-control date-control"  name="txtAICComplDate" ngbDatepicker #txtAICComplDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtAICComplDate.toggle()" type="button">
+                        <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                  <div class="form-group mb-0">
+                  <div class="input-group">
+                    <input class="form-control date-control" formControlName="txtAICDueDate"  name="txtAICDueDate" ngbDatepicker #txtAICDueDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtAICDueDate.toggle()" type="button">
+                        <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"> 
+                <!-- <div class="custom-checkbox green-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="ChkAICRefused" formControlName="ChkAICRefused">
+                  <label class="custom-control-label" for="ChkAICRefused">&nbsp;</label>
+                </div> -->
+                <input type="checkbox" formControlName="ChkAICRefused">
+              </td>
+            <td>
+              <input class="form-control" type="text" formControlName="txtAICComments" >
+            </td>
+          </tr>
+
+          <tr>
+            <td class="form-edit-sub-heading">Eye</td>
+            <td>
+                <div class="form-group mb-0">
+                <div class="input-group">
+                    <input class="form-control date-control" formControlName="txtEyeComplDate"  name="txtEyeComplDate" ngbDatepicker #txtEyeComplDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtEyeComplDate.toggle()" type="button">
+                        <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                      </button>
+                    </span>
+                  </div>
+                  </div>
+              </td>
+              <td>
+                  <div class="form-group mb-0">
+                  <div class="input-group">
+                      <input class="form-control date-control" formControlName="txtEyeDueDate"  name="txtEyeDueDate" ngbDatepicker #txtEyeDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtEyeDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                    </div>
+              </td>
+              <td class="text-center">
+                <!-- <div class="custom-checkbox green-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="chkEyeRefused" formControlName="chkEyeRefused">
+                  <label class="custom-control-label" for="chkEyeRefused">&nbsp;</label>
+                </div> -->
+                <input type="checkbox"  id="chkEyeRefused" formControlName="chkEyeRefused">
+                <!-- <input type="checkbox" formControlName="chkEyeRefused"> -->
+              </td>
+            <td>
+              <input class="form-control" type="text" formControlName="txtEyeComments" >
+            </td>
+          </tr>
+
+          <tr>
+            <td class="form-edit-sub-heading">LDL</td>
+            <td>
+                <div class="form-group mb-0">
+                <div class="input-group">
+                    <input class="form-control date-control" formControlName="txtLDLComplDate"  name="txtLDLComplDate" ngbDatepicker #txtLDLComplDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtLDLComplDate.toggle()" type="button">
+                        <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                      </button>
+                    </span>
+                  </div>
+                  </div>
+              </td>
+              <td>
+                <div class="form-group mb-0">
+                  <div class="input-group">
+                    <input class="form-control date-control" formControlName="txtLdlDueDate"  name="txtLdlDueDate" ngbDatepicker #txtLdlDueDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtLdlDueDate.toggle()" type="button">
+                        <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center">
+                <input type="checkbox"  formControlName="chkLdlRefused">
+              </td>
+            <td>
+              <input class="form-control" type="text" formControlName="txtLdlComments">
+            </td>
+          </tr>
+
+          <tr>
+            <td class="form-edit-sub-heading">Pap</td>
+            <td>
+                <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control date-control" formControlName="txtPAPComplDate"  name="txtPAPComplDate" ngbDatepicker #txtPAPComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtPAPComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+              </td>
+              <td>
+                  <div class="form-group mb-0">
+                      <div class="input-group">
+                        <input class="form-control date-control"  formControlName="txtPAPDueDate" name="txtPAPDueDate" ngbDatepicker #txtPAPDueDate="ngbDatepicker">
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="txtPAPDueDate.toggle()" type="button">
+                            <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+              </td>
+              <td class="text-center">
+                <input type="checkbox" formControlName="chkPAPRefused">
+              </td>
+            <td>
+              <input class="form-control" type="text" formControlName="txtPAPComments" >
+            </td>
+          </tr>
+
+          <tr>
+            <td class="form-edit-sub-heading">Mamo</td>
+            <td>
+                <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control date-control" formControlName="txtMamoComplDate"  name="txtMamoComplDate" ngbDatepicker #txtMamoComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtMamoComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+              </td>
+              <td>
+                  <div class="form-group mb-0">
+                      <div class="input-group">
+                        <input class="form-control date-control"  formControlName="txtMamoDueDate" name="txtMamoDueDate" ngbDatepicker #txtMamoDueDate="ngbDatepicker">
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="txtMamoDueDate.toggle()" type="button">
+                            <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+              </td>
+              <td class="text-center">
+                <input type="checkbox" formControlName="chkMamoRefused">
+              </td>
+            <td>
+              <input class="form-control" type="text" formControlName="txtMamoComments" >
+            </td>
+          </tr>
+
+          <tr>
+            <td class="form-edit-sub-heading">Colonoscopy</td>
+            <td>
+                <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control date-control" formControlName="txtColonComplDate"  name="txtColonComplDate" ngbDatepicker #txtColonComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtColonComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+              </td>
+              <td>
+                  <div class="form-group mb-0">
+                      <div class="input-group ">
+                        <input class="form-control date-control" formControlName="txtColonDueDate"  name="txtColonDueDate" ngbDatepicker #txtColonDueDate="ngbDatepicker">
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="txtColonDueDate.toggle()" type="button">
+                            <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+              </td>
+              <td class="text-center">
+                <input type="checkbox" formControlName="chkColonRefused" >
+              </td>
+            <td>
+              <input class="form-control" type="text" formControlName="txtColonComments" >
+            </td>
+          </tr>
+
+          <tr>
+            <td class="form-edit-sub-heading">Dexa</td>
+            <td>
+                <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control date-control" formControlName="txtDexaComplDate"  name="txtDexaComplDate" ngbDatepicker #txtDexaComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtDexaComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+              </td>
+              <td>
+                  <div class="form-group mb-0">
+                      <div class="input-group">
+                        <input class="form-control date-control" formControlName="txtDexaDueDate" name="txtDexaDueDate" ngbDatepicker #txtDexaDueDate="ngbDatepicker">
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="txtDexaDueDate.toggle()" type="button">
+                            <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+              </td>
+              <td class="text-center">
+                <input type="checkbox" formControlName="chkDexaRefused">
+              </td>
+            <td>
+              <input class="form-control input-comment-background-color" formControlName="txtDexaComments" type="text" >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </form>
+    </div>
+
+  </div>
+</div>

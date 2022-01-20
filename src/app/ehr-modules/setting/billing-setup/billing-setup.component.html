@@ -1,0 +1,34 @@
+<ngb-tabset class="inner-vertical-tab white d-flex flex-row" [destroyOnHide]="false">
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Providers</span></ng-template>
+      <ng-template ngbTabContent>
+        <provider-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></provider-setup>
+      </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Billing Providers</span></ng-template>
+      <ng-template ngbTabContent>
+        <billing-provider-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></billing-provider-setup>
+      </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Location</span></ng-template>
+      <ng-template ngbTabContent>
+        <location-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></location-setup>
+      </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Facility</span></ng-template>
+      <ng-template ngbTabContent>
+        <facility-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></facility-setup>
+      </ng-template>
+  </ngb-tab>
+  <!-- <ngb-tab>
+    <ng-template ngbTabTitle><span>Practice Insurance</span></ng-template>
+      <ng-template ngbTabContent>
+      </ng-template>
+  </ngb-tab> -->
+</ngb-tabset>

@@ -1,0 +1,51 @@
+<div class="inline-search" >
+  <div class="inline-search-header">    
+      <h6 class="title">Payer Search</h6>
+      <!-- <button *ngIf="calling_from!=''" class="btn btn-link fz-14 title-bar-blue-btn font-weight-400 py-0" type="button"   (click)="onAddMultiplePayer()">
+        Add
+      </button> -->
+      <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+          <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <table class="table light-striped-border" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th  *ngIf="calling_from!=''">
+            <button *ngIf="calling_from!=''" class="btn btn-success btn-sm mr-0" type="button"   (click)="onAddMultiplePayer()">
+              Add
+            </button>
+          </th>
+          <th>Payer Name</th>
+          <th>Payer Number</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr  id="tr_{{i}}" *ngFor="let lstP of lstPayer ; let i=index"
+        
+        [ngClass]="{'active': i==selectedIndex}"
+        (click)="rowClick(i)">
+          <td  *ngIf="calling_from!=''">
+              <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                  <input type="checkbox" class="custom-control-input" id="chk_payer_{{lstP.payerid}}"
+                      (change)="onPayerSelection($event.currentTarget.checked,lstP)"
+                      value={{lstP.chk}} [checked]="lstP.chk"> >
+
+                  <label class="custom-control-label" for="chk_payer_{{lstP.payerid}}"></label>
+              </div>
+          </td>
+          <td>
+            <button #buttons type="button" class="link-btn" (click)="onPayerSelect.emit(lstP)"
+              (keydown.enter)="onPayerSelect.emit(lstP)" (keydown.arrowdown)="shiftFocusDown(i)"
+              (keydown.arrowup)="shiftFocusUp(i)" (keydown.esc)="onClose.emit()">{{lstP.name}}</button>
+
+            <!--<button type="button" class="link-btn" (click)="onPayerSelect.emit(lstP)">{{lstP.name}}</button>-->
+          </td>
+          <td>{{lstP.payer_number}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

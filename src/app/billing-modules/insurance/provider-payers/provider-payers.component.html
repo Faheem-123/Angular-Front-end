@@ -1,0 +1,243 @@
+<div class="light-title-bar h-25 pl-3 pr-2 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Provider Payers</div>
+  <div class="d-flex align-items-center">
+
+    <!-- <button *ngIf="operation==''"class="btn btn-link fz-14 text-blue-ihc px-2 py-0" (click)="onAddNew()">Add</button>
+    <button *ngIf="operation==''" class="btn btn-link fz-14 text-blue-ihc px-2 py-0" (click)="onEdit()">Edit</button>
+    <button *ngIf="operation!=''" class="btn btn-link fz-14 text-blue-ihc px-2 py-0"  (click)="onSave()">Save</button>
+    <button *ngIf="operation!=''" class="btn btn-link fz-14 text-blue-ihc px-2 py-0"  (click)="onCancel()">Cancel</button> -->
+
+    <button *ngIf="operation=='' && lookupList.UserRights.provider_payer_add" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onAddNew()">Add</button>
+    <button *ngIf="operation=='' && lookupList.UserRights.provider_payer_edit" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onEdit()">Edit</button>
+    <button *ngIf="operation!=''" class="btn btn-link fz-12 text-blue-ihc px-2 py-0"  (click)="onSave()">Save</button>
+    <button *ngIf="operation!=''" class="btn btn-link fz-12 text-blue-ihc px-2 py-0"  (click)="onCancel()">Cancel</button>
+    <button *ngIf="operation==''" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onRefresh()"
+    ><i class="fas fa-sync-alt"></i></button>
+
+  </div>
+</div>
+
+<div class="p-8 d-flex flex-row flex-grow-1 overflow-height rounded-bottom border-content-box border-top-0 light-sky-blue">
+
+  <div class="border rounded bg-white flex-2 d-flex flex-column mr-2">
+    <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Providers</h4>
+    </div>
+    <div class="overflow-auto flex-grow-1 max-height-100">
+      <table class="table light-striped-border">
+        <thead>
+          <tr>
+            <th>Last Name</th>
+            <th>First Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pr of arrprovider; let i = index" (click)="onProviderSelectionChange(i,pr)" 
+          [ngClass]="{ 'active': i==selectedProviderRow,
+          'disabled': isDisable
+          }">
+             <td>{{pr.last_name}}</td>
+             <td>{{pr.first_name}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="flex-6 d-flex flex-column width-20">
+    <form [formGroup]="frmInput">
+    <div class="d-flex flex-shrink-0">
+      <div class="flex-3 d-flex flex-column mr-2">
+        <div class="form-group horizental d-flex flex-shrink-0 m-0">
+          <label class="col-form-label pr-1">Payer:</label>
+          <div class="input-icon d-flex flex-grow-1">
+            <input id="txtPayerSearch" class="form-control flex-grow-3 required" type="text"
+              placeholder="Search Payer" (keydown)="onPayerSearchKeydown($event)"
+              (blur)="onPayerSearchBlur()"  autocomplete="off"  #txtPayerSearch
+              formControlName="txtPayerSearch">
+            <div class="icon">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+            <inline-payer-search *ngIf="showPayerSearch" [searchValue]="txtPayerSearch.value" 
+        (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()"></inline-payer-search>
+          </div>        
+        </div>
+
+        <div class="d-flex flex-shrink-0 mt-2">
+          <div class="flex-1 border rounded bg-white mr-2">
+            <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+              <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Provider Number</h4>
+            </div>
+
+            <div class="p-2">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero col-12">
+                  <label class="col-form-label col-5" for="providerNumber">Provider Number:</label>
+                  <input class="form-control col-7" id="providerNumber" type="text" formControlName="txtProviderNumber">
+                </div>
+
+                <div class="form-group horizental row zero col-12">
+                  <label class="col-form-label col-5" for="type">Type:</label>
+                  <select class="form-control col-7" id="type" formControlName="drpType">
+                      <option *ngFor="let obj of arrproviderModifier" [value]="obj.code">
+                          {{obj.field}}
+                        </option>
+                  </select>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-1 border rounded bg-white">
+            <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+              <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">HCFA Fields</h4>
+            </div>
+
+            <div class="p-2">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero col-12 align-items-center">
+                  <p class="col-4 fz-13 font-weight-500 text-primary m-0">HCFA Box25:</p>
+                  <label class="col-form-label col-4 pt-0" for="providerNumber">Federal TaxID#</label>
+                  <input class="form-control col-4" id="providerNumber" type="text" formControlName="txtFederalTaxId">
+                </div>
+
+                <div class="form-group horizental row zero col-12 align-items-center">
+                  <p class="col-4 fz-13 font-weight-500 text-primary m-0">&nbsp;</p>
+                  <label class="col-form-label col-4" for="type">Federal T.ID Type</label>
+                  <select class="form-control col-4" id="type" formControlName="drpFederalTaxIdType">
+                      <option value=""></option>
+                      <option value="EIN">EIN</option>
+                      <option value="SSN">SSN</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-12 align-items-center">
+                  <p class="col-4 fz-13 font-weight-500 text-primary m-0">HCFA Box33:</p>
+                  <label class="col-form-label col-4 pt-0" for="providerNumber">Box33, 33.a, 33.b</label>
+                  <select class="form-control col-4" id="txtHacfaBox" formControlName="txtHacfaBox">
+                      <option value=""></option>
+                      <option value="INDIVIDUAL">INDIVIDUAL</option>
+                      <option value="GROUP">GROUP</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border rounded bg-white d-flex flex-shrink-0 mt-2">
+          <div class="flex-1 form-group m-0 p-2 pt-0 border-right">
+            <label class="col-form-label" for="dpfromDate">Effective Date:</label>
+            <div class="input-group flex-grow-1">
+                <input id="txtEffectiveDate" formControlName="txtEffectiveDate" class="form-control date-control" placeholder="mm/dd/yyyy"
+                  name="txtEffectiveDate" ngbDatepicker #txtEffectiveDate="ngbDatepicker"
+                    maxlength="10">
+    
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="txtEffectiveDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+          </div>
+
+          <div class="flex-1 form-group m-0 p-2 pt-0 border-right">
+            <label class="col-form-label" for="dpfromDate">Validation Date:</label>
+            <div class="input-group flex-grow-1">
+                <input id="txtValidationDate" formControlName="txtValidationDate" class="form-control date-control" placeholder="mm/dd/yyyy"
+                  name="txtValidationDate" ngbDatepicker #txtValidationDate="ngbDatepicker"
+                    maxlength="10">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="txtValidationDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+          </div>
+
+          <div class="flex-1 form-group m-0 p-2 pt-0">
+            <label class="col-form-label mr-1" for="dpfromDate">Validation Expiry Date:</label>
+            <div class="input-group flex-grow-1">
+                <input id="txtValidationExpiryDate" formControlName="txtValidationExpiryDate" class="form-control date-control" placeholder="mm/dd/yyyy"
+                  name="txtValidationExpiryDate" ngbDatepicker #txtValidationExpiryDate="ngbDatepicker"
+                    maxlength="10">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="txtValidationExpiryDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1 d-flex flex-column border rounded bg-white">
+        <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Box33 Display</h4>
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1">
+          <div class="flex-1 px-2 py-1 border-bottom">
+            <p class="fz-13 font-weight-500 text-primary m-0">Box33 Address</p>
+            <span class="fz-12">{{lblBox33BillingName}}</span>
+            <span class="fz-12">{{lblBox33BillingAddress}}</span>
+            <span class="fz-12">{{lblBox33BillingCityZipState}}</span>
+          </div>
+
+          <div class="flex-1 px-2 py-1 border-bottom">
+            <p class="fz-13 font-weight-500 text-primary m-0">Box33.a</p>
+            <span class="fz-12">{{lblBox33a}}</span>
+          </div>
+
+          <div class="flex-1 px-2 py-1">
+            <p class="fz-13 font-weight-500 text-primary m-0">Box33.b</p>
+            <span class="fz-12">{{lblBox33b}}</span>
+          </div>
+        </div>
+      </div>
+   
+    </div>
+  </form>
+    <div class="border rounded bg-white flex-grow-1 d-flex flex-column mt-2">
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Provider Payers</h4>
+      </div>
+
+      <div class="overflow-auto flex-grow-1 max-height-100 overflow-height">
+        <table class="table light-striped-border layout-fixed table-sticky-header">
+          <thead>
+            <tr>
+              <th class="width-120">Payer Name</th>
+              <th class="width-120">Provider No Type</th>
+              <th class="width-120">Provider Number</th>
+              <th class="width-100">Effective Date</th>
+              <th class="width-100">Validation Date</th>
+              <th class="width-120">TIN Type (Box 25)</th>
+              <th class="width-120">Federal TIN (Box 25)</th>
+              <th class="width-120">Box 33 type</th>
+              <th class="width-60">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let pr of arrproviderPayer; let i = index" (click)="onProviderPayerSelectionChange(i,pr)" 
+              [ngClass]="{ 'active': i==selectedPayerRow,
+              'disabled': isDisable
+              }">
+            <td class="width-120">{{pr.payer_name}}</td>
+            <td class="width-120">{{pr.modifier_description}}</td>
+            <td class="width-120">{{pr.provider_number}}</td>
+            <td class="width-100">{{pr.effective_date}}</td>
+            <td class="width-100">{{pr.validation_date}}</td>
+            <td class="width-120">{{pr.provider_identification_number_type}}</td>
+            <td class="width-120">{{pr.provider_identification_number}}</td>
+            <td class="width-120">{{pr.box_33_type}}</td>
+            <td class="text-right" class="width-60">
+                <button *ngIf="lookupList.UserRights.provider_payer_delete" class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDelete()">
+                  <i class="far fa-trash-alt"></i></button>
+            </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,376 @@
+<div class="d-flex flex-column flex-grow-1 position-relative" *ngIf="!loadmodule">
+
+  <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+
+    <div class="d-flex">
+      <div class="info-box mr-1">
+        <i class="fa fa-info-circle text-white" placement="bottom" triggers="mouseenter:mouseleave"
+          popoverClass="ihc-popover" [ngbPopover]="popContent" data-container="body"></i>
+
+        <ng-template #popContent>
+
+          <p class="mb-0">
+            {{toolTipText}}
+          </p>
+
+
+        </ng-template>
+      </div>
+
+
+
+      <div class="fz-15 font-weight-400 text-white">{{reportName}}</div>
+    </div>
+
+    <div class="fz-13 text-white" style="opacity: 0.8;">
+      Total Record(s): {{totalRecords}}
+    </div>
+  </div>
+
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+    <!-- ************************************************************** -->
+
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchCriteriaEncounterDetail" aria-expanded="true"
+            class="accordian-link rounded-0">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+      <div id="SearchCriteriaEncounterDetail" class="show">
+        <div class="accordian-body bg-transparent">
+          <form [formGroup]="encounterReportForm">
+
+
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+
+
+                <div class="form-group col-6">
+                  <label class="col-form-label required" for="dateFrom">Date Range:</label>
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dateFrom" formControlName="dateFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateFrom.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dateTo" formControlName="dateTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateTo" ngbDatepicker #dateTo="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateTo.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+
+
+                <div class="form-group col-3">
+                  <label for="input2" class="col-form-label">Location:</label>
+
+                  <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                    <option value="">All</option>
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+
+                </div>
+
+                <div class="form-group col-3">
+                  <label for="cmbProvider" class="col-form-label">Provider:</label>
+                  <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider">
+                    <option value="">All</option>
+                    <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+                  </select>
+                </div>
+
+
+
+              </div>
+
+              <div class="form-row form-dashboard">
+
+                <div class="form-group col-4">
+                  <label for="txtPatientSearch" class="col-form-label">Patient:</label>
+
+
+                  <div class="input-icon d-flex flex-grow-3">
+
+                    <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                      formControlName="txtPatientSearch" placeholder="Search Patient"
+                      (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                      (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+                    <input type="text" formControlName="txtPatientIdHidden" hidden>
+                    <div class="icon">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </div>
+
+                    <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                      (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                    </inline-patient-search>
+
+                  </div>
+
+
+                </div>
+
+                <div class="form-group col-3">
+                  <label for="cmbreport" class="col-form-label">Report:</label>
+                  <select class="form-control" formControlName="cmbreport" (change)="cmbReportChagne($event)">
+                    <option [selected]="true">Encounter</option>
+                    <option> Missing Encounters</option>
+                    <option>Claims</option>
+                    <option>Missing Claims</option>
+                    <option>Order Cross</option>
+                    <option>Ready Claim With UnSign Encounter</option>
+                  </select>
+                </div>
+
+
+                <div class="form-group col-3" *ngIf="cmbReportSelection!='order cross'">
+
+                </div>
+
+                <div class="col-3" *ngIf="cmbReportSelection=='order cross'">
+                  <label for="cmbreport" class="col-form-label">Order Cross:</label>
+                  <div class="custom-control custom-checkbox green-checkbox col ">
+                    <input type="checkbox" class="custom-control-input" id="chkOrderCross"
+                      formControlName="chkOrderCross">
+                    <label class="custom-control-label" for="chkOrderCross">New</label>
+                  </div>
+                </div>
+
+
+                <div class="form-group col-2 d-flex flex-column justify-content-end mb-2">
+                  <button type="button" class="btn btn-success w-100"
+                    (click)="onSearchClick(encounterReportForm.value)">Search</button>
+                </div>
+
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ************************************************************** -->
+
+    <div class="border rounded-0 bg-white d-flex flex-column flex-grow-1 mt-0 max-height-100">
+
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details
+          <span *ngIf="lstClaimDetails!=undefined" class="fz-12">({{totalRecords}})</span>
+        </h4>
+        <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+          <button class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 " (click)="print()"
+          
+          *ngIf="selectedOption.toLowerCase()=='encounter' || selectedOption.toLowerCase()=='missing encounters'
+          || selectedOption.toLowerCase()=='claims' || selectedOption.toLowerCase()=='missing claims'
+          || selectedOption.toLowerCase()=='ready claim with unsign encounter' "
+          > Print</button>
+          <button class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 " (click)="exportAsXLSX()"><i
+              class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export to Excel</button>
+        </div>
+      </div>
+      <div class="overflow-auto flex-grow-1 overflow-height">
+        <table class="table light-striped-border table-sticky-header"
+          *ngIf="cmbReportSelection=='encounter missing encounter claim'">
+          <thead>
+            <tr>
+
+              <th scope="col" sortable="alternate_account" type="numeric" (sort)="onSortEncouonter($event)">PID</th>
+              <th scope="col" sortable="app_date" type="date" formate="MM/DD/YYYY" (sort)="onSortEncouonter($event)">
+                App Date</th>
+              <th scope="col" sortable="app_time" type="dateTime" (sort)="onSortEncouonter($event)">App Time</th>
+              <th scope="col" sortable="app_status" type="alpha" (sort)="onSortEncouonter($event)">App Status</th>
+              <th scope="col" sortable="source" type="alpha" (sort)="onSortEncouonter($event)">App source</th>
+              <th class="width-120">Reason</th>
+              <th scope="col" sortable="patient_name" type="alpha" (sort)="onSortEncouonter($event)">Patient Name</th>
+              <th scope="col" sortable="dob" type="dateTime" formate="MM/DD/YYYY" (sort)="onSortEncouonter($event)">
+                DOB</th>
+              <th scope="col" sortable="provider" type="alpha" (sort)="onSortEncouonter($event)">Provider</th>
+              <th scope="col" sortable="location" type="alpha" (sort)="onSortEncouonter($event)">Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let eleg of lstEncounterReport; let i = index"
+              (click)="onEncReportChange(i)" [ngClass]="{'active': i==selectedEncRow}">
+
+              <td>{{eleg.alternate_account}}</td>
+              <td>{{eleg.app_date}}</td>
+              <td>{{eleg.app_time}}</td>
+              <td>{{eleg.app_status}}</td>
+              <td>{{eleg.source}}</td>
+              <td class="width-120" title="{{eleg.reason_detail}}">{{eleg.reason_detail}}</td>
+              <td>
+                <button type="button" class="link-btn" (click)="openPatient(eleg)">{{eleg.patient_name}}</button>
+              </td>
+              <td>{{eleg.dob}}</td>
+              <td>{{eleg.provider}}</td>
+              <td>{{eleg.location}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table layout-fixed light-striped-border table-sticky-header"
+          *ngIf="cmbReportSelection=='missing claim'">
+          <thead>
+            <tr>
+              <th scope="col" sortable="alternate_account" type="numeric" (sort)="onSortMisClaim($event)" class="width-60">PID</th>
+              <th scope="col" sortable="patient_name" type="alpha" (sort)="onSortMisClaim($event)">Patient Name</th>
+              <th scope="col" sortable="dos" type="datetime" formate="MM/DD/YYYY" (sort)="onSortMisClaim($event)">DOS
+              </th>
+              <th>Reason F/V</th>
+              <th scope="col" sortable="provider_name" type="alpha" (sort)="onSortMisClaim($event)">Provider</th>
+              <th scope="col" sortable="location_name" type="alpha" (sort)="onSortMisClaim($event)">Location</th>
+              <th width="60px" scope="col" sortable="is_signed" type="alpha" (sort)="onSort($event)">Signed</th>
+              <th class="width-200"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let eleg of lstMissingClaims; let i=index;"
+              (click)="onSelectMissingClaimRow(eleg.s_no)" [ngClass]="{'active': eleg.s_no==SelectedMissingClaimS_no}">
+              <td>{{eleg.alternate_account}}</td>
+              <td>{{eleg.patient_name}}
+              </td>
+              <td>
+                <button type="button" class="link-btn" (click)="openEncounter(eleg)">{{eleg.dos}}</button>
+              </td>
+              <td title="{{eleg.hpi}}">{{eleg.hpi}}</td>
+              <td>{{eleg.provider_name}}</td>
+              <td>{{eleg.location_name}}</td>
+              <td class="text-center">
+                <i class="fas fa-md text-success" [ngClass]="{  
+                            'fa-check-circle ' : (eleg.is_signed === true)
+                           }" aria-hidden="true"></i>
+              </td>
+              <td>
+                <button type="button" class="link-btn" (click)="openClaim(eleg,i)">Create Claim</button>
+                <button *ngIf="this.lookupList.logedInUser.userType.toUpperCase()=='BILLING'" type="button"
+                  class="link-btn ml-2" (click)="MarkAsClaimCreated(eleg,i)">Mark As Created</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table light-striped-border table-sticky-header" *ngIf="cmbReportSelection=='order cross'">
+          <thead>
+            <tr>
+
+              <th>PID</th>
+              <th>Patient Name</th>
+              <th>Order Date</th>
+              <th>Status Date</th>
+              <th>Category</th>
+              <th>Provider</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let eleg of lstOrderCross">
+              <td>{{eleg.pid}}</td>
+              <td>{{eleg.pat_name}}</td>
+              <td>{{eleg.order_date}}</td>
+              <td>{{eleg.status_detail}}</td>
+              <td>{{eleg.category}}</td>
+              <td>{{eleg.order_provider}}</td>
+              <td>{{eleg.order_location}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table light-striped-border table-sticky-header"
+          *ngIf="cmbReportSelection=='ready claim with unSign encounter'">
+          <thead>
+            <tr>
+              <th>Patient Name</th>
+              <th>Provider Name</th>
+              <th>Visit Date</th>
+              <th>Claim Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let eleg of lstClaimwithInsignEncounter">
+              <td>
+                <button type="button" class="link-btn" (click)="openPatient(eleg)">{{eleg.patient_name}}</button>
+              </td>
+              <td>{{eleg.chart_provider}}</td>
+              <td>{{eleg.visit_date}}</td>
+              <td>{{eleg.claim_date_created}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-between flex-shrink-0  border-top">
+        <ngb-pagination class="mb0" [collectionSize]="totalPages" [(page)]="page" [pageSize]="pageSize"
+          (pageChange)="pageChange($event)" [maxSize]="10" [rotate]="true" [boundaryLinks]="true" size="sm">
+        </ngb-pagination>
+
+        <div class="form-group mb-0 mr-1">
+          <select class="form-control pagination-custom-select mt-1 " name="pageSize" [(ngModel)]="pageSize"
+            (change)="pageOptionChaged()">
+            <option [ngValue]="10">10 items per page</option>
+            <option [ngValue]="20">20 items per page</option>
+            <option [ngValue]="50">50 items per page</option>
+            <option [ngValue]="100">100 items per page</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="d-flex flex-column flex-grow-1 mt-8" *ngIf="loadmodule">
+  <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+    <button class="left-back-btn" (click)="navigateBackToSSummary()">
+      <i class="fas fa-arrow-left mr-2"></i>Back to Main
+    </button>
+
+    <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400 d-flex d-flex flex-grow-1  pt-2-px"
+      *ngIf="patientName!=undefined">
+      <span class="title-other-info text-light">
+        Patient: {{patientName}}
+      </span>
+    </h4>
+
+
+
+  </div>
+  <claim-professional class="d-flex flex-column flex-grow-1 single-col" [openedClaimInfo]="openedClaimInfo"
+    (onClaimSaved)="onClaimSaved($event)"></claim-professional>
+
+</div>

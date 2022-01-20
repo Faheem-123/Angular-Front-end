@@ -1,0 +1,81 @@
+<div class="border-content-box border-top-0 d-flex flex-row flex-grow-1 max-height-100 p-2 position-relative">
+
+
+  <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 ">
+    <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+      Providers
+    </div>
+
+    <div class="custom-select-box rounded-0 border-0 flex-grow-1 overflow-auto overflow-height">
+      <table class="table sm table table-hover">
+
+        <tbody>
+
+          <tr *ngFor="let pro of lstProviders" [ngClass]="{'active-blue' : (pro.id === providerId)}">
+            <td (click)="providerChanged(pro.id)">
+              {{pro.name}}
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-2 ml-2 ">
+    <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0">
+      Rules
+
+      <div class="d-flex align-items-center">
+
+        <button *ngIf="!editState" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+          (click)="onEdit()"><i class="far fa-edit mr-1"></i> Edit</button>
+
+
+        <button *ngIf="editState" class="btn rounded-0 btn-sm bg-green-ihc text-white h-24" type="button"
+          (click)="onSave()">Save</button>
+        <button *ngIf="editState" class="btn btn-sm btn-dark rounded-3-top-right h-24" type="button"
+          (click)="onCancel()">Cancel</button>
+      </div>
+
+
+    </div>
+
+
+    <div class="flex-grow-1 overflow-auto overflow-height">
+      <table class="table sm layout-fixed light-striped-border">
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th style="width: 120px;">Appointments/Slot</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr *ngFor="let rule of lstAppRules">
+            <td>{{rule.location_name}}</td>
+            <td>
+              <select *ngIf="editState" class="table-td-select col-12"
+                (change)="slotCountChanged(rule,$event.currentTarget.value)">
+                <option></option>
+                <option *ngFor="let noOfSlot of lstNoOfSlotPerAppoitment" [value]="noOfSlot"
+                  [selected]="noOfSlot==rule.slot_appointment_size">{{noOfSlot}}</option>
+              </select>
+              <label *ngIf="!editState"> {{rule.slot_appointment_size}}</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+      </div>
+    </div>
+</div>

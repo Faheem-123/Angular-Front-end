@@ -1,0 +1,172 @@
+<div class="light-title-bar h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Guarantor Setup</div>
+
+  <!-- <div class="d-flex align-items-center">
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="fas fa-plus"></i>
+      Add</button>
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="far fa-edit"></i>
+      Edit</button>
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="far fa-trash-alt"></i>
+      Delete</button>
+    <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-30">Save</button>
+    <button class="btn btn-sm btn-dark top-right-radius h-30">Cancel</button>
+  </div> -->
+
+  <div class="d-flex align-items-center">
+    <button *ngIf="strOperation=='' && lookupList.UserRights.guarantor_add" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+      (click)="onAdd()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <button *ngIf="strOperation=='' && lookupList.UserRights.guarantor_edit" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+      (click)="onEdit()">
+      <i class="far fa-edit"></i>
+      Edit</button>
+    <button *ngIf="strOperation=='' && lookupList.UserRights.guarantor_delete" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+      (click)="onDelete()">
+      <i class="far fa-trash-alt"></i>
+      Delete</button>
+    <button *ngIf="strOperation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30"
+      (click)="onSave()">Save</button>
+    <button *ngIf="strOperation!=''" class="btn btn-sm btn-dark top-right-radius h-30"
+      (click)="onCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 rounded-0 border-content-box border-top-0 light-sky-blue">
+  <div class="border-bottom bg-white px-2 py-6 flex-shrink-0">
+    <form [formGroup]="inputForm">
+      <div class="form-row form-dashboard align-items-start">
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input1" class="col-form-label label-w-70">First Name:</label>
+          <input type="text" class="form-control flex-grow-1" id="input1" formControlName="txtfirstName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-1 col-sm-6 col-12">
+          <label for="input3" class="col-form-label label-w-30">MN:</label>
+          <input type="text" class="form-control flex-grow-1" id="input3" formControlName="txtmname">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input2" class="col-form-label label-w-70">Last Name:</label>
+          <input type="text" class="form-control flex-grow-1" id="input2" formControlName="txtlastName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input4" class="col-form-label label-w-80">Date of Birth:</label>
+            <div class="input-group">
+              <input id="txtdob" formControlName="txtdob" class="form-control date-control" placeholder="mm/dd/yyyy"
+                name="txtdob" ngbDatepicker #txtdob="ngbDatepicker"
+                [ngClass]="{'is-invalid': inputForm.controls.txtdob.errors?.invalidDate}">
+
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txtdob.toggle()" type="button">
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="col-md-3 col-sm-6 col-12">
+            <div class="form-row form-dashboard">
+
+              <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+                <label for="input5" class="col-form-label label-w-40">SSN:</label>
+                <input type="text" class="form-control flex-grow-1" id="input5" formControlName="txtssn">
+              </div>
+
+              <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+                <label for="input6" class="col-form-label label-w-50">Gender:</label>
+                <select class="form-control flex-grow-1" name="" id="input6" formControlName="drpGender">
+                  <option value="MALE">MALE</option>
+                  <option value="FEMALE">FEMALE</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+            <label for="input6" class="col-form-label label-w-70">Address:</label>
+            <textarea rows="3" class="form-control flex-grow-1" id="input6" formControlName="txtaddress"></textarea>
+          </div>
+
+          <div class="col-md-9 col-sm-6 col-12">
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+                <label for="input7" class="col-form-label label-w-70">Zip Code:</label>
+                <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtzip" (focusout)="zipFocusOut($event.target.value)">
+              </div>
+
+
+              <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+                <label for="input8" class="col-form-label label-w-80">City:</label>
+                <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtcity">
+              </div>
+
+              <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+                <label for="input9" class="col-form-label label-w-40">State:</label>
+                <input type="text" class="form-control flex-grow-1" id="input9" formControlName="txtstate">
+              </div>
+
+              <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+                <label for="input8" class="col-form-label label-w-70">Phone:</label>
+                <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtphone">
+              </div>
+
+              <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+                <label for="input9" class="col-form-label label-w-80">Email:</label>
+                <input type="text" class="form-control flex-grow-1" id="input9" formControlName="txtemail">
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </form>
+  </div>
+
+  <div class="rounded overflow-auto bg-white flex-grow-1 max-height-100">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Gender</th>
+          <th>SSN</th>
+          <th>DOB</th>
+          <th>Phone#</th>
+          <th>Address</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let g of arrGuarantor;let i = index" (click)="onSelectionChange(i,g)" [ngClass]="{ 'active': i==selectedIndex,
+          'disabled': isDisable
+          }">
+          <td>{{g.first_name}}</td>
+          <td>{{g.last_name}}</td>
+          <td>{{g.gender}}</td>
+          <td>{{g.ssn}}</td>
+          <td>{{g.dob}}</td>
+          <td>{{g.phone}}</td>
+          <td>{{g.address}}</td>
+          <td>{{g.email}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="d-flex justify-content-between flex-shrink-0 p-2 border-top">
+    <ngb-pagination [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="pageChange($event)"
+      [maxSize]="10" [rotate]="true" [boundaryLinks]="true" size="sm">
+    </ngb-pagination>
+
+    <div class="form-group mb-0">
+      <select class="form-control pagination-custom-select" name="pageSize" [(ngModel)]="pageSize"
+        (change)="pageOptionChaged()">
+        <option [ngValue]="10">10 items per page</option>
+        <option [ngValue]="20">20 items per page</option>
+        <option [ngValue]="50">50 items per page</option>
+        <option [ngValue]="100">100 items per page</option>
+        <option [ngValue]="200">200 items per page</option>
+        <option [ngValue]="500">500 items per page</option>
+      </select>
+    </div>
+  </div>
+</div>

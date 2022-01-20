@@ -1,0 +1,113 @@
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  <div class="rounded-top encounter-header-highlight justify-content-end">
+    <ul class="nav color-buttons align-items-center">
+      <a class="nav-link green px-2 py-0" (click)="onSave(inputForm.value)"><i class="far fa-save pr-1"></i>Save</a>
+      <a class="nav-link encounter-btn-cancel px-2 py-0" (click)="dataUpdated.emit()"><i class="fas fa-times pr-1"></i>Cancel</a>
+    </ul>
+  </div>
+
+  <div class="p-6">
+    <div class="info-box-stipes rounded p-1">
+      <form [formGroup]="inputForm" class="form-row form-dashboard">
+        <div class="form-flex col-md-2 col-sm-6 col-12">
+          <label for="input01">Test Name:</label>
+          <input type="text" class="form-control" formControlName="txtTestName">
+        </div>
+
+        <div class="form-flex col-md-2 col-sm-6 col-12">
+          <label for="input02">Complete:</label>
+          <div class="input-group">
+            <input class="form-control date-control" formControlName="txtCompleteDate" name="txtCompleteDate"
+              ngbDatepicker #txtCompleteDate="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="txtCompleteDate.toggle()" type="button">
+                <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-flex col-md-2 col-sm-6 col-12">
+          <label for="input03">Due Date:</label>
+          <div class="input-group">
+            <input class="form-control date-control" formControlName="txtDueDate" name="txtDueDate" ngbDatepicker
+              #txtDueDate="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="txtDueDate.toggle()" type="button">
+                <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <!-- <div class="form-flex col-md-1 col-sm-6 col-12">
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="chkRefused_{{objencounterToOpen.controlUniqueId}}"
+              formControlName="chkRefused">
+            <label class="custom-control-label" for="chkRefused_{{objencounterToOpen.controlUniqueId}}">Refused</label>
+          </div>
+        </div>
+
+
+         
+        <div class="form-flex col-md-1 col-sm-6 col-12">
+          <div class="custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="chkRefused" formControlName="chkRefused">
+            <label class="custom-control-label" for="chkRefused">Refused</label>
+          </div>
+        </div> -->
+        <div class="form-flex col-md-1 col-sm-6 col-12">
+        <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+          <input type="checkbox" class="custom-control-input" formControlName="chkRefused" id="chkRefused{{objencounterToOpen.chart_id}}">
+          <label class="custom-control-label" for="chkRefused{{objencounterToOpen.chart_id}}">Refused</label>
+        </div>
+      </div>
+
+
+        <div class="form-flex col-md-3 col-sm-6 col-12">
+          <label for="input01">Comments:</label>
+          <input type="text" class="form-control" formControlName="txtComments">
+        </div>
+
+
+        <div class="form-flex col-md-2 col-sm-6 col-12 justify-content-end">
+          <button [disabled]="!inputForm.valid" *ngIf="this.localeditOperation!='Edit'" class="btn btn-link px-2 py-0 fz-12" type="button" (click)="onAddtoList(inputForm.value)">Add to List</button>
+          <button class="btn btn-link px-2 py-0 fz-12" type="button" (click)="onCancel()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="border rounded bg-white overflow-auto mt-1">
+      <table class="table layout-fixed light-striped-border">
+        <thead>
+          <tr>
+            <th width="10%" class="text-center">Test Name</th>
+            <th width="15%" class="text-center">Complete Date</th>
+            <th width="15%" class="text-center">Due Date</th>
+            <th width="9%" class="text-center">Refused</th>
+            <th width="46%" class="text-center">Comments</th>
+            <th width="10%" class="text-center"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let tst of lstTest;let i=index;">
+            <td class="text-center">{{tst.test_name}}</td>
+            <td class="text-center">{{tst.test_date}}</td>
+            <td class="text-center">{{tst.due_date}}</td>
+            <td class="text-center">{{tst.refusal}}</td>
+            <td class="text-center">{{tst.test_value}}</td>
+            <td class="text-right">
+              <button *ngIf="tst.detail_id!=''" type="button" class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEdit(tst)">
+                <i class="far fa-edit"></i>
+              </button>
+              <button type="button" class="btn btn-link btn-sm text-danger line-height-1 p-0"  (click)="onDelete(tst,i)">
+                <i class="far fa-trash-alt"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,281 @@
+<div class="light-title-bar h-25 pl-3 pr-2 d-flex align-items-center justify-content-between flex-shrink-0"
+[ngClass]="{'light-title-bar': callingFrom=='billing_reports'}">
+  <div class="fz-15 font-weight-400">HCFA Claims</div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+
+  <div class="d-flex flex-column flex-shrink-0">
+
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchHCFAClaims" aria-expanded="true" class="accordian-link">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+
+      <div id="SearchHCFAClaims" class="show">
+        <div class="accordian-body bg-transparent">
+
+          <form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+            <div class="p-6 pt-0">
+
+              <div class="form-row form-dashboard pb-1">
+
+                <div class="form-group col-4">
+                  <div class="btn-group radio-btn-tabs ">
+
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'dos')}">
+                      <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                        value="dos" (ngModelChange)="onDateTypeChange($event)"> DOS
+                    </label>
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'date_created')}">
+                      <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                        value="date_created" (ngModelChange)="onDateTypeChange($event)"> Date Created
+                    </label>
+                  </div>
+
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dpFrom" formControlName="dpFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker #dpFrom="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpFrom.toggle()" type="button">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dpTo" formControlName="dpTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dpTo" ngbDatepicker #dpTo="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpTo.toggle()" type="button">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+                <div class="form-group col-4">
+                  <label class="col-form-label" for="ddLocation">Location</label>
+                  <select class="form-control " labelForId="cmbLocation" formControlName="ddLocation">
+                    <option value=''>All</option>
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+
+                </div>
+
+                <div class="form-group col-4">
+                  <label class="col-form-label" for="ddProvider">Provider</label>
+                  <select class="form-control " formControlName="ddProvider">
+                    <option value=''>All</option>
+                    <option *ngFor="let prov of lookupList.billingProviderList" [value]="prov.id">{{prov.name}}</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="form-row form-dashboard pb-1">
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="ddClaimType">Type</label>
+                  <select class="form-control " formControlName="ddClaimType" readonly>
+                    <option value='P'>Professional</option>
+                    <option value='I'>Institutional</option>
+                  </select>
+                </div>
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="ddStatus">Status</label>
+                  <select class="form-control " formControlName="ddStatus">
+                    <option value=''>All</option>
+                    <option value='1'>Processed</option>
+                    <option value='0'>Unprocessed</option>
+                  </select>
+                </div>
+
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="txtClaimId">Claim Id</label>
+                  <input labelForId="txtClaimId" class="form-control" formControlName="txtClaimId" type="text"
+                    autocomplete="off">
+                </div>
+
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="ddInsuranceType">Insurance</label>
+                  <select class="form-control" formControlName="ddInsuranceType">
+                    <option>Primary</option>
+                    <option>Secondary</option>
+                  </select>
+                </div>
+
+
+                <div class="form-group col-1 d-flex flex-column justify-content-end">
+                  <button type="button" class="btn btn-success w-100"
+                    (click)="onSearch(searchFormGroup.value)">Search</button>
+                </div>
+                <div class="form-group col-1 d-flex flex-column justify-content-end">
+                  <button type="button" class="btn btn-dark w-100" (click)="onClearSearch()">Clear</button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+  <div class="d-flex flex-grow-1 overflow-height overflow-auto">
+
+    <div class="d-flex flex-column  flex-10 border bg-white overflow-auto border-right-0 border-bottom-0">
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+
+        <div class="d-flex">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 ">
+            HCFA Claims
+            <span class="fz-11 text-dark">({{totalRecords}})</span>
+          </h4>
+        </div>
+        <div>
+
+          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+            (click)="updateAsProcessed()">Update as Processed</button>
+          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="printHCFA()"> <i
+              class="fas fa-print fa-md text-ihc-blue mr-1"></i> Print HCFA</button>
+          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="exportAsXLSX()"><i
+              class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export</button>
+
+        </div>
+      </div>
+
+      <div class="overflow-auto h-100">
+        <table class="table sm layout-fixed light-striped-border">
+          <thead>
+            <tr>
+              <th class="width-30">
+                <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                  <input type="checkbox" class="custom-control-input" id="chkSelectAllHCFAClaims_{{uniqueId}}"
+                    (change)="selectAll($event.currentTarget.checked)">
+                  <label class="custom-control-label" for="chkSelectAllHCFAClaims_{{uniqueId}}"></label>
+                </div>
+              </th>
+              <th class="width-80 pr-0" table="hcfaClaims" scope="col" sortable="dos" type="datetime"
+                formate="MM/DD/YYYY" (sort)="onSort($event)">DOS</th>
+
+
+              <th class="width-150" table="hcfaClaims" scope="col" sortable="patient_name" type="alpha"
+                (sort)="onSort($event)">Patient</th>
+
+              <th class="width-120 text-pre-wrap" table="hcfaClaims" scope="col" sortable="insurance_name" type="alpha"
+                (sort)="onSort($event)">Primary Insurance</th>
+
+              <th class="width-120" table="hcfaClaims" scope="col" sortable="facility_name" type="alpha"
+                (sort)="onSort($event)">Facilty</th>
+
+
+              <th class="width-120" table="hcfaClaims" scope="col" sortable="provider" type="alpha"
+                (sort)="onSort($event)">Provider</th>
+
+              <th class="width-120 pr-0 text-pre-wrap" table="hcfaClaims" scope="col" sortable="location" type="numeric"
+                (sort)="onSort($event)">Location</th>
+
+
+
+              <th class="width-80 text-pre-wrap" table="hcfaClaims" scope="col" sortable="listicd" type="alpha"
+                (sort)="onSort($event)">ICD Details</th>
+
+              <th class="width-120 text-pre-wrap" table="hcfaClaims" scope="col" sortable="cptlist" type="alpha"
+                (sort)="onSort($event)">CPT Details</th>
+
+
+              <th class="width-90 text-pre-wrap" table="hcfaClaims" scope="col" sortable="hcfa_printed" type="boolean"
+                (sort)="onSort($event)">Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let claim of lstHcfaClaims ; let i = index" (click)="onSelectionChange(i)" [ngClass]="{
+                'active': i==selectedRow,
+                'text-danger' : (claim.insurance_payer=='501105') 
+            }">
+              <td>
+                <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                  <input type="checkbox" class="custom-control-input"
+                    id="{{chkSelectHCFAClaims+'_'+uniqueId+'_'+claim.claim_id}}"
+                    (change)="selectClaim($event.currentTarget.checked,i)" value={{claim.selected}}
+                    [checked]="claim.selected">
+                  <label class="custom-control-label"
+                    for="{{chkSelectHCFAClaims+'_'+uniqueId+'_'+claim.claim_id}}"></label>
+                </div>
+              </td>
+              <td>
+                <button type="button" class="link-btn" (click)="openClaim(claim)">{{claim.dos}}</button>
+              </td>
+
+              <td title="{{claim.patient_name}}">
+                <button type="button" class="link-btn" (click)="openPatient(claim)">{{claim.patient_name}}</button>
+              </td>
+
+              <td title="{{claim.insurance_name}}" class="text-pre-wrap">{{claim.insurance_name}}</td>
+
+              <td title="{{claim.insurance_name}}" class="text-pre-wrap">{{claim.facility_name}}</td>
+
+              <td title="{{claim.provider}}" class="text-pre-wrap">{{claim.provider}}</td>
+              <td title="{{claim.location}}" class="text-pre-wrap">{{claim.location}}</td>
+
+              <td title="{{claim.listicd}}" class="text-pre-wrap">{{claim.listicd}}</td>
+              <td title="{{claim.cptlist}}" class="text-pre-wrap">{{claim.cptlist}}</td>
+              <td title="{{claim.hcfa_printed ? 'Processed' : 'Unprocessed'}}" class="text-pre-wrap">
+                {{claim.hcfa_printed ? 'Processed' : 'Unprocessed'}} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isProcessing">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-cog fa-spin mr-1"></i>Processing
+    </div>
+  </div>
+
+</div>

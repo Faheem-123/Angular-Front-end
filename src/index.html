@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    .pre-loader {
+      border: 14px solid #f3f3f3;
+      border-radius: 50%;
+      /* border-top: 14px solid #2d981f;
+      border-bottom: 14px solid #0073aa; */
+      border-top: 14px solid #77469A;
+      border-bottom: 14px solid #3093D0;
+      width: 100px;
+      height: 100px;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+      margin: auto;
+      margin-top: calc(25% - 100px);
+    }
+
+    .pre-loader-text {
+      width: 100%;
+      text-align: center;     
+      margin-top: -60px;
+    }
+
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <title>DataQ Health | EHR | Billing</title>
+  <base href="./">
+
+  <script type="module" src="assets/js/ehr.js"></script>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+  <script>
+    // using in health check
+    function resizeTextarea(id) {
+      var a = document.getElementById(id);
+      a.style.height = 'auto';
+      a.style.height = a.scrollHeight + 'px';
+    }
+  </script>
+
+
+</head>
+
+<body>
+  <!--<app-root></app-root>-->
+  <app-root>
+    <div class="pre-loader"></div>
+    <div class="pre-loader-text">Loading</div>
+  </app-root>
+</body>
+
+</html>

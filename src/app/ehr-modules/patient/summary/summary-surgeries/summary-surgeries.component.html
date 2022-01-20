@@ -1,0 +1,53 @@
+<div class="dashboard patient-summary-graph">
+    <div class="dashboard-title purple-light-title">
+      <div class="icon light-gray">
+        <!-- <i class="fa fa-thermometer-empty" aria-hidden="true"></i> -->
+        <img class="img-h-24" src="./assets/images/icons/surgeries_ico.svg" alt="">
+      </div>
+  
+      <div class="title">
+        Surgeries
+      </div>
+  
+      <div class="title-btn-link">
+        <button type="button" (click)="getSuregeriesSummary()">
+          <img class="img-h-25"
+          src="./assets/images/icons/ico_refresh_green.svg" alt="">
+        </button>
+      </div>
+    </div>
+    <div class="dashboard-content">
+      <div *ngIf="isLoding" class="div-loader"></div>
+  
+      <div *ngIf="!isLoding" role="tablist">
+        <div class="card dashboard-card" *ngFor="let surgery of lstSurgeries; let i = index">
+          <div class="card-header" role="tab" >
+            <h5 class="mb-0">
+              <a data-toggle="collapse" href="#summarysurgeries{{i}}" aria-expanded="false" class="accordian-link" >
+                  <span class="card-header-date">{{surgery.procedure_date}}</span>
+                  <span class="cpt-code" *ngIf="surgery.description">{{surgery.procedure_code}}</span>
+                  <span *ngIf="surgery.description">{{surgery.description}}</span>
+                  <span *ngIf="!surgery.description">{{surgery.comments}}</span>
+
+                 
+              </a>
+            </h5>
+          </div>
+  
+          <div id="summarysurgeries{{i}}" class="collapse">
+            <div class="card-body">
+              <p *ngIf="surgery.procedure_code">Code:
+                <strong>{{surgery.procedure_code}}</strong>
+              </p>
+              <p *ngIf="surgery.description">Description:
+                <strong>{{surgery.description}}</strong>
+              </p>
+              <p *ngIf="surgery.comments">Notes:
+                <strong class="mr-5">{{surgery.comments}}</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

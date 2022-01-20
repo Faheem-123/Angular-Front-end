@@ -1,0 +1,188 @@
+<div
+  class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+
+  <div class="d-flex flex-column flex-shrink-0">
+
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchProviderWiseCollection" aria-expanded="true" class="accordian-link">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+
+      <div id="SearchProviderWiseCollection" class="show">
+        <div class="accordian-body bg-transparent">
+
+          <form [formGroup]="providerWiseCollectionForm" (keydown.enter)="$event.preventDefault()">
+
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+
+                <div class="form-group  col-2">
+                  <label for="dpCheckFrom" class="col-form-label">Month Year</label>
+
+                  <ngb-datepicker formControlName="dpMonthYear" [showWeekdays]="false" (navigate)="dateNavigate($event)"
+                    class="form-control datepicker-month-year-select"></ngb-datepicker>
+
+
+                  <!--
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Month</span>
+                      </div>
+
+                      <select class="form-control" id="cmbMonthsdaywise" formControlName="cmbMonthsdaywise">
+                        <option *ngFor="let month of lookupList.lstMonths" [value]="month.month_no">{{month.month_name}}
+                        </option>
+                      </select>
+
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Year</span>
+                      </div>
+
+                      <input class="form-control" name="txtYeardaywise" placeholder="YYYY"
+                        formControlName="txtYeardaywise">
+
+                    </div>
+
+                  </div>
+                  -->
+
+                </div>
+
+                <div class="form-group col-2">
+                  <label for="cmbProvider" class="col-form-label">Provider:</label>
+                  <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider">
+                    <option [value]="null">All</option>
+                    <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group col-2">
+                  <label for="cmbLocation" class="col-form-label">Location:</label>
+                  <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                    <option [value]="null">All</option>
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group col-1 d-flex justify-content-end align-items-end">
+                  <button type="button" class="btn btn-success w-100" (click)="searchPayRoll()">Search</button>
+                </div>
+
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+  <div class="d-flex flex-grow-1 overflow-height overflow-auto">
+
+    <div class="d-flex flex-column  flex-10 border bg-white overflow-auto border-right-0 border-bottom-0">
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+
+        <div class="d-flex">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 ">
+            Detail
+            <span class="v-separtor"></span>
+            <span *ngIf="yearMonth!=''" class="title-other-info">
+              {{yearMonthDisplay}}
+            </span>
+          </h4>
+        </div>
+
+      </div>
+
+      <div class="overflow-auto h-100">
+        <table class="table sm table-sticky-header light-striped-border">
+          <thead>
+            <tr>
+
+              <th class="width-120">Provider</th>
+              <th class="width-60 text-center">Total Claim</th>
+              <th class="width-70 text-right">Total Charges</th>
+              <th class="width-70 text-right">Payment</th>
+              <th class="width-70 text-right">Adjustments</th>
+              <th class="width-70 text-right">Percentage</th>
+
+
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let rpt of lstProviderWiseColl  | listFilter : 'is_aggregate' : 'false' ; let i = index">
+              <td class="td-payment-source" title="{{rpt.provider_name}}">
+                {{rpt.provider_name}}</td>
+              <td class="text-center">
+                {{rpt.total_claims}}</td>
+              <td class="text-right">
+                {{rpt.total_charges | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.total_payment | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.total_adjusted | currency:'USD':'symbol-narrow'}}</td>
+
+              <td class="text-right">
+                {{rpt.percentage}}%</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <div class="flex-shrink-0">
+    <table class="table sm light-striped-border summary">
+      <thead>
+        <tr>
+          <th class="width-120"></th>
+          <th class="width-60 text-center">Total Claim</th>
+          <th class="width-70 text-right">Total Charges</th>
+          <th class="width-70 text-right">Payment</th>
+          <th class="width-70 text-right">Adjustments</th>
+          <th class="width-70 text-right">Percentage</th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let rpt of lstProviderWiseColl | listFilter : 'is_aggregate' : 'true' ; let i = index">
+          <td class="summary text-center">Total</td>
+          <td class="text-center font-weight-500">{{rpt.total_claims}}</td>
+          <td class="text-right font-weight-500">{{rpt.total_charges | currency:'USD':'symbol-narrow' }}</td>
+          <td class="text-right font-weight-500">{{rpt.total_payment | currency:'USD':'symbol-narrow'}}</td>
+          <td class="text-right font-weight-500">{{rpt.total_adjusted | currency:'USD':'symbol-narrow'}}</td>
+          <td class="text-right font-weight-500">{{rpt.percentage}}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+</div>

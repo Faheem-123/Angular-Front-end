@@ -1,0 +1,168 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false}">
+  <div class="title pl-8">Discharge Disposition</div>
+
+
+  <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+    <button [disabled]="!canAddEdit"  *ngIf="!addEditView" class="nav-link green px-2 py-0 top-right-radius"
+      (click)="onAddEdit()">
+      <span *ngIf="noRecordFound">
+        <i class="far fa-plus-square pr-1"></i>Add
+      </span>
+      <span *ngIf="!noRecordFound">
+        <i class="far fa-edit pr-1"></i>Edit
+      </span>
+
+    </button>
+
+
+    <!--
+    <button *ngIf="!addEditView && canAddEdit && !noRecordFound" class="nav-link btn-dark px-2 py-0 top-right-radius"
+      (click)="deleteDischargeDisposition()">
+      <i class="far fa-trash-alt pr-1"></i>Delete
+    </button>
+    -->
+
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+      (click)="saveDischargeDisposition(dischargeFormGroup.value)">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="cancelAddEdit()">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </button>
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <ng-template id="sectionAccessDenied" [ngIf]="!isLoading && !canView">
+    <div class="access-denied">
+      <i class="fas fa-ban mr-2"></i> Access Denied
+    </div>
+  </ng-template>
+
+  <ng-template id="sectionView" [ngIf]="!isLoading && canView && !addEditView">
+
+
+    <div *ngIf="noRecordFound" class="no-content">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+
+    <div *ngIf="!noRecordFound">
+      <div class="p-6">
+        <div class="form-row form-dashboard">
+
+          <div class="form-group">
+            <label class="col-form-label module-view-headding">Discharge Date Time:</label>
+            <label class="col-form-label module-view-value pt-0">
+              {{chartDischargeDispostionSummary.discharge_date}}
+            </label>
+
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard">
+
+          <div class="form-group">
+            <label class="col-form-label module-view-headding">Discharge Disposition:</label>
+            <label class="col-form-label module-view-value pt-0">
+              {{chartDischargeDispostionSummary.discharge_description}}
+            </label>
+
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard"
+          *ngIf="chartDischargeDispostionSummary.comments!=undefined && chartDischargeDispostionSummary.comments!=''">
+
+          <div class="form-group">
+            <label class="col-form-label module-view-headding">Comments:</label>
+            <label class="col-form-label module-view-value pt-0">
+              {{chartDischargeDispostionSummary.comments}}
+            </label>
+
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="encounter-footer-credential rounded-bottom">
+        <p class="form-text text-muted" *ngIf="lastModifiedMsg">Last Modified by {{lastModifiedMsg}}</p>
+        <button class="btn btn-sm btn-link pr-0" type="button" (click)="viewLog()">View Log</button>
+        <button *ngIf="!addEditView && canAddEdit && !noRecordFound" class="btn btn-sm btn-link btn-delete pr-0"
+          type="button" (click)="deleteDischargeDisposition()">Delete</button>
+        
+      </div>
+
+    </div>
+
+
+  </ng-template>
+
+  <ng-template id="sectionAddEdit" [ngIf]="addEditView">
+    <div class="p-6">
+      <form [formGroup]="dischargeFormGroup">
+        <div class="form-row form-dashboard">
+          <div class="form-group col-6">
+
+            <label class="col-form-label required" for="dpDischargeDate">Discharge Date
+              Time:</label>
+            <div class="d-flex flex-row">
+              <div class="input-group mr-1">
+                <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDischargeDate"
+                  formControlName="dpDischargeDate" ngbDatepicker #dpDischargeDate="ngbDatepicker">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dpDischargeDate.toggle()" type="button">
+                  </button>
+                </span>
+
+              </div>
+
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                </div>
+                <ngb-timepicker id="tpDischageTime" class="form-control form-control-ngb-timepicker required"
+                  formControlName="tpDischageTime" meridian="ON">
+                </ngb-timepicker>
+              </div>
+            </div>
+
+
+
+
+          </div>
+        </div>
+        <div class="form-row form-dashboard">
+
+          <div class="form-group col-12">
+            <label for="ddDischargeDispostion" class="col-form-label required">Discharge Disposition:</label>
+            <select class="form-control required" id="ddDischargeDispostion" formControlName="ddDischargeDispostion">
+              <option *ngFor="let discharge of lookupList.lstDischargeDisposition" [value]="discharge.code">
+                {{discharge.description}}</option>
+
+            </select>
+          </div>
+
+          <div class="form-group col-12">
+            <label for="txtComments" class="col-form-label">Comments:</label>
+            <textarea class="form-control" id="txtComments" rows="4" formControlName="txtComments"></textarea>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+
+  </ng-template>
+
+</div>

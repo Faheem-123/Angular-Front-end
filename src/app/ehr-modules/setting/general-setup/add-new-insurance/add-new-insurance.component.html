@@ -1,0 +1,147 @@
+<div *ngIf="isMainIns" class="light-title-bar rounded-top h-30 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Insurance Information</div>
+  <div class="d-flex align-items-center">
+
+      <button class="btn btn-link fz-13 text-decoration-none line-height-1 p-0 mr-2" (click)="searchInsurance()">
+          <i class="fas fa-search"></i>Search Insurance</button>
+
+    <button *ngIf="strOperation=='' &&  lookupList.UserRights.Add_insurance" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+      (click)="addInsurance()"><i class="fas fa-plus"></i>
+      Add</button>
+    <button *ngIf="strOperation=='' &&  lookupList.UserRights.Edit_insurance" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+      (click)="editInsurance()"><i class="far fa-edit"></i>
+      Edit</button>
+    <button *ngIf="strOperation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30"
+      (click)="saveInsurance()">Save</button>
+    <button *ngIf="strOperation!=''" class="btn btn-sm btn-dark top-right-radius h-30"
+      (click)="cancelIns()">Cancel</button>
+  </div>
+</div>
+
+<div *ngIf="isMainIns" class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+  <div class="border-bottom bg-white px-2 py-6 flex-shrink-0">
+    <form [formGroup]="newInsuranceForm">
+      <div class="form-row form-dashboard align-items-start">
+
+        <div class="p-6 pt-0 col-12">
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+              <label for="input1" class="col-form-label label-w-70">Name:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtInsName" formControlName="txtInsName">
+            </div>
+
+
+
+            <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+              <label for="input2" class="col-form-label label-w-70">Address:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtInsAddress" formControlName="txtInsAddress">
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+              <label for="input7" class="col-form-label label-w-70">Zip Code:</label>
+              <!-- <input type="text" class="form-control flex-grow-1" id="txtInsZip" formControlName="txtInsZip"> -->
+              <input type="text" class="form-control flex-grow-1" id="txtInsZip" formControlName="txtInsZip"
+                (focusout)="zipFocusOut($event.target.value)">
+            </div>
+
+
+            <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+              <label for="input8" class="col-form-label label-w-40">City:</label>
+              <!-- <input type="text" class="form-control flex-grow-1" id="txtInsCity" formControlName="txtInsCity"> -->
+              <select class="form-control flex-grow-1" id="ddlInsCity" formControlName="ddlInsCity">
+                <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+                  {{obj.city}}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+              <label for="input9" class="col-form-label label-w-40">State:</label>
+              <!-- <input type="text" class="form-control flex-grow-1" id="txtInsState" formControlName="txtInsState"> -->
+              <input type="text" class="form-control col" id="txtState" disabled value="{{state}}">
+            </div>
+
+
+            <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input7" class="col-form-label label-w-70">Phone:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtInsPhone" formControlName="txtInsPhone">
+            </div>
+
+
+            <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input8" class="col-form-label label-w-70">Fax:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtInsFax" formControlName="txtInsFax">
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input7" class="col-form-label label-w-70">Plan name:<span class="text-danger">*</span></label>
+              <input type="text" class="form-control flex-grow-1" id="txtInsPlanName" formControlName="txtInsPlanName">
+            </div>
+
+
+            <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input8" class="col-form-label label-w-70">Email:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtInsEmail" formControlName="txtInsEmail">
+            </div>
+
+            <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input7" class="col-form-label label-w-70">Attn:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtInsAttn" formControlName="txtInsAttn">
+            </div>
+
+
+            <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input8" class="col-form-label label-w-70">Website:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtInsWebsite" formControlName="txtInsWebsite">
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <div class="rounded overflow-height overflow-auto bg-white flex-grow-1 max-height-100">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Zip</th>
+          <th>Phone#</th>
+          <th>Fax#</th>
+          <th>Email</th>
+          <th>Attn</th>
+          <th>Website</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ins of lstInsurance" (click)="selectInsurance(ins)"
+          [ngClass]="{'active' : (ins.insurance_id === isSelectedInsID)}">
+          <td>{{ins.name}}</td>
+          <td>{{ins.address}}</td>
+          <td>{{ins.city}}</td>
+          <td>{{ins.state}}</td>
+          <td>{{ins.zip}}</td>
+          <td>{{ins.phone}}</td>
+          <td>{{ins.fax}}</td>
+          <td>{{ins.email}}</td>
+          <td>{{ins.attn}}</td>
+          <td>{{ins.website}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="dashboard-container d-flex flex-column mb-4-px mt-4-px" *ngIf="isShowSearchIns">
+    <insurance-setup-search class="d-flex flex-column flex-grow-1" (backToMainIns)="backToMainIns()"></insurance-setup-search>
+</div>

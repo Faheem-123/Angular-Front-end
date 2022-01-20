@@ -1,0 +1,135 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Procedures</div>
+  <ul class="nav color-buttons align-items-center">
+    <button *ngIf="!addEditView && canView && canAddEdit && !showSuperBill"
+      class="nav-link encounter-btn-save px-2 py-0" (click)="onAdd()">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </button>
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="onSaveSurgery()">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="onCancel()">
+      <i class="fas fa-times  pr-1"></i>Cancel
+    </button>
+  </ul>
+</div>
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1"
+  *ngIf="showSuperBill">
+  <claim-super-bill class="d-flex flex-column flex-grow-1 single-col" callingFrom='encounter'
+    [controlUniqueId]="objencounterToOpen.controlUniqueId" (onImport)="onImportIcdCptCallBack($event)"
+    (onCancel)="onImportIcdCdptCancelCallBack()">
+  </claim-super-bill>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <p>
+      <i class="fas fa-ban"></i> Access Denied</p>
+  </div>
+
+  <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content ml-2 p-6">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+  <div *ngIf="!noRecordFound && !addEditView && !showSuperBill" class="encounter-view bg-white p-0">
+    <div class="encounter-data-accordian accordian-data" *ngFor="let sur of lstSurgeryView; ">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 style="width: 94%;">
+          <a data-toggle="collapse" href="#summarySurgery{{sur.chart_procedures_id}}" aria-expanded="false">
+            <span class="accordian-header-date-time">{{sur.procedure_date}}</span>
+            <span class="icd-code">{{sur.procedure_code}}</span> {{sur.description}}
+          </a>
+        </h5>
+        <td class="text-right encounter-data-accordian accordian-header button">
+          <!-- <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md text-primary  line-height-1 p-0" (click)='onEdit(sur)'>
+            <i class="far fa-edit"></i>
+          </button> -->
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-md btn-link btn-delete  line-height-1 p-0"
+            (click)="onDelete(sur)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </td>
+      </div>
+
+      <div id="summarySurgery{{sur.chart_procedures_id}}" class="collapse" class="collapse">
+        <div class="accordian-body">
+          <div class="row">
+            <div class="col col-9">
+              <p>Date:
+                <strong class="mr-5">{{sur.procedure_date}}</strong>
+                <strong class="mr-15">{{sur.entry_type}}</strong>
+              </p>
+              <p>Code Type: {{sur.code_type}}
+                <strong>{{sur.procedure_code}}</strong>
+                <strong>{{sur.description}}</strong>
+              </p>
+              <p *ngIf="sur.comments">Notes:
+                <strong class="mr-5">{{sur.comments}}</strong></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="overflow-auto m-2 min-height-250" *ngIf="addEditView">
+    <form [formGroup]="InputForm">
+      <div class="form-row form-dashboard mt-2">
+        <div class="form-group col-12 d-flex flex-row justify-content-between">
+          <div class="form-check-cont">
+            <div class="form-check form-check-inline pt-1">
+              <input class="form-check-input" type="radio" checked formControlName="rbCondition" id="rbmylist"
+                value="mylist" (ngModelChange)="onRadioOptionChange($event)">
+              <label class="form-check-label" for="rbmylist">My List</label>
+            </div>
+            <div class="form-check form-check-inline pt-1 mr-0">
+              <input class="form-check-input" type="radio" formControlName="rbCondition" formControlName="rbCondition"
+                id="rball" value="all" (ngModelChange)="onRadioOptionChange($event)">
+              <label class="form-check-label" for="input02">All</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group has-search col-12 mt-1">
+          <span class="fa fa-search form-control-feedback"></span>
+          <input class="form-control search-highlight" placeholder="Enter Code or Description to Search" type="text"
+            id="txtProblemSearch" #txtProblemSearch formControlName="txtProblemSearch" placeholder="Search Procedure"
+            (keydown)="onProblemSearchKeydown($event)" autocomplete="off" (blur)="onProblemSearcBlur()">
+          <inline-procedure-search *ngIf="showDiagSearch" [procSearchCriteria]="procSearchCriteria"
+            (onSelect)="onDiagnosisSelect($event)" (onClose)="closeDiagSearch()"></inline-procedure-search>
+        </div>
+      </div>
+    </form>
+
+    <table class="table sm layout-fixed light-striped-border">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Description</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let prc of lstProcedureAdd;let i=index">
+          <td class="width-70">{{prc.procedure_code}}</td>
+          <td title="{{prc.description}}">{{prc.description}}</td>
+          <td>
+            <input autocomplete="off" class="form-control text-input-skin" value="{{prc.comments}}" id="txtinstruction"
+              #txtinstruction type="text" (blur)="txtinstructionFocusOut(txtinstruction.value,i)">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && canView && !addEditView">
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLogHistory()">View Log</button>
+  </div>
+
+</div>

@@ -1,0 +1,28 @@
+export class ORMMessage {
+    message_id:String;
+	mess_subject:String;
+	mess_body_html:String;
+	mess_body_text:String;
+	mess_to:String;
+	mess_cc:String;
+	deleted:Boolean;
+	created_user:String;
+	client_date_created:String;
+	modified_user:String;
+	client_date_modified:String;
+	date_created:String;
+	date_modified:String;
+	practice_id:String;
+	priority:Boolean;
+	sender:String;
+	to_user:String;
+	cc_user:String;
+	is_draft:Boolean;
+	to_location:String;
+	to_role:String;
+	cc_location:String;
+	cc_role:String;
+	system_ip:String;
+	module_id:String;
+	module_name:String;
+}

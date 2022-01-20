@@ -1,0 +1,290 @@
+<div class="border-content-box border-top-0 d-flex flex-row flex-grow-1 max-height-100 p-2">
+  <form [formGroup]="fromGroup" (ngSubmit)="onSubmit(fromGroup.value)" class="d-flex">
+    <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 position-relative">
+
+
+      <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0">
+        Appointment Type
+
+        <div class="d-flex align-items-center">
+
+          <button *ngIf="!editState" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+            (click)="onAddNew()"><i class="fa fa-plus mr-1"></i>Add New</button>
+
+          <button *ngIf="editState" class="btn rounded-0 btn-sm bg-green-ihc text-white h-24" type="submit"
+            [disabled]="!fromGroup.valid">Save</button>
+          <button *ngIf="editState" class="btn btn-sm btn-dark rounded-3-top-right h-24" type="button"
+            (click)="cancelAddEdit()">Cancel</button>
+
+
+
+        </div>
+
+
+      </div>
+
+
+      <div class="border rounded-0 bg-white m-1 d-flex flex-row flex-shrink-0" *ngIf="editState">
+
+        <div class="dashboard-add-edit flex-grow-2 flex-basis-2">
+
+
+          <div class="d-flex flex-column flex-grow-1 flex-basis-1">
+            <div class="dashboard-add-edit p-8-px">
+
+
+              <div class="form-row form-dashboard">
+                <div class="col-lg-5 col-md-6 col-sm-8 col-12">
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-lg-9 col-md-8 col-sm-8 col-12">
+                      <label for="txtType" class="col-form-label required">Appointment Type</label>
+                      <input type="text" id="txtType" formControlName="txtType" class="form-control">
+                    </div>
+                    <div class="form-group col-lg-3 col-md-4 col-sm-4 col-12">
+                      <label for="cmbDuration" class="col-form-label required">Duration</label>
+                      <select class="form-control" id="cmbDuration" formControlName="cmbDuration">
+                        <option *ngFor="let duration of lstDuration" [value]="duration">{{duration}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-12">
+                      <label for="cpTypeColor" class="col-form-label">Back Color</label>
+                      <input id="cpTypeColor" readonly class="form-control" [(colorPicker)]="typeColor"
+                        [style.background]="typeColor" [cpFallbackColor]="'#fff'" [cpPosition]="'bottom'"
+                        [cpCancelButton]="true" [cpCancelButtonClass]="'btn btn-primary btn-xs'"
+                        (colorPickerChange)="typeColor=$event" />
+                    </div>
+                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-12">
+                      <label for="cpCommentsColor" class="col-form-label">Comments Color</label>
+                      <input id="cpCommentsColor" class="form-control" readonly [(colorPicker)]="colorComments"
+                        [style.background]="colorComments" [cpFallbackColor]="'#fff'" [cpPosition]="'bottom'"
+                        [cpCancelButton]="true" [cpCancelButtonClass]="'btn btn-primary btn-xs'"
+                        (colorPickerChange)="colorComments=$event" />
+                    </div>
+                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-12">
+                      <label for="cpLabelColor" class="col-form-label">Label Color</label>
+                      <input id="cpLabelColor" class="form-control" readonly [(colorPicker)]="colorLabel"
+                        [style.background]="colorLabel" [cpFallbackColor]="'#fff'" [cpPosition]="'bottom'"
+                        [cpCancelButton]="true" [cpCancelButtonClass]="'btn btn-primary btn-xs'"
+                        (colorPickerChange)="colorLabel=$event" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-4 col-12">
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-12">
+                      <div class="scheduler-container  ">
+                        <div class="appointment-box" [style.background-color]="typeColor">
+                          <div class="title">
+                            <div>
+                              <p class="m-0 pl-4-px font-weight-500" [style.color]="background">A</p>
+                            </div>
+
+                            <span>Patient Name</span>
+
+                            <div class="dropdown">
+                              <button class="btn-link" type="button" id="schedular-card-option" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-bars" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div class="content">
+                            <p class="status text-right" [style.color]="colorLabel"> Status </p>
+
+                            <p class="info" [style.color]="colorComments">Comments</p>
+
+                            <p class="type" [style.color]="colorLabel"> Type</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+
+
+              </div>
+
+
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+
+      <div class="flex-grow-1 overflow-auto overflow-height" [ngClass]="{'border-top': editState}">
+        <table class="table sm layout-fixed light-striped-border">
+
+
+          <tbody>
+            <tr *ngFor="let t of lstTypes" [ngClass]="{'active' : (t.type_id === selectedId)}">
+              <td>{{t.description}}</td>
+              <td class="width-150" [style.background]="t.type_color" [style.color]="t.comments_color">Comments
+                Color</td>
+              <td class="width-150" [style.background]="t.type_color" [style.color]="t.label_color">Label Color</td>
+              <td class="width-90">
+                <button *ngIf="!editState" type="button" (click)="onEdit(t)" class="link-btn">Edit</button>
+                <button *ngIf="!editState" type="button" (click)="onDelete(t)" class="link-btn ml-3">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+
+      <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+          <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+
+
+
+
+
+
+<!--
+
+
+<div class="dashboard-content d-flex flex-column">
+  <div class="mb-8-px d-flex flex-row flex-shrink-0" *ngIf="editState">
+    <div class="d-flex flex-column flex-grow-1 flex-basis-1">
+      <div class="dashboard-add-edit p-8-px">
+        <form [formGroup]="fromGroup" (ngSubmit)="onSubmit(fromGroup.value)">
+
+          <div class="form-row form-dashboard">
+            <div class="col-lg-5 col-md-6 col-sm-8 col-12">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-lg-9 col-md-8 col-sm-8 col-12">
+                  <label for="txtType" class="col-form-label required">Appointment Type</label>
+                  <input type="text" id="txtType" formControlName="txtType" class="form-control">
+                </div>
+                <div class="form-group col-lg-3 col-md-4 col-sm-4 col-12">
+                  <label for="cmbDuration" class="col-form-label required">Duration</label>
+                  <select class="form-control" id="cmbDuration" formControlName="cmbDuration">
+                    <option *ngFor="let duration of lstDuration" [value]="duration">{{duration}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-group col-lg-4 col-md-4 col-sm-4 col-12">
+                  <label for="cpTypeColor" class="col-form-label">Back Color</label>
+                  <input id="cpTypeColor" readonly class="form-control" [(colorPicker)]="typeColor"
+                    [style.background]="typeColor" [cpFallbackColor]="'#fff'" [cpPosition]="'bottom'"
+                    [cpCancelButton]="true" [cpCancelButtonClass]="'btn btn-primary btn-xs'"
+                    (colorPickerChange)="typeColor=$event" />
+                </div>
+                <div class="form-group col-lg-4 col-md-4 col-sm-4 col-12">
+                  <label for="cpCommentsColor" class="col-form-label">Comments Color</label>
+                  <input id="cpCommentsColor" class="form-control" readonly [(colorPicker)]="colorComments"
+                    [style.background]="colorComments" [cpFallbackColor]="'#fff'" [cpPosition]="'bottom'"
+                    [cpCancelButton]="true" [cpCancelButtonClass]="'btn btn-primary btn-xs'"
+                    (colorPickerChange)="colorComments=$event" />
+                </div>
+                <div class="form-group col-lg-4 col-md-4 col-sm-4 col-12">
+                  <label for="cpLabelColor" class="col-form-label">Label Color</label>
+                  <input id="cpLabelColor" class="form-control" readonly [(colorPicker)]="colorLabel"
+                    [style.background]="colorLabel" [cpFallbackColor]="'#fff'" [cpPosition]="'bottom'"
+                    [cpCancelButton]="true" [cpCancelButtonClass]="'btn btn-primary btn-xs'"
+                    (colorPickerChange)="colorLabel=$event" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-4 col-12">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                  <div class="scheduler-container  ">
+                    <div class="appointment-box" [style.background-color]="typeColor">
+                      <div class="title">
+                        <div>
+                          <p class="m-0 pl-4-px font-weight-500" [style.color]="background">A</p>
+                        </div>
+
+                        <span>Patient Name</span>
+
+                        <div class="dropdown">
+                          <button class="btn-link" type="button" id="schedular-card-option" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-bars" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="content">
+                        <p class="status text-right" [style.color]="colorLabel"> Status </p>
+
+                        <p class="info" [style.color]="colorComments">Comments</p>
+
+                        <p class="type" [style.color]="colorLabel"> Type</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+
+          </div>
+
+
+          <div class="form-row form-dashboard ">
+            <div class="form-group mt-8-px text-right col-lg-8 col-md-10 col-12 ">
+              <button type="button" class="btn btn-dark" (click)="cancelAddEdit()"> Cancel</button>
+              <button type="submit" class="btn btn-success ml-1" [disabled]="!fromGroup.valid">Save</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+  <div class="div-column">
+    <div class="custom-select-box">
+      <div class="table-container flex-grow-1 mb-4-px">
+        <table *ngIf="!isLoading" class="table layout-fixed light-striped-border table-hover ">
+          <thead>
+            <tr>
+              <th>Appointment Type</th>
+              <th colspan="2" style="width: 300px;">Preview</th>
+              <th style="width: 150px;">
+                <button *ngIf="!editState" type="button" (click)="onAddNew()" class="link-btn">Add New</button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of lstTypes" [ngClass]="{'active' : (t.type_id === selectedId)}">
+              <td>{{t.description}}</td>           
+              <td style="width: 150px;" [style.background]="t.type_color" [style.color]="t.comments_color">Comments
+                Color</td>
+              <td style="width: 150px;" [style.background]="t.type_color" [style.color]="t.label_color">Label Color</td>
+              <td>
+                <button *ngIf="!editState" type="button" (click)="onEdit(t)" class="link-btn">Edit</button>
+                <button *ngIf="!editState" type="button" (click)="onDelete(t)" class="link-btn ml-3">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+-->

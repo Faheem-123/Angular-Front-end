@@ -1,0 +1,68 @@
+<!-- <div class="flex-1 bg-white">
+  <div class="left-toggle-menu">
+    <ul class="reports-sidebar-menu">
+      <li class="active treeview">
+        <a href="#">
+          <i class="fas fa-angle-right"></i>
+          <span class="ml-2">Insurance Setup</span>
+        </a>
+        <ul class="reports-treeview-menu">
+          <li class="active rpt-pointer" (click)="generalOnChange('ins-type')"><a>Insurance Type</a></li>
+
+          <li class="rpt-pointer" (click)="generalOnChange('ins-payer')"><a>Insurance Payers</a></li>
+          <li class="rpt-pointer" (click)="generalOnChange('ins-setup')"><a>Insurances</a></li>
+          <li class="rpt-pointer" (click)="generalOnChange('provider-payer')"><a>Provider Payers</a></li>
+          <li class="rpt-pointer" (click)="generalOnChange('map-ins')"><a>Map Insurances</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<insurance-type *ngIf="module_name=='ins-type'" class="flex-7 d-flex flex-column p-8" ></insurance-type>
+<insurance-payer *ngIf="module_name=='ins-payer'" class="flex-7 d-flex flex-column p-8" ></insurance-payer>
+<insurance-setup *ngIf="module_name=='ins-setup'" class="flex-7 d-flex flex-column p-8" ></insurance-setup>
+<provider-payers *ngIf="module_name=='provider-payer'" class="flex-7 d-flex flex-column p-8" ></provider-payers>
+<map-insurance *ngIf="module_name=='map-ins'" class="flex-7 d-flex flex-column p-8" ></map-insurance> -->
+
+<div class="scheduler-right pl-0 d-flex flex-column flex-grow-1">
+<ngb-tabset class="inner-vertical-tab white d-flex flex-row max-height-100" [destroyOnHide]="false">
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Insurance Type</span></ng-template>
+    <ng-template ngbTabContent>
+      <insurance-type class="d-flex flex-column flex-grow-1"></insurance-type>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Insurance Payers</span></ng-template>
+    <ng-template ngbTabContent>
+      <insurance-payer class="d-flex flex-column flex-grow-1"></insurance-payer>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Insurances</span></ng-template>
+    <ng-template ngbTabContent>
+      <insurance-setup class="d-flex flex-column flex-grow-1"></insurance-setup>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Provider Payers</span></ng-template>
+    <ng-template ngbTabContent>
+      <provider-payers class="d-flex flex-column flex-grow-1 "></provider-payers>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Map Insurances</span></ng-template>
+    <ng-template ngbTabContent>
+      <map-insurance class="d-flex flex-column flex-grow-1 "></map-insurance>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+      <ng-template ngbTabTitle><span>Practice Insurances</span></ng-template>
+      <ng-template ngbTabContent>
+        <practice-insurance class="d-flex flex-column flex-grow-1 pl-1"></practice-insurance>
+      </ng-template>
+    </ngb-tab>
+
+</ngb-tabset>
+</div>

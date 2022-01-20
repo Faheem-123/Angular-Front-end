@@ -1,0 +1,435 @@
+<div class="modal-header custom" (keydown.esc)="activeModal.close()">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Modify Cash Register Entry</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)" (keydown.esc)="activeModal.close()">
+  <div class="modal-body custom ">
+    <div class="dashboard-content">
+
+      <div class="px6-py3 flex-grow-1 overflow-auto" *ngIf="!isLoading">
+
+        <div class="row p8 mb-1">
+          <div class="col p-0">
+            <div class="info-box-stipes rounded-custom flex-grow-1">
+
+              <div class="px-2 py-1">
+
+                <div class="form-row form-dashboard">
+
+                  <div class="form-group col-3">
+                    <label class="col-form-label module-view-headding" [ngClass]="{ required: !appointmentId}"
+                      for="cmbLocation">Location</label>
+
+                    <label *ngIf="appointmentId" class="col-form-label module-view-value pt-0">
+                      {{locationName}}
+                    </label>
+
+                    <select *ngIf="!appointmentId" class="form-control" labelForId="cmbLocation"
+                      formControlName="cmbLocation" (change)="locationChanged($event.currentTarget.value)">
+                      <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-3">
+                    <label for="cmbProvider" class="col-form-label module-view-headding"
+                      [ngClass]="{ required: !appointmentId}">Provider</label>
+                    <label *ngIf="appointmentId" for="input2" class="col-form-label module-view-value pt-0">
+                      {{providerName}}
+                    </label>
+                    <select *ngIf="!appointmentId" class="form-control" id="cmbProvider" formControlName="cmbProvider"
+                      (change)="providerChanged($event.currentTarget.value)">
+                      <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}
+                      </option>
+
+                    </select>
+                  </div>
+
+
+                  <!-- <div class="form-group col-3">
+                    <label for="input2" class="col-form-label module-view-headding">Location</label>
+                    <label for="input2" class="col-form-label module-view-value pt-0">
+                      {{locationName}}
+                    </label>
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="input2" class="col-form-label module-view-headding">Provider</label>
+                    <label for="input2" class="col-form-label module-view-value pt-0">
+                      {{providerName}}
+                    </label>
+                  </div> -->
+                  <div class="form-group col-3">
+                    <label for="input2" class="col-form-label module-view-headding">DOS</label>
+                    <label for="input2" class="col-form-label module-view-value pt-0">
+                      {{cashRegEntry.dos}}
+                    </label>
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="input2" class="col-form-label module-view-headding">Payment Method</label>
+                    <label for="input2" class="col-form-label module-view-value pt-0">
+                      {{cashRegEntry.payment_method}}
+                    </label>
+                  </div>
+
+
+                </div>
+
+
+                <div class="form-row form-dashboard" *ngIf="cashRegEntry.payment_method=='CHECK' ">
+                  <div class="form-group col-3">
+                    <label for="input2" class="col-form-label module-view-headding">Check Number</label>
+                    <label for="input2" class="col-form-label module-view-value  pt-0">
+                      {{cashRegEntry.check_number}}
+                    </label>
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="input2" class="col-form-label module-view-headding">Check Date</label>
+                    <label for="input2" class="col-form-label module-view-value pt-0">
+                      {{cashRegEntry.check_date}}
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard mt-2 mb-2">
+
+          <div class="form-group col-12">
+            <div class="form-row form-dashboard">
+              <div class="custom-select-box">
+                <div class="dashboard-sub-nav encounter justify-content-between d-flex flex-row">
+                  <p>Payment Details</p>
+                </div>
+                <div class="dashboard-content  m-1">
+                  <table class="table light-blue-striped-row-column-border ">
+                    <thead>
+                      <tr>
+                        <th rowspan="2">Payment Detail</th>
+
+                        <th colspan="2" class="text-center" style="width: 110px;" *ngIf="totalPaidTodayActual>0">
+                          Today's Payment
+                        </th>
+                        <th colspan="2" class="text-center" style="width: 115px;" *ngIf="totalAdvanceAdjustedActual>0">
+                          Advance Adjusted</th>
+                        <th colspan="2" class="text-center" style="width: 85px;" *ngIf="totalWriteOffActual>0">Write Off
+                        </th>
+                      </tr>
+
+                      <tr>
+                        <th class="text-center" style="width: 85px;" *ngIf="totalPaidTodayActual>0">Actual</th>
+                        <th class="text-center" style="width: 85px;" *ngIf="totalPaidTodayActual>0">Modified</th>
+                        <th class="text-center" style="width: 85px;" *ngIf="totalAdvanceAdjustedActual>0">Actual</th>
+                        <th class="text-center" style="width: 85px;" *ngIf="totalAdvanceAdjustedActual>0">Modified</th>
+                        <th class="text-center" style="width: 85px;" *ngIf="totalWriteOffActual>0">Actual</th>
+                        <th class="text-center" style="width: 85px;" *ngIf="totalWriteOffActual>0">Modified</th>
+                      </tr>
+
+
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="align-middle">Co Payment</td>
+                        <td class="align-middle text-right" *ngIf="totalPaidTodayActual>0">{{copayPaidActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class="align-middle text-right" *ngIf="totalPaidTodayActual>0">
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              [ngClass]="{'text-danger': (formGroup.controls.txtCopayPaid.errors?.pattern.requiredPattern)}"
+                              placeholder="0.00" id="txtCopayPaid" formControlName="txtCopayPaid"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              autocomplete="off">
+                          </div>
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalAdvanceAdjustedActual>0">
+                          {{copayAdvanceAdjustedActual |
+                          currency:'USD':'symbol-narrow'}}
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalAdvanceAdjustedActual>0">
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              [ngClass]="{'text-danger': (formGroup.controls.txtCopayAdvanceAdjusted.errors?.pattern.requiredPattern)}"
+                              placeholder="0.00" id="txtCopayAdvanceAdjusted" formControlName="txtCopayAdvanceAdjusted"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              autocomplete="off">
+                          </div>
+
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalWriteOffActual>0">{{copayWriteOffActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class="align-middle text-right" *ngIf="totalWriteOffActual>0">
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              [ngClass]="{'text-danger': (formGroup.controls.txtCopayWriteOff.errors?.pattern.requiredPattern)}"
+                              placeholder="0.00" id="txtCopayWriteOff" formControlName="txtCopayWriteOff"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              autocomplete="off">
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="align-middle">Self Pay</td>
+                        <td class="align-middle text-right" *ngIf="totalPaidTodayActual>0">{{selfpayPaidActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="totalPaidTodayActual>0">
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtSelfpayPaid" formControlName="txtSelfpayPaid"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtSelfpayPaid.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalAdvanceAdjustedActual>0">
+                          {{selfpayAdvanceAdjustedActual |
+                          currency:'USD':'symbol-narrow'}}
+                        </td>
+                        <td class="text-right align-middle" *ngIf="totalAdvanceAdjustedActual>0">
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtSelfpayAdvanceAdjusted"
+                              formControlName="txtSelfpayAdvanceAdjusted"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtSelfpayAdvanceAdjusted.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalWriteOffActual>0">{{selfpayWriteOffActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="totalWriteOffActual>0">
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtSelfpayWriteOff" formControlName="txtSelfpayWriteOff"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtSelfpayWriteOff.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="align-middle">Previous Balance</td>
+                        <td class="align-middle text-right" *ngIf="totalPaidTodayActual>0">{{prevBalPaidActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="totalPaidTodayActual>0">
+
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtPrevBalPaid" formControlName="txtPrevBalPaid"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtPrevBalPaid.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalAdvanceAdjustedActual>0">
+                          {{prevBalAdvanceAdjustedActual |
+                          currency:'USD':'symbol-narrow'}}
+                        </td>
+                        <td class="text-right align-middle" *ngIf="totalAdvanceAdjustedActual>0">
+
+
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtPrevBalAdvanceAdjusted"
+                              formControlName="txtPrevBalAdvanceAdjusted"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtPrevBalAdvanceAdjusted.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalWriteOffActual>0">{{prevBalWriteOffActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="totalWriteOffActual>0">
+
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtPrevBalWriteOff" formControlName="txtPrevBalWriteOff"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtPrevBalWriteOff.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+
+
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="align-middle">Other Payment</td>
+                        <td class="align-middle text-right" *ngIf="totalPaidTodayActual>0">{{otherPaidActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="totalPaidTodayActual>0">
+
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtOtherPaid" formControlName="txtOtherPaid"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtOtherPaid.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalAdvanceAdjustedActual>0">
+                          {{otherAdvanceAdjustedActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class=" text-right align-middle" *ngIf="totalAdvanceAdjustedActual>0">
+
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtOtherAdvanceAdjusted" formControlName="txtOtherAdvanceAdjusted"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtOtherAdvanceAdjusted.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalWriteOffActual>0"></td>
+                        <td class="text-right align-middle" *ngIf="totalWriteOffActual>0"></td>
+                      </tr>
+                      <tr>
+                        <td class="align-middle">Advance Payment</td>
+                        <td class="align-middle text-right" *ngIf="totalPaidTodayActual>0">{{advancePaidActual |
+                          currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle " *ngIf="totalPaidTodayActual>0">
+                          <div class="input-group table-td-input-group w-100">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                              placeholder="0.00" id="txtAdvancePaid" formControlName="txtAdvancePaid"
+                              (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                              [ngClass]="{'text-danger': (formGroup.controls.txtAdvancePaid.errors?.pattern.requiredPattern)}"
+                              autocomplete="off">
+                          </div>
+
+
+                        </td>
+                        <td class="align-middle text-right" *ngIf="totalAdvanceAdjustedActual>0"></td>
+                        <td class="text-right align-middle" *ngIf="totalAdvanceAdjustedActual>0"></td>
+                        <td class="align-middle text-right" *ngIf="totalWriteOffActual>0"></td>
+                        <td class="text-right align-middle" *ngIf="totalWriteOffActual>0"></td>
+                      </tr>
+
+                    </tbody>
+                    <thead>
+                      <tr>
+                        <th>Total</th>
+                        <th class="align-middle text-right" *ngIf="totalPaidTodayActual>0">{{totalPaidTodayActual |
+                          currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right" *ngIf="totalPaidTodayActual>0"
+                          [ngClass]="{'text-danger': (totalPaidToday>totalPaidTodayActual)}">
+                          {{totalPaidToday | currency:'USD':'symbol-narrow'}}</th>
+                        <th class="align-middle text-right" *ngIf="totalAdvanceAdjustedActual>0">
+                          {{totalAdvanceAdjustedActual |
+                          currency:'USD':'symbol-narrow'}}
+                        </th>
+                        <th class="text-right" *ngIf="totalAdvanceAdjustedActual>0"
+                          [ngClass]="{'text-danger': (totalAdvanceAdjusted>totalAdvanceAdjustedActual)}">
+                          {{totalAdvanceAdjusted | currency:'USD':'symbol-narrow'}}</th>
+                        <th class="align-middle text-right" *ngIf="totalWriteOffActual>0">{{totalWriteOffActual |
+                          currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right" *ngIf="totalWriteOffActual>0"
+                          [ngClass]="{'text-danger': (totalWriteOff>totalWriteOffActual)}">
+                          {{totalWriteOff | currency:'USD':'symbol-narrow'}}</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+
+
+              </div>
+            </div>
+            <div class="form-row form-dashboard mt-2 mb-2">
+              <div class="form-group col-8" [ngClass]="{'col-12': !totalWriteOffActual>0}">
+                <label class="col-form-label required" for="txtComments">Modification Notes</label>
+                <textarea class="form-control" id="txtComments" rows="3" formControlName="txtComments"
+                  [ngClass]="{required : formGroup.controls.txtComments.errors?.required }"></textarea>
+              </div>
+              <div class="form-group col-4" *ngIf="totalWriteOffActual>0">
+                <label class="col-form-label" for="cmbWriteOff">Write Off Code</label>
+                <select class="form-control" id="cmbWriteOff" formControlName="cmbWriteOff"
+                  [ngClass]="{ required :  (formGroup.errors?.groupName=='writeOff'  && formGroup.errors?.requiredWhen)}">
+                  <option></option>
+                  <option *ngFor="let wo of lookupList.lstPracticeWriteOffCodes" [value]="wo.code">{{wo.code}} -
+                    {{wo.description}}</option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+        <div class="form-row form-dashboard" *ngIf="lstErrors 
+          || (totalPaidTodayActual != totalPaidToday) 
+          || (totalAdvanceAdjustedActual != totalAdvanceAdjusted) || 
+          (totalWriteOffActual != totalWriteOff)">
+          <div class="form-group col-12">
+            <div class="alert alert-danger rounded-custom mb-1" role="alert">
+              <ul>
+                <li *ngIf="totalPaidTodayActual != totalPaidToday">Modified Entry for Today's Payment is invalid.</li>
+                <li *ngIf="totalAdvanceAdjustedActual != totalAdvanceAdjusted">Modified Entry for Advance Adjustment is
+                  invalid.</li>
+                <li *ngIf="totalWriteOffActual != totalWriteOff">Modified Entry for Write Off is invalid.</li>
+                <li *ngFor="let error of lstErrors">{{error}}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+  <div class="modal-footer custom">
+    <button style="width: 100px;" class="btn btn-success btn-sm" type="submit" [disabled]="!isFormValid()">Save</button>
+    <button type="button" style="width: 100px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.close()">Cancel</button>
+  </div>
+</form>
+
+<div *ngIf="isLoading" class="div-loader"></div>

@@ -1,0 +1,29 @@
+<div class="dashboard-billing position-relative">
+  <div class="dashboard-title position-relative">
+    <div class="icon light-gray" title="Month To Date Payment Summary">
+      <img class="img-h-32" src="./assets/images/icons/Dashboard_cash.svg" alt="">
+    </div>
+
+    <div class="title">
+      Payment Summary
+    </div>
+    <div class="title-btn p-0">
+      <a class="line-height-1" (click)="refreshRecord()"><img class="img-h-25"
+          src="./assets/images/icons/ico_refresh_green.svg" alt=""></a>
+    </div>
+  </div>
+  <div class="dashboard-content">
+    <!-- <canvas #myCanvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [legend]="false" [colors]="colorsEmptyObject"
+      [options]="barChartOptions" [chartType]="barChartType"></canvas> -->
+
+      <canvas id="myCanvas" #myCanvas >{{chart}}</canvas>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+
+</div>

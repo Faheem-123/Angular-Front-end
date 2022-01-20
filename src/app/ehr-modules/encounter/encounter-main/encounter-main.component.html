@@ -1,0 +1,83 @@
+<reasonforvisit-hpi *ngIf="moduleName=='rfv_hpi'" (dataUpdated)="dataUpdated.emit($event)"
+    [objencounterToOpen]="objencounterToOpen" [moduleName]="moduleName"></reasonforvisit-hpi>
+<vitals *ngIf="moduleName=='vitals'" [objencounterToOpen]="objencounterToOpen" (dataUpdated)="dataUpdated.emit($event)"
+    [moduleName]="moduleName"></vitals>
+<patient-problems *ngIf="moduleName=='problems'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></patient-problems>
+<surgery *ngIf="moduleName=='surgeries'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></surgery>
+<patient-immunization *ngIf="moduleName=='vaccination'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></patient-immunization>
+<social-history *ngIf="moduleName=='social_history'" (dataUpdated)="dataUpdated.emit($event)"
+    [objencounterToOpen]="objencounterToOpen" [moduleName]="moduleName"></social-history>
+<family-history *ngIf="moduleName=='family_history'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></family-history>
+
+<allergy *ngIf="moduleName=='prescription'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></allergy>
+<prescription *ngIf="moduleName=='prescription'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></prescription>
+
+<ros *ngIf="moduleName=='ros'" [objencounterToOpen]="objencounterToOpen" (dataUpdated)="dataUpdated.emit($event)"
+    [moduleName]="moduleName"></ros>
+<progress-notes *ngIf="moduleName=='plan_of_care'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></progress-notes>
+<patient-annotations *ngIf="moduleName=='annotation'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></patient-annotations>
+<lab-summary *ngIf="moduleName=='lab_order'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></lab-summary>
+<office-test *ngIf="moduleName=='office_tests'  && this.lookupList.practiceInfo.practiceId!=524" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></office-test>
+<mental-officetest *ngIf="moduleName=='office_tests' && this.lookupList.practiceInfo.practiceId==524" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></mental-officetest>
+
+<procedure *ngIf="moduleName=='procedures'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></procedure> 
+<health-check-summary *ngIf="moduleName=='health_check'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"> </health-check-summary>
+<cognitive-functional-history *ngIf="moduleName=='cognitive_functional_history'"
+    [objencounterToOpen]="objencounterToOpen" (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName">
+</cognitive-functional-history>
+<follow-up *ngIf="moduleName=='nqf_follow_up'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></follow-up>
+<physical-exam *ngIf="moduleName=='physical_exam'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></physical-exam>
+<injury-treatment *ngIf="moduleName=='injury_treatment_notes'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"> </injury-treatment>
+<pre-natal *ngIf="moduleName=='ob_gyn'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></pre-natal>
+<awv-screening *ngIf="moduleName=='awv_screening'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></awv-screening>
+<physicians-care *ngIf="moduleName=='extender_notes'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></physicians-care>
+<health-maintenance *ngIf="moduleName=='health_maintenance'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></health-maintenance>
+<female-exam *ngIf="moduleName=='female_exam'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></female-exam>
+<assessments *ngIf="moduleName=='assessments'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></assessments>
+<asthma-exam *ngIf="moduleName=='asthma_exam'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></asthma-exam>
+<referral *ngIf="moduleName=='referral'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></referral>
+<pmh *ngIf="moduleName=='pmh'" [objencounterToOpen]="objencounterToOpen" (dataUpdated)="dataUpdated.emit($event)"
+    [moduleName]="moduleName"></pmh>
+<implantable-devices *ngIf="moduleName=='implantable_devices'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></implantable-devices>
+<care-plan *ngIf="moduleName=='care_plan'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></care-plan>
+<discharge-disposition *ngIf="moduleName=='discharge_disposition'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></discharge-disposition>
+<helath-concern *ngIf="moduleName=='health_concern'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></helath-concern>
+<assessment-treatment-plan *ngIf="moduleName=='assessment_treatment_plan'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></assessment-treatment-plan>
+
+<chart-sessioninfo *ngIf="moduleName=='session_info'" (dataUpdated)="dataUpdated.emit($event)"
+    [objencounterToOpen]="objencounterToOpen" [moduleName]="moduleName"></chart-sessioninfo>
+
+<depression-screening *ngIf="moduleName=='depression_screening'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></depression-screening>
+
+<chart-drug-abuse *ngIf="moduleName=='drug_abuse'" [objencounterToOpen]="objencounterToOpen"
+    (dataUpdated)="dataUpdated.emit($event)" [moduleName]="moduleName"></chart-drug-abuse>

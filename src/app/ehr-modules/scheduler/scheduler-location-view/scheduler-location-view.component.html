@@ -1,0 +1,146 @@
+<div>
+
+  <div class="alert alert-warning rounded-0 m-0 p-2 fz-12" role="alert" *ngIf="locationViewNoRecord">
+    <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+    No record found.
+  </div>
+
+  <table class="scheduler-container-compact table-sticky-header table-sticky-filrst-column" cellspacing="1"
+    cellpadding="0" *ngIf="!locationViewNoRecord">
+
+    <thead>
+
+      <tr>
+
+        <th class="header text-center" tyle="width: none;">
+          <span>Timing</span>
+        </th>
+
+        <th *ngFor="let provider of lstProviderAppointmentsLocationView; let providerIndex=index;" class="header"
+          [ngClass]="{'header-even':  (providerIndex%2 ==0),  'header-odd':  !(providerIndex%2 ==0)}">
+          <div class="d-flex">
+            <span class="pt-1-px">{{provider.name}}</span>
+            <span class="badge badge-pill">{{provider.total_appointments}}</span>
+          </div>
+        </th>
+
+      </tr>
+
+
+    </thead>
+    <tbody>
+
+      <!--
+      <tr *ngFor="let t of lstSchedulerTimingLocationView; let timeIndex=index;">
+        <td class="scheduler-time">
+          <span>{{t.timing}}</span>
+        </td>
+        -->
+      <tr>
+        <td class="bg-white">
+          <table class="scheduler-container-compact" cellspacing="1" cellpadding="0">
+            <tbody>
+              <tr id="{{timing.timing}}" *ngFor="let timing of lstSchedulerTimingLocationView; let timeIndex=index;">
+                <td class="scheduler-time">
+                  <span>{{timing.timing}}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+
+        <td *ngFor="let provider of lstProviderAppointmentsLocationView; let providerIndex=index;"
+          [attr.rowspan]="lstSchedulerTimingLocationView.length" class="align-top">
+
+
+          <div class="d-flex">
+            <table class="scheduler-container-compact" cellspacing="1" cellpadding="0"
+              [ngClass]="{'scheduler_odd_column_bg':  (providerIndex%2 ==0),  'scheduler_even_column_bg':  !(providerIndex%2 ==0),  'border-left': providerIndex>0}">
+              <tbody>
+                <tr id="{{timingInner.timing}}"
+                  *ngFor="let timingInner of lstSchedulerTimingLocationView; let timeIndexInner=index;">
+
+
+                  <td class="scheduler-time-empty"></td>
+
+
+                  <td class="appointment" [attr.rowspan]="app.slot_count"
+                    *ngFor="let app of provider.appointments | listFilter:'appointment_time': timingInner.timing ; let i=index;">
+
+
+                    <scheduler-card-compact class="d-flex flex-column h-100" [appointment]="app" [colIndex]="i"
+                      [patientNameSearched]="patientNameSearched" (doSchedulerAction)="doSchedulerAction.emit($event)">
+                    </scheduler-card-compact>
+
+                  </td>
+
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </td>
+
+
+      </tr>
+
+    </tbody>
+  </table>
+
+
+  <!--
+<div class="d-flex" *ngIf="!locationViewNoRecord">
+
+  <table class="scheduler-container-compact table-sticky-header" cellspacing="1" cellpadding="0" [ngClass]="{'scheduler_odd_column_bg':  (providerIndex%2 ==0),
+  'scheduler_even_column_bg':  !(providerIndex%2 ==0),
+  'border-left': providerIndex>0}"
+    *ngFor="let provider of lstProviderAppointmentsLocationView; let providerIndex=index;">
+    <thead>
+      <tr>
+
+        <th class="header p-0" *ngIf="providerIndex>0"></th>
+
+        <th class="header" tyle="width: none;" *ngIf="providerIndex==0">
+          <span>Timing</span>
+        </th>
+
+        <th [attr.colspan]="provider.column_count" class="header">
+
+          <div class="d-flex">
+            <span class="pt-1-px">{{provider.name}}</span>
+            <span class="badge badge-pill">{{provider.total_appointments}}</span>
+          </div>
+        </th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr id="{{t.timing}}" *ngFor="let t of lstSchedulerTimingLocationView; let timeIndex=index;">
+
+        <td class="scheduler-time-empty" *ngIf="providerIndex>0"></td>
+
+        <td class="scheduler-time" *ngIf="providerIndex==0">
+
+          <span class="scheduler-time-btn">{{t.timing}}</span>
+        </td>
+
+        <td class="appointment" [attr.rowspan]="app.slot_count"
+          *ngFor="let app of provider.appointments | listFilter:'appointment_time': t.timing ; let i=index;">
+          <scheduler-card-compact class="d-flex flex-column h-100" [appointment]="app" [colIndex]="i"
+            [patientNameSearched]="patientNameSearched" (doSchedulerAction)="doSchedulerAction.emit($event)">
+          </scheduler-card-compact>
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+
+</div>
+-->
+</div>

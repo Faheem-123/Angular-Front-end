@@ -1,0 +1,1094 @@
+<div class="rounded-top mt-8" [ngClass]="{
+    'encounter-header-highlight': addEditView==true,
+    'encounter-header': addEditView==false}">
+
+  <div class="title pl-8">Social History</div>
+
+  <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+    <button  *ngIf="!addEditView && canAddEdit && canView" (click)="addEdit_Clicked()"
+      class="nav-link green px-2 py-0 top-right-radius">
+      <i *ngIf="chartSocialHistoryDisplay==undefined" class="far fa-plus-square pr-1"></i>
+      <i *ngIf="chartSocialHistoryDisplay!=undefined" class="far fa-edit pr-1"></i>
+      <span *ngIf="chartSocialHistoryDisplay==undefined">Add</span>
+      <span *ngIf="chartSocialHistoryDisplay!=undefined">Edit</span>
+    </button>
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0 " (click)="saveSocialHistory(socialHistoryForm.value)"
+      [disabled]="!socialHistoryForm.valid">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="cancelSocialHistory()">
+        <i class="fas fa-times  pr-1"></i>Cancel
+    </button>
+
+    <!--
+    <a *ngIf="!addEditView && canAddEdit && canView" class="nav-link green px-2 py-0 top-right-radius"
+      (click)="addEdit_Clicked()">
+      <i class="far fa-edit pr-1"></i>Edit
+    </a>
+   <a *ngIf="!addEditView" class="nav-link blue px-2 py-0 top-right-radius">
+      <i class="fas fa-history pr-1" (click)="getHistorySocialHist();"></i>History
+    </a>
+  
+    <a *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+      [ngClass]="{disabled: !socialHistoryForm.valid}" (click)="saveSocialHistory(socialHistoryForm.value)">
+      <i class="far fa-save pr-1"></i>Save
+    </a>
+    <a *ngIf="addEditView" class="nav-link btn-dark px-2 py-0 top-right-radius" (click)="cancelSocialHistory();">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </a>
+
+    -->
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <i class="fas fa-ban mr-2"></i> Access Denied
+  </div>
+
+
+  <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+
+
+
+  <div *ngIf="!isLoading &&  !noRecordFound && !addEditView && canView">
+    <div class="p-6">
+
+      <!-- Social History -->
+      <div class="form-row form-dashboard">
+
+
+        <div class="form-view col-3"
+          *ngIf="chartSocialHistoryDisplay.marital_status!=undefined && chartSocialHistoryDisplay.marital_status!=''">
+          <label class="title-normal">MaritalStatus:</label>
+          <label class="value">
+            {{chartSocialHistoryDisplay.marital_status | uppercase}}
+          </label>
+        </div>
+
+        <div class="form-view col-3"
+          *ngIf="chartSocialHistoryDisplay.children!=undefined && chartSocialHistoryDisplay.children!=''">
+          <label class="title-normal">Children:</label>
+          <label class="value">
+            {{chartSocialHistoryDisplay.children}}
+          </label>
+        </div>
+
+
+
+        <div class="form-view col-3"
+          *ngIf="chartSocialHistoryDisplay.education!=undefined && chartSocialHistoryDisplay.education!=''">
+
+          <label class="title-normal">Education:</label>
+          <label class="value">
+            {{chartSocialHistoryDisplay.education}}
+          </label>
+        </div>
+
+        <div class="form-view col-3"
+          *ngIf="chartSocialHistoryDisplay.occupation!=undefined && chartSocialHistoryDisplay.occupation!=''">
+
+          <label class="title-normal">Occupation:</label>
+          <label class="value">
+            {{chartSocialHistoryDisplay.occupation}}
+          </label>
+
+        </div>
+
+
+
+        <div class="form-view col-3"
+          *ngIf="chartSocialHistoryDisplay.home_environment!=undefined && chartSocialHistoryDisplay.home_environment!=''">
+
+          <label class="title-normal">Home Environment:</label>
+          <label class="value">
+            {{chartSocialHistoryDisplay.home_environment}}
+          </label>
+        </div>
+
+
+        <div class="form-view col-3"
+          *ngIf="chartSocialHistoryDisplay.diet_education!=undefined && chartSocialHistoryDisplay.diet_education!=''">
+
+          <label class="title-normal">Diet Education:</label>
+          <label class="value">
+            {{chartSocialHistoryDisplay.diet_education}}
+          </label>
+
+
+        </div>
+
+
+        <div class="form-view col-6"
+          *ngIf="chartSocialHistoryDisplay.sexual_orientation!=undefined && chartSocialHistoryDisplay.sexual_orientation!=''">
+
+          <label class="title-normal">Sexual Orientation:</label>
+          <label class="value">
+            {{chartSocialHistoryDisplay.sexual_orientation}}
+          </label>
+
+        </div>
+
+        <div class="form-view col-6"
+          *ngIf="chartSocialHistoryDisplay.gender_identity!=undefined && chartSocialHistoryDisplay.gender_identity!=''">
+
+          <label class="title-normal">Gender Identity:</label>
+          <label *ngIf="!addEditView" class="value">
+            {{chartSocialHistoryDisplay.gender_identity}}
+          </label>
+
+
+        </div>
+
+      </div>
+
+
+
+
+      <!-- Tobacco/Smoking Use -->
+      <div class="form-row form-dashboard">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-0 mb-1">Tobacco/Smoking Use</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-view col-4">
+              <label class="title-normal">Status:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.smoking_status}}
+              </label>
+            </div>
+
+            <div class="form-view col-4">
+              <label class="title-normal">Year started:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.year_started}}
+              </label>
+            </div>
+
+
+
+            <div class="form-view col-2">
+              <label class="title-normal">Start:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.smoking_start_date}}
+              </label>
+            </div>
+            <div class="form-view col-2">
+              <label class="title-normal">End:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.smoking_end_date}}
+              </label>
+            </div>
+
+          </div>
+
+          <div class="form-row form-dashboard">
+
+
+
+            <div class="form-view col-4">
+
+              <label class="title-normal">Tobacco Type:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.tobacco_type}}
+              </label>
+            </div>
+
+
+
+            <div class="form-view col-4">
+
+              <label class="title-normal">Pack(s)/Day:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.packs_per_day}}
+              </label>
+            </div>
+
+
+
+
+            <div class="form-view col-4">
+
+              <label class="title-normal">Tobacco Cessation:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.tobacco_cessation}}
+              </label>
+
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- Alcohol/Caffeine Use -->
+      <div class="form-row form-dashboard">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-0 mb-1">Alcohol/Caffeine Use</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-view col-4">
+              <label class="title-normal">Alcohol Use:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.alcohol_per_day}}
+              </label>
+            </div>
+
+
+            <div class="form-view col-4">
+              <label class="title-normal">Caffeine Use:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.caffeine_per_day}}
+              </label>
+            </div>
+
+
+
+            <div class="form-view col-4">
+              <label class="title-normal">ETOH:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.etoh}}
+              </label>
+            </div>
+
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Risk Factors -->
+      <div class="form-row form-dashboard">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-0 mb-1">Risk Factors</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-view col-2">
+              <label class="title-normal">Drug Use:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.drug_use}}
+              </label>
+            </div>
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Quite Date:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.quit_date}}
+              </label>
+            </div>
+
+
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Exercise:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.exercise}}
+              </label>
+            </div>
+
+
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Seatbelts:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.seatbelt}}
+              </label>
+            </div>
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Exposure:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.exposure}}
+              </label>
+            </div>
+
+
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- OB/Gyne -->
+      <div class="form-row form-dashboard" *ngIf="(this.objencounterToOpen.openPatientInfo.patient_gender.toUpperCase() == 'FEMALE'
+      || this.objencounterToOpen.openPatientInfo.patient_gender.toUpperCase() == 'F')">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-0 mb-1">OB/Gyne</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-view  col-2">
+              <label class="title-normal">L.M.P:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.lmp}}
+              </label>
+            </div>
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Cycle:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.cycle}}
+              </label>
+            </div>
+
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Dysmenomhea:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.dysmenomhea}}
+              </label>
+            </div>
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Flow:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.flow}}
+              </label>
+            </div>
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Age at Menarche:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.age_at_menarche}}
+              </label>
+            </div>
+
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Year of menopause:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.year_of_menopause}}
+              </label>
+
+            </div>
+
+          </div>
+
+          <div class="form-row form-dashboard">
+
+
+            <div class="form-view col-2">
+              <label class="title-normal">Pregnent:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.pregnant==true ? 'Yes' : chartSocialHistoryDisplay.pregnant==false ? 'No' : ''}}
+              </label>
+            </div>
+
+            <div class="form-view col-2">
+              <label class="title-normal">E.D.D:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.edd}}
+              </label>
+            </div>
+
+
+
+
+            <div class="form-view  col-2">
+              <label class="title-normal">Gravida:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.gravida}}
+              </label>
+            </div>
+
+            <div class="form-view col-2">
+              <label class="title-normal">Para:</label>
+              <label class="value">
+                {{chartSocialHistoryDisplay.para}}
+              </label>
+            </div>
+
+
+
+          </div>
+
+
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-0 mb-1">Notes</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-view">
+              <label class="value col">
+                {{chartSocialHistoryDisplay.comment}}
+              </label>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="encounter-footer-credential rounded-bottom">
+      <p class="form-text text-muted" *ngIf="lastModifiedMsg">Last Modified by {{lastModifiedMsg}}</p>
+      <button class="btn btn-sm btn-link pr-0" type="button" (click)="getHistorySocialHist()">View Log</button>
+    </div>
+
+  </div>
+
+
+  <form [formGroup]="socialHistoryForm" *ngIf="addEditView">
+
+    <div class="encounter-add-edit flex-grow-1 mt-0 p-1">
+
+      <div class="form-row form-dashboard">
+
+
+
+        <div class="form-group col-2 px-2">
+          <label for="ddMaritalStatus" class="col-form-label">Marital
+            Status:</label>
+
+          <select class="form-control" id="ddMaritalStatus" formControlName="ddMaritalStatus">
+            <option></option>
+            <option *ngFor="let status of lookupList.lstMaritalStatus" [value]="status.code">
+              {{status.display}}
+            </option>
+          </select>
+        </div>
+
+
+
+        <div class="form-group  col-2 px-2">
+          <label for="ddChildren" class="col-form-label">Children:</label>
+          <select class="form-control" formControlName="ddChildren" *ngIf="addEditView">
+            <option></option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>More then 7</option>
+          </select>
+        </div>
+
+
+        <div class="form-group  col-2 px-2">
+          <label for="ddHomeEnvironment" class="col-form-label">Home
+            Environment:</label>
+          <select class="form-control" formControlName="ddHomeEnvironment" *ngIf="addEditView">
+            <option></option>
+            <option>apartment</option>
+            <option>Assisted living</option>
+            <option>Private home</option>
+            <option>Stairs Inside</option>
+            <option>Stairs Outside</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+
+
+        <div class="form-group  col-2 px-2">
+          <label for="ddOccupation" [ngClass]="{'module-view-headding': !addEditView }"
+            class="col-form-label">Occupation:</label>
+          <label *ngIf="!addEditView" [ngClass]="{'module-view-value': !addEditView }" class="col-form-label">
+            {{occupations}}
+          </label>
+          <select class="form-control" formControlName="ddOccupation" *ngIf="addEditView">
+            <option></option>
+            <option>No response</option>
+            <option>Student</option>
+            <option>Employed</option>
+            <option>Unemployed</option>
+            <option>Retired</option>
+            <option>Disability</option>
+          </select>
+        </div>
+
+        <div class="form-group  col-2 px-2">
+
+          <label for="inpuhighesteducationt2" class="col-form-label">Heighest Education:</label>
+
+          <select class="form-control" formControlName="ddHighestEducation" *ngIf="addEditView">
+            <option></option>
+            <option>No response</option>
+            <option>Elementary school</option>
+            <option>Middle School</option>
+            <option>High school</option>
+            <option>College</option>
+            <option>Undergraduate</option>
+          </select>
+        </div>
+
+
+
+        <div class="form-group  col-2 px-2">
+          <label for="ddDietEducation" class="col-form-label">Diet
+            Education:</label>
+
+          <select class="form-control" formControlName="ddDietEducation" *ngIf="addEditView">
+            <option></option>
+            
+            <option>referred (R)</option>
+            <option>went (W)</option>
+            <option>declined (D)</option>
+          </select>
+        </div>
+      </div>
+
+
+      <div class="form-row form-dashboard">
+
+
+        <div class="form-group  col-6 px-2">
+
+          <label for="ddSexualOrientation" class="col-form-label">Sexual
+            Orientation:</label>
+
+
+          <div class="input-group" *ngIf="addEditView">
+            <select class="form-control" id="ddSexualOrientation" formControlName="ddSexualOrientation">
+              <option value=""></option>
+              <option *ngFor="let sexOrientation of lookupList.lstSexualOrientation" [value]="sexOrientation.code">
+                {{sexOrientation.description}}</option>
+            </select>
+            <input type="text" class="form-control required" id="basic-url" aria-describedby="basic-addon3"
+              placeholder="Specify Other" formControlName="txtOtherSexualOrientation"
+              *ngIf="socialHistoryForm.get('ddSexualOrientation').value=='OTH'">
+          </div>
+
+
+
+        </div>
+
+
+        <div class="form-group  col-6 px-2">
+
+
+          <label for="ddGenderIdentity" class="col-form-label">Gender
+            Identity:</label>
+
+
+          <div class="input-group" *ngIf="addEditView">
+            <select class="form-control" id="ddGenderIdentity" formControlName="ddGenderIdentity">
+              <option value=""></option>
+              <option *ngFor="let gId of lookupList.lstGenderIdentity" [value]="gId.code">{{gId.description}}
+              </option>
+            </select>
+            <input type="text" class="form-control required" id="basic-url" aria-describedby="basic-addon3"
+              placeholder="Specify Other" formControlName="txtOtherGenderIdentity"
+              *ngIf="socialHistoryForm.get('ddGenderIdentity').value=='OTH'">
+          </div>
+
+
+
+
+        </div>
+
+      </div>
+
+      <!-- Tobacco/Smoking Use -->
+      <div class="form-row form-dashboard">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-2 mb-0">Tobacco/Smoking Use</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-group  col-4 px-2">
+              <label for="ddSmokingStatus" class="col-form-label">Status:</label>
+              <select class="form-control" formControlName="ddSmokingStatus">
+                <option></option>
+                <option *ngFor="let status of lookupList.lstSmokingStatus" [value]="status.code">
+                  {{status.description}} ( {{status.code}} )
+                </option>
+              </select>
+            </div>
+
+
+
+            <div class="form-group  col-4 px-2">
+              <label for="ddYearStarted" class="col-form-label">Year Started:</label>
+              <select class="form-control" formControlName="ddYearStarted">
+                <option></option>
+                <option>Less than 1 year</option>
+                <option>1 year</option>
+                <option>Less than 5 year</option>
+                <option>5 year</option>
+                <option>More than 5 year</option>
+              </select>
+            </div>
+
+
+
+
+            <div class="form-group  col-2 px-2">
+              <label for="dfTobaccoStartDate" class="col-form-label">Start:</label>
+              <!--
+              <input type="date" class="form-control" id="dfTobaccoStartDate" formControlName="dfTobaccoStartDate"
+                (blur)="dateFeildFocusOut($event)"
+                [ngClass]="{'is-invalid': socialHistoryForm.controls.dfTobaccoStartDate.errors?.invalidDate}">
+
+                -->
+
+
+              <div class="input-group">
+                <input id="dfTobaccoStartDate" formControlName="dfTobaccoStartDate" class="form-control date-control"
+                  placeholder="mm/dd/yyyy" name="dfTobaccoStartDate" ngbDatepicker #dfTobaccoStartDate="ngbDatepicker"
+                  [ngClass]="{'is-invalid': socialHistoryForm.controls.dfTobaccoStartDate.errors?.invalidDate}">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dfTobaccoStartDate.toggle()" type="button">
+                  </button>
+                </span>
+
+              </div>
+
+
+            </div>
+
+
+            <div class="form-group  col-2 px-2">
+              <label for="dfTobaccoEndDate" class="col-form-label">End:</label>
+
+              <!--
+              <input type="date" class="form-control" id="dfTobaccoEndDate" formControlName="dfTobaccoEndDate"
+                (blur)="dateFeildFocusOut($event)"
+                [ngClass]="{'is-invalid': socialHistoryForm.controls.dfTobaccoEndDate.errors?.invalidDate}">
+
+-->
+
+              <div class="input-group">
+                <input id="dfTobaccoEndDate" formControlName="dfTobaccoEndDate" class="form-control date-control"
+                  placeholder="mm/dd/yyyy" name="dfTobaccoEndDate" ngbDatepicker #dfTobaccoEndDate="ngbDatepicker"
+                  placement="bottom-right"
+                  [ngClass]="{'is-invalid': socialHistoryForm.controls.dfTobaccoEndDate.errors?.invalidDate}">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dfTobaccoEndDate.toggle()" type="button">
+                  </button>
+                </span>
+
+              </div>
+
+
+
+            </div>
+
+          </div>
+
+          <div class="form-row form-dashboard">
+
+
+            <div class="form-group  col-4 px-2">
+              <label for="ddTobaccoType" class="col-form-label">Tobacco
+                Type:</label>
+              <select class="form-control" formControlName="ddTobaccoType">
+                <option></option>
+                <option>Cigarette</option>
+                <option>Cigar</option>
+                <option>Chewing tobacco</option>
+                <option>Cigrate & Chewing tobacco</option>
+              </select>
+            </div>
+
+
+
+
+            <div class="form-group  col-4 px-2">
+              <label for="ddPacksPerDay" class="col-form-label">Pack(s)/Day:</label>
+              <select class="form-control" formControlName="ddPacksPerDay" id="ddPacksPerDay">
+                <option></option>
+                <option>Less than half pack</option>
+                <option>half pack</option>
+                <option>less than 1 pack</option>
+                <option>1 pack</option>
+                <option>more than 1 pack</option>
+              </select>
+            </div>
+
+            <div class="form-group  col-4 px-2">
+              <label for="ddTobaccoCessation" class="col-form-label">Tobacco
+                Cessation:</label>
+              <select class="form-control" formControlName="ddTobaccoCessation" id="ddTobaccoCessation">
+                <option></option>
+                <option>referred (R)</option>
+                <option>went (W)</option>
+                <option>declined (D)</option>
+              </select>
+            </div>
+
+
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- Alcohol/Caffeine Use -->
+      <div class="form-row form-dashboard">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-2 mb-0">Alcohol/Caffeine Use</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-group  col-4 px-2">
+              <label for="ddAlcoholUse" class="col-form-label">Alcohol
+                Use:</label>
+              <select class="form-control" formControlName="ddAlcoholUse" id="ddAlcoholUse">
+                <option></option>
+                <option>No</option>
+                <option>Social drinker</option>
+                <option>Occassionally</option>
+                <option>1-2 drinks/day</option>
+                <option>3-5 drinks/day</option>
+                <option>More than 5 drinks/day</option>
+              </select>
+            </div>
+
+
+
+            <div class="form-group col-4 px-2">
+              <label for="ddCaffeineUse" class="col-form-label">Caffeine
+                Use:</label>
+              <select class="form-control" formControlName="ddCaffeineUse" id="ddCaffeineUse">
+                <option></option>
+                <option>No</option>
+                <option>Occassionally</option>
+                <option>1-2 cups/day</option>
+                <option>3-5 cups/day</option>
+                <option>More than 5 cups/day</option>
+              </select>
+            </div>
+
+
+
+
+            <div class="form-group col-4 px-2">
+              <label for="ddETOH" class="col-form-label">ETOH:</label>
+              <select class="form-control" formControlName="ddETOH" id="ddETOH">
+                <option></option>
+                <option>Never</option>
+                <option>Occasional</option>
+                <option>Daily</option>
+              </select>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- Risk Factors -->
+      <div class="form-row form-dashboard">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-2 mb-0">Risk Factors</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-group col-2 px-2">
+              <label for="ddDrugUse" class="col-form-label">Drug
+                Use:</label>
+              <select class="form-control" formControlName="ddDrugUse" id="ddDrugUse">
+                <option></option>
+                <option>Never</option>
+                <option>Occasional</option>
+                <option>Daily</option>
+                <option>Prior use</option>
+                <option>Remote H/O</option>
+                <option>IV drugs</option>
+                <option>Non IV drugs</option>
+                <option>Former user</option>
+              </select>
+            </div>
+
+
+            <div class="form-group col-2 px-2">
+              <label for="dfDrugQuiteDate" class="col-form-label">Quit
+                Date:</label>
+              <!--
+              <input type="date" class="form-control" id="dfDrugQuiteDate" formControlName="dfDrugQuiteDate"
+                (blur)="dateFeildFocusOut($event)"
+                [ngClass]="{'is-invalid': socialHistoryForm.controls.dfDrugQuiteDate.errors?.invalidDate}">
+                -->
+
+              <div class="input-group">
+                <input id="dfDrugQuiteDate" formControlName="dfDrugQuiteDate" class="form-control date-control"
+                  placeholder="mm/dd/yyyy" name="dfDrugQuiteDate" ngbDatepicker #dfDrugQuiteDate="ngbDatepicker"
+                  [ngClass]="{'is-invalid': socialHistoryForm.controls.dfDrugQuiteDate.errors?.invalidDate}">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dfDrugQuiteDate.toggle()" type="button">
+                  </button>
+                </span>
+
+              </div>
+
+
+
+            </div>
+
+
+
+            <div class="form-group col-2 px-2">
+              <label for="ddExcercise" class="col-form-label">Excercise:</label>
+              <select class="form-control" formControlName="ddExcercise" id="ddExcercise">
+                <option></option>
+                <option>Never</option>
+                <option>0-1 times/week</option>
+                <option>2-5 times/week</option>
+                <option>6-7 times/week</option>
+              </select>
+
+            </div>
+
+
+            <div class="form-group col-2 px-2">
+              <label for="ddSeatBelts" class="col-form-label">Seatbelts:</label>
+              <select class="form-control" formControlName="ddSeatBelts" id="ddSeatBelts">
+                <option></option>
+                <option>Never</option>
+                <option>Always</option>
+                <option>Sometimes</option>
+              </select>
+
+            </div>
+
+            <div class="form-group col-2 px-2">
+              <label for="ddExposure" class="col-form-label">Exposure:</label>
+
+              <select class="form-control" formControlName="ddExposure" id="ddExposure">
+                <option></option>
+                <option>None</option>
+                <option>Asbestos</option>
+                <option>Hepatitis</option>
+                <option>Chemicals</option>
+                <option>Tuberculosis</option>
+                <option>Toxins</option>
+              </select>
+
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- OB/Gyne -->
+      <div class="form-row form-dashboard" 
+      *ngIf="(this.objencounterToOpen.openPatientInfo.patient_gender.toUpperCase() == 'FEMALE'
+      || this.objencounterToOpen.openPatientInfo.patient_gender.toUpperCase() == 'F')">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-2 mb-0">OB/Gyne</h5>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-group col-2 px-2">
+              <label for="dfLMP" class="col-form-label">L.M.P:</label>
+              <!--
+              <input type="date" class="form-control" id="dfLMP" formControlName="dfLMP"
+                (blur)="dateFeildFocusOut($event)"
+                [ngClass]="{'is-invalid': socialHistoryForm.controls.dfLMP.errors?.invalidDate}">
+                -->
+              <div class="input-group">
+                <input id="dfLMP" formControlName="dfLMP" class="form-control date-control" placeholder="mm/dd/yyyy"
+                  name="dfLMP" ngbDatepicker #dfLMP="ngbDatepicker"
+                  [ngClass]="{'is-invalid': socialHistoryForm.controls.dfLMP.errors?.invalidDate}">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dfLMP.toggle()" type="button">
+                  </button>
+                </span>
+
+              </div>
+
+
+            </div>
+
+
+            <div class="form-group col-2 px-2">
+              <label for="ddFlow" class="col-form-label">Flow:</label>
+              <select class="form-control" formControlName="ddFlow" id="ddFlow">
+                <option></option>
+                <option>Mild</option>
+                <option>Moderate</option>
+                <option>Heavy</option>
+              </select>
+            </div>
+
+
+
+            <div class="form-group col-2 px-2">
+              <label for="ddCycle" class="col-form-label">Cycle:</label>
+
+              <select class="form-control" formControlName="ddCycle" id="ddCycle">
+                <option></option>
+                <option>Regular</option>
+                <option>Irregular</option>
+              </select>
+
+            </div>
+
+
+            <div class="form-group col-2 px-2">
+              <label for="ddDysmenomhea" class="col-form-label">Dysmenomhea:</label>
+              <select class="form-control" formControlName="ddDysmenomhea" id="ddDysmenomhea">
+                <option></option>
+                <option>No</option>
+                <option>Mild</option>
+                <option>Moderate</option>
+                <option>Severe</option>
+              </select>
+            </div>
+
+
+
+            <div class="form-group col-2 px-2 ">
+              <label for="txtAgeAtMenarche" class="col-form-label">Age
+                at
+                Menarche:</label>
+              <input type="text" class="form-control" id="txtAgeAtMenarche" formControlName="txtAgeAtMenarche"
+                *ngIf="addEditView">
+            </div>
+
+
+            <div class="form-group col-2 px-2">
+              <label for="txtYearOfMenopause" class="col-form-label">Year
+                of menopause:</label>
+              <input *ngIf="addEditView" type="number" class="form-control" id="txtYearOfMenopause" placeholder="YYYY"
+                max="4" formControlName="txtYearOfMenopause"
+                [ngClass]="{'is-invalid': socialHistoryForm.controls.txtYearOfMenopause.errors}">
+            </div>
+
+
+          </div>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-group col-2 px-2">
+              <label for="ddGravida" class="col-form-label">Gravida:</label>
+              <select class="form-control" formControlName="ddGravida" id="ddGravida">
+                <option></option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
+              </select>
+            </div>
+
+
+            <div class="form-group col-2 px-2">
+              <label for="ddPara" class="col-form-label">Para:</label>
+              <select class="form-control" formControlName="ddPara" id="ddPara">
+                <option></option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+                <option>11</option>
+                <option>12</option>
+                <option>13</option>
+                <option>14</option>
+              </select>
+            </div>
+
+
+
+            <div class="form-group col-2 px-2">
+              <label for="chkPregnant" class="col-form-label">Pregnant</label>
+              <div class="form-control form-check form-check-inline mt-0 pt-0">
+                <input class="form-check-input" id="rbPregnantNo" type="radio" name="chkPregnant"
+                  formControlName="chkPregnant" [value]="false">
+                <label class="form-check-label" for="rbPregnantNo">No</label>
+                <input class="form-check-input ml-3" id="rbPregnantYes" type="radio" name="chkPregnant"
+                  formControlName="chkPregnant" [value]="true">
+                <label class="form-check-label" for="rbPregnantYes">YES</label>
+              </div>
+            </div>
+
+
+
+
+            <div class="form-group col-2 px-2">
+              <label for="dfEDD" class="col-form-label">E.D.D:</label>
+              <!--
+              <input type="date" class="form-control" id="dfEDD" formControlName="dfEDD"
+                (blur)="dateFeildFocusOut($event)"
+                [ngClass]="{'is-invalid': socialHistoryForm.controls.dfEDD.errors?.invalidDate}">
+                -->
+
+              <div class="input-group">
+                <input id="dfEDD" formControlName="dfEDD" class="form-control date-control" placeholder="mm/dd/yyyy"
+                  name="dfEDD" ngbDatepicker #dfEDD="ngbDatepicker"
+                  [ngClass]="{'is-invalid': socialHistoryForm.controls.dfEDD.errors?.invalidDate}">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dfEDD.toggle()" type="button"></button>
+                </span>
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard">
+
+        <div class="col-12 p-6 m-0 pt-0">
+          <h5 class="form-edit-sub-heading mt-2 mb-1">Notes</h5>
+          <div class="form-row form-dashboard">
+
+            <div class="form-group col px-2">
+              <textarea class="form-control" rows="3" formControlName="txtNotes"></textarea>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </form>

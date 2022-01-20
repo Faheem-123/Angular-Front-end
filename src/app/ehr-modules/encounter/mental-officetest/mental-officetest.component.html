@@ -1,0 +1,112 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Office Tests</div>
+
+  <ul class="nav color-buttons align-items-center" *ngIf="canAddEdit">
+      <button class="nav-link px-2 py-0 top-right-radius"  *ngIf="!addEditView"
+  style="background-color: #90caf9;" 
+  title="Refresh Office Test" (click)="onrefresh()">
+  <img class="img-h-15" src="./assets/images/icons/ico_refresh_green.svg">
+</button>
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+      (click)="saveOfficeTest(ofcTestForm.value)">
+      <i class="fa fa-save pr-1"></i>Save
+    </button>
+    <button *ngIf="addEditView" class="nav-link btn-dark px-2 py-0 top-right-radius" (click)="cancelEdit()">
+      <i class="fas fa-times  pr-1"></i>Cancel
+    </button>
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <i class="fas fa-ban mr-2"></i> Access Denied
+  </div>
+
+  <div class="p-6" *ngIf="canView">
+    <form [formGroup]="ofcTestForm">
+      <div class="row p3">
+        <div class="col-6 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1"></h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group col-6">
+                <label for="txt_ua" class="col-form-label">U/A</label>
+                <input type="text" class="form-control" formControlName="txt_ua"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_ua').value!=undefined && ofcTestForm.get('txt_ua').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+              <div class="form-group col-6">
+                <label for="txt_sbirit" class="col-form-label">SBIRT</label>
+                <input type="text" class="form-control" formControlName="txt_sbirit"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_sbirit').value!=undefined && ofcTestForm.get('txt_sbirit').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column">
+            <h4 class="form-edit-sub-heading m-1 p-1">OB/GYN</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="col-4 border-right-vertical px-2">
+                <h4 class="form-edit-sub-heading m-0 pb-1 mb-2">Pregnancy:</h4>
+                <div class="d-flex">
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="positive1{{objencounterToOpen.chart_id}}"
+                      formControlName="rbPregCondition" name="rbPregCondition" value="pregnancy_Positive"
+                      (click)="checkUncheckPregnancyStatus('pos')">
+                    <label class="custom-control-label" for="positive1{{objencounterToOpen.chart_id}}">Positive</label>
+                  </div>
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="negative1{{objencounterToOpen.chart_id}}"
+                      formControlName="rbPregCondition" name="rbPregCondition" value="pregnancy_Negative"
+                      (click)="checkUncheckPregnancyStatus('neg')">
+                    <label class="custom-control-label" for="negative1{{objencounterToOpen.chart_id}}">Negative</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 border-right-vertical px-2">
+                <h4 class="form-edit-sub-heading m-0 pb-1 mb-2">STREP:</h4>
+                <div class="d-flex">
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="positive2{{objencounterToOpen.chart_id}}"
+                      formControlName="rbStrepCondition" name="rbStrepCondition" value="pregnancy_Positive"
+                      (click)="checkUncheckStrepStatus('pos')">
+                    <label class="custom-control-label" for="positive2{{objencounterToOpen.chart_id}}">Positive</label>
+                  </div>
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="negative2{{objencounterToOpen.chart_id}}"
+                      formControlName="rbStrepCondition" name="rbStrepCondition" value="prag_strep_Negative"
+                      (click)="checkUncheckStrepStatus('neg')">
+                    <label class="custom-control-label" for="negative2{{objencounterToOpen.chart_id}}">Negative</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 px-2">
+                <h4 class="form-edit-sub-heading m-0 pb-1 mb-2">LMP:</h4>
+                <div class="form-row form-dashboard ">
+                  <div class="input-group">
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txt_OBG_LMP"
+                      formControlName="txt_OBG_LMP" ngbDatepicker #txt_OBG_LMP="ngbDatepicker"                      
+                      (keydown)="generalChange($event)">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="generalChange($event);txt_OBG_LMP.toggle()"
+                        type="button">
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </form>
+  </div>

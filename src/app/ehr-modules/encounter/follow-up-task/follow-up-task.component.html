@@ -1,0 +1,63 @@
+<div class="modal-header custom">
+    <h4 class="modal-title">Patient FollowUp Task</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="inputForm" >
+      <div class="form-row form-dashboard">
+          <div class="form-group col-12">
+              <label for="input1">F/U After (days)</label>
+              <select class="form-control" formControlName="drpDays">
+                    <option></option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>                  
+              </select>
+          </div>
+
+          <div class="form-group col-12">
+              <label for="input1">F/U After (week)</label>
+            <select class="form-control" formControlName="drpWeeks">
+                <option></option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+            </select>
+          </div>
+          <div class="form-group col-12">
+                <label for="input1">F/U After (month)</label>
+                <select class="form-control" formControlName="drpMonth">
+                        <option></option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                </select>
+            </div>
+
+          <div class="form-group col-12 text-right">
+              <button type="submit" class="btn btn-success mt-2" (click)="onSave()">Save</button>
+              <button type="button" type="button" class="btn btn-sm mt-2 ml-2 text-white bg-dark" (click)="activeModal.close(false)">Cancel</button>
+          </div>
+      </div>
+  </form> 
+</div>
+
+
+
+
+
+ 

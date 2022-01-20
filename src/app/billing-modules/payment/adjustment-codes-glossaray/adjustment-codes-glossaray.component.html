@@ -1,0 +1,59 @@
+<div class="modal-header custom">
+
+  <img class="logo" src="./assets/images/logo-small.png">
+
+  <h4 class="modal-title">Adjustment Codes Glossary</h4>
+
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+
+    <span aria-hidden="true">&times;</span>
+
+  </button>
+
+</div>
+
+<div class="modal-body custom position-relative overflow-auto" style="min-height: 60px; max-height: 500px;">
+
+  <div class="info-box-stipes rounded-3 d-flex flex-column flex-grow-1"
+    *ngIf="!isLoading  &&  lstAdjustGroupCodesUnique != undefined && lstAdjustGroupCodesUnique.length>0">
+    <div *ngFor="let groupCode of lstAdjustGroupCodesUnique; let i=index;" [ngClass]="{'border-top': i>0}">
+
+      <div class="form-view  col-12">
+        <div class="title mr-1">{{groupCode}} :</div>
+        <div class="title" *ngIf="groupCode=='CO'">Contractual Obligation</div>
+        <div class="title" *ngIf="groupCode=='CR'">Corrections and Reversal</div>
+        <div class="title" *ngIf="groupCode=='OA'">Other Adjustment</div>
+        <div class="title" *ngIf="groupCode=='PI'">Payer Initiated Reductions</div>
+        <div class="title" *ngIf="groupCode=='PR'">Patient Responsibility</div>
+      </div>
+
+
+      <div class="form-view col-12"
+        *ngFor="let adjCode of lstAdjustmentCodesGlossary  | listFilter : 'group_code' : groupCode">
+        <div class="title-normal width-50">{{adjCode.code}} :</div>
+        <div class="value" title="{{adjCode.description}}">{{adjCode.description}}</div>
+      </div>
+
+    </div>
+
+    <div class="form-view col-12 border-top"
+      *ngFor="let adjCode of lstAdjustmentCodesGlossary  | listFilter : 'type' : 'Remark Codes'">
+      <div class="title-normal width-50">{{adjCode.code}} :</div>
+      <div class="value" title="{{adjCode.description}}">{{adjCode.description}}</div>
+    </div>
+  </div>
+
+
+  <div *ngIf="!isLoading &&  (lstAdjustGroupCodesUnique== undefined || lstAdjustGroupCodesUnique.length==0)"
+    class="no-content">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>

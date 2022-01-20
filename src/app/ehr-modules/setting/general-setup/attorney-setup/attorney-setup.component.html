@@ -1,0 +1,102 @@
+<div class="light-title-bar rounded-top h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-14 font-weight-500">Attorney Setup</div>
+  <div class="d-flex align-items-center">
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="fas fa-plus"></i>
+      Add</button>
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="far fa-edit"></i>
+      Edit</button>
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i
+        class="far fa-trash-alt"></i>
+      Delete</button>
+    <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-30">Save</button>
+    <button class="btn btn-sm btn-dark top-right-radius h-30">Cancel</button>
+  </div>
+</div>
+
+<div
+  class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue overflow-height max-height-100">
+  <div class="border-bottom bg-white px-2 py-6 flex-shrink-0">
+    <form [formGroup]="inputForm">
+      <div class="form-row form-dashboard align-items-start">
+        <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+          <label for="input1" class="col-form-label label-w-70">Firm Name</label>
+          <input type="text" class="form-control flex-grow-1" labelForId="input1" formControlName="txtfirmName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input2" class="col-form-label label-w-70">Last Name</label>
+          <input type="text" class="form-control flex-grow-1" labelForId="input2" formControlName="txtlastName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input3" class="col-form-label label-w-70">First Name</label>
+          <input type="text" class="form-control flex-grow-1" id="input3" formControlName="txtfirstName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input4" class="col-form-label label-w-50">Phone</label>
+          <input type="text" class="form-control flex-grow-1" id="input4" formControlName="txtphone">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input5" class="col-form-label label-w-30">Fax</label>
+          <input type="text" class="form-control flex-grow-1" id="input5" formControlName="txtfax">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-70">Address</label>
+          <textarea rows="2" class="form-control flex-grow-1" id="input6" formControlName="txtAddress"></textarea>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-70">Zip</label>
+          <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtzip">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-70">City</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtcity">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-50">State</label>
+          <input type="text" class="form-control flex-grow-1" id="input9" formControlName="txtstate">
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="rounded-bottom overflow-auto bg-white flex-grow-1">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Firm Name</th>
+          <th>Last Name</th>
+          <th>First Name</th>
+          <th>Address</th>
+          <th>Zip</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Phone</th>
+          <th>Fax</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let u of arrAttorney;let i = index" (click)="onSelectionChange(i,u)" [ngClass]="{ 'active': i==selectedIndex,
+            'disabled': isDisable
+            }">
+          <td>{{u.firm_name}}</td>
+          <td>{{u.last_name}}</td>
+          <td>{{u.first_name}}</td>
+          <td>{{u.address}}</td>
+          <td>{{u.zip}}</td>
+          <td>{{u.city}}</td>
+          <td>{{u.state}}</td>
+          <td>{{u.phone}}</td>
+          <td>{{u.fax}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

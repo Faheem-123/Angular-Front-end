@@ -1,0 +1,36 @@
+<form [formGroup]="ctForm" (ngSubmit)="onSubmit(ctForm.value)"
+(keydown.enter)="$event.preventDefault()">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Patient Care Team</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading" class="dashboard-content mt-0">
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-8">
+          <label class="col-form-label required" for="txtName">Team Name</label>
+          <input class="form-control" id="txtName" formControlName="txtName" />
+        </div>
+        <div class="form-group col-4">
+          <label class="col-form-label" for="ddStatus">Team Status</label>
+          <select class="form-control" id="ddStatus" formControlName="ddStatus">
+            <option *ngFor="let status of lstTeamStatus" value="{{status.code}}">{{status.description}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer custom">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="activeModal.dismiss('Cross click')">Cancel</button>
+    <button style="width: 80px;" class="btn btn-success btn-sm" [disabled]="!ctForm.valid" type="submit">Add</button>
+  </div>
+</form>

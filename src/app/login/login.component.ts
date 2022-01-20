@@ -1,0 +1,381 @@
+import { NumberFormatStyle } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+
+import { ActivatedRoute } from '@angular/router';
+import { timer } from 'rxjs';
+import { Md5 } from 'ts-md5';
+import { AuthService } from '../authentication/auth-service';
+import { AuthenticationCredentials } from '../authentication/authenticationCredentials';
+import { ORMLoginUserLog } from '../models/general/ORMLoginUserLog';
+import { LookupList, LOOKUP_LIST } from '../providers/lookupList.module';
+import { GeneralService } from '../services/general/general.service';
+import { LoadStartupService } from '../services/login/load-startup.service';
+import { DateTimeUtil } from '../shared/date-time-util';
+import { LogMessage } from '../shared/log-message';
+
+@Component({
+  selector: 'login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent implements OnInit {
+
+  loginStatusMessage = "";
+  loginStatus: string = "";
+
+  curFeature = 1;
+  totalNum = 7;
+
+  source = timer(8000, 8000);
+  subscribe = this.source.subscribe(val => this.curFeature == this.totalNum ? this.curFeature = 1 : this.curFeature++);
+
+  loginForm: FormGroup;
+  formPracticeSelection: FormGroup;
+  lockForm: FormGroup;
+
+  clientIp: string = "1.1.1.1";
+
+  //private httpOptions = {
+  //  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+
+  //};
+
+  preLoadCount: number = 0;
+
+  constructor(private formBuilder: FormBuilder, private logMessage: LogMessage,
+    private generalService: GeneralService,
+    @Inject(LOOKUP_LIST) public lookupList: LookupList,
+    private authService: AuthService, private loadStartup: LoadStartupService,
+    private dateTimeUtil: DateTimeUtil,
+    private http: HttpClient, private route: ActivatedRoute
+  ) {
+
+    debugger;
+    if (this.lookupList.isEhrLocked) {
+      this.buildLockForm();
+    }
+    else {
+
+      this.lookupList.isEhrDataLoad = false;
+      this.getClientIP();
+      this.getQueryStringParam();
+    }
+  }
+  switchPractice_id = ''
+  getQueryStringParam() {
+    this.route.queryParams.subscribe((params) => {
+      if (params != undefined && params != null) {
+        //console.log('uid='+params.uid);
+        // console.log('id='+params.id);
+        // console.log('key='+params.key);
+        this.switchPractice(params)
+      }
+    });
+  }
+  switchPractice(params) {
+    debugger;
+    if (params == undefined || params.id == undefined)
+      return;
+    this.switchPractice_id = params.id;
+    let parseToken = this.authService.decodeToken(params.key);
+    this.authService.userId = Number(parseToken.user_id);
+    this.authService.setToken(params.key)
+    this.authService.jwt_token_expiry = parseToken.exp - parseToken.iat;
+    this.authService.jwt_token_creation_time = this.dateTimeUtil.getCurrentDateTimeDate();
+    //this.startTokenTick(this.token.jwt_token_expiry);        
+    this.loginStatusMessage = "Loading EHR Data, Please wait....";
+    this.loginStatus = "loading_data";
+
+    if (this.lookupList.isEhrDataLoad == false) {
+      this.getLogedInUserDetail(this.authService.userId);
+    }
+    window.history.pushState(null, null, window.location.href.split('?')[0]);
+  }
+  getClientIP() {
+    this.generalService.GetClientIP()
+      .subscribe(
+        data => {
+          this.clientIp = data;
+        },
+        error => {
+          this.logMessage.log("Client IP:" + error.message)
+        },
+        () => {
+          this.logMessage.log("GetIP Successfull.")
+        }
+      );
+  }
+  startTokenTick(seconds: number) {
+    var counter = seconds;
+    var interval = setInterval(() => {
+      console.log(counter);
+      if (this.authService.jwt_token_creation_time != undefined) {
+        if (this.authService.chkIsTokenExpire(new Date()) == false) {
+          this.generateToken("");
+        }
+      }
+      counter--;
+      if (counter < 0) {
+        clearInterval(interval);
+        if (this.authService.jwt_token_creation_time != undefined) {
+          if (this.authService.chkIsTokenExpire(new Date()) == false) {
+            this.generateToken("");
+          }
+        }
+      } NumberFormatStyle
+    }, (1000 * this.authService.jwt_token_expiry));
+  }
+  ngOnInit() {
+
+    this.buildForm();
+    
+    // this.onSubmit(this.loginForm.value)
+    
+  }
+
+  buildForm() {
+    this.loginForm = this.formBuilder.group({
+      txtuser: this.formBuilder.control('admin@demo', Validators.required),
+      txtpassword: this.formBuilder.control('admin@123', Validators.required)
+    })
+
+    debugger;
+    if (window.location.href == "https://localhost:4200/") {
+      //(this.loginForm.get("txtuser") as FormControl).setValue("admin@tmc");
+      //(this.loginForm.get("txtpassword") as FormControl).setValue("123");
+      //this.onSubmit(this.loginForm.value);
+    }
+  }
+  buildPracticeForm() {
+    this.formPracticeSelection = this.formBuilder.group({
+      drpPracticeSelection: this.formBuilder.control("", Validators.required)
+    })
+  }
+  onSubmit(formData) {
+
+    debugger;
+
+    if (formData.txtuser == undefined || formData.txtuser == "" || formData.txtpassword == undefined || formData.txtpassword == "") {
+      this.loginStatus = "login_required";
+      this.loginStatusMessage = "Please enter User Name and/or Password.";
+    }
+    else {
+
+      this.loginForm.get("txtuser").disable();
+      this.loginForm.get("txtpassword").disable();
+
+      this.loginStatus = "verify_login";
+      this.loginStatusMessage = "Verifying login info ...."
+      //this.messageStatus='loading';
+      this.generateToken(formData);
+      //this.validateuser(formData);   
+    }
+  }
+  public generateToken(formData) {
+    debugger;
+    let auth: AuthenticationCredentials = new AuthenticationCredentials;
+    if (this.lookupList.isEhrLocked == true) {
+      auth.username = this.lookupList.logedInUser.user_name;
+      auth.password = Md5.hashStr(formData.txtpassword).toString();
+    }
+    else if (this.lookupList.isEhrDataLoad == false) {
+      auth.username = formData.txtuser;
+      auth.password = Md5.hashStr(formData.txtpassword).toString();
+    }
+    else {
+      auth.username = this.lookupList.logedInUser.user_name;
+      auth.password = this.lookupList.logedInUser.password;
+    }
+    this.authService.getAuthenticationToken(auth).subscribe(
+      data => {//setToken
+        debugger;
+        let parseToken = this.authService.decodeToken(data['token']);
+        this.authService.userId = Number(parseToken.user_id);
+        this.authService.setToken(data['token'])
+        this.authService.jwt_token_expiry = parseToken.exp - parseToken.iat;
+        this.authService.jwt_token_creation_time = this.dateTimeUtil.getCurrentDateTimeDate();
+        //this.startTokenTick(this.token.jwt_token_expiry);  
+        if (this.lookupList.isEhrLocked == true) {
+          this.loginStatusMessage = "";
+          this.loginStatus = "login_Success";
+          this.lookupList.isEhrLocked = false;
+        }
+        else {
+          this.loginStatusMessage = "Loading EHR Data, Please wait....";
+          this.loginStatus = "loading_data";
+
+          if (this.lookupList.isEhrDataLoad == false) {
+            this.getLogedInUserDetail(this.authService.userId);
+          }
+        }
+
+      }, error => {
+        if (error.status == 401) {
+          this.loginForm.get("txtuser").enable()
+          this.loginForm.get("txtpassword").enable();
+
+          this.loginStatus = "login_failed";
+          this.logMessage.log("User Name or Password is Invalid. ")
+          this.loginStatusMessage = "User Name and/or Password is Invalid.";
+          //Login Log
+          this.createLoginUserLog(this.loginForm.get("txtuser").value, "", true);
+        }
+      }
+    );
+  }
+
+  //validate user and generate token
+  /*getUserData(userId:number) {
+    let loginObj: ORMLoginVerify = new ORMLoginVerify();
+    loginObj.user = formData.txtuser;
+    loginObj.password = Md5.hashStr(formData.txtpassword).toString();
+    loginObj.user_ip = this.clientIp;// "1.1.1.1";
+    this.getLoginUserData(loginObj);
+  }
+  */
+  createLoginUserLog(user_name, practice_id, flag) {
+    let objLogin: ORMLoginUserLog = new ORMLoginUserLog;
+    objLogin.logid = "";
+    objLogin.practice_id = practice_id;
+    objLogin.user_id = user_name;
+    objLogin.logintime = this.dateTimeUtil.getCurrentDateTimeString();
+    objLogin.loginfail = flag;
+    objLogin.system_ip = this.clientIp;
+    this.generalService.loginUserLog(objLogin).subscribe(
+      data => {
+        if (!flag) {
+          this.lookupList.logedInUser.loginLog_id = data['result'];
+          //this.loginStatusMessage = "Verifying Login Information. Please wait....";
+          // this.loginStatus = "";
+        }
+      });
+  }
+  getPracticeInfo(practiceId: number) {
+    debugger;
+    this.generalService.getPracticeInfo(practiceId).subscribe(
+      data => {
+        this.lookupList.practiceInfo.practiceId = Number(practiceId);
+        this.lookupList.practiceInfo.practiceName = data['practice_name'];
+        this.lookupList.practiceInfo.address1 = data['address1'];
+        this.lookupList.practiceInfo.address2 = data['address2'];
+        this.lookupList.practiceInfo.city = data['city'];
+        this.lookupList.practiceInfo.zip = data['zip'];
+        this.lookupList.practiceInfo.state = data['state'];
+        this.lookupList.practiceInfo.phone = data['phone'];
+        this.lookupList.practiceInfo.fax = data['fax'];
+        this.lookupList.practiceInfo.domain = data['domain_name'];
+        this.lookupList.practiceInfo.statement_phone = data['statement_phone'];
+
+        this.loadStartup.loadAppData();
+
+        this.loginStatusMessage = "";
+        this.loginStatus = "";
+        this.loginForm.get("txtuser").enable();
+        this.loginForm.get("txtpassword").enable();
+        this.loginForm.get("txtpassword").setValue(null);
+      },
+      error => {
+        this.logMessage.log("getPracticeInfo: " + error);
+      }
+    );
+  }
+  lstPracticeSelection;
+  showPracticeSelection = false;
+  getLogedInUserDetail(userId: number) {
+    this.generalService.getLogedInUserDetail(userId).subscribe(
+      data => {
+        if (data != null && data != undefined) {
+          this.lookupList.logedInUser.userId = data['user_id'];
+          this.lookupList.logedInUser.user_name = data['user_name'];
+          this.lookupList.logedInUser.password = data['password'];
+          this.lookupList.logedInUser.userFName = data['first_name'];
+          this.lookupList.logedInUser.userLName = data['last_name'];
+          this.lookupList.logedInUser.userMname = data['mname'];
+          this.lookupList.logedInUser.userRole = data['default_role'];
+          this.lookupList.logedInUser.defaultLocation = data['default_location'];
+          this.lookupList.logedInUser.defaultProvider = data['default_physician'];
+          this.lookupList.logedInUser.defaultBillingProvider = data['default_billing_phy'];
+          this.lookupList.logedInUser.systemIp = this.clientIp;//"255.255.255.255";
+          this.lookupList.logedInUser.defaultChartSetting = data['default_chart_setting'];
+          this.lookupList.logedInUser.userType = data['user_type'];
+          this.lookupList.logedInUser.loginProviderId = data['login_provider_id'];
+          this.lookupList.logedInUser.loginProviderName = data['login_provider_name'];
+          this.lookupList.logedInUser.userPracticeId = data['practice_id'];
+          this.lookupList.logedInUser.userDefaultPrescriptionRole = data['default_prescription_role'];
+          this.lookupList.logedInUser.defaultSuperBill = data['default_bill'];
+
+          if (data['practice_id'] == 499)//Billing User
+          {
+            debugger;
+            this.generalService.getBillingPractices(data['user_id']).subscribe(
+              data => {
+                debugger;
+                this.lstPracticeSelection = data;
+                this.lookupList.lstPracticeSelection = this.lstPracticeSelection;
+                if (this.switchPractice_id != '') {
+                  this.getPracticeInfo(Number(this.switchPractice_id));
+                  this.createLoginUserLog(this.lookupList.logedInUser.user_name, this.switchPractice_id, false); //Login Log
+                  this.switchPractice_id = '';
+                  this.loginStatusMessage = "Loading EHR Data, Please wait....";
+                  this.loginStatus = "loading_data";
+                  return;
+                }
+                this.loginStatus = 'practice_selection';
+                this.showPracticeSelection = true;
+
+                this.buildPracticeForm();
+                // if(this.lstPracticeSelection.length>0)
+                // {
+                //   (this.formPracticeSelection.get("drpPracticeSelection") as FormControl).setValue(this.lstPracticeSelection[0].col1);
+                // }
+              },
+              error => {
+                this.logMessage.log("getAllPractices: " + error);
+              });
+          }
+          else {
+            this.loginStatusMessage = "Loading EHR Data, Please wait....";
+            this.loginStatus = "loading_data";
+            this.getPracticeInfo(data['practice_id']);
+            //Login Log
+            this.createLoginUserLog(data['user_name'], data['practice_id'], false);
+          }
+          // //Login Log
+          // this.createLoginUserLog(data['user_name'], data['practice_id'], false);
+        }
+      },
+      error => {
+        this.logMessage.log("getLogedInUserDetail: " + error);
+      }
+    );
+  }
+
+  //onUnlock() {
+  //  this.lookupList.isEhrLocked = false;
+  //}
+  onPracticeSelectionSubmit(frm) {
+    this.loginStatus = "loading_data";
+    this.formPracticeSelection.disable();
+    this.getPracticeInfo(frm.drpPracticeSelection);
+    this.showPracticeSelection = false;
+    //Login Log
+    this.createLoginUserLog(this.lookupList.logedInUser.user_name, frm.drpPracticeSelection, false);
+  }
+  practiceSwitch(value) {
+    debugger;
+    let queryString = 'id=' + value + '&key=' + this.authService.getToken();
+    window.location.href = window.location.pathname + "?" + queryString;
+  }
+
+  buildLockForm() {
+    this.lockForm = this.formBuilder.group({
+      txtpassword: this.formBuilder.control('', Validators.required)
+    })
+  }
+  onUnlock(formdata) {
+    debugger;
+    this.generateToken(formdata);
+  }
+}

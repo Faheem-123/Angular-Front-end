@@ -1,0 +1,206 @@
+<form [formGroup]="denialFormGroup" (keydown.esc)="activeModal.dismiss('Cross click')"
+  class="d-flex flex-column flex-grow-1 position-relative">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">{{title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom p-0 d-flex flex-column">
+
+    <!--
+    <div class="inner-tool-tab h-20  px-2">
+      <span *ngIf="openedClaimInfo.claimId!=undefined" class="title-other-info">
+        Claim ID: {{openedClaimInfo.claimId}}
+      </span>
+      <span class="v-separtor h-20"></span>
+      <span *ngIf="openedClaimInfo.dos!=undefined" class="title-other-info">
+        DOS: {{openedClaimInfo.dos}}
+      </span>
+    </div>
+    -->
+
+
+    <div class="dashboard-content m-2">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 p-2 mb-1">
+        <div class="form-row form-dashboard mb-1" *ngIf="operationType == 'new'">
+
+          <div class="form-group col-6">
+
+            <div class="input-group">
+              <select class="form-control max-width-100" id="ddEobEraType" formControlName="ddEobEraType"
+                [ngClass]="{ 'is-invalid' : (denialFormGroup.get('ddEobEraType').errors)}"
+                (change)="ddEobEraTypeChanged($event.target.value)">
+                <option value="ERA">ERA</option>
+                <option value="EOB">EOB</option>
+              </select>
+              <input type="text" class="form-control required " placeholder="Enter {{eobEraIdType}} ID"
+                (paste)="onPaste($event,'txtEobEraId')" id="txtEobEraId" autocomplete="off"
+                formControlName="txtEobEraId" [ngClass]="{ 'is-invalid' : (denialFormGroup.get('txtEobEraId').errors)}"
+                (blur)="onEobEraIdFocusOut($event)">
+              <!--(keydown.enter)="onEobEraIdKeydown($event)">-->
+            </div>
+            <!--
+            <div class="input-group">
+              <select class="form-control max-width-100" id="ddeobEraIdType" formControlName="ddeobEraIdType"
+                (change)="ddeobEraIdTypeChanged($event.target.value)">
+                <option value="ERA">ERA</option>
+                <option value="EOB">EOB</option>
+              </select>
+              <input type="text" class="form-control required "
+                placeholder="Enter {{denialFormGroup.get('ddeobEraIdType').value}} ID" autocomplete="off"
+                formControlName="txtEobEraId" [ngClass]="{ 'is-invalid' : (denialFormGroup.get('txtEobEraId').errors)}">
+            </div>
+            -->
+          </div>
+
+          <div class="col" *ngIf="!isValidEobEraId && !isEobEraLoading">
+            <div class="no-content py-1">
+              <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Please enter a valid
+              {{eobEraIdType}} Id.
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="form-row form-dashboard  pb-1 mb-1">
+
+          <div class="px6-py3 flex-grow-1 overflow-auto" *ngIf="isEobEraLoading">
+            <div class="div-loader"></div>
+          </div>
+
+
+          <div class="form-row form-dashboard d-flex flex-grow-1 px-2"
+            *ngIf="operationType == 'single' && !isEobEraLoading">
+            <div class="form-flex pb-1 flex-grow-1 col-8">
+              <label class="width-100">{{eobEraIdType}} ID:</label>
+              <label type="text" class="form-control col pt-1 bg-disabled">{{eobEraId}}</label>
+            </div>
+          </div>
+
+
+          <div class="form-row form-dashboard d-flex flex-grow-1 px-2" *ngIf="isValidEobEraId && !isEobEraLoading ">
+            <div class="form-flex pb-1 flex-grow-1 col-8">
+              <label class="width-100">Check Number:</label>
+              <label type="text" class="form-control col pt-1 bg-disabled">{{checkNo}}</label>
+            </div>
+
+
+            <div class="form-flex pb-1 flex-grow-1 col-4">
+              <label>Check Date:</label>
+              <label type="text" class="form-control col pt-1 bg-disabled">{{checkDate}}</label>
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard d-flex flex-grow-1 px-2" *ngIf="isValidEobEraId && !isEobEraLoading ">
+
+            <div class="form-flex pb-1 flex-grow-1 col-12">
+              <label class="width-100">Payment Source:</label>
+              <label type="text" class="form-control col pt-1 bg-disabled">{{eobEraSourceName}}</label>
+
+            </div>
+
+          </div>
+
+
+
+        </div>
+
+        <div class="form-row form-dashboard border-top pt-1">
+          <div class="form-group horizental row zero flex-grow-1">
+            <label class="col-form-label width-60 " for="ddInsurance">Insurance</label>
+            <label class="form-control pt-1 bg-disabled col"
+              *ngIf="(lstInsurances == undefined || lstInsurances.length==0) && operationType != 'new'">
+              <span> {{insName}}</span>
+              <span class="v-separtor"></span>
+              <span>Policy No: {{policyNumber}}</span>
+            </label>
+            <select class="col form-control px-1" id="ddInsurance" formControlName="ddInsurance"
+              *ngIf="(lstInsurances != undefined && lstInsurances.length>0) || operationType == 'new'"
+              labelForId="ddInsurance" (change)="oncInsuranceChange($event)">
+              <option *ngFor="let ins of lstInsurances" [value]="ins.insurance_id">
+                <span *ngIf="insurace_type!=undefined">{{ins.insurace_type}}</span>
+                <span class="v-separtor" *ngIf="insurace_type!=undefined"></span>
+                <span>{{ins.name}}</span>
+                &nbsp; | &nbsp;
+                <span>{{ins.policy_number}}</span>
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+      <div class="form-row form-dashboard  mb-1" *ngIf="operationType != 'multiple'">
+        <div class="form-group flex-grow-1">
+
+          <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1">
+
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 pl-1 ">Denial Message</h4>
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard">
+              <div class="form-group flex-grow-1">
+                <textarea class="form-control required rounded-bottom border-0" id="txtDenialMessage"
+                  formControlName="txtDenialMessage" rows="7" maxlength="500"></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard  mb-1" *ngIf="operationType!='new'">
+        <div class="form-group flex-grow-1">
+
+          <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1">
+
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 pl-1 ">Resolve Message</h4>
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard">
+              <div class="form-group flex-grow-1">
+                <textarea class="form-control required rounded-bottom border-0" id="txtResolvedMessage"
+                  formControlName="txtResolvedMessage" rows="7" maxlength="500"></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <div class="modal-footer custom" *ngIf="operationType == 'new' || status == 'ACTIVE' || operationType == 'multiple'">
+    <button style="width: 80px;" class="btn btn-success btn-sm" [disabled]="!denialFormGroup.valid"
+      *ngIf="!showLastNote" type="button" (click)="onSave(denialFormGroup.value)">Save</button>
+
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+
+
+</form>

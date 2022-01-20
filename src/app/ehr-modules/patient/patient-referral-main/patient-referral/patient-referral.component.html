@@ -1,0 +1,611 @@
+<div class="dashboard-sub-nav encounter justify-content-between pr-0 position-relative">
+    <div class="color-box bg-brown"></div>
+    <p> Pending Referral Request</p>
+
+    <div class="flex-grow-1">&nbsp;</div>
+
+    <button [disabled]="!this.lookupList.UserRights.AddModifyReferral || isLoading ||  isMainLoading"
+        class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="OnNewRecord()" *ngIf="isReadonly">
+        <i class="fas fa-plus"></i>
+        New Referral</button>
+
+    <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 " *ngIf="!dashboardAddEdit"
+        [disabled]="isLoading ||  isMainLoading" title="Refresh Referral" (click)="onGetReferral()">
+        <i class="fas fa-redo"></i>
+    </button>
+
+
+
+    <div *ngIf="!isReadonly">
+        <!-- <button (click)="OnSave()" class="btn btn-sub-nav rounded-0 btn-success" [disabled]="!inputForm.valid">Save</button> -->
+        <!-- <button (click)="OnCancel()" class="btn btn-sub-nav rounded-0 btn-dark">Cancel</button> -->
+        <button (click)="OnView()" class="btn btn-sub-nav rounded-0 btn-success" [disabled]="isProcessing">View</button>
+        <button (click)="OnCancel()" class="btn btn-sub-nav rounded-0 btn-dark">Cancel</button>
+    </div>
+</div>
+
+<div class="dashboard-content light-gray-bg p-6 d-flex flex-column position-relative" [class.hide]="dashboardAddEdit">
+
+    <div class="border rounded mb-6 flex-grow-2 flex-basis-2 overflow-auto">
+        <table class="table sm layout-fixed light-striped-border ">
+            <thead>
+                <tr>
+                    <th width="90px">Date</th>
+                    <th>Referred To</th>
+                    <th>Provider</th>
+                    <th>Location</th>
+                    <th>Consult Type</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                    <th class="w-180">Diagnosis/Comments</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let pat of lstPatientReferral" (click)="OnSelectionChanged(pat)"
+                    [ngClass]="{'active' : (pat.referral_id === rowId),'text-brown' : (pat.referral_status=='Pending')}">
+                    <td>{{pat.date_created_mmddyy}}</td>
+                    <td>{{pat.referral_provider_name}}</td>
+                    <td>{{pat.provider_name}}</td>
+                    <td>{{pat.location_name}}</td>
+                    <td>{{pat.consult_type}}</td>
+                    <td>{{pat.referral_status}}</td>
+                    <td title="{{pat.notes}}">
+                        <p class="mb-0">{{pat.notes}}</p>
+                    </td>
+                    <td class="w-180" title="{{pat.referral_reason}}">
+                        {{pat.referral_reason}}
+                    </td>
+                    <td class="text-right">
+                        <button [disabled]="!this.lookupList.UserRights.AddModifyReferral"
+                            class="btn btn-link btn-sm text-success line-height-1 p-0 mr-2" (click)="openModal(pat)">
+                            <i class="far fa-comment" aria-hidden="true" data-toggle="modal"
+                                data-target="#bootstrapModel"></i>
+                        </button>
+                        <button *ngIf="(pat.referral_path==''|| pat.referral_path==null)?true:false"
+                            class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                            (click)="onEditReferral(pat)">
+                            <i class="far fa-plus-square"></i>
+                        </button>
+                        <button *ngIf="(pat.referral_path==''|| pat.referral_path==null)?false:true"
+                            class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                            (click)="onSaveReferralView(pat)">
+                            <i class="far fa-eye"></i>
+                        </button>
+                        <button *ngIf="(pat.referral_path==''|| pat.referral_path==null)?false:true"
+                            class="btn btn-link btn-sm text-success line-height-1 p-0 mr-2"
+                            (click)="onFaxFromGrid(pat)">
+                            <i class="fas fa-fax"></i>
+                        </button>
+
+                        <button [disabled]="!this.lookupList.UserRights.AddModifyReferral"
+                            class="btn btn-link btn-sm text-danger line-height-1 p-0" (click)="onDelete(pat)">
+                            <i class="far fa-trash-alt" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex flex-row flex-grow-1 flex-basis-1 overflow-height">
+        <div class="d-flex flex-column flex-1 border rounded bg-white mr-3-px col-10 p-0">
+            <h4 class="rounded-box-title-bar mb-0">Fax Details</h4>
+            <div class="overflow-auto p-0 flex-grow-1">
+                <table class="table sm  light-striped-border">
+                    <thead>
+                        <tr>
+                            <th>Date Created</th>
+                            <th>Fax Status</th>
+                            <th>Recipient Name</th>
+                            <th>Fax Number</th>
+                            <th>Fax Subject</th>
+                            <th>Recipient Organization</th>
+                            <th>SentBy</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let fax of lstReferral_faxDetail; let i=index" (click)="onFaxDetailChange(fax)"
+                            [ngClass]="{'active' : (fax.fax_sent_id == selectedFaxSentId)}">
+                            <td>{{fax.date_created}}</td>
+                            <td>
+                                <a *ngIf="fax.fax_status!='Success' && fax.fax_status!='Fail'" class="p-0"><img alt=""
+                                        class="img-h-12" src="./assets/images/icons/ico_refresh_green.svg"
+                                        (click)="updateFaxStatus(fax)"></a>
+
+                                {{fax.fax_status}}
+
+                            </td>
+                            <td>{{fax.receiver_name}}</td>
+                            <td>{{fax.receiver_no}}</td>
+                            <td>{{fax.subject}}</td>
+                            <td>{{fax.receiver_organization}}</td>
+                            <td>{{fax.created_user}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-link p-0 fz-12"
+                                    (click)="onFaxResend(fax)">Re-Send</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- <div class="d-flex flex-column w-50 pl-4-px">
+                    <h4 class="table-heading">Fax Attachments</h4>
+            </div> -->
+        <div class="d-flex flex-column flex-1 border rounded bg-white ml-3-px col-2 p-0">
+            <h4 class="rounded-box-title-bar mb-0">Fax Attachment</h4>
+            <div class="overflow-auto p-0 flex-grow-1">
+                <table class="table light-striped-border">
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let att of lstSentFaxAttachments">
+                            <td>
+                                <button type="button" class="link-btn" (click)="onFaxAttachmentView(att)">
+                                    {{att.doc_name}}</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+    <div id="bootstrapModel" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!--
+                    <div class="modal-header dialog px-3 py-2 ihc-bg-green">
+                        <h4 class="modal-title">Referral Request Status/Notes</h4>
+                        <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+    
+                    -->
+
+                <div class="modal-header custom">
+                    <img class="logo" src="./assets/images/logo-small.png">
+                    <h4 class="modal-title">Referral Request Status/Notes</h4>
+
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+
+                </div>
+
+
+
+                <div class="modal-body custom">
+                    <form class="form-row form-dashboard" [formGroup]="statusForm"
+                        (ngSubmit)="onSaveReferralStaffNotes(statusForm.value)">
+                        <div class="form-group row zero mb-8-px col-12">
+                            <label for="input2" class="col-sm-2 col-form-label ">Status:</label>
+                            <div class="col-sm-10 form-group horizental row zero">
+                                <select class="form-control" formControlName="drpStatus">
+                                    <option></option>
+                                    <option>Pending</option>
+                                    <option>Inprogress</option>
+                                    <option>Faxed</option>
+                                    <option>Emailed</option>
+                                    <option>Completed</option>
+                                    <option>Left for clinic</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row zero mb-4-px col-12">
+                            <label for="input22" class="col-sm-2 col-form-label ">Notes:</label>
+                            <div class="col-sm-10 form-group horizental row zero">
+                                <textarea class="form-control" id="input22" rows="5"
+                                    formControlName="txtNotes"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer custom">
+                    <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-success" data-dismiss="modal"
+                        (click)="onSaveReferralStaffNotes(statusForm.value)">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--
+    <div class="div-loader-message-box" *ngIf="isLoading ||  isMainLoading">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+    -->
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading ||  isMainLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+    </div>
+
+
+</div>
+
+
+<!-- New Referral -->
+<!--
+    <div class="border rounded p-1 flex-grow-1 overflow-auto" *ngIf="showFax">
+        <button class="left-back-btn" (click)="navigateBackFromFax()">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Summary
+        </button>
+        <iframe #frm frameborder="0" [src]="current_url" scrolling="yes" style="width: 100%" height="550px" id="irxIFrame"
+            name="irxIFrame"></iframe>
+    </div>
+    -->
+<div class="dashboard-content light-gray-bg p-6 d-flex flex-column" [class.hide]="!dashboardAddEdit">
+
+    <form [formGroup]="inputForm" class="d-flex flex-column flex-grow-1">
+        <div class="border rounded bg-white mb-6 d-flex flex-row flex-shrink-0">
+
+            <div class="dashboard-add-edit px-1 pb-1 d-flex flex-grow-1 ">
+
+                <div class="col-4 px-2">
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero mb-4-px col-12">
+                            <label for="input2" class="width-80 col-form-label">Provider:</label>
+                            <select class="form-control col" labelForId="input1" formControlName="drpProvider" (change)="drpProvider_changed($event)">
+                                <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero mb-4-px col-12">
+                            <label for="input2" class="width-80 col-form-label">Location:</label>
+                            <select class="form-control col" labelForId="input2" formControlName="drpLocation">
+                                <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero mb-4-px col-12">
+                            <label for="input2" class="width-80 col-form-label">Consult Type:</label>
+                            <select class="form-control col" id="input3" formControlName="drpConsultType"
+                                (change)="OnConsultChnage()">
+                                <option *ngFor="let s of lstConsultType" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero col-12">
+                            <label class="col-form-label width-80">Sincerely:</label>
+                            <input type="text" class="form-control col " labelForId="input1"
+                                formControlName="txtSincerely">
+                        </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero col-12">
+                            <label class="col-form-label width-80">Signed By:</label>
+                            <input type="text" class="form-control col" labelForId="input1"
+                                formControlName="txtSignedBy">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-4 px-2">
+
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group row zero mb-4-px col-12 ">
+
+                            <label for="txtReferTo" class="col-form-label width-60">Refer To:</label>
+                            <div class="col input-icon">
+                                <input #txtReferTo type="text" autocomplete="off" class="form-control" id="txtReferTo"
+                                    placeholder="Enter criteria and press Enter to Search" formControlName="txtReferTo"
+                                    (input)="onReferralSearchKeydown(txtReferTo.value)">
+                                <div class="icon">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </div>
+                                <div *ngIf="isSearchReferral">
+                                    <div class="inline-search">
+                                        <div class="inline-search-header">
+                                            <h6 class="title">Consultant Search</h6>
+                                            <button type="button" class="close" aria-label="Close"
+                                                (click)="isSearchReferral=false;">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="body m-0">
+                                            <table class="table sm light-striped-border" *ngIf="!isLoading">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Last Name</th>
+                                                        <th>First Name</th>
+                                                        <th>Phone</th>
+                                                        <th>Fax</th>
+                                                        <th>Address</th>
+                                                        <th>City</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let pat of lstReferralSearch">
+                                                        <td>
+                                                            <button type="button" class="link-btn"
+                                                                (click)="OnselectReferral(pat)">{{pat.last_name}}</button>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="link-btn"
+                                                                (click)="OnselectReferral(pat)">{{pat.first_name}}</button>
+                                                        </td>
+                                                        <td>{{pat.phone}}</td>
+                                                        <td>{{pat.fax}}</td>
+                                                        <td>{{pat.address}}</td>
+                                                        <td>{{pat.city}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+
+
+
+                        <div class="form-group row zero mb-4-px col-12">
+                            <label class="col-form-label width-60">Provider:</label>
+
+
+                            <label class="form-control pt-1 bg-disabled  col">{{refPhyName}}</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group row zero mb-4-px col-12">
+                            <label class="col-form-label width-60">Address:</label>
+
+                            <label class="form-control pt-1 bg-disabled  col">{{refPhyAddress}}</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group row zero col-12">
+                            <label class="col-form-label width-60  px-0">Phone:</label>
+                            <label class="form-control pt-1 bg-disabled col">{{refPhyPhone | phonePipe}}</label>
+
+                            <label class="col-form-label px-2">Fax:</label>
+                            <label class="form-control pt-1 bg-disabled col">{{refPhyFax | phonePipe}}</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group row zero mb-4-px col-12">
+                            <label class="col-form-label width-60">Email:</label>
+
+                            <label class="form-control pt-1 bg-disabled  col">{{refPhyEmail}}</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-4 px-2">
+
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group px col-12">
+                            <div class="d-flex justify-content-between mb-1">
+                                <label for="txtComments" class="col-form-label">Diagnosis / Comments:</label>
+                            </div>
+
+                            <textarea class="form-control " id="txtComments" rows="7"
+                                formControlName="txtComments"></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="d-flex flex-row flex-grow-1 flex-basis-1">
+
+            <div class="d-flex flex-column flex-1 border rounded bg-white mr-3-px">
+                <h4 class="rounded-box-title-bar mb-0">Patient Visits</h4>
+                <div class="overflow-auto p-0 flex-grow-1 max-height-100 overflow-height">
+                    <table class="table layout-fixed light-striped-border">
+                        <thead>
+                            <tr>
+                                <th class="width-150">
+
+                                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="chk_enc_all_{{controlUniqueId}}"
+                                            (change)="checkAllEncounter($event.target.checked)">
+                                        <label class="custom-control-label" for="chk_enc_all_{{controlUniqueId}}">Select
+                                            All</label>
+                                    </div>
+
+
+                                    <!--
+                                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                        <input type="checkbox" class="custom-control-input" id="chk_enc-all"
+                                            (click)="checkAllEncounter($event.currentTarget.checked)">
+                                        <label class="custom-control-label" for="chk_enc-all">Visit Date</label>
+                                    </div>
+                                    -->
+
+                                    <!--
+
+                                    <input class="checkbox" type="checkbox"
+                                        (click)="checkAllEncounter($event.currentTarget.checked)">
+                                        -->
+                                </th>
+
+                                <th>Visit Reason</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let vst  of lstvisits; let i = index">
+                                <td>
+
+                                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="chk_enc_{{vst.chart_id}}_{{controlUniqueId}}" [checked]="vst.chkbx"
+                                            (change)="chkEncounterSelectChange($event.target.checked,vst)">
+                                        <label class="custom-control-label"
+                                            for="chk_enc_{{vst.chart_id}}_{{controlUniqueId}}">{{vst.visit_date}}</label>
+                                    </div>
+
+
+                                    <!-- <input class="table-td-checkbox" type="checkbox" (change)="checkbox(vst)"> -->
+
+                                    <!--
+                                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                        <input type="checkbox" class="custom-control-input" id="{{vst.chart_id}}"
+                                            (change)="chkEncounterSelectChange($event.currentTarget.checked,vst)"
+                                            value={{vst.chkbx}} [checked]="vst.chkbx">
+                                        <label class="custom-control-label"
+                                            for="{{vst.chart_id}}">{{vst.visit_date}}</label>
+                                    </div>
+                                    -->
+
+                                    <!--
+                                    <input class="checkbox" type="checkbox"
+                                        (click)="IsSelectEncounter($event.currentTarget.checked,vst)"
+                                        value={{vst.chkbx}} [checked]="vst.chkbx">
+                                        -->
+
+                                </td>
+
+                                <td>{{vst.reason_detail}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-1 border rounded bg-white ml-3-px">
+                <h4 class="rounded-box-title-bar mb-0">Patient Lab Results</h4>
+                <div class="overflow-auto p-0 flex-grow-1">
+                    <table class="table light-striped-border">
+                        <thead>
+                            <tr>
+                                <th class="width-100">
+
+                                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="chk_lab_all_{{controlUniqueId}}"
+                                            (change)="checkAllLabSummary($event.target.checked)">
+                                        <label class="custom-control-label" for="chk_lab_all_{{controlUniqueId}}">Select
+                                            All</label>
+                                    </div>
+
+                                    <!--
+                                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                        <input type="checkbox" class="custom-control-input" id="chk-lab-all"
+                                            (click)="checkAllLabSummary($event.currentTarget.checked)">
+                                        <label class="custom-control-label" for="chk-lab-all">Order Date</label>
+                                    </div>
+                                    -->
+
+                                    <!--
+                                    <input class="checkbox" type="checkbox"
+                                        (click)="checkAllLabSummary($event.currentTarget.checked)">
+                                        -->
+                                </th>
+
+                                <th>Lab</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let vst  of lstlab">
+                                <td>
+
+                                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="chk_lab_{{vst.order_id}}_{{controlUniqueId}}" [checked]="vst.chkbx"
+                                            (change)="chkLabSelectChange($event.target.checked,vst)">
+                                        <label class="custom-control-label"
+                                            for="chk_lab_{{vst.order_id}}_{{controlUniqueId}}">{{vst.order_date}}</label>
+                                    </div>
+
+                                    <!--
+                                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                        <input type="checkbox" class="custom-control-input" id="{{vst.order_id}}"
+                                            (click)="IsSelectLabSummary($event.currentTarget.checked)"
+                                            value={{vst.chkbx}} [checked]="vst.chkbx">
+                                        <label class="custom-control-label"
+                                            for="{{vst.order_id}}">{{vst.order_date}}</label>
+                                    </div>
+                                    -->
+
+
+
+                                    <!--
+                                    <input class="checkbox" type="checkbox"
+                                        (click)="IsSelectLabSummary($event.currentTarget.checked,vst)"
+                                        value={{vst.chkbx}} [checked]="vst.chkbx">
+                                        -->
+                                </td>
+
+                                <td>{{vst.lab_name}}</td>
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- <div class="form-group col-md-12 col-sm-12 col-12 text-right mt-4-px mb-0">
+                <button type="button" class="btn btn-dark" (click)="hideAddEdit()">Cancel</button>
+                <button type="button" class="btn btn-success ml-1" (click)="hideAddEdit()">Save</button>
+            </div> -->
+
+
+
+
+    </form>
+
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading ||  isMainLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+    </div>
+
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isProcessing">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-cog fa-spin mr-1"></i> Processing File...
+        </div>
+    </div>
+
+</div>

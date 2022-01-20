@@ -1,0 +1,32 @@
+export class ORMPatientReferral {
+    referral_id:number;
+    patient_id:number;
+    referral_provider_id:number;
+    referral_provider_name:string;
+    referral_provider_address:string;
+    referral_provider_phone:string;
+    referral_provider_fax:string;
+    referral_provider_email:string;
+    notes:string;
+    provider_id:string;
+    referral_path:string;
+    deleted:boolean;
+    created_user:string;
+    client_date_created:string;
+    modified_user:string;
+    client_date_modified:String;
+    date_created:string;
+    date_modified:string;
+    system_ip:string;
+    practice_id:number;
+    location_id:number;
+    referral_request:boolean;
+    referral_status:string;
+    referral_reason:string;
+    signed_by:string;
+    date_signed:string;
+    consult_type_id:number;
+    high_importance:boolean;
+    chart_id:number;
+    
+}

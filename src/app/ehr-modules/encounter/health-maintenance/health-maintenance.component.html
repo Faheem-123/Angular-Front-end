@@ -1,0 +1,412 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false}">
+  <div class="title pl-8">Health Maintenance</div>
+  <ul class="nav color-buttons align-items-center">
+    <button  *ngIf="!addEditView && canView && canAddEdit" class="nav-link green px-2 py-0" (click)="onAddnew()">
+      <i class="far fa-plus-square pr-1"></i>New</button>
+    <button  *ngIf="!addEditView && canView && canAddEdit" class="nav-link blue px-2 py-0" (click)="onEdit()">
+      <i class="far fa-edit pr-1"></i>Edit</button>
+    <button  *ngIf="!addEditView && canView && canAddEdit" class="nav-link bg-danger px-2 py-0 top-right-radius" (click)="onDelete()">
+      <i class="far fa-trash-alt pr-1"></i>Delete
+    </button>
+    <!-- <button *ngIf="addEditView" class="nav-link blue px-2 py-0" (click)="navigateBackToSummary()">
+      <i class="fas fa-arrow-left mr-2"></i>Back to Summary
+    </button> -->
+
+    <!-- <button *ngIf="addEditView" class="nav-link blue px-2 py-0" (click)="onCancel();">
+        <i class="fas fa-history pr-1"></i>Cancel
+      </button> -->
+  </ul>
+
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom" >
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading && !canView" class="access-denied">
+        <i class="fas fa-ban mr-2"></i> Access Denied
+      </div>
+  <div class="mb-8" *ngIf="!addEditView && !noRecordFound && canView">
+    <div class="">
+      <div class="d-flex flex-row p-6">
+        <div class="flex-1 border p-1 rounded bg-white overflow-auto">
+          <table class="table layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let mnt of lstMaintList" (click)="OnSelectionChanged(mnt)" [ngClass]="{'active' : (mnt.phm_id === rowId)}">
+                <td>{{mnt.visit_date}}</td>
+              </tr>
+              <!-- <tr class="active">
+                  <td>11/15/2016</td>
+                </tr> -->
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex flex-column flex-5 border rounded bg-white overflow-auto ml-6">
+          <div class="content-view flex-shrink-0">
+            <div class="row zero">
+              <div class="col-md-4 col-sm-6 col-12">
+                <div class="form-view">
+                  <div class="title">Date:</div>
+                  <div class="value" *ngIf="objSelectedListRow!=null?true:false">{{objSelectedListRow.visit_date}}</div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6 col-12">
+                <div class="form-view">
+                  <div class="title">Provider:</div>
+                  <div class="value" *ngIf="objSelectedListRow!=null?true:false">{{objSelectedListRow.provider_name}}</div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6 col-12">
+                <div class="form-view">
+                  <div class="title">Location:</div>
+                  <div class="value" *ngIf="objSelectedListRow!=null?true:false">{{objSelectedListRow.location_name}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="overflow-auto">
+            <div class="p-6 d-flex flex-column">
+              <div class="info-box-stipes rounded flex-grow-1">
+                <div class="title-bar">Other Tests</div>
+                <div class="p-6 pt-0">
+                  <div class="no-content" *ngIf="isOtherTestNotFound" >
+                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                  </div>
+                  <table *ngIf="!isOtherTestNotFound" class="table layout-fixed sm light-striped-border">
+                    <tbody>
+                      <tr *ngFor="let lst of lstOtherTest">
+                        <td width="15%"><span class="text-info">{{lst.test_name}}</span></td>
+                        <td>
+                          <div class="row zero">
+                            <div *ngIf="lst.test_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Complete
+                                Date:</span>{{lst.test_date}}
+                            </div>
+                            <div *ngIf="lst.due_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Due
+                                Date:</span>{{lst.due_date}}
+                            </div>
+                            <div *ngIf="lst.refusal=='1'?true:false" class="col-md-3 font-weight-300"><span class="pr-2 font-weight-500">Refused</span>
+                            </div>
+                            <div *ngIf="lst.test_value" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Comments:</span>{{lst.test_value}}</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="p-6 d-flex flex-column mt-6">
+              <div class="info-box-stipes rounded flex-grow-1">
+                <div class="title-bar">Common Test</div>
+                <div class="p-6 pt-0">
+                  <div class="no-content" *ngIf="isCommonTestNotFound" >
+                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                  </div>
+                  <table *ngIf="!isCommonTestNotFound" class="table layout-fixed sm light-striped-border">
+                    <tbody>
+                      <tr *ngFor="let lst of lstCommonTest">
+                        <td width="15%"><span class="text-info">{{lst.test_name}}</span></td>
+                        <td>
+                          <div class="row zero">
+                            <div *ngIf="lst.test_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Complete
+                                Date:</span>{{lst.test_date}}
+                            </div>
+                            <div *ngIf="lst.due_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Due
+                                Date:</span>{{lst.due_date}}
+                            </div>
+                            <div *ngIf="lst.refusal=='1'?true:false" class="col-md-3 font-weight-300"><span class="pr-2 font-weight-500">Refused</span>
+                            </div>
+                            <div *ngIf="lst.test_value" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Comments:</span>{{lst.test_value}}</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="p-6 d-flex flex-column mt-6">
+              <div class="info-box-stipes rounded flex-grow-1">
+                <div class="title-bar">Vaccination</div>
+
+                <div class="p-6 pt-0">
+                  <div class="no-content" *ngIf="isVaccinationNotFound" >
+                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                  </div>
+                  <table *ngIf="!isVaccinationNotFound" class="table layout-fixed sm light-striped-border">
+                    <tbody>
+                      <tr *ngFor="let lst of lstVaccination">
+                        <td width="15%"><span class="text-info">{{lst.test_name}}</span></td>
+                        <td>
+                          <div class="row zero">
+                            <div *ngIf="lst.test_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Complete
+                                Date:</span>{{lst.test_date}}
+                            </div>
+                            <div *ngIf="lst.due_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Due
+                                Date:</span>{{lst.due_date}}
+                            </div>
+                            <div *ngIf="lst.refusal=='1'?true:false" class="col-md-3 font-weight-300"><span class="pr-2 font-weight-500">Refused</span>
+                            </div>
+                            <div *ngIf="lst.test_value" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Comments:</span>{{lst.test_value}}</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="p-6 d-flex flex-column mt-6">
+              <div class="info-box-stipes rounded flex-grow-1">
+                <div class="title-bar">Custom Test</div>
+
+                <div class="p-6 pt-0">
+                  <div class="no-content" style="height: 30px;" *ngIf="isCustomTestNotFound">
+                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                  </div>
+                  <table *ngIf="!isCustomTestNotFound" class="table layout-fixed sm light-striped-border">
+                    <tbody>
+                      <tr *ngFor="let lst of lstCustomTest">
+                        <td width="15%"><span class="text-info">{{lst.test_name}}</span></td>
+                        <td>
+                          <div class="row zero">
+                            <div *ngIf="lst.test_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Complete
+                                Date:</span>{{lst.test_date}}
+                            </div>
+                            <div *ngIf="lst.due_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Due
+                                Date:</span>{{lst.due_date}}
+                            </div>
+                            <div *ngIf="lst.refusal=='1'?true:false" class="col-md-3 font-weight-300"><span class="pr-2 font-weight-500">Refused</span>
+                            </div>
+                            <div *ngIf="lst.test_value" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Comments:</span>{{lst.test_value}}</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="p-6 d-flex flex-column mt-6">
+              <div class="info-box-stipes rounded flex-grow-1">
+                <div class="title-bar">Lipids</div>
+                <div class="p-6 pt-0">
+                  <div class="no-content" style="height: 30px;" *ngIf="isLipidTestNotFound">
+                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                  </div>
+                  <table *ngIf="!isLipidTestNotFound" class="table layout-fixed sm light-striped-border">
+                    <tbody>
+                      <tr *ngFor="let lst of lstLipid">
+                        <td width="15%"><span class="text-info">{{lst.test_name}}</span></td>
+                        <td>
+                          <div class="row zero">
+                            <div *ngIf="lst.test_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Complete
+                                Date:</span>{{lst.test_date}}
+                            </div>
+                            <div *ngIf="lst.due_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Due
+                                Date:</span>{{lst.due_date}}
+                            </div>
+                            <div *ngIf="lst.refusal=='1'?true:false" class="col-md-3 font-weight-300"><span class="pr-2 font-weight-500">Refused</span>
+                            </div>
+                            <div *ngIf="lst.test_value" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Comments:</span>{{lst.test_value}}</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+
+
+            <div class="p-6 d-flex flex-column mt-6">
+              <div class="info-box-stipes rounded flex-grow-1">
+                <div class="title-bar">Drugs</div>
+                <div class="p-6 pt-0">
+                  <div class="no-content" style="height: 30px;" *ngIf="isDrugsTestNotFound">
+                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                  </div>
+                  <table *ngIf="!isDrugsTestNotFound" class="table layout-fixed sm light-striped-border">
+                    <tbody>
+                      <tr *ngFor="let lst of lstDrugs">
+                        <td width="15%"><span class="text-info">{{lst.test_name}}</span></td>
+                        <td>
+                          <div class="row zero">
+                            <div *ngIf="lst.test_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Complete
+                                Date:</span>{{lst.test_date}}
+                            </div>
+                            <div *ngIf="lst.due_date" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Due
+                                Date:</span>{{lst.due_date}}
+                            </div>
+                            <div *ngIf="lst.refusal=='0'?true:false" class="col-md-3 font-weight-300"><span class="pr-2 font-weight-500">Negative</span>
+                            </div>
+                            <div *ngIf="lst.refusal=='1'?true:false" class="col-md-3 font-weight-300"><span class="pr-2 font-weight-500">positive</span>
+                            </div>
+
+                            <div *ngIf="lst.test_value" class="col-md-4 font-weight-300"><span class="pr-2 font-weight-500">Comments:</span>{{lst.test_value}}</div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isLoading &&  noRecordFound && !addEditView" class="border-content-box border-top-0 rounded-bottom light-sky-blue px-8 py-4">
+  <div class="form-row form-dashboard">
+    <div class="no-content" style="height: 30px;">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+  </div>
+</div>
+<!-- </div> -->
+
+<div *ngIf="addEditView">
+  <!-- <div class="rounded-top pr-8 encounter-header-highlight">
+    <p class="title pl-8">Health Maintenance</p>
+  </div> -->
+  <div class="border-content-box white-bg border-top-0 rounded-bottom">
+    <div class="inner-tool-tab justify-content-end px-8">
+
+        <form [formGroup]="inputForm" class="form-row form-dashboard d-flex flex-grow-1 justify-content-end">
+          <div class="form-flex col-md-2 col-sm-6 col-12">
+            <label for="txtDate">Date <span class="text-danger">*</span></label>
+            <label >{{objSelectedListRow.visit_date}}</label>
+            <!-- <div class="input-group">
+              <input class="form-control" name="txtVisitDate" ngbDatepicker #txtVisitDate="ngbDatepicker"
+                formControlName="txtVisitDate">
+              <span class="input-group-btn">
+                <button class="btn btn-outline-primary" (click)="txtVisitDate.toggle()" type="button">
+                  <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                </button>
+              </span>
+            </div> -->
+          </div>
+
+          <div class="form-flex col-md-3 col-sm-6 col-12">
+            <label for="input2">Physician:</label>
+            <label >{{objSelectedListRow.provider_name}}</label>
+            <!-- <select class="form-control" formControlName="drpProvider">
+              <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+            </select> -->
+          </div>
+
+          <div class="form-flex col-md-3 col-sm-6 col-12">
+            <label for="input2">Location:</label>
+            <label >{{objSelectedListRow.location_name}}</label>
+            <!-- <select class="form-control" labelForId="drpLocation" formControlName="drpLocation">
+              <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+            </select> -->
+          </div>
+        </form>
+
+        <!-- <form>
+        <div class="form-group mb-0  col-md-3 col-sm-6 col-12">
+          <label for="txtDate">Date <span class="text-danger">*</span></label>
+          <div class="input-group">
+              <input class="form-control"  name="txtVisitDate" ngbDatepicker #txtVisitDate="ngbDatepicker">
+              <span class="input-group-btn">
+                <button class="btn btn-outline-primary" (click)="txtVisitDate.toggle()" type="button">
+                  <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                </button>
+              </span>
+          </div>
+        </div>
+
+        <div class="form-group mb-0 col-md-3 col-sm-6 col-12">
+          <label for="input2">Physician:</label>
+          <select   class="form-control col-sm-9"  >
+              <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+          </select>
+        </div>
+
+        <div class="form-group mb-0 col-md-3 col-sm-6 col-12">
+          <label for="input2">Location:</label>
+          <select class="form-control" labelForId="drpLocation">
+              <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+            </select>
+        </div>
+      </form> -->
+
+
+    </div>
+
+    <ngb-tabset [destroyOnHide]="false"  [activeId]="selectedTab" #labMaintab
+    class="inner-sub-horizental-tab d-flex flex-column rounded-top overflow-hidden"
+    (tabChange)="onTabChange($event)">
+        <ngb-tab id="h-home" class="left-back-btn rounded-top pl-0">
+            <ng-template ngbTabTitle>
+              <span><i class="fas fa-arrow-left mr-2"></i>Back To Summary</span>
+            </ng-template>
+          </ngb-tab>
+      <ngb-tab id="h-common">
+        <ng-template ngbTabTitle><span>Common Test</span></ng-template>
+        <ng-template ngbTabContent>
+          <health-maint-commontest [editOperation]="editOperation" [objencounterToOpen]="objencounterToOpen"
+            [objSelectedMain]="objSelectedListRow" [lstTest]="lstCommonTest" (dataUpdated)=navigateBackToSummary($event)
+            class="d-flex flex-column flex-grow-1"></health-maint-commontest>
+        </ng-template>
+      </ngb-tab>
+  
+      <ngb-tab id="h-custom">
+        <ng-template ngbTabTitle><span>Custom Test</span></ng-template>
+        <ng-template ngbTabContent>
+          <health-maint-customtest [editOperation]="editOperation" [objencounterToOpen]="objencounterToOpen"
+            [objSelectedMain]="objSelectedListRow" [lstTest]="lstCustomTest" (dataUpdated)=navigateBackToSummary($event)
+            class="d-flex flex-column flex-grow-1"></health-maint-customtest>
+        </ng-template>
+      </ngb-tab>
+  
+      <ngb-tab id="h-other">
+        <ng-template ngbTabTitle><span>Other Tests</span></ng-template>
+        <ng-template ngbTabContent>
+          <health-maint-othertest [editOperation]="editOperation" [objencounterToOpen]="objencounterToOpen"
+          [objSelectedMain]="objSelectedListRow" [lstTest]="lstOtherTest" (dataUpdated)=navigateBackToSummary($event)
+          class="d-flex flex-column flex-grow-1"></health-maint-othertest>
+        </ng-template>
+      </ngb-tab>
+  
+      <ngb-tab id="h-vaccination">
+        <ng-template ngbTabTitle><span>Vaccination</span></ng-template>
+        <ng-template ngbTabContent>
+          <health-maint-vaccination [editOperation]="editOperation" [objencounterToOpen]="objencounterToOpen"
+          [objSelectedMain]="objSelectedListRow" [lstTest]="lstVaccination" (dataUpdated)=navigateBackToSummary($event)
+          class="d-flex flex-column flex-grow-1"></health-maint-vaccination>
+        </ng-template>
+      </ngb-tab>
+  
+      <ngb-tab id="h-lipid">
+        <ng-template ngbTabTitle><span>Lipids</span></ng-template>
+        <ng-template ngbTabContent>
+          <health-maint-lipid [editOperation]="editOperation" [objencounterToOpen]="objencounterToOpen"
+          [objSelectedMain]="objSelectedListRow" [lstTest]="lstLipid" (dataUpdated)=navigateBackToSummary($event)
+          class="d-flex flex-column flex-grow-1"></health-maint-lipid>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab id="h-drugs">
+        <ng-template ngbTabTitle><span>Drugs</span></ng-template>
+        <ng-template ngbTabContent>
+          <health-maint-drugs [editOperation]="editOperation" [objencounterToOpen]="objencounterToOpen"
+          [objSelectedMain]="objSelectedListRow" [lstTest]="lstDrugs" (dataUpdated)=navigateBackToSummary($event)
+          class="d-flex flex-column flex-grow-1"></health-maint-drugs>
+        </ng-template>
+      </ngb-tab>
+
+    </ngb-tabset>
+  </div>
+</div>

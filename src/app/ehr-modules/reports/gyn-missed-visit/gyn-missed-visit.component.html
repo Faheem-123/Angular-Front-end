@@ -1,0 +1,48 @@
+<div class="encounter-module">
+    <div class="header" >
+      <div class="title">Gyn Missed Visit</div>
+      <span class="badge badge-pill">{{recordCount}}</span>
+    </div>
+    
+    <div class="form-group col-sm-12 text-right">
+            <button type="button" ng-disabled="btnHide" class="btn btn-success ml-2 mt-3" (click)="searchMissedVisit()">Search</button>
+    </div>
+    
+      <div class="custom-select-box pb-1 mt-2">
+          <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+          <div class="form-row form-dashboard">
+            <table class="table light-striped-border">
+              <thead>
+                <tr>
+                  <th>PID</th>
+                  <th>Patient Name</th>
+                  <th>Location</th>
+                  <th>Missed Days</th>
+                  <th>Last Visit Date</th>
+                  <th>Next Visit</th>
+                  <th>Clinical EDD</th>
+                  <th>Latest Appointment</th>
+                </tr>
+              </thead>
+              <tbody>
+               <tr st-select-row="row" *ngFor="let lstMissed of lstMissedVisit">
+                  <td>{{lstMissed.pid}}</td>
+                  <td>{{lstMissed.pat_name}}</td>
+                  <td>{{lstMissed.location}}</td>
+                  <td>{{lstMissed.diff}}</td>
+                  <td>{{lstMissed.last_enc_date}}</td>
+                  <td>{{lstMissed.next_visit}}</td>
+                  <td>{{lstMissed.edd}}</td>
+                  <td>{{lstMissed.latest_app_date}}</td>
+                </tr>
+              </tbody> 
+            </table>
+            
+          </div>
+        </div>
+  
+    </div>
+  
+  
+  
+  

@@ -1,0 +1,26 @@
+export class ORMLabOrderTest {
+        test_id:String;
+		order_id:String;
+		proc_code:String;
+		proc_description:String;
+		units:String;
+		test_instructions:String;
+		accession_id:String;
+		lab_category_id:String;
+		deleted:Boolean;
+		created_user:String;
+		client_date_created:String;
+		modified_user:String;
+		client_date_modified:String;
+		date_created:String;
+		date_modified:String;
+		lab_assigned_cpt:String;
+		lab_assigned_desc:String;
+		lab_question_txt:String;
+		amount:String;
+		ndc:String;
+		modifier:String;
+		code_type:String;
+		education_provided:Boolean;
+		system_ip:String;
+}

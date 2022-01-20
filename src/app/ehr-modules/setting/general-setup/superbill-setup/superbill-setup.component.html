@@ -1,0 +1,288 @@
+<div class="light-title-bar  h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">SuperBill Setup</div>
+  <div class="d-flex align-items-center">
+    <button type="button" *ngIf="superBillCategoryDetailOperation=='' && lookupList.UserRights.superbill_add"
+      class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onAddNewDetail()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <!-- <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i class="far fa-edit"></i>
+      Edit</button> -->
+    <!-- <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"><i
+        class="far fa-trash-alt"></i> Delete</button> -->
+    <button [disabled]="isSaving" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" *ngIf="superBillCategoryDetailOperation!=''"
+      (click)="onSaveDetail()">Save</button>
+    <button class="btn btn-sm btn-dark top-right-radius h-30" *ngIf="superBillCategoryDetailOperation!=''"
+      (click)="onDetailCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-row flex-grow-1 rounded-0 border-content-box border-top-0 light-sky-blue p-1">
+  <div class="flex-1 d-flex flex-row max-height-100">
+    <div class="border  bg-white d-flex flex-column flex-1">
+      <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+        <span>Super Bill</span>
+        <button *ngIf="lookupList.UserRights.superbill_add" class="btn btn-sm btn-link line-height-1 p-0" (click)="onAddSuperBill()">Add</button>
+      </div>
+      <div class="d-flex border-bottom flex-shrink-0 p-2" *ngIf="showBillName">
+        <form [formGroup]="frmNewBill">
+          <div class="form-group flex-grow-1 mb-0">
+            <input class="form-control" formControlName="txtBillName" type="text" placeholder="Enter Bill Name">
+          </div>
+          <button class="btn btn-sm btn-success ml-1" type="button" (click)="onBillSave()">
+            <i class="far fa-save"></i></button>
+          <button class="btn btn-sm btn-danger ml-1" type="button" (click)="onBillCancel()">
+            <i class="fas fa-times"></i></button>
+        </form>
+      </div>
+      <div class="flex-grow-1 overflow-auto">
+        <table class="table sm layout-fixed light-striped-border">
+          <tbody>
+            <tr *ngFor="let a of arrSuperBill;let i = index" (click)="onSuperBillSelectionChange(i,a)" [ngClass]="{ 'active': i==superBillIndex,
+              'disabled': isDisable
+              }">
+              <td>{{a.bill_name}}</td>
+              <td class="text-right width-60">
+                <button *ngIf="lookupList.UserRights.superbill_edit" class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEditSuperBill(a)">
+                  <i class="far fa-edit"></i></button>
+                <button *ngIf="lookupList.UserRights.superbill_delete" class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDeleteSuperBill(a)">
+                  <i class="far fa-trash-alt"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="border  bg-white d-flex flex-column flex-1 ml-1">
+      <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+        <span>Super Bill Category</span>
+        <button class="btn btn-sm btn-link line-height-1 p-0" (click)="onAddSuperBillCategory()" *ngIf="lookupList.UserRights.superbill_add">Add</button>
+      </div>
+      <div class="d-flex border-bottom flex-shrink-0 p-2" *ngIf="showBillCategoryName">
+        <form [formGroup]="frmNewBillCategory">
+          <div class="form-group flex-grow-1 mb-0">
+            <input class="form-control" formControlName="txtCategoryName" type="text" placeholder="Enter Category">
+          </div>
+          <div class="form-group mb-0 ml-1">
+            <input class="form-control" type="text" formControlName="txtposition" placeholder="Pos" style="width:50px;">
+          </div>
+          <button class="btn btn-sm btn-success ml-1" type="button" (click)="onSaveBillCategory()">
+            <i class="far fa-save"></i>
+          </button>
+          <button class="btn btn-sm btn-danger ml-1" type="button" (click)="onCancelBillCategory()">
+            <i class="fas fa-times"></i>
+          </button>
+        </form>
+      </div>
+      <div class="flex-grow-1 overflow-auto">
+        <table class="table sm layout-fixed light-striped-border">
+          <tbody>
+            <tr *ngFor="let b of arrSuperBillCategory;let i = index" (click)="onSuperBillCategorySelectionChange(i,b)"
+              [ngClass]="{ 'active': i==superBillCategoryIndex,
+              'disabled': isDisable
+              }">
+              <td>{{b.category_name}}</td>
+              <td class="text-right width-60">
+                <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                  (click)="onEditSuperBillCatgeory(b)" *ngIf="lookupList.UserRights.superbill_edit">
+                  <i class="far fa-edit"></i></button>
+                <button class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDeleteSuperBillCategory(b)"
+                *ngIf="lookupList.UserRights.superbill_delete">
+                  <i class="far fa-trash-alt"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!--  -->
+    <div class="d-flex flex-column flex-3 ml-1">
+      <form [formGroup]="inputForm">
+        <div class="border bg-white d-flex flex-column">
+          <div
+            class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+            <span>Super Bill Category</span>
+            <!-- <button class="btn btn-sm btn-link line-height-1 p-0" (click)="onAddNewDetail()">Add</button> -->
+          </div>
+
+          <div class="d-flex border-bottom flex-shrink-0 p-2">
+            <div class="form-group d-flex flex-grow-1 mb-0">
+              <label class="col-form-label pr-2" for="input1">Description:</label>
+              <input class="form-control flex-grow-1" formControlName="txtCatDescription" type="text">
+            </div>
+          </div>
+
+          <div class="d-flex flex-grow-1">
+            <div class="flex-1 border-right">
+              <div class="rounded-box-title-bar border-bottom">Section 1</div>
+              <div class="p-2">
+
+                <div class="form-row form-dashboard align-items-start">
+                  <div class="form-group horizental row zero col-md-4 col-sm-4 col-12">
+                    <label class="col-sm-4 col-form-label" for="input1">Type</label>
+                    <select class="form-control col-sm-8" formControlName="txtcode1Type">
+                      <option value="cpt">CPT</option>
+                      <option value="icd">ICD</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-8 col-sm-8 col-12">
+                    <label class="col-sm-3 col-form-label required" for="input1">Search</label>
+                    <input class="form-control col-sm-9 required" type="text"
+                      id="txtcode1Search" #txtcode1Search formControlName="txtcode1Search" placeholder="Search Code/Description"
+                      (input)="onCode1SearchKeydown(txtcode1Search.value,'1')" autocomplete="off">
+                    <inline-procedure-search *ngIf="showProcSearch1" [procSearchCriteria]="procSearchCriteria"
+                      (onSelect)="onProcCodeSelect($event,'1')" (onClose)="closeProcSearch()">
+                    </inline-procedure-search>
+
+                    <inline-diagnosis-search *ngIf="showDiagSearch1" [diagSearchCriteria]="diagSearchCriteria"
+                      (onDiagSelect)="onDiagnosisSelect($event,'1')" (onClose)="closeDiagSearch()">
+                    </inline-diagnosis-search>
+                  </div>
+                  <!-- <div class="form-group has-search col-12 mt-1">
+                </div> -->
+
+                  <div class="form-group horizental row zero col-md-4 col-sm-4 col-12">
+                    <label class="col-sm-4 col-form-label" for="input1">Code</label>
+                    <input class="form-control col-sm-8" formControlName="txtcode1" type="text" readonly>
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-8 col-sm-8 col-12">
+                    <label class="col-sm-3 col-form-label" for="input1" >Desc</label>
+                    <input id="section1Desc" #section1Desc class="form-control col-sm-9" formControlName="txtcode1Desc" type="text" title="{{section1Desc.value}}">
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-4 col-sm-4 col-12">
+                    <label title="Modifier" class="col-sm-4 col-form-label" for="input1">Mod</label>
+                    <input class="form-control col-sm-8" formControlName="txtcode1Modifier" type="text">
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-5 col-sm-5 col-12">
+                    <label class="col-sm-5 col-form-label" for="input1">Price</label>
+                    <input class="form-control col-sm-7" formControlName="txtcode1charge" type="text">
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                    <label class="col-sm-6 col-form-label" for="input1">Unit</label>
+                    <input class="form-control col-sm-6" formControlName="txtcode1unit" type="text">
+                  </div>
+                  <div class="form-group horizental row zero col-12">
+                    <label class="width-30 col-form-label" for="input1">NDC</label>
+                    <input class="form-control width-260" formControlName="txtcode1NDC" type="text">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="flex-1">
+              <div class="rounded-box-title-bar border-bottom">Section 2</div>
+              <div class="p-2">
+
+                <div class="form-row form-dashboard align-items-start">
+                  <div class="form-group horizental row zero col-md-4 col-sm-4 col-12">
+                    <label class="col-sm-4 col-form-label" for="input1">Type</label>
+                    <select class="form-control col-sm-8" labelForId="input1" formControlName="txtcode2Type">
+                      <option value="cpt">CPT</option>
+                      <option value="icd">ICD</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-8 col-sm-8 col-12">
+                    <label class="col-sm-3 col-form-label required" for="input1">Search</label>
+                    <input class="form-control col-sm-9 required" placeholder="Search Code/Description" type="text"
+                      id="txtcode2Search" #txtcode2Search formControlName="txtcode2Search"  
+                      (input)="onCode1SearchKeydown(txtcode2Search.value,'2')" autocomplete="off">
+                    <inline-procedure-search *ngIf="showProcSearch2" [procSearchCriteria]="procSearchCriteria"
+                    class="position-relative" style="right: 447px;"
+                      (onSelect)="onProcCodeSelect($event,'2')" (onClose)="closeProcSearch()">
+                    </inline-procedure-search>
+
+                    <inline-diagnosis-search *ngIf="showDiagSearch2" [diagSearchCriteria]="diagSearchCriteria"
+                    class="position-relative" style="right: 447px;"
+                      (onDiagSelect)="onDiagnosisSelect($event,'2')" (onClose)="closeDiagSearch()">
+                    </inline-diagnosis-search>
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-4 col-sm-4 col-12">
+                    <label class="col-sm-4 col-form-label" for="input1">Code</label>
+                    <input class="form-control col-sm-8" formControlName="txtcode2" type="text" readonly>
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-8 col-sm-8 col-12">
+                    <label class="col-sm-3 col-form-label" for="input1">Desc:</label>
+                    <input id="section2Desc" #section2Desc class="form-control col-sm-9" labelForId="input1" type="text" formControlName="txtcode2Desc"
+                    title="{{section2Desc.value}}">
+                  </div>
+                  <div class="form-group horizental row zero col-md-4 col-sm-4 col-12">
+                    <label title="Modifier" class="col-sm-4 col-form-label" for="input1">Mod</label>
+                    <input class="form-control col-sm-8" formControlName="txtcode2Modifier" type="text">
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-5 col-sm-5 col-12">
+                    <label class="col-sm-5 col-form-label" for="input1">Price</label>
+                    <input class="form-control col-sm-7" formControlName="txtcode2charge" type="text">
+                  </div>
+
+                  <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                    <label class="col-sm-6 col-form-label" for="input1">Unit</label>
+                    <input class="form-control col-sm-6" formControlName="txtcode2unit" type="text">
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-light rounded-bottom px-2 py-1 border-top d-flex align-items-center justify-content-end">
+            <span class="fz-11 text-primary">*First Hit On Add & Then Save</span>
+            <button *ngIf="superBillCategoryDetailOperation=='new'" type="button" class="btn btn-sm btn-success ml-3"
+              (click)="onAddToList()">Add</button>
+          </div>
+
+        </div>
+      </form>
+
+      <div class="border  bg-white d-flex flex-column flex-1 mt-1">
+        <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+          <span>Category Details</span>
+          <!-- <button class="btn btn-sm btn-link line-height-1 p-0" >Add</button> -->
+        </div>
+        <div class="flex-grow-1 overflow-auto overflow-height max-height-100">
+          <table class="table sm layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <th width="40%">Description</th>
+                <th>Code 1</th>
+                <th>Code Type</th>
+                <th>Code 2</th>
+                <th>Code Type</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of arrSuperBillCategoryDetail;let i = index"
+                (click)="onSuperBillCategoryDetailSelectionChange(i,c)" [ngClass]="{ 'active': i==superBillDetailIndex,
+                'disabled': isDisable
+                }">
+                <td title="{{c.description}}">{{c.description}}</td>
+                <td>{{c.code1}}</td>
+                <td>{{c.code1_type}}</td>
+                <td>{{c.code2}}</td>
+                <td>{{c.code2_type}}</td>
+                <td class="text-right">
+                  <button *ngIf="lookupList.UserRights.superbill_edit" class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEditDetail(c)">
+                    <i class="far fa-edit"></i></button>
+                  <button *ngIf="lookupList.UserRights.superbill_delete" class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDeleteDetail(c)">
+                    <i class="far fa-trash-alt"></i></button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

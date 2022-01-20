@@ -1,0 +1,21 @@
+export class ORMChartOfficeTestCpt {
+    officetest_cpt_id:String;
+    officetest_id:String;
+    patient_id:String;
+    chart_id:String;
+    testname:String;
+    proc_code:String;
+    charges:String;
+    units:String;
+    ndc_code:String;
+    description:String;
+    pos:String;
+    deleted:Boolean;
+    created_user:String;
+    client_date_created:String;
+    modified_user:String;
+    client_date_modified:String;
+    date_created:String;
+    date_modified:String;
+    default_modifier:String;
+}

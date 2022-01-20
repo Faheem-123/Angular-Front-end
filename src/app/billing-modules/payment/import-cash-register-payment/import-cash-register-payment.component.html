@@ -1,0 +1,379 @@
+<div class="modal-header custom" (keydown.esc)="activeModal.close()">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Import Cash Register Payment</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body custom" (keydown.esc)="activeModal.close()">
+  <div class="dashboard-content">
+
+    <div class="px6-py3 flex-grow-1 overflow-auto" *ngIf="!isLoading">
+
+      <div class="row p8 mb-1">
+        <div class="col p-0">
+          <div class="info-box-stipes rounded-custom flex-grow-1">
+
+            <div class="px-2 py-1">
+
+              <div class="form-row form-dashboard">
+                <div class="form-group col-4">
+                  <label for="input2" class="col-form-label module-view-headding">Claim DOS</label>
+                  <label for="input2" class="col-form-label module-view-value pt-0">
+                    {{openedClaimInfo.dos}}
+                  </label>
+                </div>
+                <div class="form-group col-4">
+                  <label for="input2" class="col-form-label module-view-headding">Claim Provider</label>
+                  <label for="input2" class="col-form-label module-view-value pt-0">
+                    {{openedClaimInfo.providerName}}
+                  </label>
+                </div>
+                <div class="form-group col-4">
+                  <label for="input2" class="col-form-label module-view-headding">Claim Location</label>
+                  <label for="input2" class="col-form-label module-view-value pt-0">
+                    {{openedClaimInfo.locationName}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row p8 mb-1">
+        <div class="col-12 d-flex flex-column p-0">
+          <div class="info-box-stipes rounded-custom flex-grow-1">
+
+            <div class="dashboard-sub-nav encounter justify-content-between d-flex flex-row pr-0">
+              <p>Un-Resolved Cash Register Payment</p>
+
+              <div class="btn-group radio-btn-tabs mt-1">
+                <label class="btn btn-sm btn-secondary rounded-0" [ngClass]="{'active' : (dosOption === 'current')}">
+                  <input type="radio" name="dosOption" id="current" autocomplete="off" checked value="current"
+                    (ngModelChange)="onDOSOptionChange($event)" [(ngModel)]='dosOption'> Current DOS
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dosOption === 'all')}">
+                  <input type="radio" name="dosOption" id="all" autocomplete="off" value="all"
+                    (ngModelChange)="onDOSOptionChange($event)" [(ngModel)]='dosOption'> All DOS's
+                </label>
+              </div>
+
+            </div>
+
+
+            <div class="no-content p-2"
+              *ngIf="!isUnReslovedLoading && (lstUnResolvedCashRegisterEntries==undefined || lstUnResolvedCashRegisterEntries.length==0)">
+              <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+            </div>
+
+
+            <div class="div-loader" *ngIf="isUnReslovedLoading"></div>
+
+
+            <div class="overflow-auto" style="overflow-x:auto;"
+              *ngIf="!isUnReslovedLoading && lstUnResolvedCashRegisterEntries!=undefined && lstUnResolvedCashRegisterEntries.length>0">
+
+              <table class="table sm layout-fixed light-striped-border">
+                <thead>
+                  <tr>
+                    <th class="width-80">Entry Date</th>
+                    <th>Provider</th>
+                    <th>Location</th>
+                    <th class="width-80 text-right">Paid</th>
+                    <th class="width-80 text-right">Write Off</th>
+                    <th class="width-80 text-right">Prev. Paid</th>
+                    <th class="width-80 text-right">Prev. W/O</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let cash of lstUnResolvedCashRegisterEntries ; let i = index"
+                    [ngClass]="{'active-green': cash.cash_register_id==selectedCashRegisterId}"
+                    (click)="cashRegisterEntrySelectionChanged(cash)">
+                    <td class="align-middle">{{cash.client_date_created}}</td>
+                    <td class="align-middle">{{cash.provider_name}}</td>
+                    <td class="align-middle">{{cash.location_name}}</td>
+                    <td class="align-middle text-right">{{cash.total_dos_paid |
+                            currency:'USD':'symbol-narrow'}}</td>
+
+                    <td class="align-middle text-right">{{cash.total_dos_write_off |
+                            currency:'USD':'symbol-narrow'}}</td>
+
+                    <td class="align-middle text-right">{{cash.total_prev_paid |
+                            currency:'USD':'symbol-narrow'}}</td>
+
+                    <td class="align-middle text-right">{{cash.total_prev_write_off |
+                            currency:'USD':'symbol-narrow'}}</td>
+
+                  </tr>
+                </tbody>
+
+              </table>
+
+              <div class="flex-shrink-0">
+                <table class="table sm layout-fixed light-striped-border summary">
+                  <tbody>
+                    <tr class="font-weight-500">
+                      <td class="align-middle text-right summary width-300">Pending for Posting</td>
+                      <td class="align-middle text-left">
+                        Paid:
+                        <div class="input-group table-td-input-group width-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalPendingPayment | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+                      <td class="align-middle text-left">
+                        Write Off:
+                        <div class="input-group table-td-input-group width-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalPendingWriteOff | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+
+                      <td class="align-middle text-left">
+                        Prev. Paid:
+                        <div class="input-group table-td-input-group width-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalPendingPrevPayment | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+
+                      <td class="align-middle text-left">
+                        Prev. Write Off:
+                        <div class="input-group table-td-input-group width-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalPendingPrevWriteOff | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row p8 mb-1">
+        <div class="col p-0">
+          <div class="info-box-stipes rounded-custom flex-grow-1">
+
+            <div class="dashboard-sub-nav encounter justify-content-between d-flex flex-row ">
+              <p>Posting Detail</p>
+            </div>
+
+            <div class="no-content p-2"
+              *ngIf="!isLoading && (lstClaimProcedures==undefined || lstClaimProcedures.length==0)">
+              <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No CPT found for due balance.
+            </div>
+
+            <div class="no-content p-2" *ngIf="!isLoading && (totalPendingPayment==0 && totalPendingWriteOff==0 && totalPendingPrevPayment==0 && totalPendingPrevWriteOff==0)
+              && (lstClaimProcedures!=undefined && lstClaimProcedures.length>0)">
+              <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Cash Register entry not selected.
+            </div>
+
+
+            <div class="overflow-auto" style="overflow-x:auto;"
+              *ngIf="!isLoading && (lstClaimProcedures!=undefined && lstClaimProcedures.length>0)
+              && (totalPendingPayment>0 || totalPendingWriteOff>0 || totalPendingPrevPayment>0 || totalPendingPrevWriteOff>0)">
+
+              <table class="table sm layout-fixed light-striped-border">
+                <thead>
+                  <tr>
+                    <th>CPT</th>
+                    <th class="text-right">Charges</th>
+                    <th class="text-right width-110">Balance</th>
+                    <th class="text-right width-110">Paid</th>
+                    <th class="text-right width-110">Write Off</th>
+                    <th class="text-right width-110">Prev. Paid</th>
+                    <th class="text-right width-110">Prev. Write Off</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let proc of lstClaimProcedures">
+                    <td>{{proc.proc_code}}</td>
+                    <td class="text-right width-110">
+                      <div class="input-group table-td-input-group w-100">
+                        <div class="input-group-prepend table-td-input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text ">$</span>
+                        </div>
+                        <span
+                          class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{proc.total_charges | number :'.2-2'}}</span>
+                      </div>
+                    </td>
+                    <td class="text-right width-110">
+                      <div class="input-group table-td-input-group w-100">
+                        <div class="input-group-prepend table-td-input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text ">$</span>
+                        </div>
+                        <span
+                          class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1"
+                          [ngClass]="{'text-success font-weight-500': proc.cpt_balance==0,
+                          'text-primary': proc.cpt_balance>0}">{{proc.cpt_balance | number :'.2-2'}}</span>
+                      </div>
+                    </td>
+                    <td class="text-right width-110">
+                      <div class="input-group table-td-input-group w-100">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text ">$</span>
+                        </div>
+                        <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                          [ngClass]="{'text-danger': proc.invalid}" placeholder="0.00"
+                          [disabled]="totalPendingPayment==0" id="txtPaid{{proc.claim_procedures_id}}"
+                          (blur)="formateCurrencyInputs($event.target,proc.claim_procedures_id,'paid_amount')"
+                          autocomplete="off">
+                      </div>
+
+                    </td>
+                    <td class="text-right width-110">
+                      <div class="input-group table-td-input-group w-100">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text ">$</span>
+                        </div>
+                        <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                          [ngClass]="{'text-danger': proc.invalid}" placeholder="0.00"
+                          [disabled]="totalPendingWriteOff==0" id="txtWO{{proc.claim_procedures_id}}"
+                          (blur)="formateCurrencyInputs($event.target,proc.claim_procedures_id,'write_off')"
+                          autocomplete="off">
+                      </div>
+
+                    </td>
+                    <td class="text-right width-110">
+                      <div class="input-group table-td-input-group w-100">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text ">$</span>
+                        </div>
+                        <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                          [ngClass]="{'text-danger': proc.invalid}" placeholder="0.00"
+                          [disabled]="totalPendingPrevPayment==0" id="txtPrevPaid{{proc.claim_procedures_id}}"
+                          (blur)="formateCurrencyInputs($event.target,proc.claim_procedures_id,'prev_paid_amount')"
+                          autocomplete="off">
+                      </div>
+
+                    </td>
+
+                    <td class="text-right width-110">
+                      <div class="input-group table-td-input-group w-100">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text table-td-input-group-text ">$</span>
+                        </div>
+                        <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                          [ngClass]="{'text-danger': proc.invalid}" placeholder="0.00"
+                          [disabled]="totalPendingPrevWriteOff==0" id="txtPrevWO{{proc.claim_procedures_id}}"
+                          (blur)="formateCurrencyInputs($event.target,proc.claim_procedures_id,'prev_write_off')"
+                          autocomplete="off">
+                      </div>
+
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="flex-shrink-0">
+                <table class="table sm layout-fixed light-striped-border summary">
+                  <tbody>
+                    <tr class="font-weight-500">
+                      <td class="align-middle text-right summary width-300">Total Posting</td>
+                      <td class="align-middle text-right">
+                        <span class="pr-2">Paid</span>
+                        <div class="input-group table-td-input-group width-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span [ngClass]="{'text-danger': totalPaymentToPost>totalPendingPayment}"
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalPaymentToPost | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+                      <td class="align-middle text-right">
+                        <span class="pr-2">Write Off</span>
+                        <div class="input-group table-td-input-group width-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span [ngClass]="{'text-danger': totalWriteOffToPost>totalPendingWriteOff}"
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalWriteOffToPost | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+
+                      <td class="align-middle text-right">
+                        <span class="pr-2">Prev. Paid</span>
+                        <div class="input-group table-td-input-group width-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span [ngClass]="{'text-danger': totalPrevPaymentToPost>totalPendingPrevPayment}"
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalPrevPaymentToPost | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+
+                      <td class="align-middle text-right">
+                        <span class="pr-2">Prev. Write Off</span>
+                        <div class="input-group table-td-input-group width-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span [ngClass]="{'text-danger': totalPrevWriteOffToPost>totalPendingPrevWriteOff}"
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalPrevWriteOffToPost | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+
+
+      <div class="form-row form-dashboard" *ngIf="lstErrors 
+          || (totalPaymentToPost > totalPendingPayment) 
+          || (totalWriteOffToPost>totalPendingWriteOff) 
+          || (totalPrevPaymentToPost>totalPendingPrevPayment)
+          || (totalPrevWriteOffToPost>totalPendingPrevWriteOff)">
+        <div class="form-group col-12 px-0">
+          <div class="alert alert-danger rounded-custom mb-1" role="alert">
+            <ul>
+              <li *ngIf="totalPaymentToPost > totalPendingPayment">Payment can't exceed cash register payment.</li>
+              <li *ngIf="totalWriteOffToPost>totalPendingWriteOff">Write Off can't exceed cash register Write Off.</li>
+              <li *ngIf="totalPrevPaymentToPost>totalPendingPrevPayment">Prev. Payment can't exceed cash register prev.
+                payment.</li>
+              <li *ngIf="totalPrevWriteOffToPost>totalPendingPrevWriteOff">Prev. Write Off can't exceed cash register
+                prev.
+                Write Off.</li>
+              <li *ngFor="let error of lstErrors">{{error}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</div>
+<div class="modal-footer custom">
+  <button style="width: 100px;" class="btn btn-success btn-sm" type="button" [disabled]="!isFormValid()"
+    (click)="onImportPayment()">Import</button>
+  <button type="button" style="width: 100px;" class="btn btn-dark btn-sm"
+    (click)="activeModal.close(false)">Cancel</button>
+</div>
+
+<div *ngIf="isLoading" class="div-loader"></div>

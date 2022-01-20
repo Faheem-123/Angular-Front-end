@@ -1,0 +1,153 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Allergies</div>
+  <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+
+    <button *ngIf="canAddEdit && canView && enableLocalAllergy" (click)="addEditLocalAllergy(undefined)"
+      class="nav-link green px-2 py-0">
+      <i class="far fa-plus-square pr-1"></i>Add Allergy
+    </button>
+
+    <button *ngIf="canAddEdit && canView" (click)="onSubmit()" class="nav-link green px-2 py-0 top-right-radius">
+      <i class="far fa-plus-square pr-1"></i>Add e-Allergy
+    </button>
+
+
+    <!--
+       <a class="nav-link green px-2 py-0 top-right-radius" (click)="onSubmit()" *ngIf="canAddEdit && canView">
+      <i class="far fa-plus-square pr-1"></i>Add</a>
+      
+      <a class="nav-link blue px-2 py-0 top-right-radius">
+      <i class="fas fa-history pr-1"></i>History</a>
+      -->
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="canView && !isLoading &&  !addEditView">
+    <form [formGroup]="radioForm">
+      <div class="btn-group radio-btn-tabs px-1">
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'ehr')}">
+          <input type="radio" name="radioOption" autocomplete="off" formControlName="radioOption" value="ehr"
+            (ngModelChange)="onRadioOptionChange($event)"> EHR
+        </label>
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'other')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="other"
+            (ngModelChange)="onRadioOptionChange($event)"> Other Sources
+        </label>
+      </div>
+    </form>
+
+  </div>
+
+
+
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <i class="fas fa-ban mr-2"></i> Access Denied
+  </div>
+
+
+
+  <div *ngIf="!isLoading &&  noRecordFound  && canView " class="no-content">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+
+  <div *ngIf="!isLoading && !noRecordFound && canView" role="tablist" class="encounter-view-fixed">
+    
+    <div *ngIf="canView && !noRecordFound && !addEditView" class="encounter-view flex-grow-1 mt-0">
+      <div class="encounter-data-accordian accordian-data" *ngFor="let al of lstAllergyViewFiltered">
+        <div class="accordian-header" role="tab" id="headingOne">
+
+          <h5>
+            <a data-toggle="collapse" href="#summaryAllergy{{al.chart_allergies_id}}" aria-expanded="false">
+
+              <span class="accordian-header-date">{{al.onset_date}}</span> {{al.description}}
+
+            </a>
+          </h5>
+
+          <button type="button" class="btn btn-link btn-md text-primary"
+            *ngIf="canAddEdit && canView && !al.is_eallergy && al.status=='A'" (click)="markAllergyAsInactive(al)">
+            Mark as Inactive
+          </button>
+          <button type="button" class="btn btn-link btn-md text-primary"
+            *ngIf="canAddEdit && canView && !al.is_eallergy" (click)="addEditLocalAllergy(al)">
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" class="btn btn-link btn-md btn-delete" *ngIf="canAddEdit && canView && !al.is_eallergy"
+            (click)="onDeleteAllergy(al)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+
+
+        </div>
+
+        <div id="summaryAllergy{{al.chart_allergies_id}}" class="collapse" class="collapse">
+          <div class="accordian-body">
+
+            <div class="row mx-0">
+
+              <div class="col col-3 pl-0" *ngIf="al.concept_type">
+                <p>Concept Type:<strong>{{al.concept_type}}</strong></p>
+              </div>
+
+              <div class="col col-3 pl-0" *ngIf="al.severity">
+                <p>Severity:<strong>{{al.severity}}</strong></p>
+              </div>
+
+              <div class="col col-3 pl-0">
+                <p>Status:<strong>
+                    <span *ngIf="al.status=='A'">Acive</span>
+                    <span *ngIf="al.status=='I'">Inacive</span>
+                  </strong></p>
+              </div>
+
+              <div class="col col-3 pl-0" *ngIf="al.rxnorm">
+                <p>Rxnorm:<strong>{{al.rxnorm}}</strong> </p>
+              </div>
+
+            </div>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+    <!--    
+      <div class="card dashboard-card" *ngFor="let al of lstAllergyViewFiltered">
+      <div class="card-header" role="tab">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#summaryAllergy{{al.chart_allergies_id}}" aria-expanded="false">
+            <span class="card-header-date">{{al.onset_date}}</span> {{al.description}}
+          </a>
+        </h5>
+
+
+      </div>
+
+      <div id="summaryAllergy{{al.chart_allergies_id}}" class="collapse" class="collapse">
+        <div class="card-body">
+          <p>Concept Type:<strong>{{al.concept_type}}</strong></p>
+          <p>Severity:<strong>{{al.severity}}</strong></p>
+          <p *ngIf="al.status">Status:<strong>{{al.status}}</strong></p>
+          <p *ngIf="al.rxnorm">Rxnorm:<strong>{{al.rxnorm}}</strong> </p>
+        </div>
+      </div>
+    </div>
+    -->
+
+  </div>
+</div>

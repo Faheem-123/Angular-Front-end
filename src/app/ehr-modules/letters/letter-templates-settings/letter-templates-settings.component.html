@@ -1,0 +1,235 @@
+<div class="dashboard">
+    <div class="bg-green-ihc rounded-10-top h-30 d-flex align-items-center justify-content-between flex-shrink-0">
+
+        <div class="d-flex">
+            <button class="btn new-meesage flex-shrink-0 rounded-10-top-left" (click)="onBacktoTemplatesFromSettings()">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Home</button>
+            <div class="fz-15 font-weight-400 text-white ml-2 mt-1">Settings</div>
+        </div>
+    </div>
+    <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+        <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+            <div class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                <form [formGroup]="frmLetterHeader" class="d-flex flex-column flex-grow-1">
+                    <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                        <div class="rounded-box-title-bar justify-content-between">
+                            <span>Headers</span>
+                            <div *ngIf="!isAddEditHeader">
+                                <a class="fz-13 font-weight-400 mr-2" (click)="addNewHeader()" href="#">Add</a>
+                            </div>
+
+
+                            <ul class="nav color-buttons align-items-center" *ngIf="isAddEditHeader">
+                                <button class="btn btn-sub-nav rounded-0 btn-success"
+                                    (click)="saveHeader()">Save</button>
+                                <button class="btn btn-sub-nav rounded-0 btn-dark"
+                                    (click)="cancelHeader()">Cancel</button>
+                            </ul>
+
+                        </div>
+
+                        <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+                            <div class="border-top pt-1 bg-white d-flex flex-column flex-shrink-0"
+                                style="height: 260px;">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="form-group horizental row zero mb-1">
+                                        <label class="col-sm-2 col-form-label " for="input2">Name:</label>
+                                        <input type="text" class="form-control col-sm-10"
+                                            formControlName="txt_HeaderName" [readonly]="!isAddEditHeader">
+                                    </div>
+
+                                    <div class="form-group flex-grow-1 mb-0" *ngIf="!showHideHeadder">
+                                        <quill-editor id="headerRichEditorView" #headerRichEditorView
+                                            [modules]="{toolbar: false}" [readOnly]="!isAddEditHeader" [required]="true"
+                                            [formControl]="headerTextView">
+                                        </quill-editor>
+                                    </div>
+                                    <div class="form-group horizental col-12" *ngIf="showHideHeadder">
+                                        <quill-editor id="headerRichEditorEdit" #headerRichEditorEdit [required]="true"
+                                            [readOnly]="!isAddEditHeader" [formControl]="headerTextEdit">
+                                        </quill-editor>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                <table class="table layout-fixed sm light-striped-border">
+                                    <thead>
+                                        <tr>
+                                            <td>Headers</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr st-select-row="row" *ngFor="let head of lstLetterHeadersSetup"
+                                            (click)="headerChange(head)"
+                                            [ngClass]="{'active' : (head.header_id === isSelectedHeaderID)}">
+                                            <td>{{head.name}}</td>
+                                            <td class="text-right">
+                                                <a class="p-0 text-primary mr-2" (click)="editHeader(head)">
+                                                    <i class="far fa-edit"></i>
+                                                </a>
+                                                <a class="text-danger" href="#" (click)="deleteSeletedHeader(head)">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                <form [formGroup]="frmLetterSection" class="d-flex flex-column flex-grow-1">
+                    <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                        <div class="rounded-box-title-bar justify-content-between">
+                            <span>Sections</span>
+                            <div *ngIf="!isAddEditSection">
+                                <a class="fz-13 font-weight-400 mr-2" (click)="addNewSection()" href="#">Add</a>
+                            </div>
+
+
+                            <ul class="nav color-buttons align-items-center" *ngIf="isAddEditSection">
+                                <button class="btn btn-sub-nav rounded-0 btn-success"
+                                    (click)="saveSection()">Save</button>
+                                <button class="btn btn-sub-nav rounded-0 btn-dark"
+                                    (click)="cancelSection()">Cancel</button>
+                            </ul>
+
+                        </div>
+
+                        <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+                            <div class="border-top pt-1 bg-white d-flex flex-column flex-shrink-0"
+                                style="height: 260px;">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="form-group horizental row zero mb-1">
+                                        <label class="col-sm-2 col-form-label " for="input2">Name:</label>
+                                        <input type="text" class="form-control col-sm-10"
+                                            formControlName="txt_sectionName" [readonly]="!isAddEditSection">
+                                    </div>
+                                    <div class="form-group flex-grow-1 mb-0" *ngIf="!showHideSections">
+                                        <quill-editor [modules]="{toolbar: false}" id="sectionRichEditorView"
+                                            [readOnly]="!isAddEditSection" #sectionRichEditorView [required]="true"
+                                            [formControl]="sectionTextView">
+                                        </quill-editor>
+                                    </div>
+                                    <div class="form-group flex-grow-1 mb-0" *ngIf="showHideSections">
+                                        <quill-editor id="sectionRichEditorEdit" #sectionRichEditorEdit
+                                            [required]="true" [readOnly]="!isAddEditSection"
+                                            [formControl]="sectionTextEdit">
+                                        </quill-editor>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                <table class="table layout-fixed sm light-striped-border">
+                                    <thead>
+                                        <tr>
+                                            <td>Sections</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr st-select-row="row" *ngFor="let sect of lstLetterSectionsSetup"
+                                            (click)="sectionChange(sect)"
+                                            [ngClass]="{'active' : (sect.section_id === isSelectedSectionID)}">
+                                            <td>{{sect.section_name}}</td>
+                                            <td class="text-right">
+                                                <a class="p-0 text-primary mr-2" (click)="editSection(sect)">
+                                                    <i class="far fa-edit"></i>
+                                                </a>
+                                                <a class="text-danger" href="#" (click)="deleteSeletedSection(sect)">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                <form [formGroup]="frmLetterSubSection" class="d-flex flex-column flex-grow-1">
+                    <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                        <div class="rounded-box-title-bar justify-content-between">
+                            <span>Sub Sections</span>
+                            <div *ngIf="!isAddEditSubSection">
+                                <a class="fz-13 font-weight-400 mr-2" (click)="addNewSubSection()" href="#">Add</a>
+                            </div>
+
+                            <ul class="nav color-buttons align-items-center" *ngIf="isAddEditSubSection">
+                                <button class="btn btn-sub-nav rounded-0 btn-success"
+                                    (click)="saveSubSection()">Save</button>
+                                <button class="btn btn-sub-nav rounded-0 btn-dark"
+                                    (click)="cancelSubSection()">Cancel</button>
+                            </ul>
+                        </div>
+
+                        <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+                            <div class="border-top pt-1 bg-white d-flex flex-column flex-shrink-0"
+                                style="height: 260px;">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <div class="form-group horizental row zero mb-1">
+                                        <label class="col-sm-2 col-form-label " for="input2">Name:</label>
+                                        <input type="text" class="form-control col-sm-10"
+                                            formControlName="txt_subSectionName" [readonly]="!isAddEditSubSection">
+                                    </div>
+                                    <div class="form-group flex-grow-1 mb-0" *ngIf="!showHideSubSections">
+                                        <quill-editor [readOnly]="!isAddEditSubSection" [modules]="{toolbar: false}"
+                                            id="subSectionRichEditorView" #subSectionRichEditorView [required]="true"
+                                            [formControl]="subSectionTextView">
+                                        </quill-editor>
+                                    </div>
+                                    <div class="form-group flex-grow-1 mb-0" *ngIf="showHideSubSections">
+                                        <quill-editor [readOnly]="!isAddEditSubSection" id="subSectionRichEditorEdit"
+                                            #subSectionRichEditorEdit [required]="true"
+                                            [formControl]="subSectionTextEdit">
+                                        </quill-editor>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                <table class="table layout-fixed sm light-striped-border">
+                                    <thead>
+                                        <tr>
+                                            <td>Sub Sections</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr st-select-row="row" *ngFor="let subsect of lstLetterSubSectionsSetup"
+                                            (click)="subSectionChange(subsect)"
+                                            [ngClass]="{'active' : (subsect.sub_section_id === isSelectedSubSectionID)}">
+                                            <td>{{subsect.sub_section_name}}</td>
+                                            <td class="text-right">
+                                                <a class="p-0 text-primary mr-2" (click)="editSubSection(subsect)">
+                                                    <i class="far fa-edit"></i>
+                                                </a>
+                                                <a class="text-danger" href="#"
+                                                    (click)="deleteSeletedSubSection(subsect)">
+                                                    <i class="far fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

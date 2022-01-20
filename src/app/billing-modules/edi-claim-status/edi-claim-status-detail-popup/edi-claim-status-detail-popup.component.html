@@ -1,0 +1,71 @@
+<div class="modal-header custom">
+
+  <img class="logo" src="./assets/images/logo-small.png">
+
+  <h4 class="modal-title">EDI Claim Status</h4>
+
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+
+    <span aria-hidden="true">&times;</span>
+
+  </button>
+
+</div>
+
+<div class="modal-body custom d-flex flex-column flex-grow-1" style="min-height: 60px; max-height: 500px;">
+
+
+  <div class="info-box-stipes rounded-2 d-flex flex-column flex-shrink-1 mb-2">
+
+
+    <div class="form-row form-dashboard px-2 py-1">
+
+
+      <div class="form-group col">
+        <label class="col-form-label module-view-headding">Patient:</label>
+        <label class="col-form-label module-view-value font-weight-500 pt-0">
+          {{ediStatus.patient_name}}
+        </label>
+
+      </div>
+
+      <div class="form-group col">
+        <label class="col-form-label module-view-headding">DOS</label>
+        <label class="col-form-label module-view-value font-weight-500 pt-0">
+          {{ediStatus.dos}}
+        </label>
+
+      </div>
+      <div class="form-group col">
+        <label class="col-form-label module-view-headding">Claim Id</label>
+        <label class="col-form-label module-view-value font-weight-500 pt-0">
+          {{ediStatus.claim_id}}
+        </label>
+
+      </div>
+
+      <div class="form-group col">
+        <label class="col-form-label module-view-headding">Location</label>
+        <label class="col-form-label module-view-value font-weight-500 pt-0">
+          {{ediStatus.location_name}}
+        </label>
+
+      </div>
+
+      <div class="form-group col">
+        <label class="col-form-label module-view-headding">Billing Provider</label>
+        <label class="col-form-label module-view-value font-weight-500 pt-0">
+          {{ediStatus.billing_provider_name}}
+        </label>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <edi-claim-status-detail [claimId]="ediStatus.claim_id" callingFrom="edi_claim_status" class="overflow-auto">
+  </edi-claim-status-detail>
+
+</div>

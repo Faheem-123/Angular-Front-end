@@ -1,0 +1,93 @@
+<div class="dashboard">
+  <div class="light-title-bar h-30 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-14 font-weight-500 py-1">Problem Based Templates</div>
+    <div class=" justify-content-end mr-2">
+        <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+        (click)="onApply()">Apply</button>
+    </div>
+  </div>
+  <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+
+    <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+
+      <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+        <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+          <div class="rounded-box-title-bar justify-content-between">
+            <span>Templates</span>
+            <div class="d-flex align-items-center">
+              <button class="btn btn-sm btn-link line-height-1 p-0 mr-2">New</button>
+            </div>
+          </div>
+
+          <div class="d-flex flex-column flex-grow-1">
+            <div class="border-top bg-white flex-grow-1 overflow-auto d-flex overflow-height">
+              <table class="table layout-fixed sm light-striped-border" id="tbl">
+                <tbody>
+                  <tr st-select-row="row" *ngFor="let temp of listTemplateResult; let i=index;"
+                    (click)="PopTemplateSetup(temp,i)" [ngClass]="{'active' : (i === selectedIndex)}">
+                    <td width="100%">{{temp.name}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-9 col-sm-9 col-12 d-flex flex-column flex-grow-1">
+
+        <div class="bg-white d-flex flex-column flex-grow-1">
+          <div class="rounded-bottom d-flex flex-grow-1 overflow-auto">
+            <form [formGroup]="inputForm" class="form-row form-dashboard p-6 pt-0 col-12" >
+              
+              <div class="form-group col-12">
+                <label for="input05" class="font-weight-500">Reason For Visit:</label>
+                <textarea autosize class="form-control required " formControlName="RFVtxt" #RFVtxt
+                  id="RFVtxt"></textarea>
+              </div>
+
+              <div class="form-group col-12">
+                <label for="input06" class="font-weight-500">HPI:</label>
+                <textarea autosize class="form-control required " formControlName="HPItxt" #HPItxt
+                  id="HPItxt"></textarea>
+              </div>
+
+              <div class="form-group col-12">
+                <label for="input07" class="font-weight-500">Past Medical History:</label>
+                <textarea autosize class="form-control required " formControlName="PMHtxt" #PMHtxt
+                  id="PMHtxt"></textarea>
+              </div>
+
+              <div class="form-group col-12">
+                <label for="input08" class="font-weight-500">Review Of System:</label>
+                <textarea autosize class="form-control required " formControlName="ROStxt" #ROStxt
+                  id="ROStxt"></textarea>
+              </div>
+
+              <div class="form-group col-12">
+                <label for="input09" class="font-weight-500">Physical Exam:</label>
+                <textarea autosize class="form-control required " formControlName="PEtxt" #PEtxt id="PEtxt"></textarea>
+              </div>
+
+              <div class="form-group col-12">
+                <label for="input10" class="font-weight-500">Plan:</label>
+                <textarea autosize class="form-control required " formControlName="plantxt" #plantxt
+                  id="plantxt"></textarea>
+                <div class="p-6" hidden>
+                  <form [formGroup]="richForm">
+                    <quill-editor #richEditorTemp format="text|html" id="richEditorTemp" [required]="true"
+                      [formControl]="content">
+
+                    </quill-editor>
+                  </form>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="rounded mt-1 d-flex flex-grow-1 overflow-auto">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,157 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Patient Statement / Attorney</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body p-0">
+  <div class="dashboard-title  dashboard-sub-nav encounter h-30 justify-content-between">
+   
+      <div class="justify-content-start">
+        <form [formGroup]="billForm">
+          <div class="d-flex flex-grow-1 text-dark h-20 px-2 mt-2-px-reverse">
+            <div class="custom-control custom-checkbox green-checkbox ">
+              <input class="custom-control-input" id="chkClaim-Statement-Patient-bill" type="checkbox"
+                formControlName="chkbill" (change)="onBillFormSelection($event)">
+              <label class="custom-control-label" for="chkClaim-Statement-Patient-bill">
+                Patient Billed
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div>
+        
+        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" 
+          (click)="onPrintStatement()" *ngIf="this.lookupList.UserRights.patient_statement_generate">
+          Print Statement 
+        </button>
+        
+        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" 
+          (click)="onGateWayStatement()" *ngIf="this.lookupList.UserRights.patient_statement_generate">
+          Gateway Statement
+        </button>
+        
+        <button *ngIf="showDownload" type="button" 
+                class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 text-success" 
+        (click)="onDownload()">Download</button>
+        
+        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" 
+          (click)="onPrintAttorney()">Print Attorney
+        </button>
+
+        <div class="position-absolute d-flex flex-column w-300 h-200 z-100" style="top:60px;right:0" *ngIf='showAttorneyInfo'>
+        <div class="sm-modal-header rounded-top">
+              <h4 class="modal-title fz-14 font-weight-400 pl-2" id="modal-basic-title">Search Attorney Information</h4>
+              <!-- <button class="btn btn-sm btn-danger border-0" type="button" (click)="showAttorneyInfo=false;">
+                <i class="fas fa-times"></i>
+              </button> -->
+        </div>
+          
+          <div class="sm-modal-body p-0">
+            <div class="dashboard-title  dashboard-sub-nav encounter h-25 justify-content-end p-0">
+                <div class="title-link mr-1">
+                    <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" 
+                      (click)="printAttorney()">Print
+                    </button>
+                    <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 ml-2 " 
+                      (click)="showAttorneyInfo=false;">Close
+                    </button>
+                </div>
+            </div>
+                <div class="p-1">
+                  <form [formGroup]="searchForm">
+                    <div class="form-row form-dashboard">
+                      <div class="form-group horizental row zero col-12">
+                        <label class="col-form-label text-left col-3 text-primary">Firm Name:</label>
+                        <span class="fa fa-search form-control-feedback"></span>
+                        <input id="txtAttorneySearch" class="form-control search-highlight flex-grow-3" type="text" autoFocus
+                          placeholder="Search Attorney" (keydown)="onAttorneySearchKeydown($event)" #txtAttorneySearch autocomplete="off">
+                        <inline-firm-search *ngIf="showAttorneySearch" searchValue="{{txtAttorneySearch.value}}"
+                          (onFirmSelect)="addFirm($event)" (onClose)="closeFirmSearch($event)"></inline-firm-search>
+                      </div>
+                      <div class="form-group horizental row zero col-12">
+                          <label class="col-form-label text-left text-primary">Attorney Name:</label>
+                          <input id="txtAttorneyName" class="form-control flex-grow-3" type="text"   
+                          formControlName="txtAttorneyName" >    
+                      </div>
+                      <div class="form-group horizental row zero col-12">
+                          <label class="col-form-label text-left col-3 text-primary">Address:</label>
+                          <input id="txtAttorneyAddress" class="form-control flex-grow-3" type="text"   
+                                formControlName="txtAttorneyAddress" >  
+                      </div>
+                      <div class="form-group horizental row zero col-12">
+                          <label class="col-form-label text-left col-3 text-primary">Phone No:</label>
+                          <input id="txtPhoneNo" class="form-control flex-grow-3" type="text"   
+                                formControlName="txtPhoneNo" >  
+                      </div>
+                      <div class="form-group horizental row zero col-12">
+                          <label class="col-form-label text-left col-3 text-primary">Fax No:</label>
+                          <input id="txtFaxNo" class="form-control flex-grow-3" type="text"   
+                                formControlName="txtFaxNo" >  
+                      </div>
+                    </div>
+                  </form>
+                </div>
+               
+          </div>
+          </div>
+        </div>
+    
+  </div>
+  <div class="dashboard-content overflow-auto" style="height: 260px !important;">
+    <table class="table layout-fixed light-striped-border">
+      <thead>
+        <tr>
+          <th width="35px"></th>
+          <th width="90px">DOS</th>
+          <th class="width-110">Provider</th>
+          <th>Pri.Ins</th>
+          <th>Charges</th>
+          <th>Pri.Paid</th>
+          <th>Sec.Paid</th>
+          <th>Pat.Paid</th>
+          <th>Adj.Amt</th>
+          <th>Amt.Due</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let enc of lstClaim">
+          <td>
+           
+            <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+              <input type="checkbox" class="custom-control-input" id="chk_{{enc.claim_id}}"
+                  (change)="onSelection($event,enc)">
+              <label class="custom-control-label" for="chk_{{enc.claim_id}}"></label>
+          </div>
+          </td>
+          <td>{{enc.dos}}</td>
+          <td>{{enc.prov_name}}</td>
+          <td title="{{enc.insurance_name}}">{{enc.insurance_name}}</td>
+          <td title="{{enc.claim_total}}">{{enc.claim_total  | currency:'USD':'symbol-narrow'}}</td>
+          <td title="{{enc.pri_paid}}">{{enc.pri_paid  | currency:'USD':'symbol-narrow'}}</td>
+          <td title="{{enc.sec_paid}}">{{enc.sec_paid  | currency:'USD':'symbol-narrow'}}</td>
+          <td title="{{enc.patient_paid}}">{{enc.patient_paid  | currency:'USD':'symbol-narrow'}}</td>
+          <td title="{{enc.adjust_amount}}">{{enc.adjust_amount  | currency:'USD':'symbol-narrow'}}</td>
+          <td title="{{enc.amt_due}}">{{enc.amt_due  | currency:'USD':'symbol-narrow'}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="dashboard-sub-nav encounter h-30">
+      <p for="txtComments">Statement Comments:</p>
+  </div>
+  <form [formGroup]="inputForm">
+    <div class="form-group col-12 p-0">
+      <textarea class="form-control" formControlName="txtComments"  id="txtComments" rows="4" placeholder="Comments"></textarea>
+    </div>
+</form>
+<div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+  <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+  </div>
+</div>
+</div>

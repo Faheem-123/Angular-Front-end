@@ -1,0 +1,19 @@
+export class ORMSaveChartFamilyHx {
+    familyhistory_id:string;
+    chart_id:string;
+    patient_id:string;
+    relation:string;
+    comment:string;
+    icd_code:string;
+    practice_id:string;
+    created_user:string;
+    client_date_created:string;
+    modified_user:string;
+    client_date_modified:string;
+    date_created:string;
+    date_modified:string;
+    system_ip:string;
+    onset_date:string;
+    code_type:string;	
+    description:string;
+}

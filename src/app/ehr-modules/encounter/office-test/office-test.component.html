@@ -1,0 +1,741 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Office Tests</div>
+  
+  <ul class="nav color-buttons align-items-center" *ngIf="canAddEdit">
+ 
+    <button class="nav-link green px-2 py-0 top-right-radius"  *ngIf="!addEditView"
+      title="Refresh Office Test" (click)="onrefresh()">
+      <i class="fas fa-redo"></i>
+    </button>
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+      (click)="saveOfficeTest(ofcTestForm.value)">
+      <i class="fa fa-save pr-1"></i>Save
+    </button>
+    <button *ngIf="addEditView" class="nav-link btn-dark px-2 py-0 top-right-radius" (click)="cancelEdit()">
+      <i class="fas fa-times  pr-1"></i>Cancel
+    </button>
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <i class="fas fa-ban mr-2"></i> Access Denied
+  </div>
+
+  <div class="p-6" *ngIf="canView">
+    <form [formGroup]="ofcTestForm">
+      <div class="row p3">
+        <div class="col-6 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Blood Glucose</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group col-4">
+                <label for="txt_BGfasting" class="col-form-label">Fasting:</label>
+                <input type="text" class="form-control" formControlName="txt_BGfasting"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_BGfasting').value!=undefined && ofcTestForm.get('txt_BGfasting').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+              <div class="form-group col-4 ">
+                <label for="txt_BGrandom" class="col-form-label">Random:</label>
+                <input type="text" class="form-control" formControlName="txt_BGrandom"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_BGrandom').value!=undefined && ofcTestForm.get('txt_BGrandom').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+              <div class="form-group col-4">
+                <label for="txt_BGprandial" class="col-form-label">Prandial:</label>
+                <input type="text" class="form-control" formControlName="txt_BGprandial"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_BGprandial').value!=undefined && ofcTestForm.get('txt_BGprandial').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Vision</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group col-6">
+                <label for="txt_vision_left" class="col-form-label">Left:</label>
+                <input type="text" class="form-control" formControlName="txt_vision_left"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_vision_left').value!=undefined && ofcTestForm.get('txt_vision_left').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+              <div class="form-group col-6">
+                <label for="txt_vision_right" class="col-form-label">Right:</label>
+                <input type="text" class="form-control" formControlName="txt_vision_right"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_vision_right').value!=undefined && ofcTestForm.get('txt_vision_right').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">OGTT/GTT</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group col-3">
+                <label class="col-form-label">&nbsp;</label>
+                <input type="text" class="form-control" formControlName="txt_txtOgtt1"
+                  (keydown)="generalChange($event)"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_txtOgtt1').value!=undefined && ofcTestForm.get('txt_txtOgtt1').value!='')}">
+              </div>
+              <div class="form-group col-3">
+                <label class="col-form-label">&nbsp;</label>
+                <input type="text" class="form-control" formControlName="txt_txtOgtt2"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_txtOgtt2').value!=undefined && ofcTestForm.get('txt_txtOgtt2').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+              <div class="form-group col-3">
+                <label class="col-form-label">&nbsp;</label>
+                <input type="text" class="form-control" formControlName="txt_txtOgtt3"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_txtOgtt3').value!=undefined && ofcTestForm.get('txt_txtOgtt3').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+              <div class="form-group col-3">
+                <label class="col-form-label">&nbsp;</label>
+                <input type="text" class="form-control" formControlName="txt_txtOgtt4"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_txtOgtt4').value!=undefined && ofcTestForm.get('txt_txtOgtt4').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Hearing</h4>
+            <div class="p-2 pt-0">
+              <div class="px-2 py-1 mb-1">
+                <div class="row zero align-items-center">
+                  <div class="col-2">
+                    <h5 class="fz-14 font-weight-500 m-0 text-primary">Level:</h5>
+                  </div>
+                  <div class="col-10 d-flex justify-content-center">
+
+
+                    <div class="custom-control custom-radio green-radio">
+                      <input class="custom-control-input" type="radio"
+                        id="hearing_level_20{{objencounterToOpen.chart_id}}" formControlName="rdHearinglevel"
+                        name="rdHearinglevel" value="hearing_level_20" (click)="rdogeneralChange()">
+                      <label class="custom-control-label" for="hearing_level_20{{objencounterToOpen.chart_id}}">20 db
+                        HL</label>
+                    </div>
+
+                    <div class="custom-control custom-radio green-radio">
+                      <input class="custom-control-input" type="radio"
+                        id="hearing_level_25{{objencounterToOpen.chart_id}}" formControlName="rdHearinglevel"
+                        name="rdHearinglevel" value="hearing_level_25" (click)="rdogeneralChange()">
+                      <label class="custom-control-label" for="hearing_level_25{{objencounterToOpen.chart_id}}">25 db
+                        HL</label>
+                    </div>
+
+                    <div class="custom-control custom-radio green-radio">
+                      <input class="custom-control-input" type="radio"
+                        id="hearing_level_40{{objencounterToOpen.chart_id}}" formControlName="rdHearinglevel"
+                        name="rdHearinglevel" value="hearing_level_40" (click)="rdogeneralChange()">
+                      <label class="custom-control-label" for="hearing_level_40{{objencounterToOpen.chart_id}}">25 db
+                        HL</label>
+                    </div>
+
+                    <!--
+                    <div class="custom-radio green-radio">
+                      <input type="radio" class="custom-control-input" id="hearing_level_20" value="hearing_level_20"
+                        formControlName="rdHearinglevel" (change)="rdogeneralChange()">
+                      <label class="custom-control-label" for="hearing_level_20">20 db HL</label>
+                    </div>
+                    
+
+                    <div class="custom-radio green-radio">
+                      <input type="radio" class="custom-control-input" id="hearing_level_25" value="hearing_level_25"
+                        formControlName="rdHearinglevel" (change)="rdogeneralChange()">
+                      <label class="custom-control-label" for="hearing_level_25">25 db HL</label>
+                    </div>
+                   
+                    <div class="custom-radio green-radio">
+                      <input type="radio" class="custom-control-input" id="hearing_level_40" value="hearing_level_40"
+                        formControlName="rdHearinglevel" (change)="rdogeneralChange()">
+                      <label class="custom-control-label" for="hearing_level_40">40 db HL</label>
+                    </div>
+                     -->
+                  </div>
+                </div>
+              </div>
+              <div class="px-2 py-1 mb-1">
+                <div class="row zero align-items-center">
+                  <div class="col-2">
+                    <h5 class="fz-14 font-weight-500 m-0 text-primary">Right Ear:</h5>
+                  </div>
+                  <div class="col-10">
+                    <div class="row zero">
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="rightear1_y{{objencounterToOpen.chart_id}}" formControlName="rdRitht500"
+                            name="rdRitht500" value="rightear1_y" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear1_y{{objencounterToOpen.chart_id}}">Y</label>
+                        </div>
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="rightear1_n{{objencounterToOpen.chart_id}}" formControlName="rdRitht500"
+                            name="rdRitht500" value="rightear1_n" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear1_n{{objencounterToOpen.chart_id}}">N</label>
+                        </div>
+
+
+                        <!--
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="rightear1_y" value="rightear1_y"
+                            formControlName="rdRitht500" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear1_y">Y</label>
+                        </div>
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="rightear1_n" value="rightear1_n"
+                            formControlName="rdRitht500" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear1_n">N</label>
+                        </div>
+                        -->
+
+
+                      </div>
+
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="rightear2_y{{objencounterToOpen.chart_id}}" formControlName="rdRitht1000"
+                            name="rdRitht1000" value="rightear2_y" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear2_y{{objencounterToOpen.chart_id}}">Y</label>
+                        </div>
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="rightear2_n{{objencounterToOpen.chart_id}}" formControlName="rdRitht1000"
+                            name="rdRitht1000" value="rightear2_n" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear2_n{{objencounterToOpen.chart_id}}">N</label>
+                        </div>
+                        <!--
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="rightear2_y" value="rightear2_y"
+                            formControlName="rdRitht1000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear2_y">Y</label>
+                        </div>
+
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="rightear2_n" value="rightear2_n"
+                            formControlName="rdRitht1000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear2_n">N</label>
+                        </div>
+                        -->
+                      </div>
+
+
+
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="rightear3_y{{objencounterToOpen.chart_id}}" formControlName="rdRitht2000"
+                            name="rdRitht2000" value="rightear3_y" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear3_y{{objencounterToOpen.chart_id}}">Y</label>
+                        </div>
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="rightear3_n{{objencounterToOpen.chart_id}}" formControlName="rdRitht2000"
+                            name="rdRitht2000" value="rightear3_n" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear3_n{{objencounterToOpen.chart_id}}">N</label>
+                        </div>
+                        <!--
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="rightear3_y" value="rightear3_y"
+                            formControlName="rdRitht2000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear3_y">Y</label>
+                        </div>
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="rightear3_n" value="rightear3_n"
+                            formControlName="rdRitht2000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear3_n">N</label>
+                        </div>
+                      -->
+                      </div>
+
+                      <div class="col-3 d-flex justify-content-center">
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="rightear4_y{{objencounterToOpen.chart_id}}" formControlName="rdRitht4000"
+                            name="rdRitht4000" value="rightear4_y" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear4_y{{objencounterToOpen.chart_id}}">Y</label>
+                        </div>
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="rightear4_n{{objencounterToOpen.chart_id}}" formControlName="rdRitht4000"
+                            name="rdRitht4000" value="rightear4_n" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear4_n{{objencounterToOpen.chart_id}}">N</label>
+                        </div>
+
+                        <!--
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="rightear4_y" value="rightear4_y"
+                            formControlName="rdRitht4000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear4_y">Y</label>
+                        </div>
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="rightear4_n" value="rightear4_n"
+                            formControlName="rdRitht4000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="rightear4_n">N</label>
+                        </div>
+                        -->
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-2 py-1 mb-1">
+                <div class="row zero align-items-center">
+                  <div class="col-2">
+                    <h5 class="fz-14 font-weight-500 m-0 text-primary">Left Ear:</h5>
+                  </div>
+                  <div class="col-10">
+                    <div class="row zero">
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="leftear1_y{{objencounterToOpen.chart_id}}" formControlName="rdLeft500" name="rdLeft500"
+                            value="leftear1_y" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear1_y{{objencounterToOpen.chart_id}}">Y</label>
+                        </div>
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="leftear1_n{{objencounterToOpen.chart_id}}" formControlName="rdLeft500" name="rdLeft500"
+                            value="leftear1_n" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear1_n{{objencounterToOpen.chart_id}}">N</label>
+                        </div>
+
+
+                        <!--
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="leftear1_y" value="leftear1_y"
+                            formControlName="rdLeft500" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear1_y">Y</label>
+                        </div>
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="leftear1_n" value="leftear1_n"
+                            formControlName="rdLeft500" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear1_n">N</label>
+                        </div>
+                        -->
+
+                      </div>
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="leftear2_y{{objencounterToOpen.chart_id}}" formControlName="rdLeft1000"
+                            name="rdLeft1000" value="leftear2_y" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear2_y{{objencounterToOpen.chart_id}}">Y</label>
+                        </div>
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="leftear2_n{{objencounterToOpen.chart_id}}" formControlName="rdLeft1000"
+                            name="rdLeft1000" value="leftear2_n" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear2_n{{objencounterToOpen.chart_id}}">N</label>
+                        </div>
+
+                        <!--
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="leftear2_y" value="leftear2_y"
+                            formControlName="rdLeft1000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear2_y">Y</label>
+                        </div>
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="leftear2_n" value="leftear2_n"
+                            formControlName="rdLeft1000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear2_n">N</label>
+                        </div>
+                      -->
+                      </div>
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="leftear3_y{{objencounterToOpen.chart_id}}" formControlName="rdLeft2000"
+                            name="rdLeft2000" value="leftear3_y" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear3_y{{objencounterToOpen.chart_id}}">Y</label>
+                        </div>
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="leftear3_n{{objencounterToOpen.chart_id}}" formControlName="rdLeft2000"
+                            name="rdLeft2000" value="leftear3_n" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear3_n{{objencounterToOpen.chart_id}}">N</label>
+                        </div>
+
+
+                        <!--
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="leftear3_y" value="leftear3_y"
+                            formControlName="rdLeft2000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear3_y">Y</label>
+                        </div>
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="leftear3_n" value="leftear3_n"
+                            formControlName="rdLeft2000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear3_n">N</label>
+                        </div>
+
+                        -->
+                      </div>
+                      <div class="col-3 d-flex justify-content-center">
+
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="leftear4_y{{objencounterToOpen.chart_id}}" formControlName="rdLeft4000"
+                            name="rdLeft4000" value="leftear4_y" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear4_y{{objencounterToOpen.chart_id}}">Y</label>
+                        </div>
+                        <div class="custom-control custom-radio green-radio">
+                          <input class="custom-control-input" type="radio"
+                            id="leftear4_n{{objencounterToOpen.chart_id}}" formControlName="rdLeft4000"
+                            name="rdLeft4000" value="leftear4_n" (click)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear4_n{{objencounterToOpen.chart_id}}">N</label>
+                        </div>
+
+                        <!--
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="leftear4_y" value="leftear4_y"
+                            formControlName="rdLeft4000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear4_y">Y</label>
+                        </div>
+                        <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="leftear4_n" value="leftear4_n"
+                            formControlName="rdLeft4000" (change)="rdogeneralChange()">
+                          <label class="custom-control-label" for="leftear4_n">N</label>
+                        </div>
+                        -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-2 py-1">
+                <div class="row zero align-items-center">
+                  <div class="col-2">
+                    <h5 class="fz-14 font-weight-500 m-0 text-primary">PH:</h5>
+                  </div>
+                  <div class="col-10">
+                    <div class="row zero">
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+                        <span class="fz-13">500</span>
+                      </div>
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+                        <span class="fz-13">1000</span>
+                      </div>
+                      <div class="col-3 d-flex justify-content-center border-right-vertical">
+                        <span class="fz-13">2000</span>
+                      </div>
+                      <div class="col-3 d-flex justify-content-center">
+                        <span class="fz-13">4000</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column mb-2">
+            <h4 class="form-edit-sub-heading m-1 p-1">OB/GYN</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="col-4 border-right-vertical px-2">
+                <h4 class="form-edit-sub-heading m-0 pb-1 mb-2">Pregnancy:</h4>
+                <div class="d-flex">
+
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="positive1{{objencounterToOpen.chart_id}}"
+                      formControlName="rbPregCondition" name="rbPregCondition" value="pregnancy_Positive"
+                      (click)="checkUncheckPregnancyStatus('pos')">
+                    <label class="custom-control-label" for="positive1{{objencounterToOpen.chart_id}}">Positive</label>
+                  </div>
+
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="negative1{{objencounterToOpen.chart_id}}"
+                      formControlName="rbPregCondition" name="rbPregCondition" value="pregnancy_Negative"
+                      (click)="checkUncheckPregnancyStatus('neg')">
+                    <label class="custom-control-label" for="negative1{{objencounterToOpen.chart_id}}">Negative</label>
+                  </div>
+
+
+                  <!--
+                  <div class="custom-radio green-radio">
+                    <input type="radio" class="custom-control-input" id="positive1" value="pregnancy_Positive"
+                      (click)="checkUncheckPregnancyStatus('pos')" formControlName="rbPregCondition">
+                    <label class="custom-control-label" for="positive1">Positive</label>
+                  </div>
+                  -->
+                  <!--
+                  <div class="custom-radio green-radio">
+                    <input type="radio" class="custom-control-input" id="negative1" value="pregnancy_Negative"
+                      (click)="checkUncheckPregnancyStatus('neg')" formControlName="rbPregCondition">
+                    <label class="custom-control-label" for="negative1">Negative</label>
+                  </div>
+                  -->
+                </div>
+              </div>
+              <div class="col-4 border-right-vertical px-2">
+                <h4 class="form-edit-sub-heading m-0 pb-1 mb-2">STREP:</h4>
+                <div class="d-flex">
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="positive2{{objencounterToOpen.chart_id}}"
+                      formControlName="rbStrepCondition" name="rbStrepCondition" value="pregnancy_Positive"
+                      (click)="checkUncheckStrepStatus('pos')">
+                    <label class="custom-control-label" for="positive2{{objencounterToOpen.chart_id}}">Positive</label>
+                  </div>
+
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="negative2{{objencounterToOpen.chart_id}}"
+                      formControlName="rbStrepCondition" name="rbStrepCondition" value="prag_strep_Negative"
+                      (click)="checkUncheckStrepStatus('neg')">
+                    <label class="custom-control-label" for="negative2{{objencounterToOpen.chart_id}}">Negative</label>
+                  </div>
+
+
+                  <!--
+                  <div class="custom-radio green-radio">
+                    <input type="radio" class="custom-control-input" id="positive2" value="prag_strep_Positive"
+                      (click)="checkUncheckStrepStatus('pos')" formControlName="rbStrepCondition">
+                    <label class="custom-control-label" for="positive2">Positive</label>
+                  </div>
+                  <div class="custom-radio green-radio">
+                    <input type="radio" class="custom-control-input" id="negative2" value="prag_strep_Negative"
+                      (click)="checkUncheckStrepStatus('neg')" formControlName="rbStrepCondition">
+                    <label class="custom-control-label" for="negative2">Negative</label>
+                  </div>
+                  -->
+                </div>
+              </div>
+              <div class="col-4 px-2">
+                <h4 class="form-edit-sub-heading m-0 pb-1 mb-2">LMP:</h4>
+                <div class="form-row form-dashboard ">
+
+                  <div class="input-group">
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txt_OBG_LMP"
+                      formControlName="txt_OBG_LMP" ngbDatepicker #txt_OBG_LMP="ngbDatepicker"                      
+                      (keydown)="generalChange($event)">
+
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="generalChange($event);txt_OBG_LMP.toggle()"
+                        type="button">
+                      </button>
+                    </span>
+
+                  </div>
+
+                  <!--
+                  <div class="input-group">
+                    <input class="form-control" placeholder="mm/dd/yyyy" name="txt_OBG_LMP"
+                      formControlName="txt_OBG_LMP" ngbDatepicker #txt_OBG_LMP="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn btn-outline-primary" (click)="txt_OBG_LMP.toggle()" type="button">
+                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </div>
+                  -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Spirometry Result</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group horizental row zero col-12">
+                <label for="dpTobaccoEnd" class="col-form-label col-3">Spirometry Result:</label>
+                <input type="text" class="form-control col-9" formControlName="txt_spirometryresult"
+                [ngClass]="{'has-data': (ofcTestForm.get('txt_spirometryresult').value!=undefined && ofcTestForm.get('txt_spirometryresult').value!='')}"
+                  (keydown)="generalChange($event)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">U/A</h4>
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group  col-4">
+                  <label for="txt_bp1_systolic" class="col-form-label">Glucose</label>
+                  <input type="text" class="form-control" formControlName="txt_glucose"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_glucose').value!=undefined && ofcTestForm.get('txt_glucose').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4 ">
+                  <label for="txt_bp1_diastolic" class="col-form-label">Blood</label>
+                  <input type="text" class="form-control" formControlName="txt_blood" (keydown)="generalChange($event)"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_blood').value!=undefined && ofcTestForm.get('txt_blood').value!='')}">
+                </div>
+                <div class="form-group col-4">
+                  <label for="txt_bp1_pulse" class="col-form-label">Nitrate</label>
+                  <input type="text" class="form-control" formControlName="txt_nitrate"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_nitrate').value!=undefined && ofcTestForm.get('txt_nitrate').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_monitoringpos" class="col-form-label">Bilirubin</label>
+                  <input type="text" class="form-control" formControlName="txt_bilirubin"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_bilirubin').value!=undefined && ofcTestForm.get('txt_bilirubin').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_character" class="col-form-label">PH</label>
+                  <input type="text" class="form-control" formControlName="txt_ph" 
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_ph').value!=undefined && ofcTestForm.get('txt_ph').value!='')}"
+                  (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_rhythm" class="col-form-label">Leukocytes</label>
+                  <input type="text" class="form-control" formControlName="txt_leukocytes"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_leukocytes').value!=undefined && ofcTestForm.get('txt_leukocytes').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_rhythm" class="col-form-label">Ketone</label>
+                  <input type="text" class="form-control" formControlName="txt_ketone"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_ketone').value!=undefined && ofcTestForm.get('txt_ketone').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_rhythm" class="col-form-label">Protein</label>
+                  <input type="text" class="form-control" formControlName="txt_protein"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_protein').value!=undefined && ofcTestForm.get('txt_protein').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_rhythm" class="col-form-label">Sp.Gravity</label>
+                  <input type="text" class="form-control" formControlName="txt_spgravity"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_spgravity').value!=undefined && ofcTestForm.get('txt_spgravity').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_rhythm" class="col-form-label">Urobilinogen</label>
+                  <input type="text" class="form-control" formControlName="txt_urobilinogen"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_urobilinogen').value!=undefined && ofcTestForm.get('txt_urobilinogen').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column mb-2">
+            <h4 class="form-edit-sub-heading m-1 p-1">Other</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group  col-4">
+                  <label for="txt_bp1_systolic" class="col-form-label">Hemoglobin</label>
+                  <input type="text" class="form-control" formControlName="txt_hemoglobin"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_hemoglobin').value!=undefined && ofcTestForm.get('txt_hemoglobin').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4 ">
+                  <label for="txt_bp1_diastolic" class="col-form-label">Fluoride</label>
+                  <input type="text" class="form-control" formControlName="txt_fluoride"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_fluoride').value!=undefined && ofcTestForm.get('txt_fluoride').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="txt_bp1_pulse" class="col-form-label">Lead Screening</label>
+                  <input type="text" class="form-control" formControlName="txt_loadscreening"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_loadscreening').value!=undefined && ofcTestForm.get('txt_loadscreening').value!='')}"
+                    (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_monitoringpos" class="col-form-label">Flu A/B</label>
+                  <input type="text" class="form-control" formControlName="txt_fluab"
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_fluab').value!=undefined && ofcTestForm.get('txt_fluab').value!='')}"
+                  (keydown)="generalChange($event)">
+                </div>
+                <div class="form-group col-4">
+                  <label for="ddl_bp1_character" class="col-form-label">RSV</label>
+                  <input type="text" class="form-control" formControlName="txt_rsv" 
+                  [ngClass]="{'has-data': (ofcTestForm.get('txt_rsv').value!=undefined && ofcTestForm.get('txt_rsv').value!='')}"
+                  (keydown)="generalChange($event)">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Flu Result</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="col-6 px-2">
+                <h4 class="form-edit-sub-heading m-0 pb-1 mb-2">Rapid Flu:</h4>
+                <div class="d-flex">
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="rfPositive1{{objencounterToOpen.chart_id}}"
+                      formControlName="rbRapidFlu" name="rbRapidFlu" value="RapidFlu_Positive"
+                      (click)="checkUncheckRapidFlu('pos')">
+                    <label class="custom-control-label"
+                      for="rfPositive1{{objencounterToOpen.chart_id}}">Positive</label>
+                  </div>
+
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="rfNegative1{{objencounterToOpen.chart_id}}"
+                      formControlName="rbRapidFlu" name="rbRapidFlu" value="RapidFlu_Negative"
+                      (click)="checkUncheckRapidFlu('neg')">
+                    <label class="custom-control-label"
+                      for="rfNegative1{{objencounterToOpen.chart_id}}">Negative</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 px-2">
+                <h4 class="form-edit-sub-heading m-0 pb-1 mb-2">PPD Test:</h4>
+                <div class="d-flex">
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="PPDPositive1{{objencounterToOpen.chart_id}}"
+                      formControlName="rbPPDTest" name="rbPPDTest" value="PPDTest_Positive"
+                      (click)="checkUncheckPPDTest('pos')">
+                    <label class="custom-control-label"
+                      for="PPDPositive1{{objencounterToOpen.chart_id}}">Positive</label>
+                  </div>
+
+
+                  <div class="custom-control custom-radio green-radio">
+                    <input class="custom-control-input" type="radio" id="PPDNegative1{{objencounterToOpen.chart_id}}"
+                      formControlName="rbPPDTest" name="rbPPDTest" value="PPDTest_Negative"
+                      (click)="checkUncheckPPDTest('neg')">
+                    <label class="custom-control-label"
+                      for="PPDNegative1{{objencounterToOpen.chart_id}}">Negative</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="encounter-footer-credential rounded-bottom">
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="getOfficeTestHistory()">View Log</button>
+  </div>
+
+</div>

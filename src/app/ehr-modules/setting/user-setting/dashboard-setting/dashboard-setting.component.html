@@ -1,0 +1,60 @@
+<div class="light-title-bar rounded-top h-30 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Dashboard Setting</div>
+  <div class="d-flex align-items-center">
+      <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" type="button" (click)="onSave()">Save</button>
+      <button class="btn btn-sm btn-dark top-right-radius h-30">Cancel</button>
+  </div>
+</div>
+
+<div class="p-2 d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+
+  <div class="d-flex flex-grow-1 overflow-height light-gray-bg">
+    <div class="w-33 d-flex flex-column">
+      <div class="rounded-box-title-bar light-title-bar rounded-top flex-shrink-0 pr-0">All Dashboard Modules</div>
+      <div class="border border-top-0 rounded-bottom bg-white overflow-auto flex-grow-1">
+        <table class="table light-striped-border">
+          <tbody>
+            <tr *ngFor="let imm of listAllModule">
+              <td class="width-30">
+                <button type="button" class="link-btn" (click)="addModule(imm)"><i
+                    class="far fa-plus-square text-success fz-13"></i></button>
+              </td>
+              <td>{{imm.module_display_name}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="w-33 d-flex flex-column  ml-2">
+      <div class="rounded-box-title-bar light-title-bar rounded-top flex-shrink-0 d-flex align-items-center justify-content-between">
+        <span>User Dashboard Modules</span>
+        <div class="d-flex">
+            <button type="button" class="btn btn-link p-0" (click)="moveModule('down')" 
+            [disabled]="!(listUserModule!=undefined && listUserModule.length > (selectedModuleRow+1))">
+              <i class="fas fa-arrow-alt-circle-down text-primary"></i>
+            </button>
+            <button type="button" class="btn btn-link p-0" [disabled]="!(selectedModuleRow > 0)"
+               (click)="moveModule('up')">
+              <i class="fas fa-arrow-alt-circle-up text-primary"></i>
+            </button>
+          </div>
+      </div>
+      <div class="border border-top-0 rounded-bottom bg-white overflow-auto flex-grow-1">
+        <table class="table light-striped-border">
+          <tbody>
+            <tr *ngFor="let imm of listUserModule;let i = index" (click)="onmoduleSelectionChanged(i)"
+            [ngClass]="{'active': i==selectedModuleRow}">
+              <td class="width-30">
+                <button type="button" class="link-btn btn-delete " (click)="deleteModule(imm)"><i
+                    class="far fa-trash-alt fz-13"></i></button>
+              </td>
+              <td>{{imm.module_display_name}}</td>
+              
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

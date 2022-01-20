@@ -1,0 +1,157 @@
+<div class="light-title-bar rounded-top h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-14 font-weight-500">Fax Contacts</div>
+  <div class="d-flex align-items-center">
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+      (click)="onAddEditFaxContact(undefined,'add')"><i class="fas fa-plus"></i>
+      Add</button>
+  </div>
+</div>
+
+
+<div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+  <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100">
+
+    <!--
+    <div class="form-group form-inline">
+      Full text search: <input class="form-control ml-2" type="text" #searchTerm name="searchTerm"
+        (input)="onFilter(searchTerm.value,'organization_name')" />      
+    </div>
+  -->
+
+    <table class="table sm light-striped-border">
+      <thead>
+        <tr>
+          <th scope="col" sortable="organization_name" type="alpha" (sort)="onSort($event)">Organization Name</th>
+          <th scope="col" sortable="fax_no" type="alpha" (sort)="onSort($event)">Fax Number</th>
+          <th scope="col" sortable="contact_person" type="alpha" (sort)="onSort($event)">Contact Person</th>
+          <th scope="col" sortable="phone_no" type="alpha" (sort)="onSort($event)">Phone Number</th>
+          <th scope="col" sortable="address" type="alpha" (sort)="onSort($event)">Address</th>
+          <th scope="col" sortable="zip" type="numeric" (sort)="onSort($event)">Zip</th>
+          <th scope="col" sortable="city" type="alpha" (sort)="onSort($event)">City</th>
+          <th scope="col" sortable="state" type="alpha" (sort)="onSort($event)">State</th>
+          <th class="width-20">&nbsp;</th>
+          <th class="width-20">&nbsp;</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr class="table-filter-row" id="filterRow">
+          <td>
+            <div class="form-group m-0">
+              <div class="icon-addon addon-sm">
+                <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="organization_name"
+                  (input)="onFilter($event.target.value,'organization_name')">
+                <label class="fa fas fa-filter"></label>
+              </div>
+            </div>
+          </td>
+          <td>
+
+            <div class="form-group m-0">
+              <div class="icon-addon addon-sm">
+                <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="fax_no"
+                  (input)="onFilter($event.target.value,'fax_no')">
+                <label class="fa fas fa-filter"></label>
+              </div>
+            </div>
+
+
+          </td>
+          <td>
+
+
+            <div class="form-group m-0">
+              <div class="icon-addon addon-sm">
+                <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="contact_person"
+                  (input)="onFilter($event.target.value,'contact_person')">
+                <label class="fa fas fa-filter"></label>
+              </div>
+            </div>
+
+
+          </td>
+          <td>
+
+            <div class="form-group m-0">
+              <div class="icon-addon addon-sm">
+                <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="phone_no"
+                  (input)="onFilter($event.target.value,'phone_no')">
+                <label class="fa fas fa-filter"></label>
+              </div>
+            </div>
+
+
+
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr *ngFor="let contact of lstContactList; let i = index">
+
+          <td>
+            <ngb-highlight [result]="contact.organization_name" [term]="getNGHighlightTerm('organization_name')">
+            </ngb-highlight>
+          </td>
+          <td>
+            <ngb-highlight [result]="contact.fax_no" [term]="getNGHighlightTerm('fax_no')"></ngb-highlight>
+          </td>
+          <td>
+            <ngb-highlight [result]="contact.contact_person" [term]="getNGHighlightTerm('contact_person')">
+            </ngb-highlight>
+          </td>
+          <td>
+            <ngb-highlight [result]="contact.phone_no" [term]="getNGHighlightTerm('phone_no')"></ngb-highlight>
+          </td>
+          <td>
+            {{contact.address}}
+          </td>
+          <td>
+            {{contact.zip}}
+          </td>
+          <td>
+            {{contact.city}}
+          </td>
+          <td>
+            {{contact.state}}
+          </td>
+          <td><button type="button" class="link-btn" (click)="onAddEditFaxContact(contact.contact_id,'edit')"><i
+                class="far fa-edit fz-13"></i></button>
+            <!-- <a class="p-0 text-primary cursor-default"><i class="far fa-edit fa-md"></i></a>-->
+          </td>
+          <td>
+            <button type="button" class="link-btn btn-delete" (click)="onDelete(contact.contact_id)"><i
+                class="far fa-trash-alt fz-13"></i></button>
+            <!--   <a class="p-0 btn-delete"><i class="far fa-trash-alt fa-md"></i></a>-->
+          </td>
+        </tr>
+
+
+      </tbody>
+    </table>
+  </div>
+
+    <div class="d-flex justify-content-between flex-shrink-0 p-2 border-top">
+      <ngb-pagination [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="pageChange($event)"
+        [maxSize]="10" [rotate]="true" [boundaryLinks]="true" size="sm">
+      </ngb-pagination>
+
+      <div class="form-group mb-0">
+        <select class="form-control pagination-custom-select" name="pageSize" [(ngModel)]="pageSize"
+          (change)="pageOptionChaged()">
+          <option [ngValue]="10">10 items per page</option>
+          <option [ngValue]="20">20 items per page</option>
+          <option [ngValue]="50">50 items per page</option>
+          <option [ngValue]="100">100 items per page</option>
+          <option [ngValue]="200">200 items per page</option>
+          <option [ngValue]="500">500 items per page</option>
+        </select>
+      </div>
+
+
+    </div>
+
+</div>

@@ -1,0 +1,69 @@
+<div class="dashboard-container d-flex flex-column" *ngIf="showMessage==''">
+  <div class="dashboard">
+
+    <div class="d-flex flex-row flex-shrink-0 rounded-10-top">
+      <button [disabled]="!this.lookupList.UserRights.message_send"
+        class="btn new-meesage flex-shrink-0 rounded-10-top-left" (click)="onNewMessage()">
+        <i class="fas fa-plus mr-2"></i>New Message</button>
+
+      <ul class="nav messages-bar flex-grow-1 justify-content-end py-1 rounded-10-top-right">
+        <a class="btn btn-link fz-12 title-bar-white-btn font-weight-400" (click)="onShowTasks()">Tasks</a>
+        <a class="btn btn-link fz-12 title-bar-white-btn font-weight-400" (click)="onDirectMessage()">Direct
+          Messages</a>
+        <a *ngIf="this.lookupList.UserRights.view_patient_messages"
+          class="btn btn-link fz-12 title-bar-white-btn font-weight-400" (click)="onPHRMessage()">Patient Messages</a>
+
+      </ul>
+    </div>
+
+    <div class="messages d-flex flex-grow-1">
+      <ul class="nav nav-tabs justify-content-start">
+        <li class="nav-item">
+          <a class="nav-link " [ngClass]="{  
+          'active' : (message_type  === 'Inbox')
+         }" (click)="OnInbox()">
+            <span>Inbox</span>
+            <span class="count">{{inboxCount}}</span>
+          </a>
+          <a class="nav-link" (click)="OnDraft()" [ngClass]="{  
+          'active' : (message_type  === 'Draft')
+         }">
+            <span>Draft</span>
+            <span class="count">{{draftCount}}</span>
+          </a>
+          <a class="nav-link" [ngClass]="{  
+          'active' : (message_type  === 'Sent')
+         }" (click)="OnSent()">
+            <span>Sent</span>
+            <span class="count">{{sentCount}}</span>
+          </a>
+          <a class="nav-link" [ngClass]="{  
+          'active' : (message_type  === 'Deleted')
+         }" (click)="OnDelete()">
+            <span>Deleted</span>
+            <span class="count">{{deletedCount}}</span>
+          </a>
+          <a class="nav-link" [ngClass]="{  
+          'active' : (message_type  === 'Archive')
+         }" (click)="OnArchive()">
+            <span>Archive</span>
+            <span class="count">{{archiveCount}}</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <ehr-message-inbox #ehrMessageInbox [isNewMessage]="isNewMessage" [message_type]="message_type"
+          [patient_name]="patient_name" [patient_id]="patient_id" (onCloseNewMessagebkpMain)="onCloseNewMessage($event)"
+          class="d-flex flex-column flex-grow-1">
+        </ehr-message-inbox>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<patient-message *ngIf="showMessage=='PHR'" (BackToMainMessage)="onBackFromPHR($event)"></patient-message>
+<direct-message *ngIf="showMessage=='Direct'" (BackToMainMessage)="onBackFromDirect($event)"></direct-message>
+<tasks-main *ngIf="showMessage=='Task'" class="flex-grow-1 d-flex flex-column" (backToMain)="backFromTask($event)">
+</tasks-main>

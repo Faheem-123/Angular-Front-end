@@ -1,0 +1,597 @@
+<div class="light-title-bar h-25 pl-2 pr-2 d-flex align-items-center justify-content-between flex-shrink-0"
+  *ngIf="!loadmodule">
+  <div class="fz-15 font-weight-400 text-ihc-dark-blue">Billing Claim Summary
+  </div>
+  <div class="d-flex align-items-center">
+    <button *ngIf="this.lookupList.UserRights.claim_batch_getresponse"
+      class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onBatchResponse()">Get Batch
+      Response</button>
+  </div>
+</div>
+
+
+<div
+  class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative"
+  *ngIf="!loadmodule">
+  <div class="d-flex flex-column flex-shrink-0">
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchCriteriaBillingSummary" aria-expanded="true" class="accordian-link">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+
+      <div id="SearchCriteriaBillingSummary" class="show">
+        <div class="accordian-body p-2">
+
+          <form [formGroup]="searchForm">
+
+
+            <div class="form-row form-dashboard pb-1">
+
+              <div class="form-group col-4">
+                <div class="btn-group radio-btn-tabs ">
+
+                  <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'dos')}">
+                    <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                      value="dos" (ngModelChange)="onDateTypeChange($event)"> DOS
+                  </label>
+                  <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'date_created')}">
+                    <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                      value="date_created" (ngModelChange)="onDateTypeChange($event)"> Date Created
+                  </label>
+                </div>
+
+
+
+                <div class="d-flex flex-grow-3">
+
+                  <div class="input-group mr-1">
+
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">From</span>
+                    </div>
+
+                    <input id="txtFromDate" formControlName="txtFromDate" class="form-control date-control "
+                      placeholder="mm/dd/yyyy" name="txtFromDate" ngbDatepicker #txtFromDate="ngbDatepicker">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtFromDate.toggle()" type="button">
+                      </button>
+                    </span>
+
+                  </div>
+
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">To</span>
+                    </div>
+
+                    <input id="txtToDate" formControlName="txtToDate" class="form-control date-control "
+                      placeholder="mm/dd/yyyy" name="txtToDate" ngbDatepicker #txtToDate="ngbDatepicker">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtToDate.toggle()" type="button">
+                      </button>
+                    </span>
+
+                  </div>
+
+
+                </div>
+              </div>
+
+
+              <div class="form-group col-2">
+                <label class="col-form-label" for="drpProvider">Provider</label>
+                <select class="form-control " formControlName="drpProvider">
+                  <option value=''>All</option>
+                  <option *ngFor="let prov of lookupList.billingProviderList" [value]="prov.id">{{prov.name}}</option>
+                </select>
+              </div>
+
+              <div class="form-group col-2">
+                <label class="col-form-label" for="cmbLocation">Location</label>
+                <select class="form-control " labelForId="cmbLocation" formControlName="drpLocation">
+                  <option value=''>All</option>
+                  <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                </select>
+              </div>
+
+
+              <div class="form-group col-2">
+                <label class="col-form-label" for="drpStatus">Status</label>
+                <select class="form-control " formControlName="drpStatus">
+                  <option>Unprocessed</option>
+                  <option>Processed</option>
+                  <option>Self</option>
+                  <option>Draft</option>
+                  <option>Follow Up</option>
+                </select>
+              </div>
+
+              <div class="form-group col-2">
+                <label class="col-form-label" for="drpType">Type</label>
+                <select class="form-control " formControlName="drpType" readonly>
+                  <option>Professional</option>
+                  <option>Institutional</option>
+                </select>
+              </div>
+
+            </div>
+
+
+            <div class="form-row form-dashboard pb-1">
+              <div class="form-group col-4">
+                <label for="txtInsuranceSearch" class="col-form-label">Insurance</label>
+
+                <div class="input-icon d-flex flex-grow-3">
+
+                  <input id="txtInsuranceSearch" class="form-control flex-grow-3" type="text"
+                    formControlName="txtInsuranceSearch" placeholder="Search Insurance"
+                    (keydown)="onInsuranceSearchKeydown($event)" (focusout)="onInsuranceSearchFocusOut()"
+                    (input)="onInsuranceSearchInputChange()" #txtInsuranceSearch autocomplete="off">
+
+                  <div class="icon">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </div>
+
+                  <inline-insurance-search id="inlineSearchDenialInsurance" #inlineSearchDenialInsurance
+                    *ngIf="showInsuranceSearch" searchValue="{{txtInsuranceSearch.value}}"
+                    (onSelect)="onSelectInsurance($event)" (onClose)="closeInsuranceSearch($event)">
+                  </inline-insurance-search>
+
+                </div>
+
+              </div>
+
+              <div class="form-group col-4">
+                <label for="txtPatientSearch" class="col-form-label">Patient</label>
+
+                <div class="input-icon d-flex flex-grow-3">
+
+                  <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                    formControlName="txtPatientSearch" placeholder="Search Patient"
+                    (keydown)="onPatientSearchKeydown($event)" autocomplete="off" (input)="onPatientSearchInputChange()"
+                    (blur)="onPatientSearchBlur()">
+
+                  <div class="icon">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </div>
+
+                  <inline-patient-search #inlineSearchDenialPatient id="inlineAddAppPatSearch" *ngIf="showPatientSearch"
+                    [searchValue]="txtPatientSearch.value" (onPatientSelect)="openSelectPatient($event)"
+                    (onClose)="closePatientSearch()">
+                  </inline-patient-search>
+
+                </div>
+              </div>
+              <div class="form-group col-2 d-flex flex-column justify-content-end">
+                <button type="button" class="btn btn-success w-100" (click)="onFilter(searchForm.value)">Search</button>
+              </div>
+              <div class="form-group col-2 d-flex flex-column justify-content-end">
+                <button type="button" class="btn btn-dark w-100" (click)="onClear()">Clear</button>
+              </div>
+
+
+
+
+            </div>
+
+
+
+
+
+
+          </form>
+
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="d-flex flex-grow-1  overflow-height overflow-auto">
+
+    <div class="d-flex flex-column flex-8  overflow-auto p-2">
+      <div class="border-content-box  rounded-3  d-flex flex-column rounded bg-white flex-1 overflow-height">
+        <div class="light-title-bar pl-2 h-25 d-flex align-items-center justify-content-between flex-shrink-0">
+          <h4 class="fz-12 font-weight-500 my-0 text-ihc-dark-blue">Claim Detail
+
+
+            <span class="v-separtor"></span>
+            <span class="font-weight-400">Total Claims: {{total_claim}} </span>
+
+          </h4>
+
+          <div class="d-flex align-items-center">
+            <button type="button" class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 position-relative"
+              *ngIf="this.lookupList.UserRights.claim_batch_addin_batch" (click)="clickAddInBatch()">
+              <span>Add In Batch</span>
+            </button>
+            <div class="position-absolute d-flex flex-column w-300 h-200 z-100" style="top:195px;right:12"
+              *ngIf='showAddinBatch'>
+              <div class="sm-modal-header rounded-top">
+                <h4 class="modal-title fz-14 font-weight-400 pl-2" id="modal-basic-title">Add In Batch</h4>
+                <button class="btn btn-sm btn-danger border-0" type="button" (click)="showAddinBatch=false;">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+
+              <div class="sm-modal-body">
+                <form [formGroup]="frmAddinBatch">
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero col-12">
+                      <label class="col-form-label text-left col-3" for="drpBatchAddinProvider">Provider:</label>
+                      <select class="form-control col-9" formControlName="drpBatchAddinProvider"
+                        (change)="onChangedrpBatchAddinProvider($event.currentTarget.value)">
+                        <option [value]="-1">All</option>
+                        <option *ngFor="let prov of lookupList.billingProviderList" [value]="prov.id">{{prov.name}}
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="form-group horizental row zero col-12">
+                      <label class="col-form-label text-left col-3" for="drpAddinBatch">Batch:</label>
+                      <select class="form-control col-9" formControlName="drpAddinBatch">
+                        <option value=""></option>
+                        <option *ngFor="let btc of listFilteredBatch" [value]="btc.col1">{{btc.col2}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <div class="bg-light border border-top-0 rounded-bottom text-right px-2 py-1">
+                <button class="btn btn-sm bg-success text-white" type="button" [disabled]="addclaimflag"
+                  (click)="onAddinBatch(frmAddinBatch.value)">Add</button>
+              </div>
+            </div>
+
+            <!-- <button type="button" class="btn btn-link px-2 py-0 fz-12" (click)="open(content)">Add In Batch</button> -->
+            <button *ngIf="this.lookupList.UserRights.claim_batch_new_batch" type="button"
+              class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 position-relative" (click)="showNewBatch=true;">
+              <span>New Batch</span>
+            </button>
+            <button class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 " (click)="exportAsXLSX()">Export to
+              Excel</button>
+
+            <div class="position-absolute d-flex flex-column w-300 h-200" style="top:195px;right:350px;"
+              *ngIf='showNewBatch'>
+              <div class="sm-modal-header rounded-top">
+                <!-- <img class="logo" src="./assets/images/logo-small.png"> -->
+                <h4 class="modal-title fz-14 font-weight-400 pl-2" id="modal-basic-title">New Batch</h4>
+                <button class="btn btn-sm btn-danger border-0" type="button" (click)="onAddNewbatch()">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+
+              <div class="sm-modal-body">
+                <form [formGroup]="frmNewBatch">
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero col-12">
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" formControlName="rbProfessional"
+                          name="rbProfessional" value="professional">
+                        <label class="custom-control-label">Professional</label>
+                      </div>
+
+                      <!-- <div class="custom-radio green-radio">
+                          <input type="radio" class="custom-control-input" id="customCheck2" checked>
+                          <label class="custom-control-label" for="customCheck2">Professional</label>
+                        </div> -->
+                    </div>
+
+                    <div class="form-group horizental row zero col-12">
+                      <label class="col-form-label text-left col-3">Provider:</label>
+                      <select class="form-control col-9" formControlName="drpNewBatchProvider">
+                        <option [value]="-1">All</option>
+                        <option *ngFor="let prov of lookupList.billingProviderList" [value]="prov.id">{{prov.name}}
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="form-group horizental row zero col-12">
+                      <label class="col-form-label text-left col-3" for="dpfromDate">Date:</label>
+                      <div class="input-group col-sm-9">
+                        <input class="form-control" placeholder="mm/dd/yyyy" name="txtNewBatchDate"
+                          formControlName="txtNewBatchDate" ngbDatepicker #txtNewBatchDate="ngbDatepicker">
+                        <span class="input-group-btn">
+                          <button class="btn btn-outline-primary" (click)="txtNewBatchDate.toggle()" type="button">
+                            <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                          </button>
+                        </span>
+
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <div class="bg-light border border-top-0 rounded-bottom text-right px-2 py-1">
+                <button class="btn btn-sm bg-success text-white" type="button"
+                  (click)="onSaveNewBatch(frmNewBatch.value)">Save</button>
+              </div>
+            </div>
+
+
+            <button type="button" class="btn btn-link title-bar-blue-btn px-1 py-0 fz-12" (click)="onExpand()">
+              <i class="fas fa-lg" [ngClass]="{
+                  'fa-arrow-circle-right':isExpand==true,
+                  'fa-arrow-circle-left':isExpand==false
+                }"></i>
+            </button>
+
+            <ng-template #content let-modal class="modal-width-800">
+
+            </ng-template>
+
+          </div>
+
+        </div>
+
+
+        <div class="overflow-auto flex-grow-1">
+          <table class="table sm layout-fixed light-striped-border table-sticky-header">
+            <thead>
+              <tr>
+                <th class="width-30">
+                  <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                    <input type="checkbox" class="custom-control-input" id="bC-select-all_{{controlUniqueId}}"
+                      (change)="onClaimSelectAll($event.currentTarget.checked)">
+                    <label class="custom-control-label" for="bC-select-all_{{controlUniqueId}}"></label>
+                  </div>
+                </th>
+                <th class="width-130" scope="col" sortable="pname" type="alpha" (sort)="onSort($event)">Name</th>
+                <th class="width-90" scope="col" sortable="dos" type="datetime" formate="MM/DD/YYYY"
+                  (sort)="onSort($event)">DOS</th>
+                <th class="width-120" scope="col" sortable="insurance_name" type="alpha" (sort)="onSort($event)">Pri.Ins
+                </th>
+                <th class="width-110" scope="col" sortable="policy_no" type="alpha" (sort)="onSort($event)">Policy No
+                </th>
+                <th class="width-110" scope="col" sortable="proname" type="alpha" (sort)="onSort($event)">Provider</th>
+                <th class="width-110" scope="col" sortable="facility_name" type="alpha" (sort)="onSort($event)">Facility
+                </th>
+                <th class="width-60" scope="col" sortable="claim_total" type="numeric" (sort)="onSort($event)">Total
+                </th>
+                <th class="width-90" scope="col" sortable="date_created" type="datetime" formate="MM/DD/YYYY"
+                  (sort)="onSort($event)">Date Created</th>
+                <th class="width-150" scope="col" sortable="cpt" type="alpha" (sort)="onSort($event)">CPT</th>
+                <th class="width-150" scope="col" sortable="icd" type="alpha" (sort)="onSort($event)">ICD</th>
+                <th class="width-150" scope="col" sortable="name" type="alpha" (sort)="onSort($event)">Last Batch</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of listclaimlist; let i = index" (click)="onselectionChange(i)"
+                [ngClass]="{'active': i==selectedSummaryRow}">
+                <td class="width-30">
+                  <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                    <input type="checkbox" class="custom-control-input" id="chk_Billing_{{b.claim_id}}"
+                      (change)="onClaimSelection($event.currentTarget.checked,b)" value={{b.chk}} [checked]="b.chk">
+                    <label class="custom-control-label" for="chk_Billing_{{b.claim_id}}"></label>
+                  </div>
+                </td>
+                <td>
+                  <button title="{{b.pname}}" type="button" class="link-btn"
+                    (click)="openPatient(b)">{{b.pname}}</button>
+                </td>
+                <td>
+                  <button title="{{b.dos}}" type="button" class="link-btn" (click)="openClaim(b)">{{b.dos}}</button>
+                </td>
+                <td class="text-pre-wrap" title="{{b.insurance_name}}">{{b.insurance_name}}</td>
+                <td title="{{b.policy_no}}">{{b.policy_no}}</td>
+                <td title="{{b.proname}}">{{b.proname}}</td>
+                <td title="{{b.facility_name}}">{{b.facility_name}}</td>
+                <td title="{{b.claim_total}}">{{b.claim_total | currency:'USD':'symbol-narrow'}}</td>
+                <td title="{{b.date_created}}">{{b.date_created}}</td>
+                <!-- <td class="text-pre-wrap" title="{{b.cpt}}">{{b.cpt}}</td> -->
+                <!-- <td class="text-pre-wrap" title="{{b.icd}}">{{b.icd}}</td> -->
+                <td class="text-pre-wrap" title="{{b.cpt}}">
+                  <ul class="pl-4 pr-2 my-0">
+                    <li *ngFor="let icd of getTooltipIcdsCptsAsList(b.cpt,'cpt')">
+                      {{icd}}
+                    </li>
+                  </ul>
+                </td>
+                <td class="text-pre-wrap" title="{{b.icd}}">
+                  <ul class="pl-4 pr-2  my-0">
+                    <li *ngFor="let icd of getTooltipIcdsCptsAsList(b.icd,'icd')">
+                      {{icd}}
+                    </li>
+                  </ul>
+                </td>
+
+                <td title="{{b.name}}">{{b.name}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+    <div class="d-flex flex-column flex-3 overflow-auto py-2 pr-2" *ngIf="isExpand">
+
+      <div class="border-content-box  rounded-3  d-flex flex-column rounded bg-white flex-1 overflow-height">
+        <div class="light-title-bar pl-2 h-25 d-flex align-items-center justify-content-between flex-shrink-0">
+          <h4 class="fz-12 font-weight-500 my-0 text-ihc-dark-blue">Detail</h4>
+
+
+          <button type="button" class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 position-relative"
+            (click)="onClickBatchDates()">
+            <span>{{lblBatchDates}}</span>
+          </button>
+          <div class="position-absolute d-flex flex-column w-300 h-200 z-100" style="top:118px;right:0;"
+            *ngIf='showbatchListDates'>
+            <div class="sm-modal-header rounded-top">
+              <h4 class="modal-title fz-14 font-weight-400 pl-2" id="modal-basic-title">Date Criteria</h4>
+              <button class="btn btn-sm btn-danger border-0" type="button" (click)="onBatchDatesClsoe()">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="sm-modal-body">
+              <form [formGroup]="frmBatchDates">
+                <div class="form-row form-dashboard">
+                  <div class="form-group horizental row zero col-12">
+                    <div class="custom-control custom-radio green-radio">
+                      <input class="custom-control-input" type="radio" formControlName="rbBatchDateProfessional"
+                        name="rbBatchDateProfessional" value="professional">
+                      <label class="custom-control-label">Professional</label>
+                    </div>
+                  </div>
+
+                  <!-- <div class="form-group horizental row zero col-12">
+                      <div class="custom-radio green-radio">
+                        <input type="radio" class="custom-control-input" id="customCheck2" checked>
+                        <label class="custom-control-label" for="customCheck2">Proffesuinal</label>
+                      </div>
+                    </div> -->
+
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label text-left col-3" for="txtBatchFromDate">Date From:</label>
+                    <div class="input-group col-sm-9">
+                      <input class="form-control" placeholder="mm/dd/yyyy" name="txtBatchFromDate"
+                        formControlName="txtBatchFromDate" ngbDatepicker #txtBatchFromDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn btn-outline-primary" (click)="txtBatchFromDate.toggle()" type="button">
+                          <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                        </button>
+                      </span>
+
+                    </div>
+                  </div>
+
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label text-left col-3" for="txtBatchToDate">Date To:</label>
+                    <div class="input-group col-sm-9">
+                      <input class="form-control" placeholder="mm/dd/yyyy" name="txtBatchToDate"
+                        formControlName="txtBatchToDate" ngbDatepicker #txtBatchToDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn btn-outline-primary" (click)="txtBatchToDate.toggle()" type="button">
+                          <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                        </button>
+                      </span>
+
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="bg-light border border-top-0 rounded-bottom text-right px-2 py-1">
+              <button class="btn btn-sm bg-success text-white" type="button"
+                (click)="onBatchDateSearch(frmBatchDates.value)">Search</button>
+            </div>
+          </div>
+
+          <button *ngIf="this.lookupList.UserRights.claim_batch_upload" type="button"
+            class="btn btn-sm btn-primary rounded-0 top-right-radius" (click)="onUploadBatch()">Upload</button>
+        </div>
+        <form [formGroup]="filterProvider">
+          <div class="px-2 py-1 flex-shrink-0">
+            <div class="form-group mb-0 horizental row zero">
+              <label for="cmbProvider" class="col-form-label col-3">Provider:</label>
+              <select class="form-control col-9" formControlName="drpFilterProvider"
+                (change)="onChangedrpFilterProvider($event.currentTarget.value)">
+                <option [value]="-1">All</option>
+                <option *ngFor="let prov of lookupList.billingProviderList" [value]="prov.id">{{prov.name}}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+
+        <div class="overflow-auto flex-grow-1">
+          <table class="table sm light-striped-border table-sticky-header">
+            <thead>
+              <tr>
+                <th class="width-30">
+                  <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                    <input type="checkbox" class="custom-control-input" id="Billing-Batch-select-all_1"
+                      (change)="selectAllBatch($event.currentTarget.checked)">
+                    <label class="custom-control-label" for="Billing-Batch-select-all_1"></label>
+                  </div>
+                </th>
+                <th>Total</th>
+                <th>Name</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of listclaimbatchcountFiltered;">
+                <td>
+                  <div class="custom-control custom-checkbox green-checkbox custom-control-td"
+                    *ngIf=" (d.batch_status==null || d.batch_status=='') && d.file_generated==true && d.batch_lock==true">
+                    <input type="checkbox" class="custom-control-input" id="billing_summary_{{d.batch_id}}"
+                      (change)="onBatchSelection($event.currentTarget.checked,d)" value={{d.selected}}
+                      [checked]="d.selected">
+                    <label class="custom-control-label" for="billing_summary_{{d.batch_id}}"></label>
+                  </div>
+                </td>
+                <td>{{d.total}}</td>
+                <td>
+                  <button title="{{d.name}}" type="button" class="link-btn text-black" [ngClass]="{
+                          'text-success':(d.batch_status=='A'),
+                          'text-danger':(d.batch_status=='R'|| d.batch_status=='M' || d.batch_status=='W' || d.batch_status=='Z'),
+                          'text-deep-orange':(d.batch_status=='E'),
+                          'text-brown':(d.batch_status=='P'),
+                          'text-batch-sent':(d.batch_status=='Sent To GatewayEdi'),
+                          'text-batch-file-generated':((d.batch_status=='' || d.batch_status==null) && d.file_generated==true)
+                        }" (click)="openBatchDetail(d)">{{d.name}}</button>
+
+                </td>
+                <td>
+                  <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" type="button"
+                    (click)="onLockBatch(d)">
+                    <!-- <i [ngClass]="{
+                          'fas fa-lock':(d.batch_lock==true),
+                          'fa-lock-open':(d.batch_lock==false)
+                        }"</i> -->
+                    <i class="fas" [ngClass]="{  
+                          'fa-lock ' : (d.batch_lock === true),
+                          'fa-lock-open':(d.batch_lock==false)
+                         }"></i>
+                  </button>
+                  <button type="button" *ngIf="d.total=='0'?true:false"
+                    class="btn btn-link  btn-md text-danger  line-height-1 p-0" (click)="onDeleteBatch(d)">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 h-500-px" *ngIf="loadmodule">
+  <!--
+  <div class="encounter-detail-top-bar flex-shrink-0">
+    <button class="left-back-btn" (click)="navigateBackToSSummary()">
+      <i class="fas fa-arrow-left mr-2"></i>Back to Summary
+    </button>
+  </div>
+  -->
+  <claim-batch-detail class="d-flex flex-column flex-grow-1 single-col" [batch_id]="selectedbatchObject.batch_id"
+    [batch_name]="selectedbatchObject.name" [isbatch_lock]="(selectedbatchObject.batch_lock==0?false:true)"
+    [batch_path]="selectedbatchObject.file_path" [batch_status_detail]="selectedbatchObject.batch_status_detail"
+    [batch_type]="selectedbatchObject.batch_type" (onBack)="navigateBackToSummary()">
+  </claim-batch-detail>
+</div>

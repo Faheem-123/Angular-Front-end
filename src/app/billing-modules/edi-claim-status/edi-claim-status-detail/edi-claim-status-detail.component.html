@@ -1,0 +1,102 @@
+<div
+  class="border-content-box light-gray-bg rounded-3 d-flex flex-column flex-grow-1 position-relative"
+  style="min-height: 100px;">
+
+  <div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-25" *ngIf="callingFrom == 'patient_claim'">
+    <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400  d-flex ">EDI Claim Status
+
+
+      <span class="v-separtor"></span>
+      <span *ngIf="openedClaimInfo.claimId!=undefined" class="title-other-info">
+        Claim ID: {{openedClaimInfo.claimId}}
+      </span>
+      <span class="v-separtor"></span>
+      <span *ngIf="openedClaimInfo.dos!=undefined" class="title-other-info">
+        DOS: {{openedClaimInfo.dos}}
+      </span>
+
+    </h4>
+
+    <button type="button" (click)="downloadClaimStatus()" class="btn btn-link fz-13 title-bar-blue-btn">
+      <i class="fas fa-plus mr-1"></i>GET EDI Status
+    </button>
+
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 " [ngClass]="{'overflow-height': callingFrom=='patient_claim'}">
+
+    <div class="d-flex flex-column flex-grow-1  overflow-auto" *ngIf="!isLoading">
+
+
+      <table class="table layout-fixed light-striped-border">
+        <tbody>
+
+          <tr *ngFor="let status of lstClaimStatus ; let i=index;">
+
+            <td class="width-80 " [ngClass]="{'txt-success-alert': (status.status_category_code == 'A0' || status.status_category_code == 'A1'
+                || status.status_category_code == 'A2'),
+                'txt-danger-alert':(status.status_category_code != 'A0' && status.status_category_code != 'A1'
+                && status.status_category_code != 'A2')}">
+              {{status.status_effective_date}}
+            </td>
+
+            <td class="text-pre-wrap d-flex flex-column">
+              <span class="d-flex justify-content-btween">
+                <span class="font-weight-500" [ngClass]="{'txt-success-alert': (status.status_category_code == 'A0' || status.status_category_code == 'A1'
+                || status.status_category_code == 'A2'),
+                'txt-danger-alert':(status.status_category_code != 'A0' && status.status_category_code != 'A1'
+                && status.status_category_code != 'A2')}">{{status.status_category_code_description}}</span>
+                <small class="d-flex flex-grow-1 justify-content-end text-right text-ihc-blue">
+
+                  <span *ngIf="status.icn!=undefined && status.icn!=''">
+                    ICN: {{status.icn}}
+                  </span>
+                  <span class="v-separtor h-75" *ngIf="status.icn!=undefined && status.icn!=''"></span>
+                  {{status.info_source_name}}
+
+                </small>
+
+              </span>
+              <span>{{status.status_description}}</span>
+
+
+              <span class="d-flex flex-row alert alert-secondary py-0 px-1 rounded-0 m-0 small"
+                *ngIf="status.worked==true">
+                <span>
+                  Worked By {{status.worked_by}}
+                  <span class="v-separtor"></span>
+                  {{status.date_worked}}
+                </span>
+              </span>
+
+
+              <button class="btn btn-outline-primary btn-sm py-0 m-0 rounded-2 width-120" *ngIf="(status.status_category_code != 'A0' && status.status_category_code != 'A1'
+              && status.status_category_code != 'A2') && status.worked!=true" (click)="markAsWorked(status.id)">Mark as
+                Worked</button>
+
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+
+  </div>
+
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isProcessing">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Processing Request ...
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,690 @@
+<div class="dashboard-container d-flex flex-column mb-0 ">
+  <div class="dashboard" [ngClass]="{'border-0': callingFrom=='patient_search'}">
+    <div class="dashboard-title justify-content-between h-30">
+      <div class="title">Merge Patient</div>
+    </div>
+
+    <div class="dashboard-content light-gray-bg mt-0 d-flex flex-column">
+
+
+      <div class="steps clearfix">
+        <ul role="tablist">
+
+          <li role="tab" *ngFor="let step of lstSteps ; let i = index " class="first" [ngClass]="{
+              first: step.step_no==1,
+              last: i==lstSteps.length,
+              current: step.selected,
+              done: step.done}" aria-disabled="false" aria-selected="true">
+
+            <a id="signup-form-t-0" aria-controls="signup-form-p-0">
+              <span class="current-info audible"></span>
+              <div class="title">
+                <span class="number">{{step.step_no}}</span>
+                <span class="title_text">{{step.title}}</span>
+              </div>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+
+      <ngb-tabset #mergeTabSet
+        class="inner-horizental-blue-tab tab-set-with-no-tab-headings content-flex d-flex flex-column flex-grow-1 overflow-hidden"
+        [destroyOnHide]="false">
+        <ngb-tab id="select-patient-tab">
+          <ng-template ngbTabTitle>Select Patient</ng-template>
+          <ng-template ngbTabContent>
+
+            <div class="d-flex flex-column flex-grow-1 light-gray-bg"
+              [ngClass]="{'p-6': callingFrom=='patient_search'}">
+
+              <div class="d-flex flex-column flex-grow-1 overflow-height ">
+
+                <div class="border-content-box   flex-grow-1 d-flex flex-column bg-white mb-2 rounded-3"
+                [ngClass]="{'border-0 mb-0 rounded-0': callingFrom=='settings' }">
+
+                  <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+                    Select Patient
+                  </div>
+
+
+                  <div class="d-flex flex-column flex-grow-1 overflow-auto max-height-100 border-top">
+
+                    <div class="patient-search-bar mb-0">
+                      <div class="normal-search flex-4">
+                        <form [formGroup]="patSearchForm" (ngSubmit)="onSearchPatient(patSearchForm.value)">
+                          <h4>Search Pateint</h4>
+                          <input type="text" class="form-control" formControlName="ctrlPatientSearch"
+                            placeholder="First Name, Last Name, SSN, DOB(12/31/1999 or 12/31/99 or 123199 or 12311999), Pateint ID">
+                          <button class="btn">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                          </button>
+                        </form>
+                      </div>
+
+                      <div class="advance-search flex-3">
+                        <form [formGroup]="patAdvanceSearchForm"
+                          (ngSubmit)="onSearchPatientAdvance(patAdvanceSearchForm.value)">
+                          <h4>Advance Search</h4>
+                          <input type="text" class="form-control" formControlName="ctrlPatientSearchAdvance"
+                            placeholder="Search here...">
+                          <select class="form-control" formControlName="ctrlPatientSearchAdvanceOption"
+                            (change)="changeAdvanceOpt()">
+                            <option value="SSN">SSN</option>
+                            <option value="PHONE_NO">Phone No</option>
+                            <option value="POLICY_NO">Policy Number</option>
+                          </select>
+                          <button class="btn">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
+
+
+                    <div class="dashboard-container d-flex flex-column m-0">
+                      <div class="dashboard border-0">
+                        <div class="dashboard-content mt-0">
+                          <div *ngIf="isLoding" class="div-loader"></div>
+
+                          <table class="table light-striped-border">
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>DOB</th>
+                                <th>SSN</th>
+                                <th>Pateint ID</th>
+                                <th>Home Phone</th>
+                                <th>Cell Phone</th>
+                                <th>Gender</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+
+
+                              <tr *ngFor="let pat of lstPatientSearch" [ngClass]="{
+                                                              'text-success' : (pat.patient_status === 'ACTIVE'),
+                                                              'text-danger' : (pat.patient_status === 'INACTIVE'),
+                                                              'text-warning' : (pat.patient_status === 'CLINIC DISCHARGED'),
+                                                              'text-warning' : (pat.patient_status === 'DECEASED')
+                                                            }">
+
+                                <td>
+                                  <div class="form-check">
+                                    <input type="checkbox" class="form-check-input mt-1" id="pat_{{pat.patient_id}}"
+                                      [checked]="pat.selected"
+                                      (change)="patientSelectionChanged(pat,$event.target.checked)">
+                                    <label class="form-check-label" for="pat_{{pat.patient_id}}">
+                                      <img class="img-h-15 mr-1" *ngIf="pat.gender_code =='F'"
+                                        src="./assets/images/icons/woman_ico.svg" alt="">
+                                      <img class="img-h-15 mr-1" *ngIf="pat.gender_code =='M'"
+                                        src="./assets/images/icons/man_ico.svg" alt="">
+                                      {{pat.name}}</label>
+                                  </div>
+                                </td>
+                                <td>{{pat.dob}} </td>
+                                <td class="text-right">{{pat.ssn}} </td>
+                                <td class="text-right">{{pat.alternate_account}}</td>
+                                <td>{{pat.home_phone | phonePipe}}</td>
+                                <td>{{pat.cell_phone | phonePipe}}</td>
+                                <td>
+                                  <span *ngIf="pat.gender_code =='M' ">Male</span>
+                                  <span *ngIf="pat.gender_code =='F' ">Female</span>
+                                </td>
+                                <td>{{pat.address}}</td>
+                                <td>{{pat.patient_status}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+
+
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </ng-template>
+
+
+        </ngb-tab>
+
+        <ngb-tab id="select-record-to-keep-tab">
+          <ng-template ngbTabTitle>Select Record to Keep</ng-template>
+          <ng-template ngbTabContent>
+
+            <div class="p-6 d-flex flex-column flex-grow-1 light-gray-bg">
+
+              <div class="d-flex flex-column flex-grow-1 overflow-height ">
+
+                <div class="border-content-box    flex-grow-1 d-flex flex-column bg-white mb-2 rounded-3"
+                  [ngClass]="{'border-0 mb-0 rounded-0': callingFrom=='settings' }">
+
+                  <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+                    Select Patient to Keep
+                  </div>
+
+                  <div class="overflow-auto flex-grow-1 max-height-100">
+
+
+                    <table class="table light-striped-border">
+                      <thead>
+                        <tr>
+                          <th class="width-120"></th>
+                          <th class="width-120">Name</th>
+                          <th class="width-80">DOB</th>
+                          <th>SSN</th>
+                          <th>Pateint ID</th>
+                          <th>Home Phone</th>
+                          <th>Cell Phone</th>
+                          <th>Gender</th>
+                          <th>Address</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+
+                        <tr *ngFor="let pat of lstSelectedPatients" [ngClass]="{
+                                                            'tr-success' : pat.keep,
+                                                            'tr-danger' : !pat.keep
+                                                          }">
+
+                          <td>
+                            <button class="btn btn-sm btn-outline-primary py-0" *ngIf="!pat.keep"
+                              (click)="selecPatientToKeep(pat.patient_id)">
+                              Select to Keep
+                            </button>
+                            <span class="font-weight-500" *ngIf="pat.keep">
+                              <i class="fas fa-check-circle fa-md mr-1"></i> Patient will be kept
+                            </span>
+                          </td>
+                          <td>{{pat.name}} </td>
+                          <td>{{pat.dob}} </td>
+                          <td class="text-right">{{pat.ssn}} </td>
+                          <td class="text-right">{{pat.alternate_account}}</td>
+                          <td>{{pat.home_phone | phonePipe}}</td>
+                          <td>{{pat.cell_phone | phonePipe}}</td>
+                          <td>
+                            <span *ngIf="pat.gender_code =='M' ">Male</span>
+                            <span *ngIf="pat.gender_code =='F' ">Female</span>
+                          </td>
+                          <td>{{pat.address}}</td>
+                          <td>{{pat.patient_status}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+
+                  </div>
+                </div>
+
+                <div class="border-content-box  flex-grow-1 d-flex flex-column bg-white mb-2 rounded-3"
+                [ngClass]="{'border-0 mb-0 rounded-0': callingFrom=='settings' }">
+
+                  <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+                    Select Insurance to Keep
+
+                  </div>
+
+                  <div class="inner-tool-tab h-auto justify-content-between pr-0 flex-shrink-0 h-25 px-2">
+
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="chkIsSelfPay"
+                        (change)="selfpayChange($event.target.checked)">
+                      <label class="form-check-label" for="chkIsSelfPay">Selfpay</label>
+                    </div>
+
+                  </div>
+
+
+                  <div class="overflow-auto flex-grow-1 max-height-100">
+
+
+                    <table class="table light-striped-border">
+                      <thead>
+                        <tr>
+                          <th class="width-120" *ngIf="!isSelfPay"></th>
+                          <th class="width-100">Insurance Type</th>
+                          <th class="width-120">Patient Name</th>
+                          <th>Insurance Name</th>
+                          <th>Insurance Address</th>
+                          <th>Policy Number</th>
+                          <th>Group Number</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+
+                        <tr *ngFor="let ins of lstInsurancesToMerge" [ngClass]="{
+                                                              'tr-success' : ins.keep,
+                                                              'tr-danger' : !ins.keep
+                                                            }">
+
+                          <td *ngIf="!isSelfPay">
+                            <button class="btn btn-sm btn-outline-primary py-0" *ngIf="!ins.keep"
+                              (click)="selectInsuranceToKeep(ins)">
+                              Select to Keep
+                            </button>
+                            <span class="font-weight-500" *ngIf="ins.keep">
+                              <i class="fas fa-check-circle fa-md mr-1"></i> Insurance will be kept
+                            </span>
+                          </td>
+                          <td class="font-weight-bold">{{ins.insurace_type}} </td>
+                          <td>{{ins.patient_name}}</td>
+                          <td>{{ins.name}} </td>
+                          <td>{{ins.address}} </td>
+                          <td>{{ins.policy_number}} </td>
+                          <td>{{ins.group_number}} </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+
+                  </div>
+                </div>
+
+
+              </div>
+
+
+
+            </div>
+
+
+          </ng-template>
+        </ngb-tab>
+
+        <ngb-tab id="merge-patient-tab">
+          <ng-template ngbTabTitle>Confirm and Merge</ng-template>
+          <ng-template ngbTabContent>
+
+
+            <div class="p-6 d-flex flex-column flex-grow-1 light-gray-bg">
+
+              <div class="d-flex flex-column flex-grow-1 overflow-height">
+
+                <div class="border-content-box   flex-grow-1 d-flex flex-column bg-white mb-2 rounded-3"
+                [ngClass]="{'border-0 mb-0 rounded-0': callingFrom=='settings' }">
+
+                  <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+                    Confirm and Merge
+                  </div>
+
+                  <div class="d-flex flex-grow-1 max-height-100">
+                    <div class="overflow-auto flex-grow-1 max-height-100 w-75 border-right">
+
+                      <div class="report">
+
+                        <div class="content">
+                          <div class="content-header border-bottom-green col-12 my-0 py-0">
+                            <div class="content-header-title py-0">PATIENT INFORMATION</div>
+                          </div>
+
+
+                          <ng-template id="sectionMergPatientInfo" [ngIf]="selectedPatientInfo!=undefined">
+
+
+
+                            <table class="table sm layout-fixed light-blue-striped-row-column-border mt-1 w-100">
+                              <tbody>
+                                <tr>
+                                  <td class="w-10">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Title</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.preffix | uppercase}}</label>
+                                    </div>
+
+                                  </td>
+                                  <td class="w-20">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">First Name</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.first_name | uppercase}}</label>
+                                    </div>
+                                  </td>
+                                  <td class="w-20">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Middle Name</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.mname | uppercase}}</label>
+                                    </div>
+                                  </td>
+                                  <td class="w-20">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Last Name</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.last_name | uppercase}}</label>
+                                    </div>
+                                  </td>
+
+                                  <td class="w-10">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Suffix</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.suffix | uppercase}}</label>
+                                    </div>
+
+                                  </td>
+
+                                </tr>
+                                <tr>
+                                  <td colspan="5">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Previous Name</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.previous_name | uppercase}}</label>
+                                    </div>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td colspan="2">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Date of Birth</label>
+                                      <label class="report-form-group-value pt-0">{{selectedPatientInfo.dob}}</label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Gender</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.gender | uppercase}}</label>
+                                    </div>
+                                  </td>
+                                  <td colspan="2">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Social Security Number</label>
+                                      <label class="report-form-group-value pt-0">{{selectedPatientInfo.ssn}}</label>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+
+
+
+                            <table class="table sm layout-fixed light-blue-striped-row-column-border mt-1">
+                              <tbody>
+                                <tr>
+                                  <td class="w-50" rowspan="3">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Address</label>
+
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.address | uppercase}}</label>
+                                      <label class="report-form-group-value pt-0"
+                                        *ngIf="selectedPatientInfo!=undefined && selectedPatientInfo.address2!=undefined && selectedPatientInfo.address2!=''">{{selectedPatientInfo.address2 | uppercase}}</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.city | uppercase}},
+                                        {{selectedPatientInfo.state | uppercase}}
+                                        {{selectedPatientInfo.zip}}</label>
+                                    </div>
+
+                                  </td>
+                                  <td class="w-16">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Home Phone</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.home_phone | phonePipe}}</label>
+                                    </div>
+                                  </td>
+                                  <td class="w-16">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Cell Phone</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.cell_phone | phonePipe}}</label>
+                                    </div>
+                                  </td>
+                                  <td class="w-18">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Work Phone</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.work_phone | phonePipe}}</label>
+                                    </div>
+                                  </td>
+
+                                </tr>
+                                <tr>
+                                  <td colspan="3">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Email</label>
+                                      <label class="report-form-group-value pt-0">{{selectedPatientInfo.email}}</label>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Emergency Contact</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.emrg_contact_name | uppercase}}</label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Contact Number</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.emrg_contact}}</label>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Relationship</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.emrg_contact_relation | uppercase}}</label>
+                                    </div>
+                                  </td>
+                                </tr>
+
+
+                              </tbody>
+                            </table>
+
+
+
+                            <table class="table sm layout-fixed light-blue-striped-row-column-border mt-1">
+                              <tbody>
+
+                                <tr>
+                                  <td class="w-50">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Primary Physician</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.primary_provider_name | uppercase}}</label>
+                                    </div>
+                                  </td>
+                                  <td class="w-50">
+                                    <div class="form-group mb-0">
+                                      <label class="report-form-group-title">Preferred Language</label>
+                                      <label
+                                        class="report-form-group-value pt-0">{{selectedPatientInfo.patient_language | uppercase}}</label>
+                                    </div>
+                                  </td>
+                                </tr>
+
+                              </tbody>
+                            </table>
+
+
+                            <div class="content-header border-bottom-green col-12 mt-2 mb-0 py-0">
+                              <div class="content-header-title col-8 py-0">INSURANCE INFORMATION</div>
+                            </div>
+
+
+                            <div class="form-row form-dashboard col-12 mt-1"
+                              *ngIf="isSelfPay || lstSelectedInsurances==undefined || lstSelectedInsurances.length == 0">
+                              <div class="form-group mb-0">
+                                <label class="report-form-group-value pt-0">PATIENT IS SELFPAY.</label>
+                              </div>
+                            </div>
+
+
+                            <div class="overflow-auto mt-2"
+                              *ngIf="!isSelfPay && lstSelectedInsurances!=undefined && lstSelectedInsurances.length > 0">
+
+                              <table class="table sm layout-fixed light-blue-striped-row-column-border mb-1"
+                                *ngFor="let ins of lstSelectedInsurances">
+                                <tbody>
+                                  <tr>
+                                    <td class="w-50" rowspan="2">
+                                      <div class="form-group mb-0">
+                                        <label
+                                          class="report-form-group-title font-weight-500">{{ins.insurace_type | uppercase }}</label>
+                                        <label
+                                          class="report-form-group-value pt-0 font-weight-500">{{ins.name | uppercase }}</label>
+                                        <label class="report-form-group-value pt-0">{{ins.address | uppercase }}</label>
+                                        <label class="report-form-group-value pt-0">{{ins.phone}}</label>
+
+                                      </div>
+
+                                    </td>
+                                    <td class="w-10">
+                                      <div class="form-group mb-0">
+                                        <label class="report-form-group-title">Copay</label>
+                                        <label class="report-form-group-value pt-0">{{ins.copay}}</label>
+                                      </div>
+                                    </td>
+                                    <td class="w-20">
+                                      <div class="form-group mb-0">
+                                        <label class="report-form-group-title">Policy Number</label>
+                                        <label class="report-form-group-value pt-0">{{ins.policy_number}}</label>
+                                      </div>
+                                    </td>
+                                    <td class="w-20">
+                                      <div class="form-group mb-0">
+                                        <label class="report-form-group-title">Group Number</label>
+                                        <label class="report-form-group-value pt-0">{{ins.group_number}}</label>
+                                      </div>
+                                    </td>
+
+                                  </tr>
+
+                                  <tr>
+                                    <td colspan="2">
+                                      <div class="form-group mb-0">
+                                        <label class="report-form-group-title">Guarantor</label>
+                                        <label
+                                          class="report-form-group-value pt-0">{{ins.guarantor_name | uppercase }}</label>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div class="form-group mb-0">
+                                        <label class="report-form-group-title">Relationship</label>
+                                        <label
+                                          class="report-form-group-value pt-0">{{ins.guarantor_relationship | uppercase }}</label>
+                                      </div>
+                                    </td>
+                                  </tr>
+
+                                </tbody>
+                              </table>
+                            </div>
+
+
+                          </ng-template>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+
+                    <div class="overflow-auto flex-grow-1 max-height-100 w-25">
+
+                      <div class="report">
+
+                        <div class="content">
+                          <div class="content-header border-bottom-green col-12 my-0 py-0">
+                            <div class="content-header-title py-0">FOLLOWING DATA WILL BE MERGED</div>
+                          </div>
+
+
+                          <table class="table sm layout-fixed light-blue-striped-row-column-border mt-1 w-100">
+                            <tbody>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Patient Info (Selected)</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Insurances (Selected)</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Appointments</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Encounters</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Documents</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Claims</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Payments</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Lab Orders/Results</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Correspndence</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Health Maintenance</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Notes</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Letters</td>
+                              </tr>
+                              <tr>
+                                <td><i class="fas fa-check-circle mr-1 text-success"></i>Pre-Natal</td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+
+
+                </div>
+              </div>
+
+            </div>
+
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
+
+      <div class="div-loader-message-box" *ngIf="isLoading">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+      </div>
+
+      <div class="modal-footer custom pl-0">
+        <button style="width: 80px;" class="btn btn-outline-dark btn-sm" type="button" [disabled]="currentStep==1"
+          (click)="navigatePrevious()">Previous</button>
+        <button style="width: 80px;" class="btn btn-success btn-sm" type="button" (click)="navigateNext()"
+          *ngIf="currentStep < lstSteps.length">Next</button>
+        <button style="width: 80px;" class="btn btn-success btn-sm" type="button" (click)="mergePatient()"
+          *ngIf="currentStep==lstSteps.length">Merge</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

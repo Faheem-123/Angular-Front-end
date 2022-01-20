@@ -1,0 +1,20 @@
+<div class="dashboard-container d-flex flex-column mb-0">
+  <div class="dashboard mx-1">
+      <ngb-tabset class="inner-sub-horizental-tab" [destroyOnHide]="false"
+      (tabChange)="onTabChange($event)">
+          <ngb-tab id="pat-referral">
+              <ng-template ngbTabTitle>Patient Referral</ng-template>
+              <ng-template ngbTabContent>
+                  <patient-referral   [patientId]="patientId" class="d-flex flex-column flex-grow-1"></patient-referral>
+              </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="ref-req">
+              <ng-template ngbTabTitle>Referral Request</ng-template>
+              <ng-template ngbTabContent>
+                  <patient-referral-request  [patient]="patient" class="d-flex flex-column flex-grow-1"></patient-referral-request>
+              </ng-template>
+          </ngb-tab>
+      </ngb-tabset>
+  </div>
+</div>

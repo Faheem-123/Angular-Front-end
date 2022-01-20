@@ -1,0 +1,44 @@
+<div class="mt-8">
+  <div id="main-follow-up" class="rounded-top encounter-header">
+    <div class="title pl-8">Patient Health Check</div>
+    <div class="nav color-buttons align-items-center">
+      <div class="dropdown">
+        <button [disabled]="!canAddEdit" class="nav-link blue px-2 py-0 top-right-radius" type="button" id="dropdownMenuButton"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add New Health Check<i
+            class="fas fa-caret-down ml-1"></i></button>
+        <div class="dropdown-menu dropdown-menu-left custome-menu health-check-drop-height">
+          <button class="dropdown-item" *ngFor="let f of lstHCForms" (click)="onNewClick(f)">
+            <a class="dropdown-item">{{f.form_description}}</a>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  
+    <div *ngIf="!isLoading && !canView" class="access-denied">
+        <i class="fas fa-ban mr-2"></i> Access Denied
+    </div>
+   
+  <div *ngIf="!isLoading &&  noRecordFound && canView" class="no-content">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+  <table class="table layout-fixed light-striped-border" *ngIf="!isLoading &&  !noRecordFound">
+    <tr *ngFor="let hcs of listHealthCheckSummary">
+      <td class="width-90">{{hcs.visit_date}}</td>
+      <td>{{hcs.form_description}}</td>
+      <td title="{{hcs.provider1_sign_info}}" style="text-align: right"><br>{{hcs.provider1_sign_info}} </td>
+
+      <td class="text-right width-90">
+        <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md text-primary line-height-1 p-0 mr-2" (click)="onEdit(hcs)"><i
+            class="far fa-edit"></i></button>
+        <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md btn-delete line-height-1 p-0" (click)="onDelete(hcs)"><i
+            class="far fa-trash-alt"></i></button>
+      </td>
+    </tr>
+  </table>
+
+</div>

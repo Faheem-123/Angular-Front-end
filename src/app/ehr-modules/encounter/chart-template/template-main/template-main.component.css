@@ -1,0 +1,9 @@
+modal-xxl .modal-lg {
+    width: 1000px;
+}
+@media screen {
+    .modal-adaptive .modal-lg {
+        width: 100% !important;
+        max-width: calc(80%);
+    }
+}

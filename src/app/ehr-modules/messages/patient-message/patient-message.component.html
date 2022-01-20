@@ -1,0 +1,403 @@
+<div class="dashboard" style="height: 600px !important;">
+  <div class="d-flex flex-row flex-shrink-0 rounded-10-top">
+    <button class="btn new-meesage flex-shrink-0 rounded-10-top-left" (click)="BackToMainMessage.emit($event)">
+      <i class="fas fa-arrow-left mr-2"></i>Back To Message</button>
+    <ul class="nav messages-bar flex-grow-1 float-left">
+      <a class="nav-link" href="#">Patient Messages</a>
+    </ul>
+  </div>
+
+  <div class="border rounded bg-white px-2 py-1 m-2 flex-shrink-0">
+    <form [formGroup]="searchPHRMessagesForm">
+      <div class="form-row form-dashboard">
+
+
+        <div class="form-group col-4">
+          <label for="txtPatientSearch" class="col-form-label">Patient:</label>
+
+          <div class="form-row form-dashboard col-md-12">
+            <div class="form-group col-md-12">
+              <div class="input-icon d-flex flex-grow-3">
+
+                <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                  formControlName="txtPatientSearch" placeholder="Search Patient"
+                  (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                  (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+                <!-- <input type="text" formControlName="txtPatientIdHidden" hidden> -->
+                <div class="icon">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </div>
+
+                <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                  (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                </inline-patient-search>
+
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+
+        <div class="form-group col-2">
+          <label class="col-form-label" for="cmbProvider">Provider:</label>
+          <div class="input-group">
+            <select class="form-control" id="cmbProvider" formControlName="cmbProvider">
+              <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group horizental row zero col-md-2 col-sm-6">
+          <label class="col-form-label" for="dpfromDate">From:</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="mm/dd/yyyy" name="dateFrom" formControlName="dateFrom"
+              ngbDatepicker #dpfromDate="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn btn-outline-primary" (click)="dpfromDate.toggle()" type="button">
+                <i class="far fa-calendar-alt" aria-hidden="true"></i>
+              </button>
+            </span>
+
+          </div>
+        </div>
+
+        <div class="form-group horizental row zero col-md-2 col-sm-6">
+          <label class="col-form-label" for="dptoDate">To:</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo" ngbDatepicker
+              #dptoDate="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn btn-outline-primary" (click)="dptoDate.toggle()" type="button">
+                <i class="far fa-calendar-alt" aria-hidden="true"></i>
+              </button>
+            </span>
+
+          </div>
+        </div>
+
+        <div class="form-group col-1 d-flex flex-column justify-content-end">
+          <button class="btn btn-sm btn-dark w-100 text-white" (click)="clearSearchForm()">Clear</button>
+        </div>
+        <div class="form-group col-1 d-flex flex-column justify-content-end">
+          <button class="btn btn-sm bg-success w-100"
+            (click)="searchPatientMSG(searchPHRMessagesForm.value)">Search</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+
+
+  <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+    <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+      <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+        <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+          <div class="d-flex flex-column flex-grow-1">
+
+            <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+
+
+
+              <form [formGroup]="radioForm">
+
+                <div>
+                  <div class="form-check form-check-inline pt-1">
+                    <input class="form-check-input" (change)="onOptionChange('inbox')" checked
+                      formControlName="radioOption" type="radio" name="radioOption" value="Inbox" id="rdoinbox">
+                    <label class="form-check-label fz-13 text-white font-weight-400"
+                      [ngClass]="{'active' : (dataOption === 'inbox')}" for="rdoinbox">Inbox</label>
+                  </div>
+
+                  <div class="form-check form-check-inline pt-1">
+                    <input class="form-check-input" (change)="onOptionChange('sent')" checked
+                      formControlName="radioOption" type="radio" name="radioOption" value="Sent" id="rdosent">
+                    <label class="form-check-label fz-13 text-white font-weight-400"
+                      [ngClass]="{'active' : (dataOption === 'sent')}" for="rdosent">Sent</label>
+                  </div>
+
+
+                  <div class="form-check form-check-inline pt-1">
+                    <input class="form-check-input" (change)="onOptionChange('archive')" checked
+                      formControlName="radioOption" type="radio" name="radioOption" value="Archive" id="rdoarchive">
+                    <label class="form-check-label fz-13 text-white font-weight-400"
+                      [ngClass]="{'active' : (dataOption === 'archive')}" for="rdoarchive">Archive</label>
+                  </div>
+                </div>
+
+              </form>
+
+
+
+              <a class="fz-13 text-white font-weight-300" href="#" (click)="newPatientMsgCompose()">New</a>
+            </div>
+
+
+            <div class="border-top bg-white flex-grow-1 overflow-auto">
+              <div class="messages-list d-flex flex-grow-1">
+                <ul class="nav nav-tabs justify-content-start" style="width: 308px;">
+                  <li class="nav-item">
+                    <a class="nav-link " *ngFor="let pmsg of patientMsgListFilter;let i = index"
+                      [ngClass]="{'active' : (pmsg.message_id === messageID)}" (click)="onPatMessageSelect(pmsg)">
+
+                      <div class="message">
+                        <div class="d-flex align-items-center justify-content-between">
+                          <div class="title">{{pmsg.created_user}} </div>
+                          <div class="date">{{pmsg.client_date_modified}}</div>
+                        </div>
+                        <div class="subject">{{pmsg.mess_subject}}</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+        <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+          <div class="col-md-12 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+            <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+              <div class="justify-content-between" *ngIf="!showComposeMsg">
+                <div
+                  class="alert alert-warning h-30 px-3 d-flex align-items-center justify-content-between mb-0 fz-14 font-weight-400"
+                  *ngIf="showAlert">
+                  <span [ngClass]="{'text-success' : value =='ACCEPTED',
+                         'text-danger' : value =='DENIED'}">{{amendmentMsg}}</span>
+                </div>
+                <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                  <div class="fz-14 text-white font-weight-400">Details</div>
+                  <a class="fz-13 text-white font-weight-300" href="#" (click)="sendReceive()">Send/Receive</a>
+                </div>
+                <div class="d-flex flex-column flex-grow-1">
+                  <div class="border-top bg-white flex-grow-1 overflow-auto">
+                    <div class="messages-list d-flex flex-grow-1">
+                      <div class="tab-content bg-white">
+                        <ul class="nav message-bar flex-shrink-0 justify-content-between pl-3">
+                          <div class="d-flex align-items-center">
+                            <span class="fz-14 font-weight-500 font-italic mr-3">Amendment Request:</span>
+                            <p><button type="button" class="link-btn" (click)="viewPatient()">View Patient</button></p>
+                          </div>
+                          <div class="d-flex">
+                            <a class="nav-link"
+                              *ngIf="showHideFunctionButton == 'inbox' || showHideFunctionButton == 'archive'" href="#"
+                              (click)="replyPatMsg()">Reply</a>
+                            <a class="nav-link" href="#" (click)="deletePatMsg('delete')">Delete</a>
+                            <a class="nav-link" *ngIf="showHideFunctionButton == 'inbox' " href="#"
+                              (click)="deletePatMsg('archive')">Archive</a>
+                            <!-- *ngIf="showHideFunctionButton == 'archive' || showHideFunctionButton == 'inbox' " -->
+                          </div>
+                        </ul>
+                        <div class="message-info">
+                          <div class="form-view row zero">
+                            <div class="title font-weight-400 col-1 text-right">From:</div>
+                            <div class="value font-weight-400 col-11 pl-2">{{objFrom}}</div>
+                          </div>
+                          <div class="form-view row zero">
+                            <div class="title font-weight-400 col-1 text-right">Sent:</div>
+                            <div class="value font-weight-400 col-11 pl-2">{{objSent}}</div>
+                          </div>
+                          <div class="form-view row zero">
+                            <div class="title font-weight-400 col-1 text-right">To:</div>
+                            <div class="value font-weight-400 col-11 pl-2">{{objTo}}</div>
+                          </div>
+                          <div class="form-view row zero">
+                            <div class="title font-weight-400 col-1 text-right">Subject:</div>
+                            <div class="value font-weight-400 col-11 pl-2">{{objSubject}}</div>
+                          </div>
+                        </div>
+                        <div class="message-detail flex-grow-1 p-3 overflow-auto">
+
+
+                          <form [formGroup]="patientMessageFormView">
+                            <quill-editor id="richEditorView" [required]="true" [formControl]="patientMessageView">
+                            </quill-editor>
+                          </form>
+
+
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="justify-content-between" *ngIf="showComposeMsg">
+                <!-- ///////////////////////////////////////////////////////////////////////////////// -->
+                <form [formGroup]="patientMsgComposeForm">
+                  <ul class="nav message-bar flex-shrink-0 align-items-center justify-content-end">
+                    <div class="mr-2">
+                      <button class="btn btn-sm bg-success"
+                        (click)="sendPatientMessage(patientMsgComposeForm.value)">Send</button>
+                    </div>
+                    <div class="mr-2">
+                      <button class="btn btn-sm btn-danger" (click)="discardPatMsgT()">Discard</button>
+                    </div>
+                  </ul>
+                  <div class="message-detail flex-grow-1 p-3 overflow-auto">
+
+
+
+                    <!-- ------- -->
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-md-12">
+                        <label class="col-form-label" for="txtPatientSearchTo">Patient:</label>
+                        <div class="form-row form-dashboard">
+                          <div class="form-group col-12">
+                            <div class="input-icon d-flex flex-grow-3">
+                              <input labelForId="txtPatientSearchTo" class="form-control flex-grow-3" type="text"
+                                #txtPatientSearchTo formControlName="txtPatientSearchTo" placeholder="Search Patient"
+                                (keydown)="onPatientSearchKeydownTo($event)" [readOnly]="replyEditable"
+                                autocomplete="off" (input)="onPatientSearchInputChangeTo(txtPatientSearchTo.value)"
+                                (blur)="onPatientSearchBlurTo()">
+                              <div class="icon">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              </div>
+                              <inline-phr-patient-search *ngIf="showPatientSearchTo"
+                                [searchValue]="txtPatientSearchTo.value" (onPatientSelect)="openSelectPatientTo($event)"
+                                (onClose)="closePatientSearchTo()"></inline-phr-patient-search>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
+                    <!-- <div class="form-row form-dashboard">
+  <div class="input-group group-md mb-2">
+    <div class="input-group-prepend">
+      <button class="btn light-blue" type="button" id="button-addon1" title="Click to open recipient list."
+        (click)="openRecipient('to')">To</button>
+    </div>
+    <input type="text" class="form-control" placeholder="to" formControlName="txtRecipientTo" [readOnly]="true">
+  </div>
+</div> -->
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <label class="col-form-label" for="txtRecipientTo">To:</label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <button class="btn bg-rounded-green" type="button" id="button-addon1" title="Click to open list."
+                              [disabled]="replyEditable" (click)="openRecipient()">To</button>
+                          </div>
+                          <input type="text" class="form-control" placeholder="to" formControlName="txtRecipientTo"
+                            [readOnly]="true">
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <label class="col-form-label" for="txtSubjectTo">Subject:</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control control-md" placeholder="Subject"
+                            formControlName="txtSubjectTo">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <label class="col-form-label" for="cmbProviderTo">From:</label>
+                        <div class="input-group">
+                          <select class="form-control" id="cmbProviderTo" formControlName="cmbProviderTo">
+                            <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <label class="col-form-label" for="atch">Attachment:</label>
+                        <div class="input-group">
+                          <input type="file" class="form-control" aria-label="Select File" aria-describedby="file-addon"
+                            formControlName="attachFile" (change)="onFileChange($event)">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <div class="mt-3" style="height: 180px;">
+                          <quill-editor id="messageRichEditorToEdit" #messageRichEditorToEdit [required]="true"
+                            format="text|html" [formControl]="txtMessageEditTo"></quill-editor>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </form>
+
+                <!-- ///////////////////////////////////////////////////////////////////////////////// -->
+              </div>
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+        <!-- <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1"> -->
+        <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+          <div class="justify-content-between">
+            <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+              <div class="fz-14 text-white font-weight-400">Attachments</div>
+              <!-- <a class="fz-13 text-white font-weight-300" (click)="openPopUp()">
+                          <i class="fa fa-plus-square fa-md"></i>Add</a> -->
+            </div>
+          </div>
+          <div class="d-flex flex-column flex-grow-1">
+            <div class="border-top bg-white flex-grow-1 overflow-auto">
+              <div class="messages-list d-flex flex-grow-1">
+                <table class="table layout-fixed sm light-striped-border">
+                  <tbody>
+                    <tr *ngFor="let atch of patMsgAttachmentsList">
+                      <td (click)="openDocument(atch)">{{atch.original_file_name}} </td>
+                    </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
+        <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+          <div class="justify-content-between">
+            <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+              <div class="fz-14 text-white font-weight-400">Links</div>
+            </div>
+          </div>
+          <div class="d-flex flex-column flex-grow-1">
+            <div class="border-top bg-white flex-grow-1 overflow-auto">
+              <div class="messages-list d-flex flex-grow-1">
+                <table class="table layout-fixed sm light-striped-border">
+                  <tbody>
+                    <tr *ngFor="let links of patMsgLinksList">
+                      <td> <a href="{{links.link}}" target="_blank">{{links.link}}</a> </td>
+                    </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

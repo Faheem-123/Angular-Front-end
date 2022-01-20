@@ -1,0 +1,76 @@
+<ngb-tabset class="inner-vertical-tab white d-flex flex-row max-height-100">
+  <!-- <ngb-tab>
+    <ng-template ngbTabTitle><span>Attorney Setup</span></ng-template>
+    <ng-template ngbTabContent>
+      <attorney-setup class="d-flex flex-column flex-grow-1 overflow-height p-1"></attorney-setup>
+    </ng-template>
+  </ngb-tab> -->
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Referring Provider</span></ng-template>
+    <ng-template ngbTabContent>
+      <reffering-physician-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></reffering-physician-setup>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Guarantor</span></ng-template>
+    <ng-template ngbTabContent>
+      <guarantor-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></guarantor-setup>
+    </ng-template>
+  </ngb-tab>
+  
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>SuperBill Setting</span></ng-template>
+    <ng-template ngbTabContent>
+      <superbill-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></superbill-setup>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Lab Category</span></ng-template>
+    <ng-template ngbTabContent>
+      <lab-category-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></lab-category-setup>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab *ngIf="canViewCDS">
+    <ng-template ngbTabTitle><span>CDS</span></ng-template>
+    <ng-template ngbTabContent>
+      <cds-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></cds-setup>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Add New Insurance</span></ng-template>
+    <ng-template ngbTabContent>
+      <add-new-insurance class="d-flex flex-column flex-grow-1 overflow-height pl-1"></add-new-insurance>
+    </ng-template>
+  </ngb-tab>
+
+  <!-- <ngb-tab>
+    <ng-template ngbTabTitle><span>Payroll Categories</span></ng-template>
+    <ng-template ngbTabContent>
+      <payroll-category-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></payroll-category-setup>
+    </ng-template>
+  </ngb-tab> -->
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Template Setup</span></ng-template>
+    <ng-template ngbTabContent>
+      <!-- <encounter-template-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></encounter-template-setup> -->
+      <encounter-template-main class="d-flex flex-column flex-grow-1 overflow-height pl-1"></encounter-template-main>
+      
+    </ng-template>
+  </ngb-tab> 
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Fax Contact List</span></ng-template>
+    <ng-template ngbTabContent>
+      <fax-contacts-setup class="d-flex flex-column flex-grow-1 overflow-height pl-1"></fax-contacts-setup>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>My List</span></ng-template>
+    <ng-template ngbTabContent>
+      <mylist class="d-flex flex-column flex-grow-1 overflow-height pl-1"></mylist>
+    </ng-template>
+  </ngb-tab>
+  
+</ngb-tabset>

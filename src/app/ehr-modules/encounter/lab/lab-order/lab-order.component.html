@@ -1,0 +1,563 @@
+<!-- new -->
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom position-relative">
+  <!-- <div class="inner-tool-tab justify-content-end p-1 h-auto">
+    
+      <button [disabled]="!canAddEdit" class="btn btn-sm btn-success " (click)="onSave()">
+        <i class="fa fa-save pr-1"></i>Save
+      </button>
+      <button class="btn btn-sm ml-1 text-white bg-dark" (click)="onCancel()">
+        <i aria-hidden="true" class="fa fa-times pr-1"></i>Cancel
+      </button>
+      <button *ngIf="!isNewOrder"  class="btn btn-sm btn-primary ml-1" (click)="onPrint()">
+          <i class="fa fa-save pr-1"></i>Print
+        </button>
+      
+
+    
+  </div> -->
+  <div class="rounded-top encounter-header-highlight justify-content-end">
+    <ul class="nav color-buttons align-items-center">
+      <button [disabled]="(canAddEdit==false ||  isSaving==true)" class="nav-link encounter-btn-save px-2 py-0"
+        (click)="onSave()">
+        <i class="far fa-save pr-1"></i>Save
+      </button>
+      <button *ngIf="!isNewOrder" class="nav-link btn-info px-2 py-0" (click)="onPrint()">
+        <i class="fa fa-save pr-1"></i>Print
+      </button>
+      <button class="nav-link btn-dark px-2 py-0 top-right-radius" (click)="onCancel()">
+        <i class="fas fa-times  pr-1"></i>Cancel
+      </button>
+
+    </ul>
+  </div>
+
+  <div class="alert alert-primary d-flex justify-content-between m-0 py-1 px-2 rounded-0 fz-12"
+    *ngIf="orderSentMsg!='' || signedMsg!=''">
+    <p class="m-0">{{orderSentMsg}}</p>
+    <p class="m-0">{{signedMsg}}</p>
+  </div>
+
+  <div class="px6-py3">
+    <div class="row p8">
+      <div class="col-12">
+        <div class="info-box-stipes rounded">
+          <div class="p-8">
+            <form [formGroup]="inputForm">
+              <div class="form-row form-dashboard">
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label" for="input2">Date:</label>
+
+                  <div class="input-group col-sm-9">
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtDate"
+                      formControlName="txtDate" ngbDatepicker #txtDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtDate.toggle()" type="button">
+                      </button>
+                    </span>
+                  </div>
+
+
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+
+                  <!-- <input formControlName="txtTime"  type="text" class="form-control col-sm-8" labelForId="input2"> -->
+
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text ngb-timepicker-input-group-text">
+                        <i class="far fa-clock"></i></span>
+                    </div>
+                    <!-- <ngb-timepicker id="txtTime" class="form-control form-control-ngb-timepicker"
+                      formControlName="txtTime" meridian="OFF">
+                    </ngb-timepicker> -->
+                    <ngb-timepicker id="txtTime" class="form-control form-control-ngb-timepicker required"
+                      formControlName="txtTime" meridian="ON">
+                    </ngb-timepicker>
+
+                  </div>
+
+
+
+                </div>
+
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label" for="input2">Due Date:</label>
+                  <div class="input-group col-sm-9">
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtDueDate"
+                      formControlName="txtDueDate" ngbDatepicker #txtDueDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtDueDate.toggle()" type="button">
+                      </button>
+                    </span>
+                  </div>
+                </div>
+                <!-- <div class="form-group horizental row zero col-md-2 col-sm-6 col-12">
+                    <label for="txtDate">Date <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <input class="form-control"  name="txtDueDate" formControlName="txtDueDate"
+                            ngbDatepicker #txtDueDate="ngbDatepicker">
+                        <span class="input-group-btn">
+                            <button class="btn btn-outline-primary" (click)="txtDueDate.toggle()" type="button">
+                                <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div> -->
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label" for="input2">Lab: <span class="text-danger">*</span></label>
+                  <select formControlName="drpLab" class="form-control col-sm-9"
+                    (change)="onLabChange($event.currentTarget.value)">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let s of lookupList.lstPracticeLab" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label" for="input2">Status:</label>
+                  <select class="form-control col-sm-9" formControlName="drpStatus">
+                    <option *ngFor="let s of lookupList.arrLabStatus" [value]="s.value">{{s.value}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label" for="input2">Location:</label>
+                  <select class="form-control col-sm-9" labelForId="drpLocation" formControlName="drpLocation">
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label" for="input2">Provider:</label>
+                  <select class="form-control col-sm-9" formControlName="drpProvider">
+                    <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label" for="input2">Assigned:</label>
+                  <select formControlName="drpAssignedTo" class="form-control col-sm-9">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let s of lookupList.listpracticeUserName" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label">Bill Type: <span class="text-danger">*</span></label>
+                  <select class="form-control col-sm-9" formControlName="drpBillType">
+                    <option></option>
+                    <option>CUSTOMER</option>
+                    <option>CLIENT</option>
+                    <option>PATIENT</option>
+                    <option>THIRD PARTY</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label">Result To:</label>
+                  <select formControlName="drpResultTo" class="form-control col-sm-9">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let s of lookupList.listpracticeUserName" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label">Type:</label>
+                  <select class="form-control col-sm-9" formControlName="drpOrderType"
+                    (change)="onOrderTypeChange($event.currentTarget.value)">
+                    <option></option>
+                    <option>Blood Work</option>
+                    <option>Colonoscopy</option>
+                    <option>Mammogram</option>
+                    <option>Radiology/Imaging</option>
+                    <option>Outside Facility</option>
+                    <option>OBGYN</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                  <label class="col-sm-3 col-form-label">Facility:</label>
+                  <select class="form-control col-sm-9" formControlName="drpFacility">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let s of arrfacility" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+
+
+
+
+                <div class="form-group d-flex justify-content-between pt-1 col-md-3 col-sm-6 col-12">
+
+
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox green-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="chkFasting_{{unique_id}}"
+                        formControlName="chkFasting">
+                      <label class="custom-control-label" for="chkFasting_{{unique_id}}">Fasting</label>
+                    </div>
+
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <div class="custom-control custom-checkbox green-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="chkStat_{{unique_id}}"
+                        formControlName="chkStat">
+                      <label class="custom-control-label" for="chkStat_{{unique_id}}">STAT</label>
+                    </div>
+
+                  </div>
+
+
+                  <div class="form-group">
+
+                    <div class="custom-control custom-checkbox green-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="chklabDraw_{{unique_id}}"
+                        formControlName="chklabDraw">
+                      <label class="custom-control-label" for="chklabDraw_{{unique_id}}">Lab Draw</label>
+                    </div>
+                  </div>
+
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkFasting" formControlName="chkFasting">
+                    <label class="custom-control-label" for="chkFasting">Fasting</label>
+                  </div>
+
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkStat" formControlName="chkStat">
+                    <label class="custom-control-label" for="chkStat">STAT</label>
+                  </div>
+
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chklabDraw" formControlName="chklabDraw">
+                    <label class="custom-control-label" for="chklabDraw">Lab Draw</label>
+                  </div>
+                  -->
+                </div>
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-5 d-flex flex-column">
+        <div class="info-box-stipes rounded flex-grow-1">
+          <!-- <div class="title-bar">Description</div> -->
+          <h4 class="form-edit-sub-heading m-1 pl-1 pt-1">Test Category</h4>
+          <div class="p-1 pt-0" style="max-height: 300px; overflow: auto">
+            <div role="tablist">
+              <div class="card dashboard-card no-bg" *ngFor="let med of lstCategoryFiltered | unique:'category_id'">
+                <div class="card-header" role="tab" id="headingOne">
+                  <h5 class="mb-0">
+                    <a data-toggle="collapse" href="#summaryPatient{{med.category_id}}" aria-expanded="false">
+                      <i class="far fa-folder fa-lg text-primary mr-6"></i>
+                      <span>{{med.category_name}}</span>
+                    </a>
+                  </h5>
+                </div>
+                <div id="summaryPatient{{med.category_id}}" class="collapse">
+                  <div class="card-body">
+                    <div class="card dashboard-card no-bg"
+                      *ngFor="let sub of lstCategoryFiltered |unique:'sub_category_id'| listFilter :'category_id' :med.category_id">
+                      <div class="card-header" role="tab" id="headingTwo">
+                        <h5 class="mb-0">
+                          <a data-toggle="collapse" href="#summarytest{{sub.sub_category_id}}" aria-expanded="false">
+                            <!-- <span class="fas fa-flask card-header-date" style="width: 20px"></span> -->
+                            <i class="far fa-folder fa-lg text-primary mr-6"></i>
+                            <span>{{sub.sub_category_name}}</span>
+                          </a>
+                        </h5>
+                      </div>
+                      <div id="summarytest{{sub.sub_category_id}}" class="collapse">
+                        <div class="card-body position-relative">
+                          <button [disabled]="!canAddEdit"
+                            class="btn btn-link fz-11 text-primary line-height-1 p-0 lab-order-add-all-btn"
+                            (click)="onAddAll(sub)">Add All</button>
+                          <div class="table-container border">
+                            <table class="table light-striped-border">
+                              <tbody>
+                                <tr
+                                  *ngFor="let res of lstCategoryFiltered |listFilter :'sub_category_id' :sub.sub_category_id;let i=index">
+                                  <td class="text-left" style="width:25px">
+                                    <button [disabled]="!canAddEdit"
+                                      class="btn btn-link fz-11 text-primary line-height-1 p-0"
+                                      (click)="onSingleAdd(res)">Add</button>
+                                  </td>
+                                  <td>
+                                    <span class="fas fa-flask text-info mr-2"></span>({{res.proc_code}})
+                                    {{res.proc_description}}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="info-box-stipes rounded mt-8">
+          <div class="p-1">
+
+            <form [formGroup]="inputFormComment">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                  <input type="text" class="form-control text-input-skin" formControlName="txtComment"
+                    placeholder="Enter Comments">
+                </div>
+              </div>
+            </form>
+
+            <div class="mt-1 overflow-auto" style="height:102px;">
+
+              <table class="table sm light-striped-border">
+                <thead>
+                  <tr>
+                    <th width="60%">Comments</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let tst of arrOrderComment;let i=index">
+                    <td>{{tst.comment}}</td>
+                    <td>{{tst.date_created}} by {{tst.created_user}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-7 d-flex">
+        <div class="info-box-stipes rounded flex-grow-1">
+          <div class="p-1">
+            <form [formGroup]="inputTestForm">
+              <div class="form-row form-dashboard">
+
+                <div class="form-group has-search col-md-6 col-12">
+                  <span class="fa fa-search form-control-feedback"></span>
+                  <input type="text" class="form-control text-input-skin" placeholder="Test's Search"
+                    formControlName="txtTestSearch" (input)="onTestSearchKeydown(txtTestSearch.value)" #txtTestSearch
+                    id="txtTestSearch" autocomplete="off">
+
+                  <inline-lab-test-search *ngIf="showTestSearch" [testSearchCriteria]="testSearchCriteria"
+                    (onLabTestSelect)="onTestSelect($event)" (onClose)="closeTestSearch()"></inline-lab-test-search>
+
+                  <inline-labtest-search *ngIf="showLabSearch" [testSearchCriteria]="testSearchCriteria"
+                    (onLabTestSelect)="onLabTestSelect($event)" (onClose)="closeLabTestSearch()">
+                  </inline-labtest-search>
+                </div>
+
+                <div class="form-group col-md-6 col-12 justify-content-end text-right">
+                  <div class="form-check form-check-inline mt-0 pt-1">
+
+                    <div class="custom-control custom-radio green-radio">
+                      <input formControlName="rdbTestSearchType" class="custom-control-input" type="radio"
+                        id="search_cpt_{{unique_id}}" value="search_cpt"
+                        (ngModelChange)="onTestRadioOptionChange($event)">
+                      <label class="custom-control-label" for="search_cpt_{{unique_id}}">CPT</label>
+                    </div>
+
+                  </div>
+                  <div class="form-check form-check-inline mt-0 pt-1">
+                    <div class="custom-control custom-radio green-radio">
+                      <input formControlName="rdbTestSearchType" class="custom-control-input" type="radio"
+                        id="search_lab_{{unique_id}}" value="search_lab"
+                        (ngModelChange)="onTestRadioOptionChange($event)">
+                      <label class="custom-control-label" for="search_lab_{{unique_id}}">Lab</label>
+                    </div>
+                  </div>
+                  <div class="form-check form-check-inline mt-0 pt-1" *ngIf="false">
+                    <div class="custom-control custom-radio green-radio">
+                      <input formControlName="rdbTestSearchType" class="form-check-input" type="radio" id="search_loinc"
+                        value="search_loinc" (ngModelChange)="onTestRadioOptionChange($event)">
+                      <label class="form-check-label fz-13" for="search_loinc">Loinc</label>
+                    </div>
+                  </div>
+                  <div class="form-check form-check-inline mt-0 pt-1" *ngIf="false">
+                    <div class="custom-control custom-radio green-radio">
+                      <input formControlName="rdbTestSearchType" class="form-check-input" type="radio"
+                        id="search_snomed" value="search_snomed" (ngModelChange)="onTestRadioOptionChange($event)">
+                      <label class="form-check-label fz-13" for="search_snomed">Snomed</label>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </form>
+
+            <div class="overflow-auto mt-1" style="height:200px;">
+              <table class="table sm layout-fixed light-striped-border">
+                <thead>
+                  <tr>
+                    <th>Test Description</th>
+                    <!-- <th style="width: 50px">Units</th>
+                     -->
+                    <th style="width: 100px">Instruction</th>
+                    <th style="width: 30px"></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let tst of arrOrderTest;let i=index">
+                    <td>{{tst.proc_code}}({{tst.proc_description}})</td>
+                    <td>
+                      <input autocomplete="off" class="form-control text-input-skin required"
+                        value="{{tst.test_instructions}}" id="txtinstruction" #txtinstruction type="text"
+                        (blur)="txtinstructionFocusOut(txtinstruction.value,i)">
+                    </td>
+                    <td>
+                      <button [disabled]="!canAddEdit" type="button"
+                        class="btn btn-link btn-sm text-danger line-height-1 p-0" (click)="onTestDelete(tst,i)">
+                        <i class="far fa-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <form [formGroup]="inputIcdForm" class="mt-8">
+              <div class="form-row form-dashboard">
+                <div class="form-group has-search col-md-7 col-12">
+                  <span class="fa fa-search form-control-feedback"></span>
+                  <input class="form-control text-input-skin" placeholder="ICDs Search" type="text" id="txtIcdSearch"
+                    #txtIcdSearch formControlName="txtIcdSearch" placeholder="Diagnosis Search"
+                    (input)="onDiagSearchKeydown(txtIcdSearch.value)" autocomplete="off">
+                  <inline-diagnosis-search *ngIf="showDiagSearch" [diagSearchCriteria]="diagSearchCriteria"
+                    (onDiagSelect)="onDiagnosisSelect($event)" (onClose)="closeDiagSearch()"></inline-diagnosis-search>
+                </div>
+
+                <div class="form-group col-12 col-md-3">
+                  <div class="form-check-cont">
+                    <div class="form-check form-check-inline mt-0 pt-1">
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input formControlName="rdbIcdSearchOption" class="custom-control-input" type="radio"
+                          id="icd_mylist_{{unique_id}}" value="icd_mylist"
+                          (ngModelChange)="onDiagRadioOptionChange($event)">
+                        <label class="custom-control-label" for="icd_mylist_{{unique_id}}">My List</label>
+                      </div>
+
+                    </div>
+
+                    <div class="form-check form-check-inline mt-0 pt-1">
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input formControlName="rdbIcdSearchOption" class="custom-control-input" type="radio"
+                          id="icd_all{{unique_id}}" value="icd_all" (ngModelChange)="onDiagRadioOptionChange($event)">
+                        <label class="custom-control-label" for="icd_all{{unique_id}}">All</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group col-12 col-md-2">
+                  <div class="text-right">
+                    <button [disabled]="!canAddEdit" type="button" style="text-decoration: underline;"
+                      class="link-btn pr-1 fz-14" (click)="onImport()">Import</button>
+                    <!-- <a class="fz-14">Import</a> -->
+                  </div>
+
+                </div>
+              </div>
+            </form>
+
+            <div class="overflow-auto mt-1" style="height:180px;" *ngIf="!isImport">
+              <table class="table sm layout-fixed light-striped-border">
+                <thead>
+                  <tr>
+                    <th>ICD Description</th>
+                    <th style="width: 30px"></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let tst of arrOrderIcd;let i=index">
+                    <td>{{tst.diag_code}}({{tst.diag_description}})</td>
+                    <td class="justify-content-end">
+                      <button [disabled]="!canAddEdit" type="button"
+                        class="btn btn-link btn-sm text-danger line-height-1 p-0" (click)="onDiagDelete(tst,i)">
+                        <i class="far fa-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div *ngIf="isImport" class="dashboard-content overflow-auto " style="height:180px;">
+              <div class="dashboard-title position-relative">
+                <div class="text-right">
+                  <button type="button" class="link-btn pl-2" (click)="onImportOK()">Add
+                  </button>
+                  <button class="close-btn text-right" (click)="isImport=false">
+                    <i class="fa fa-times-circle fa-lg" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+              <table class="table sm layout-fixed light-striped-border">
+                <thead>
+                  <tr>
+                    <th width="35px">
+                      <input (click)="importSelectAll($event.currentTarget.checked)" id="customCheck1" type="checkbox">
+                      <label for="lab_import_all">&nbsp;</label>
+                    </th>
+                    <th>Code</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let u of lstChartDiagnosis;let i = index">
+                    <td width="35px">
+                      <div>
+                        <input (click)="importSingleSelect($event.currentTarget.checked,u)" id="customCheck1"
+                          type="checkbox" value={{u.chk}} [checked]="u.chk">
+                        <label for={{u.row_id}}>&nbsp;</label>
+                      </div>
+                    </td>
+                    <td>{{u.code}}</td>
+                    <td>{{u.description}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+  <div class="div-loader-message-box" *ngIf="isSaving">
+    <i class="fas fa-spinner fa-spin mr-1"></i>Saving
+  </div>
+  -->
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isSaving">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Saving...
+    </div>
+  </div>
+
+</div>

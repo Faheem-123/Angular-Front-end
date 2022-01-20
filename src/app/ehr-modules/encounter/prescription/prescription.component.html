@@ -1,0 +1,174 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Prescription</div>
+  <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+    <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="print()">Print</button>
+
+    <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="openPDMP()">ePDMP</button>
+
+    <a class="nav-link green px-2 py-0" (click)="addEditLocalPrescription(undefined)"
+      *ngIf="canAddEdit && canView && enableLocalPrescription">
+      <i class="far fa-plus-square pr-1"></i>Add Prescription</a>
+    
+
+    <a class="nav-link green px-2 py-0" (click)="openPrescripton('')"
+      *ngIf="canAddEdit && canView && canShowEprescriptionButton">
+      <i class="far fa-plus-square pr-1"></i>Add/Modify E-Rx</a>
+    <div class="dropdown">
+      <button class="nav-link blue px-2 py-0 top-right-radius" type="button" id="dropdownMenuButton"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" *ngIf="canAddEdit && canView">More Option
+        <i class="fas fa-caret-down ml-1"></i>
+      </button>
+      <div class="dropdown-menu dropdown-menu-left custome-menu health-check-drop-height"
+        aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" (click)="openPrescripton('medentry')">Enter Previous Meds</a>
+        <a class="dropdown-item" (click)="openPrescripton('patientDetail')">Add/Modify Pharmacy</a>
+        <a class="dropdown-item" (click)="openPrescripton('patientDetail')">Add/Modify Formulary</a>
+      </div>
+    </div>
+  </ul>
+</div>
+
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+
+  <div *ngIf="canView && !isLoading &&  !addEditView">
+    <form [formGroup]="radioForm">
+      <div class="btn-group radio-btn-tabs px-1">
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'all')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="all"
+            (ngModelChange)="onRadioOptionChange($event)"> All
+        </label>
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'active')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="active"
+            (ngModelChange)="onRadioOptionChange($event)"> Active
+        </label>
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'inactive')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+            value="inactive" (ngModelChange)="onRadioOptionChange($event)"> D/C
+        </label>
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'other')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="other"
+            (ngModelChange)="onRadioOptionChange($event)"> Other Sources
+        </label>
+      </div>
+    </form>
+
+  </div>
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <p><i class="fas fa-ban"></i> Access Denied</p>
+  </div>
+
+  <div
+    *ngIf="!isLoading &&  (lstPrescriptionViewFiltered==undefined || lstPrescriptionViewFiltered.length==0) && lookupList.UserRights.ViewMedication"
+    class="no-content ml-2 p-6">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+  <div *ngIf="!isLoading &&!noRecordFound && !addEditView" role="tablist" class="encounter-view-fixed">
+
+
+
+
+    <div *ngIf="canView && !noRecordFound && !addEditView" class="encounter-view flex-grow-1 mt-0">
+
+      <div class="encounter-data-accordian accordian-data" *ngFor="let med of lstPrescriptionViewFiltered ">
+        <div class="accordian-header" role="tab" id="headingOne">
+
+          <h5>
+            <a data-toggle="collapse" href="#summarymedication{{med.chart_prescription_id}}" aria-expanded="false">
+
+              <span class="accordian-header-date">{{med.start_date}}</span> {{med.drug_info}}
+
+            </a>
+          </h5>
+
+          <button type="button" class="btn btn-link btn-md text-primary"
+            *ngIf="canAddEdit && canView && !med.is_eprescription && med.archive=='N' "
+            (click)="markPrescriptionAsInactive(med)">
+            Mark as Inactive
+          </button>
+          <button type="button" class="btn btn-link btn-md text-primary"
+            *ngIf="canAddEdit && canView && !med.is_eprescription" (click)="addEditLocalPrescription(med)">
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" class="btn btn-link btn-md btn-delete"
+            *ngIf="canAddEdit && canView && !med.is_eprescription" (click)="onDeletePrescription(med)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+
+
+        </div>
+
+        <div id="summarymedication{{med.chart_prescription_id}}" class="collapse" class="collapse">
+          <div class="accordian-body">
+
+
+            <p>Sig Detail:<strong>{{med.sig_text}}</strong></p>
+            <p *ngIf="med.modified_sig">Additional Sig:<strong>{{med.modified_sig}}</strong></p>
+
+            <div class="row mx-0">
+
+              <div class="col col-3 pl-0" *ngIf="med.rxnorm">
+                <p>Status:<strong> <span *ngIf="med.archive=='N'">Active</span>
+                    <span *ngIf="med.archive=='Y'">In Active</span>
+                  </strong></p>
+              </div>
+
+              <div class="col col-3 pl-0" *ngIf="med.num_of_refills_allowed>0">
+                <p>Refill:<strong>{{med.num_of_refills_allowed}}</strong></p>
+              </div>
+
+              <div class="col col-3 pl-0" *ngIf="med.rxnorm">
+                <p *ngIf="med.rxnorm">Rxnorm:<strong>{{med.rxnorm}}</strong></p>
+              </div>
+
+              <div class="col col-3 pl-0" *ngIf="med.end_date">
+                <p *ngIf="med.end_date">End Date:<strong>{{med.end_date}}</strong></p>
+              </div>
+
+            </div>
+            <p *ngIf="med.pharmacy_info">Pharmacy:<strong>{{med.pharmacy_info}}</strong></p>
+            <p *ngIf="med.pharmacist_notes">Pharmacy Notes:<strong>{{med.pharmacist_notes}}</strong></p>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+    <!--
+    <div class="card dashboard-card" *ngFor="let med of lstPrescriptionViewFiltered">
+      <div class="card-header" role="tab">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#summarymedication{{med.chart_prescription_id}}" aria-expanded="false">
+            <span class="card-header-date">{{med.start_date}}</span> {{med.drug_info}}
+          </a>          
+        </h5>
+      </div>
+
+      <div id="summarymedication{{med.chart_prescription_id}}" class="collapse" class="collapse">
+        <div class="card-body">
+         
+          <p>Sig Detail:<strong>{{med.sig_text}}</strong></p>
+          <p *ngIf="med.modified_sig">Additional Sig:<strong>{{med.modified_sig}}</strong></p>
+          <p *ngIf="med.num_of_refills_allowed>0">Refill:<strong>{{med.num_of_refills_allowed}}</strong></p>
+          <p *ngIf="med.rxnorm">Rxnorm:<strong>{{med.rxnorm}}</strong> Status: {{med.archive}}</p>
+          <p *ngIf="med.end_date">End Date:<strong>{{med.end_date}}</strong></p>
+          <p *ngIf="med.pharmacist_notes">Pharmacy Notes:<strong>{{med.pharmacist_notes}}</strong></p>
+        </div>
+      </div>
+    </div>
+  -->
+  </div>
+
+
+</div>

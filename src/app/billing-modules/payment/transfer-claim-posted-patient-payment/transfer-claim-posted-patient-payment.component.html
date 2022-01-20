@@ -1,0 +1,213 @@
+<div class="modal-header custom" (keydown.esc)="activeModal.dismiss('Cross click')">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Transfer Patient Payment</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom">
+
+
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div class="px6-py3 flex-grow-1 overflow-auto" *ngIf="!isLoading">
+    <div class="row p8 mb-2">
+      <div class="col p-0">
+        <div class="info-box-stipes rounded-custom flex-grow-1">
+
+          <div class="flex-shrink-0">
+            <table class="table sm layout-fixed rounded-custom light-striped-border summary">
+
+
+              <thead>
+                <tr>
+                  <th class="width-130">Amount Posted</th>
+                  <th class="text-right width-140">Total Paid</th>
+                  <th class="text-right width-85">Total W/O</th>
+                </tr>
+              </thead>
+
+
+              <tbody>
+                <tr>
+                  <td class="width-130">&nbsp;</td>
+                  <td class="text-right pl-2 width-140">
+                    {{total_paid | currency:'USD':'symbol-narrow'}}
+                  </td>
+                  <td class="text-right px-2 width-85">
+                    {{total_writeOff | currency:'USD':'symbol-narrow'}}
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="row p8 mb-1">
+      <div class="col p-0">
+        <div class="info-box-stipes rounded-custom flex-grow-1">
+
+          <div class="form-flex flex-grow-1">
+            <select class="form-control required no-border"
+              (change)="getProceduresForPosting($event.target.selectedIndex)">
+              <option [ngValue]="null" disabled class="select-option-disabled font-weight-bold">
+
+                <p>
+                  <span style="width: 33%">Claim ID</span> |
+                  <span style="width: 33%">DOS</span> |
+                  <span style="width: 33%">Amount Due</span>
+                </p>
+              </option>
+
+              <option *ngFor="let claim of lstClaims" value="{{claim}}">
+                {{claim.claim_id}} | {{claim.dos}} | ${{ claim.amt_due | number :'.2-2'}}
+              </option>
+            </select>
+          </div>
+          <!--
+
+          <div class="form-row form-dashboard">
+
+            <div class="col p-0">
+              <div class="pl-1 pr-1 pb-1">
+
+
+                <div class="form-flex flex-grow-1">
+                  <select class="form-control required">
+                    <option>Claim ID | DOS | Amount Due</option>
+                  </select>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+-->
+
+          <div class="overflow-auto" style="overflow-x:auto;">
+
+            <table class="table sm layout-fixed light-striped-border">
+              <thead>
+                <tr>
+                  <th class="width-60">CPT</th>
+                  <th class="text-right">Charges</th>
+                  <th class="text-right">Balance</th>
+                  <th class="text-right">Patient Paid</th>
+                  <th class="text-right">Paid</th>
+                  <th class="text-right">Write Off</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let proc of lstClaimProcedures">
+                  <td class="width-60 ">{{proc.proc_code}}</td>
+                  <td class="text-right">
+                    <div class="input-group table-td-input-group width-70">
+                      <div class="input-group-prepend table-td-input-group-prepend">
+                        <span class="input-group-text table-td-input-group-text ">$</span>
+                      </div>
+                      <span
+                        class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{proc.total_charges | number :'.2-2'}}</span>
+                    </div>
+                  </td>
+                  <td class="text-right">
+                    <div class="input-group table-td-input-group width-70">
+                      <div class="input-group-prepend table-td-input-group-prepend">
+                        <span class="input-group-text table-td-input-group-text ">$</span>
+                      </div>
+                      <span
+                        class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{proc.cpt_balance | number :'.2-2'}}</span>
+                    </div>
+                  </td>
+                  <td class="text-right">
+                    <div class="input-group table-td-input-group width-70">
+                      <div class="input-group-prepend table-td-input-group-prepend">
+                        <span class="input-group-text table-td-input-group-text ">$</span>
+                      </div>
+                      <span
+                        class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{proc.patient_paid | number :'.2-2'}}</span>
+                    </div>
+                  </td>
+                  <td class="text-right">
+                    <div class="input-group table-td-input-group width-70">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text table-td-input-group-text ">$</span>
+                      </div>
+                      <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                        [ngClass]="{'text-danger': proc.invalid}" placeholder="0.00"
+                        (blur)="formateCurrencyInputs($event.target,proc.claim_procedures_id,'paid_amount')"
+                        autocomplete="off">
+                    </div>
+
+                  </td>
+                  <td class="text-right">
+                    <div class="input-group table-td-input-group width-70">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text table-td-input-group-text ">$</span>
+                      </div>
+                      <input type="text" class="form-control table-td-input text-right required  pl-0 pr-1 "
+                        placeholder="0.00"
+                        (blur)="formateCurrencyInputs($event.target,proc.claim_procedures_id,'write_off')"
+                        [ngClass]="{'text-danger': proc.invalid}" autocomplete="off">
+                    </div>
+
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+            <div class="flex-shrink-0">
+              <table class="table sm layout-fixed light-striped-border summary">
+
+
+                <thead>
+                  <tr>
+                    <th class="width-130">Amount To Transfer</th>
+                    <th class="text-right width-140">Total Paid</th>
+                    <th class="text-right width-85">Total W/O</th>
+                  </tr>
+                </thead>
+
+
+                <tbody>
+                  <tr class="font-weight-500">
+                    <td class="width-130">&nbsp;</td>
+                    <td class="text-right  pl-2 width-140"
+                      [ngClass]="{ 'text-danger': total_paid_transfer > total_paid}">
+                      {{total_paid_transfer | currency:'USD':'symbol-narrow'}}
+                    </td>
+                    <td class="text-right px-2 width-85"
+                      [ngClass]="{ 'text-danger': total_writeOff_transfer > total_paid}">
+                      {{total_writeOff_transfer | currency:'USD':'symbol-narrow'}}
+                    </td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+
+<div class="modal-footer custom">
+  <button style="width: 80px;" class="btn btn-success btn-sm" type="button"
+    (click)="transferPayment()">Transfer</button>
+</div>

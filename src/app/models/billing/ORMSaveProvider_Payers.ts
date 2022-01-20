@@ -1,0 +1,21 @@
+export class ORMSaveProvider_Payers{
+    	provider_payer_id:string;
+		payer_id:string;
+		practice_id:string;
+		billing_provider_id:string;
+		provider_modifier_code:string;
+		provider_number:string;
+		deleted:Boolean;
+		date_created:string;
+		created_user:string;
+		date_modified:string;
+		modified_user:string;
+		client_date_created:string;
+		client_date_modified:string;
+		provider_identification_number_type:string;
+		provider_identification_number:string;		
+		box_33_type:string;		
+		effective_date:string;
+		validation_date:string;
+		validation_expiry_date:string;
+}

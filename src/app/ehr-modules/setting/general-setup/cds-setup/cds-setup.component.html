@@ -1,0 +1,300 @@
+<div class="light-title-bar rounded-top h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-14 font-weight-500">CDS Setup</div>
+  <div class="d-flex align-items-center">
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" *ngIf="!addEditView"
+      (click)="addRule()"><i class="fas fa-plus"></i>
+      Add</button>
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" *ngIf="!addEditView"
+      (click)="editRule()"><i class="far fa-edit"></i>
+      Edit</button>
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" *ngIf="!addEditView"
+      (click)="deleteRule()"><i class="far fa-trash-alt"></i>
+      Delete</button>
+    <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" *ngIf="addEditView"
+      (click)="saveRule(formGroup.value)" [disabled]="!formGroup.valid">Save</button>
+    <button class="btn btn-sm btn-dark top-right-radius h-30" *ngIf="addEditView"
+      (click)="cancelAddEdit()">Cancel</button>
+  </div>
+</div>
+
+
+<div class="d-flex flex-row flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue p-8">
+  <div class="border rounded bg-white d-flex flex-column flex-1 max-height-100">
+
+    <div *ngIf="isTreeDataLoading" class="div-loader"></div>
+
+    <div class="rounded-box-title-bar border-bottom justify-content-between">CDS Rules
+      <div class="title-btn p-0" *ngIf="!addEditView">
+        <button class="btn btn-link p-0" (click)="onRefreshRules()"><img class="img-h-14"
+            src="./assets/images/icons/ico_refresh_green.svg" alt=""></button>
+      </div>
+    </div>
+    <div class="flex-grow-1 overflow-auto" [ngClass]="{disabled: addEditView}">
+      <tree-root #treeComponent [nodes]="rulesTreeNodes" [options]="rulesTreeOptions"
+        (activate)="onTreeNodeActivate(treeComponent,$event)" (updateData)="onUpdateData(treeComponent, $event)">
+      </tree-root>
+    </div>
+  </div>
+
+
+
+  <div class="border rounded bg-white d-flex flex-column flex-2 max-height-100 ml-2">
+
+    <div *ngIf="isLoadingRuleData" class="div-loader"></div>
+
+    <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+      <span>Rule Details</span>
+
+      <!--
+      <div class="custom-checkbox green-checkbox">
+        <input type="checkbox" class="custom-control-input" id="customCheck2">
+        <label class="custom-control-label" for="customCheck2">Build In</label>
+      </div>
+      -->
+    </div>
+
+
+    <div class="no-content px-3 py-2"
+      *ngIf="!isLoadingRuleData && !isTreeDataLoading &&  (rulesTreeNodes==undefined || rulesTreeNodes.length==0)">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>There is No CDS Rule.
+    </div>
+
+
+    <div class="no-content px-3 py-2" *ngIf="!isLoadingRuleData && !isTreeDataLoading &&  selectedRuleId==undefined">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Please select a CDS Rule.
+    </div>
+
+
+    <div class="d-flex flex-column flex-grow-1 px-2 py-1 overflow-auto"
+      *ngIf="!isLoadingRuleData && !isTreeDataLoading &&  selectedRuleId!=undefined">
+
+      <form class="form-row form-dashboard align-items-start" [formGroup]="formGroup">
+
+        <div class="form-group col-12 pb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+            for="txtRuleGoupName">Group
+            Name:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.rule_group}}</label>
+          <input class="col form-control required" labelForId="txtRuleGoupName" formControlName="txtRuleGoupName"
+            type="text" *ngIf="addEditView">
+        </div>
+
+        <div class="form-group col-12 pb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+            for="txtRutxtRulenameleGoupName">Rule Name:</label>
+          <label class="form-control pt-1 " *ngIf="!addEditView">{{ruleDetails.rule_name}}</label>
+          <input class="col form-control px-1 required" labelForId="txtRulename" formControlName="txtRuleName"
+            type="text" *ngIf="addEditView">
+        </div>
+
+        <div class="form-group col-12 pb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+            for="txtDisplayMsg">Display
+            Message:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.notification}}</label>
+
+          <textarea class="form-control required" rows="3" labelForId="txtDisplayMsg" formControlName="txtDisplayMsg"
+            type="text" *ngIf="addEditView"></textarea>
+
+        </div>
+
+        <div class="form-group col-12 mb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+            for="txtRefDescription">Reference
+            /
+            Description:</label>
+          <label class="form-control pt-1 " *ngIf="!addEditView">{{ruleDetails.description}}</label>
+          <textarea class="form-control required" rows="6" labelForId="txtRefDescription"
+            formControlName="txtRefDescription" type="text" *ngIf="addEditView"></textarea>
+        </div>
+
+        <div class="form-group col-12 pb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}" for="txtRefLink">Reference
+            Link:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.reference_link}}</label>
+          <input class="col form-control px-1 required" labelForId="txtRefLink" formControlName="txtRefLink" type="text"
+            *ngIf="addEditView">
+        </div>
+        <div class="form-group col-12 pb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+            for="txtDiagTherapeuticLink">Diagnostic/Therapeutic
+            Link:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.diagnostic_therapeutic_link}}</label>
+          <input class="col form-control px-1 required" labelForId="txtDiagTherapeuticLink"
+            formControlName="txtDiagTherapeuticLink" type="text" *ngIf="addEditView">
+        </div>
+        <div class="form-group col-6 pb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+            for="txtInterDeveloper">Intervention Developer:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.intervention_developer}}</label>
+          <input class="col form-control px-1 required" labelForId="txtInterDeveloper"
+            formControlName="txtInterDeveloper" type="text" *ngIf="addEditView">
+        </div>
+        <div class="form-group col-6 pb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+            for="txtFundingSource">Funding
+            Source:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.funding_source}}</label>
+
+          <input class="col form-control px-1 required" labelForId="txtFundingSource" formControlName="txtFundingSource"
+            type="text" *ngIf="addEditView">
+        </div>
+        <div class="form-group col-6 pb-1">
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+            for="txtReleaseVersion">Release
+            Version:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.release_version}}</label>
+
+          <input class="col form-control px-1 required" labelForId="txtReleaseVersion"
+            formControlName="txtReleaseVersion" type="text" *ngIf="addEditView">
+        </div>
+
+        <div class="form-group col-6 pb-1">
+
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView,
+          'required': addEditView}" for="txtSPName">Store Procedure
+            Name:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.sp_name}}</label>
+          <input class="col form-control px-1 required" labelForId="txtSPName" formControlName="txtSPName" type="text"
+            *ngIf="addEditView">
+        </div>
+
+
+        <div class="form-group col-12 mb-1">
+
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+            for="txtCriteria">Criteria:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.criteria_description}}</label>
+          <textarea class="form-control required" rows="6" labelForId="txtCriteria" formControlName="txtCriteria"
+            type="text" *ngIf="addEditView"></textarea>
+        </div>
+
+        <div class="form-group col-12 mb-1">
+
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+            for="txtCitation">Citation:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.citation}}</label>
+          <textarea class="form-control required" rows="6" labelForId="txtCitation" formControlName="txtCitation"
+            type="text" *ngIf="addEditView"></textarea>
+        </div>
+
+        <div class="form-group col-12 mb-1">
+
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}" for="txtCriteria">Effected
+            Modules:</label>
+
+          <div class="border rounded bg-white">
+
+            <div *ngIf="!addEditView">
+              <ul class="my-2 pl-4 fz-12">
+                <li *ngIf="ruleDetails.is_demographics">Demographics</li>
+                <li *ngIf="ruleDetails.is_diagnosis">Diagnosis</li>
+                <li *ngIf="ruleDetails.is_vitals">Vitals</li>
+                <li *ngIf="ruleDetails.is_procedures">Procedures</li>
+                <li *ngIf="ruleDetails.is_immunization">Immunization</li>
+                <li *ngIf="ruleDetails.is_medication">Medication</li>
+                <li *ngIf="ruleDetails.is_healthmaintenance">Health Maintenance</li>
+                <li *ngIf="ruleDetails.is_allergy">Allergy</li>
+                <li *ngIf="ruleDetails.is_lifestyle">Life Style(Social Hx)</li>
+                <li *ngIf="ruleDetails.is_labs">Labs</li>
+              </ul>
+            </div>
+            <div class="px-2 py-1" *ngIf="addEditView">
+              <div class="row zero">
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkDemographics"
+                      formControlName="chkDemographics">
+                    <label class="custom-control-label" for="chkDemographics">Demographics</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkDiagnosis"
+                      formControlName="chkDiagnosis">
+                    <label class="custom-control-label" for="chkDiagnosis">Diagnosis</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkVitals" formControlName="chkVitals">
+                    <label class="custom-control-label" for="chkVitals">Vitals</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkProcedures"
+                      formControlName="chkProcedures">
+                    <label class="custom-control-label" for="chkProcedures">Procedures</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkImmunization"
+                      formControlName="chkImmunization">
+                    <label class="custom-control-label" for="chkImmunization">Immunization</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkMedication"
+                      formControlName="chkMedication">
+                    <label class="custom-control-label" for="chkMedication">Medication</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkHealthMaintenance"
+                      formControlName="chkHealthMaintenance">
+                    <label class="custom-control-label" for="chkHealthMaintenance">Health Maintenance</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkAllergy" formControlName="chkAllergy">
+                    <label class="custom-control-label" for="chkAllergy">Allergy</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkLifeStyle"
+                      formControlName="chkLifeStyle">
+                    <label class="custom-control-label" for="chkLifeStyle">Life
+                      Style(Social Hx)</label>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-6">
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkLabs" formControlName="chkLabs">
+                    <label class="custom-control-label" for="chkLabs">Labs</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-group col-12 mb-1">
+
+
+          <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+            for="txtComments">Comments:</label>
+          <label class="form-control pt-1" *ngIf="!addEditView">{{ruleDetails.comments}}</label>
+          <textarea class="form-control required" rows="4" labelForId="txtComments" formControlName="txtComments"
+            type="text" *ngIf="addEditView"></textarea>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

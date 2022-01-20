@@ -1,0 +1,70 @@
+<div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-25">
+  <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400  d-flex  pt-2-px">Role CDS Rules
+  </h4>
+
+
+  <div class="d-flex">
+    <button class="btn btn-link fz-12 p-0 mr-2 line-height-1">Log</button>
+    <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-26" (click)="onSave()">Save</button>
+  </div>
+
+</div>
+
+
+<div class="table-header-bg h-26 px-2 d-flex align-items-center justify-content-between">
+
+
+  <div class="form-row form-dashboard">
+
+
+    <div class="form-group ">
+      <div class="form-check-cont">
+        <div class="form-check form-check-inline mt-0 pt-1">
+          <input class="form-check-input" type="checkbox" id="customCheck12"
+            (click)="IsSelectAll($event.currentTarget.checked)">
+          <label class="form-check-label font-weight-500" for="customCheck12">Select All Rules</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group ">
+      <div class="form-check-cont">
+        <div class="form-check form-check-inline mt-0 pt-1">
+          <input class="form-check-input" type="checkbox" id="chkShowRef"
+            (click)="onshowRef($event.currentTarget.checked)">
+          <label class="form-check-label font-weight-500" for="chkShowRef">Show Reference Link</label>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+
+
+<div class="bg-white d-flex flex-column flex-grow-1 overflow-auto">
+  <table class="table light-striped-border">
+    <tbody>
+      <tr *ngFor="let u of lstCDR;let i = index">
+        <td>
+
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="chkModule_{{u.rule_id}}" value={{u.is_active_role}}
+              [checked]="u.is_active_role" (change)="IsSelect($event.currentTarget.checked,u)">
+            <label class="form-check-label" for="chkModule_{{u.rule_id}}">{{u.rule_name}}</label>
+          </div>
+          <!--
+          <div>
+            <input (click)="IsSelect($event.currentTarget.checked,u)" id="customCheck1" type="checkbox"
+              value={{u.is_active_role}} [checked]="u.is_active_role">
+            <label for={{u.rule_id}}>&nbsp;</label>
+          </div>
+          -->
+        </td>
+        <!--  <td>{{u.rule_name}}</td> -->
+      </tr>
+    </tbody>
+  </table>
+</div>

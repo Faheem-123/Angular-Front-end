@@ -1,0 +1,217 @@
+<div class="dashboard-container d-flex flex-column mb-0 position-relative"
+    [ngClass]="{'m-1': callingFrom=='fax'}">
+    <div class="dashboard">
+        <div class="dashboard-title justify-content-between h-30" *ngIf="callingFrom!='fax'">
+            <div class="title">Documents</div>
+
+            <div class="p-0">
+                <button [disabled]="!lookupList.UserRights.document_add" class="btn btn-link fz-13 title-bar-blue-btn"
+                    (click)="scanDocument()" type="button">
+                    Scan
+                </button>
+                <button [disabled]="!lookupList.UserRights.document_add" type="button"
+                    (click)="openAttachmentDialog('New','')" class="btn btn-link fz-13 title-bar-blue-btn">
+                    <i class="fas fa-plus mr-1"></i>Add
+                </button>
+
+                <button class="btn btn-link fz-13 title-bar-blue-btn" (click)="onFax()" type="button"
+                    [disabled]="!lookupList.UserRights.fax_new">
+                    <i class="fas fa-fax mr-1"></i>Fax
+                </button>
+            </div>
+        </div>
+        <div class="d-flex flex-column flex-grow-1"
+            [ngClass]="{'p-0': callingFrom!='fax', 'p-1': callingFrom=='fax'}">
+
+            <div class="row p4 flex-grow-1 flex-nowrap overflow-height">
+                <div class="col-3 d-flex flex-column">
+
+                    <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-end pr-0 
+                         flex-shrink-0" *ngIf="callingFrom!='fax'">
+                        <div class="d-flex">
+
+                            <button class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+                                (click)="addNewCateg()" [disabled]="!lookupList.UserRights.documentCategory_Add"><i
+                                    class="fas fa-plus"></i>Add</button>
+                            <button class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+                                (click)="modifyCateg()" [disabled]="!lookupList.UserRights.documentCategory_Modify"><i
+                                    class="far fa-edit pr-1"></i>Modify</button>
+                            <button class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+                                (click)="removeCateg()" [disabled]="!lookupList.UserRights.documentCategory_Delete"><i
+                                    class="fas fa-trash pr-1"></i>Remove</button>
+
+
+
+                        </div>
+
+                    </div>
+
+                    <div class="border-right flex-grow-1 overflow-auto"
+                        [ngClass]="{'border-top-0': callingFrom!='fax'}">
+                        <!-- <div class="list-group treeview border"> -->
+                        <!-- https://github.com/valor-software/ng2-tree -->
+                        <!-- https://github.com/valor-software/ng2-tree#configure-node-via-treemodelsettings -->
+                        <!-- <tree  [settings]="treeSettings"  [tree]="tree" (nodeSelected)="OnCategoryChange($event)"></tree> -->
+
+                        <!--
+                        <tree-root #tree [nodes]="lookupList.lstCategoriesTree" [options]="docCatTreeOptions"
+                            (activate)="OnCategoryActivate($event.node)"></tree-root>
+                            -->
+                        <!-- </div> -->
+
+                        <tree-root #tree [nodes]="lstTreeCategories" [options]="docCatTreeOptions"
+                            (activate)="OnCategoryActivate($event.node)">
+                            <ng-template #treeNodeTemplate let-node let-index="index">
+                                <span>{{ node.data.name }}</span>
+                                <span class="pl-2 text-primary" *ngIf="node.data.count!=undefined && node.data.count>0">({{node.data.count}})</span>
+                            </ng-template>
+                        </tree-root>
+
+                    </div>
+                </div>
+
+                <div class="col-9 d-flex flex-column px-0">
+                    <div class="border border-bottom-0 flex-grow-1 overflow-auto" *ngIf="!showDoc">
+                        <table class="table layout-fixed sm light-striped-border table-sticky-header">
+                            <thead>
+                                <tr>
+                                    <th class="width-25">
+
+
+                                        <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="doc-select-all_{{controlUniqueId}}"
+                                                (change)="IsSelectAll($event.currentTarget.checked)">
+                                            <label class="custom-control-label"
+                                                for="doc-select-all_{{controlUniqueId}}"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="width-80" sortable="document_date" type="datetime"
+                                        formate="MM/DD/YYYY" (sort)="onSort($event)">Date</th>
+                                    <th scope="col" class="width-130" sortable="category_name" type="alpha"
+                                        (sort)="onSort($event)">
+                                        Category</th>
+                                    <th scope="col" sortable="name" type="alpha" (sort)="onSort($event)">Name</th>
+                                    <th scope="col" class="width-120" sortable="comment" type="alpha"
+                                        (sort)="onSort($event)">Notes</th>
+
+                                    <ng-template id="faxExcludedTHSection" [ngIf]="callingFrom!='fax'">
+
+                                        <th class="width-100" scope="col" sortable="created_user" type="alpha"
+                                            (sort)="onSort($event)">
+                                            Upload
+                                            by</th>
+                                        <th scope="col" class="width-90" sortable="client_date_created" type="datetime"
+                                            formate="MM/DD/YYYY hh:mm A" (sort)="onSort($event)">Date Created</th>
+                                        <th class="width-105"></th>
+                                    </ng-template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let doc of lstDocumentsFiltered" (click)="OnSelectionChanged(doc)"
+                                    [ngClass]="{'active' : (doc.patient_document_id === rowId)}">
+                                    <td>
+
+                                        <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="{{controlUniqueId+'_'+doc.patient_document_id}}"
+                                                (change)="IsSelect($event.currentTarget.checked,doc)"
+                                                value={{doc.check_bx}} [checked]="doc.check_bx">
+                                            <label class="custom-control-label"
+                                                for="{{controlUniqueId+'_'+doc.patient_document_id}}"></label>
+                                        </div>
+
+
+                                    </td>
+                                    <td title="{{doc.document_date}}">
+                                        <button type="button" class="btn btn-link fz-13 btn-sm p-0"
+                                            (click)="openDocument(doc)">
+                                            {{doc.document_date}}
+                                        </button>
+                                    </td>
+                                    <td title="{{doc.category_name}}">{{doc.category_name}}</td>
+                                    <td title="{{doc.name}}">
+                                        <i class="fas fa-file-pdf fa-md mr-1 text-deep-orange"
+                                            *ngIf="doc.ext=='pdf'"></i>
+                                        <i class="fas fa-file-word fa-md mr-1 text-success"
+                                            *ngIf="doc.ext=='doc' || doc.ext=='docx'"></i>
+
+                                        <i class="fas fa-file-excel fa-md mr-1 text-ihc-blue"
+                                            *ngIf="doc.ext=='xls' || doc.ext=='xlsx'"></i>
+
+                                        <i class="fas fa-file-alt fa-md mr-1 text-info" *ngIf="doc.ext=='txt'"></i>
+
+                                        <i class="fas fa-file-image fa-md mr-1 text-primary"
+                                            *ngIf="doc.ext=='mbp' || doc.ext=='jpg' || doc.ext=='jpeg' || doc.ext=='gif' || doc.ext=='png'"></i>
+
+
+                                        <i class="fas fa-file-archive fa-md mr-1 text-brown"
+                                            *ngIf="doc.ext=='rar' || doc.ext=='zip'"></i>
+
+                                        <i class="fas fa-file-code fa-md mr-1 text-primary" *ngIf="doc.ext=='html'"></i>
+
+                                        {{doc.name}}
+                                    </td>
+
+                                    <td title="{{doc.comment}}">{{doc.comment}}</td>
+                                    <ng-template id="faxExcludedTDSection" [ngIf]="callingFrom!='fax'">
+                                        <td title="{{doc.created_user}}">{{doc.created_user}}</td>
+                                        <td title="{{doc.client_date_created}}">
+                                            {{doc.client_date_created}}</td>
+                                        <td class="text-right">
+                                            <button [disabled]="!lookupList.UserRights.document_view"
+                                                class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                                                (click)="openDocument(doc)">
+                                                <img class="img-h-16" src="./assets/images/icons/view_ico.svg" alt="">
+                                            </button>
+                                            <button [disabled]="!lookupList.UserRights.document_edit"
+                                                class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2">
+                                                <i class="far fa-edit" aria-hidden="true"
+                                                    (click)="openAttachmentDialog('Edit',doc)"></i>
+                                            </button>
+
+                                            <button [disabled]="!lookupList.UserRights.document_delete"
+                                                class="btn btn-link btn-sm text-danger line-height-1 p-0 mr-2">
+                                                <i class="far fa-trash-alt" aria-hidden="true"
+                                                    (click)="onDelete(doc)"></i>
+                                            </button>
+
+                                            <button [disabled]="!this.lookupList.UserRights.document_view"
+                                                class="btn btn-link btn-sm line-height-1 p-0">
+                                                <i class="fas fa-download" aria-hidden="true"
+                                                    (click)="onDownload(doc)"></i>
+                                            </button>
+                                        </td>
+                                    </ng-template>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+        </div>
+    </div>
+</div>
+
+
+<div class="modal-footer custom pl-0 mt-1 h-30" *ngIf="callingFrom=='fax'">
+
+    <p class="txt-primary-alert h-30 m-0 p-1 ml-1">
+        <i class="fas fa-info-circle fz-14"></i>
+        <span class="fz-12"> Only .pdf and .txt files are supported.</span>
+    </p>
+
+    <div class="flex-grow-1">&nbsp;</div>
+    <button type="button" class="btn btn-dark btn-sm width-80"
+        (click)="onDocumentSelectionCallBack.emit('cancel')">Cancel</button>
+    <button class="btn btn-success btn-sm  width-80" type="button" (click)="onDocumentSelectionCallBackOK()">OK</button>
+
+</div>

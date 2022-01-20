@@ -1,0 +1,280 @@
+<div class="d-flex flex-row flex-shrink-0">
+
+
+  <ul class="nav messages-bar flex-grow-1 justify-content-between align-items-center rounded-10-top-right">
+
+    <div class="fz-15 font-weight-400 text-white pl-2">
+      <span *ngIf="taskFlowType=='INBOX'">My Tasks</span>
+      <span *ngIf="taskFlowType=='OUTBOX'">Send Tasks</span>
+    </div>
+    <button class="btn btn-link fz-12 title-bar-white-btn font-weight-400" (click)="addNewTask()"><i aria-hidden="true"
+        class="fas fa-plus mr-1"></i>New
+      Task</button>
+
+  </ul>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue position-relative">
+
+  <div class="d-flex flex-column flex-shrink-0">
+
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#searchCriteriaMyTasks" aria-expanded="true" class="accordian-link">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+
+      <div id="searchCriteriaMyTasks" class="show">
+        <div class="accordian-body bg-transparent">
+
+
+          <form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+            <div class="p-6 pt-0">
+
+              <div class="form-row form-dashboard pb-1">
+
+
+                <div class="form-group col-4">
+                  <div class="btn-group radio-btn-tabs ">
+
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateRangeType === 'date_created')}">
+                      <input type="radio" name="dateRangeType" autocomplete="off" checked
+                        formControlName="dateRangeType" value="date_created" (ngModelChange)="onDateTypeChange($event)">
+                      Date Created
+                    </label>
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateRangeType === 'due_date')}">
+                      <input type="radio" name="dateRangeType" autocomplete="off" formControlName="dateRangeType"
+                        value="due_date" (ngModelChange)="onDateTypeChange($event)"> Due Date
+                    </label>
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateRangeType === 'date_completed')}">
+                      <input type="radio" name="dateRangeType" autocomplete="off" formControlName="dateRangeType"
+                        value="date_completed" (ngModelChange)="onDateTypeChange($event)"> Completed Date
+                    </label>
+                  </div>
+
+
+
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dpFrom" formControlName="dpFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker #dpFrom="ngbDatepicker"
+                        (blur)="onDateFocusOut($event.currentTarget.value,'dpFrom')">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpFrom.toggle()" type="button">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dpTo" formControlName="dpTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dpTo" ngbDatepicker #dpTo="ngbDatepicker"
+                        (blur)="onDateFocusOut($event.currentTarget.value,'dpTo')">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpTo.toggle()" type="button">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+
+                <div class="form-group col-3">
+                  <label class="col-form-label" for="ddCreatedBy">
+                    <span *ngIf="taskFlowType=='INBOX'">Created User</span>
+                    <span *ngIf="taskFlowType=='OUTBOX'">Send To</span>
+                  </label>
+                  <select id="ddUser" class="form-control col" formControlName="ddUser">
+                    <option></option>
+                    <option *ngFor="let user of lookupList.practiceUsersList" [value]="user.user_name">
+                      {{user.display_name}}
+                    </option>
+                  </select>
+                </div>
+
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="ddStatus">Status</label>
+                  <select class="col form-control px-1" id="ddStatus" formControlName="ddStatus" labelForId="ddStatus">
+                    <option></option>
+                    <option value='New'>New</option>
+                    <option value='In Complete'>In Complete</option>
+                    <option value='In Progress'>In Progress</option>
+                    <option value='Completed'>Completed</option>
+                    <option value='Overdue'>Overdue</option>
+                  </select>
+                </div>
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="ddPriority">Priority</label>
+                  <select class="col form-control px-1" id="ddPriority" formControlName="ddPriority"
+                    labelForId="ddPriority">
+                    <option></option>
+                    <option value='Normal'>Normal</option>
+                    <option value='Low'>Low</option>
+                    <option value='Medium'>Medium</option>
+                    <option value='High'>High</option>
+                  </select>
+                </div>
+
+                <div class="form-group col-1 d-flex flex-column justify-content-end">
+                  <button type="button" class="btn btn-success w-100"
+                    (click)="searchTasks(searchFormGroup.value)">Search</button>
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+
+          </form>
+
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+  <div class="d-flex flex-column flex-grow-1">
+
+
+    <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0 rounded-0">
+
+      <div class="title">
+        <span *ngIf="taskFlowType=='INBOX'">My Tasks</span>
+        <span *ngIf="taskFlowType=='OUTBOX'">Send Tasks</span>
+        <span class="fz-12 font-weight-300 pl-1">({{totalRecords}})</span>
+      </div>
+
+      <div class="fz-12 d-flex px-2">
+
+
+      </div>
+
+    </div>
+
+    <div class="bg-white d-flex flex-column flex-grow-1 overflow-height">
+      <div class="flex-grow-1 overflow-auto max-height-100">
+        <table class="table sm layout-fixed light-striped-border" style="overflow-y:visible">
+          <thead>
+            <tr>
+              <th scope="col" sortable="priority" type="alpha" (sort)="onSort($event)" class="width-10"></th>
+              <th scope="col" sortable="assigned_from_name" type="alpha" (sort)="onSort($event)">From</th>
+              <th scope="col" sortable="assigned_to_name" type="alpha" (sort)="onSort($event)">To</th>
+              <th scope="col" sortable="title" type="alpha" (sort)="onSort($event)">Title</th>
+              <th scope="col" sortable="status" type="alpha" (sort)="onSort($event)">Status</th>
+              <th scope="col" sortable="due_date" type="datetime" format="MM/DD/YYYY" (sort)="onSort($event)">Due Date
+              </th>
+              <th scope="col" sortable="created_user" type="alpha" (sort)="onSort($event)">Created By</th>
+
+              <th scope="col" sortable="date_created" type="datetime" format="MM/DD/YYYY" (sort)="onSort($event)">Date
+                Created</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let task of lstTasks" [ngClass]="{'active' : (task.task_id === selectedTaskId)}"
+              (click)="taskRowChanged(task.task_id)">
+              <td class="pr-0"><i class="fas fa-exclamation text-danger" *ngIf="task.priority=='High'"></i></td>
+              <td>{{task.assigned_from_name}}</td>
+              <td>{{task.assigned_to_name}}</td>
+              <td>
+                <button type="button" class="link-btn d-flex align-items-center" (click)="viewTask(task.task_id)">
+                  {{task.title}}
+                </button>
+              </td>
+              <td [ngClass]="{'text-success': task.status=='Completed',
+              'text-primary': task.status=='In Progress',
+              'font-weight-500': task.status=='New'}">{{task.status}}</td>
+              <td [ngClass]="{'text-danger': task.over_due}">{{task.due_date}}</td>
+              <td>{{task.created_user}}</td>
+              <td>{{task.date_created}}</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+
+</div>
+
+
+<!--
+<div
+  class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+  <div class="flex-grow-1 overflow-auto overflow-height">
+    <table class="table sm light-striped-border" style="overflow: auto !important">
+      <thead>
+        <tr>
+          <th scope="col" sortable="assigned_from" type="alpha" (sort)="onSort($event)">From</th>
+          <th scope="col" sortable="title" type="alpha" (sort)="onSort($event)">Title</th>
+          <th scope="col" sortable="status" type="alpha" (sort)="onSort($event)">Status</th>
+          <th scope="col" sortable="created_user" type="alpha" (sort)="onSort($event)">Created By</th>
+          <th scope="col" sortable="due_date" type="datetime" format="MM/DD/YYYY" (sort)="onSort($event)">Due Date</th>
+          <th scope="col" sortable="date_created" type="datetime" format="MM/DD/YYYY" (sort)="onSort($event)">Date
+            Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of lstTasks" [ngClass]="{'active' : (task.task_id === selectedTaskId)}"
+          (click)="taskRowChanged(task.task_id)">
+          <td>{{task.assigned_from}}</td>
+          <td>
+            <button type="button" class="link-btn d-flex align-items-center" (click)="viewTask(task.task_id)">
+              {{task.title}}
+            </button>
+          </td>
+          <td>{{task.status}}</td>
+          <td>{{task.due_date}}</td>
+          <td>{{task.created_user}}</td>
+          <td>{{task.date_created | date : 'MM/dd/yyyy'}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>
+-->

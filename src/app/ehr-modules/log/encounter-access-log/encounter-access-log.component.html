@@ -1,0 +1,220 @@
+<div class="d-flex flex-column flex-grow-1 rounded-3 border-content-box border-top-0 light-sky-blue">
+
+
+  <div class="light-title-bar  h-25 pl-2 pr-2 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 h-25">Encounter Access Log
+
+      <ng-template id="sectionAccessLogCriteriaDisplay" [ngIf]="!enableSearch">
+        <span class="v-separtor" *ngIf="PID!=undefined"></span>
+        <span *ngIf="PID!=undefined" class="title-other-info">
+          PID: {{PID}}
+        </span>
+        <span class="v-separtor" *ngIf="patientName!=undefined"></span>
+        <span *ngIf="patientName!=undefined" class="title-other-info">
+          Patient: {{patientName}}
+        </span>
+        <span *ngIf="datetimeFrom!=undefined && datetimeFrom!='' && datetimeTo!=undefined && datetimeTo!=''"
+          class="v-separtor"></span>
+        <span *ngIf="datetimeFrom!=undefined && datetimeFrom!='' && datetimeTo!=undefined && datetimeTo!=''"
+          class="title-other-info">
+          Date Range: {{datetimeFrom}} - {{datetimeTo}}
+        </span>
+        <span *ngIf="userName!=undefined && userName!=''" class="v-separtor"></span>
+        <span *ngIf="userName!=undefined && userName!=''" class="title-other-info">
+          User: {{userName}}
+        </span>
+      </ng-template>
+
+    </div>
+  </div>
+
+  <div
+    class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-0 light-sky-blue position-relative">
+
+
+    <!--
+      <div class="alert alert-primary rounded-0 p-1 m-1  flex-shrink-0" role="alert" *ngIf="!enableSearch">
+        <div class="form-row form-dashboard ">
+          <div class="form-view col-md-4 col-sm-4 col-12">
+            <div class="title-normal">Patient :</div>
+            <div class="value">{{PID}} | {{patientName}}</div>
+          </div>
+
+          <div class="form-view col-md-4 col-sm-4 col-12"
+            *ngIf="datetimeFrom!=undefined && datetimeFrom!='' && datetimeTo!=undefined && datetimeTo!=''">
+            <div class="title-normal">Date Range : </div>
+            <div class="value">{{datetimeFrom}} - {{datetimeTo}}</div>
+          </div>
+          <div class="form-view col-md-4 col-sm-4 col-12" *ngIf="userName!=undefined && userName!=''">
+            <div class="title-normal">User : </div>
+            <div class="value">{{userName}}</div>
+          </div>
+
+        </div>
+      </div>
+      -->
+
+    <div class="encounter-data-accordian accordian-data rounded-0 border-bottom border-top-0" *ngIf="enableSearch">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchCriteriaAuditLog" aria-expanded="false" class="accordian-link">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+
+      <div id="SearchCriteriaAuditLog" class="collapse">
+        <div class="accordian-body bg-transparent">
+
+          <form form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+            <div class="p-6 pt-0">
+
+
+              <div class="form-row form-dashboard pb-1">
+
+
+                <div class="form-group col-3">
+
+                  <label class="col-form-label module-view-headding" for="dpDateFrom">Date Time From:</label>
+                  <div class="d-flex flex-row">
+                    <div class="input-group mr-1">
+                      <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpDateFrom" ngbDatepicker
+                        #dpDateFrom="ngbDatepicker" formControlName="dpDateFrom">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpDateFrom.toggle()" type="button">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text ngb-timepicker-input-group-text"><i
+                            class="far fa-clock"></i></span>
+                      </div>
+                      <ngb-timepicker id="tpTimeFrom" class="form-control form-control-ngb-timepicker"
+                        formControlName="tpTimeFrom" meridian="ON">
+                      </ngb-timepicker>
+                    </div>
+                  </div>
+
+
+
+                </div>
+
+                <div class="form-group col-3">
+
+                  <label class="col-form-label module-view-headding" for="dpDateTo">Date Time To:</label>
+                  <div class="d-flex flex-row">
+                    <div class="input-group mr-1">
+                      <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpDateTo" ngbDatepicker
+                        #dpDateTo="ngbDatepicker" formControlName="dpDateTo">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpDateTo.toggle()" type="button">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text ngb-timepicker-input-group-text"><i
+                            class="far fa-clock"></i></span>
+                      </div>
+                      <ngb-timepicker id="tpTimeTo" class="form-control form-control-ngb-timepicker"
+                        formControlName="tpTimeTo" meridian="ON">
+                      </ngb-timepicker>
+                    </div>
+                  </div>
+
+
+
+                </div>
+
+                <div class="form-group col-3">
+                  <label class="col-form-label module-view-headding" for="ddUsers">User:</label>
+                  <select id="ddUsers" class="form-control" formControlName="ddUsers">
+                    <option value='all'>All</option>
+                    <option *ngFor="let user of lookupList.practiceUsersList" [value]="user.user_name">
+                      {{user.display_name}}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-group col-3 d-flex flex-row mt-3">
+                  <button type="button" class="btn btn-success w-100 mx-1 mt-1 h-25"
+                    (click)="searchLog(searchFormGroup.value)">Search</button>
+                  <button type="button" class="btn btn-dark w-100 mx-1 mt-1 h-25"
+                    (click)="clearSearchFeilds()">Clear</button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-grow-1 overflow-auto overflow-height">
+      <table class="table sm light-striped-border" style="overflow: auto !important">
+        <thead>
+          <tr>
+            <th></th>
+            <th>PID</th>
+            <th scope="col" sortable="event_type" type="alpha" (sort)="onSort($event)">Operation</th>
+            <th scope="col" sortable="access_date" type="datetime" format="YYYY-MM-DD HH:mm:ss.S"
+              (sort)="onSort($event)">Date Time Accessed</th>
+            <th scope="col" sortable="access_by" type="alpha" (sort)="onSort($event)">Accessed By</th>
+            <th scope="col" sortable="modified_user" type="alpha" (sort)="onSort($event)">Modified
+              User
+            </th>
+            <th scope="col" sortable="date_modified" type="datetime" format="YYYY-MM-DD HH:mm:ss.S"
+              (sort)="onSort($event)">Date Time Modified</th>
+
+            <th scope="col" sortable="visit_date" type="datetime" format="YYYY-MM-DD HH:mm:ss.S"
+              (sort)="onSort($event)">Visit Date Time</th>
+
+
+            <th>Provider Name</th>
+            <th>Location Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of lstEncounterAccessLog" [ngClass]="{'active' : (log.row_id === selectedRowId)}"
+            (click)="accessLogRowSelectionChanged(log.row_id)">
+            <td><button class="btn btn-link btn-sm p-0" (click)="navigateToEncounterLog(log)">Enounter Log</button>
+            </td>
+            <td>{{log.alternate_account}}</td>
+            <td>{{log.event_type}}</td>
+            <td>{{log.access_date  | date : 'MM/dd/yyyy hh:mm:ss a'}}</td>
+            <td>{{log.access_by}}</td>
+            <td>{{log.modified_user}}</td>
+            <td>{{log.date_modified | date : 'MM/dd/yyyy hh:mm:ss a'}}</td>
+            <td>{{log.visit_date | date : 'MM/dd/yyyy hh:mm:ss a'}}</td>
+            <td>{{log.provider_name}}</td>
+            <td>{{log.location_name}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+
+
+    </div>
+
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,48 @@
+<div class="dashboard patient-summary-graph">
+    <div class="dashboard-title orange-light-title">
+      <div class="icon light-gray">
+        <!-- <i class="fa fa-thermometer-empty" aria-hidden="true"></i> -->
+        <img class="img-h-24" src="./assets/images/icons/stethoscope_ico.svg" alt="">
+      </div>
+  
+      <div class="title">
+        Procedures
+      </div>
+  
+      <div class="title-btn-link">
+        <button type="button" (click)="  getProceduresSummary()">
+          <img class="img-h-25"
+          src="./assets/images/icons/ico_refresh_green.svg" alt="">
+        </button>
+      </div>
+    </div>
+    <div class="dashboard-content">
+      <div *ngIf="isLoding" class="div-loader"></div>
+  
+      <div *ngIf="!isLoding" role="tablist">
+        <div class="card dashboard-card" *ngFor="let procedure of lstProcedures; let i = index">
+          <div class="card-header" role="tab">
+            <h5 class="mb-0">
+              <a data-toggle="collapse" href="#procsummary{{i}}" aria-expanded="false" class="accordian-link" >
+                  <span class="card-header-date">{{procedure.procedure_date}}</span><span class="cpt-code">{{procedure.procedure_code}}</span>{{procedure.description}}
+              </a>
+            </h5>
+          </div>
+  
+          <div id="procsummary{{i}}" class="collapse" class="collapse">
+            <div class="card-body">
+              <p *ngIf="procedure.procedure_code">Code:
+                <strong>{{procedure.procedure_code}}</strong>
+              </p>
+              <p *ngIf="procedure.description">Description:
+                <strong>{{procedure.description}}</strong>
+              </p>
+              <p *ngIf="procedure.comments">Notes:
+                <strong class="mr-5">{{procedure.comments}}</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

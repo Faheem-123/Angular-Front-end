@@ -1,0 +1,340 @@
+<div class="d-flex flex-column flex-grow-1 m-8 mt-0">
+  <div class="light-title-bar rounded-top h-30 px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0">
+      <div class="fz-15 font-weight-400">{{title}} <span class="badge badge-pill">{{recordCount}}</span></div>
+      <button class="btn btn-sm bg-green-ihc text-white" (click)="ChangeView()">{{viewName}}</button>
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1" *ngIf="view == 'categories'">
+
+    <div class="p-8 d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+      <!-- ************************************************************** -->
+      <form [formGroup]="paymentCategoriesReportForm">
+
+        <div class="border rounded bg-white flex-shrink-0">
+          <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+
+          <div class="p-2 pt-0">
+            <div class="form-row form-dashboard">
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="dpfromDate">From:</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="mm/dd/yyyy" name="dateFrom" formControlName="dateFrom"
+                    ngbDatepicker #dpfromDate="ngbDatepicker">
+  
+                  <span class="input-group-btn">
+                    <button class="btn btn-outline-primary" (click)="dpfromDate.toggle()" type="button">
+                      <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                    </button>
+                  </span>
+  
+                </div>
+              </div>
+  
+              <div class="form-group col-4">
+                <label for="input2" class="col-form-label">Patient:</label>
+  
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-12">
+                    <div class="input-icon d-flex flex-grow-3">
+                      <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                        placeholder="Search Patient" (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                        (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()"
+                        formControlName="txtPatientSearch">
+  
+                      <!-- <input type="text" formControlName="txtPatientIdHidden" hidden> -->
+                      <div class="icon">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </div>
+  
+                      <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                        (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()"></inline-patient-search>
+  
+                    </div>
+                  </div>
+                </div>
+  
+  
+              </div>
+              <div class="form-group col-3">
+                <label for="cmbProvider">Location</label>
+                <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                  <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                </select>
+              </div>
+  
+              <div class="form-group col-3">
+                <label for="claimtype">Claim:</label>
+
+                <div class="d-flex">
+                  <div class="custom-radio green-radio">
+                    <input type="radio" class="custom-control-input" id="claimproc" name="claimtype" formControlName="claimtype" value="0">
+                    <label class="custom-control-label" for="claimproc">Claim Procedure</label>
+                  </div>
+
+                  <div class="custom-radio green-radio">
+                    <input type="radio" class="custom-control-input" id="claimpay" name="claimtype" formControlName="claimtype" value="1">
+                    <label class="custom-control-label" for="claimpay">Claim Payment</label>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="dptoDate">To:</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo"
+                    ngbDatepicker #dptoDate="ngbDatepicker">
+  
+                  <span class="input-group-btn">
+                    <button class="btn btn-outline-primary" (click)="dptoDate.toggle()" type="button">
+                      <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                    </button>
+                  </span>
+  
+                </div>
+              </div>
+  
+  
+              <!-- <div class="form-group col-4">
+                <label for="input2" class="col-form-label">Categories:</label>
+                <select class="form-control" id="cmbCategories" formControlName="cmbCategories">
+                  <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                </select>
+              </div> -->
+              <div class="form-group col-4">
+                <label for="cmbCategories" class="col-form-label">Categories:</label>
+  
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-12">
+                    <div class="input-icon d-flex flex-grow-3">
+  
+                      <ng-multiselect-dropdown formControlName="cmbCategories" style="width: 312px" [data]="this.lstDDLPayCategories"
+                        [settings]="dropdownSettings" (onSelect)="onItemSelect($event)" (onUnSelect)="closeIT($event)"
+                        (onSelectAll)="onSelectAll($event)">
+                      </ng-multiselect-dropdown>
+                    </div>
+                  </div>
+                </div>
+  
+  
+              </div>
+  
+              <div class="form-group col-3">
+                <label for="cmbProvider">Provider</label>
+                <select class="form-control" id="cmbProvider" formControlName="cmbProvider">
+                  <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+                </select>
+              </div>
+              <div class="form-group col-1">
+                <button type="button" class="btn btn-success ml-2 mt-3" (click)="searchPayCategoires(paymentCategoriesReportForm.value)">Search</button>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </form>
+      <!-- ************************************************************** -->
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2">
+        <h4 class="form-edit-sub-heading border-bottom-0 flex-shrink-0 m-1 mb-0 pl-1">Details</h4>
+        <div class="overflow-auto flex-grow-1">
+          <table class="table light-striped-border">
+            <thead>
+              <tr>
+                <th>Patient name</th>
+                <th>DOS</th>
+                <th>Procedure Code</th>
+                <th>Description</th>
+                <th>Charges</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr st-select-row="row" *ngFor="let paycat of lstPayCategories">
+                <td>{{paycat.patientname}}</td>
+                <td>{{paycat.dos}}</td>
+                <td>{{paycat.proc_code}}</td>
+                <td>{{paycat.description}}</td>
+                <td>{{paycat.charges}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-content-box border-top-0 rounded-bottom flex-shrink-0 overflow-auto bg-white">
+      <table class="table light-striped-border">
+        <tbody>
+          <tr st-select-row="row">
+            <td>Total Charges:</td>
+            <td>{{totalPayCharges}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1" *ngIf="view == 'report'">
+    <!-- /Payment Categories -->
+
+    <div class="p-8 d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+      <div class="form-row ">
+        <div class="d-flex col-12 p-0 m-0 pb-2">
+          <!-- ************************************************************** -->
+          <div class="div-column flex-column mr-0 pr-0 pt-0 pb-0 col-4 float-left">
+            <form [formGroup]="paycategForm">
+              <div class="custom-select-box pb-1">
+                <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Payment Categories</h4>
+                
+                <!-- <div class="form-group col-5"  [class.hide]="isAddCat">
+                    <a class="nav-link float-left p-2 mr-2" (click)="addNewPayCategories()" href="#">Add</a>
+                    </div> -->
+
+
+                
+
+                    <!-- <div class="col-12 form-edit-sub-heading">
+                        <div class="col-8">
+                            <h4 class="m-1 mb-1 pl-1">Payment Categories</h4>
+                        </div>
+                        <div class="col-4">
+                          <div class="title-link" [class.hide]="isAddCat">
+                              <a class="nav-link float-left p-2 mr-2" (click)="addNewPayCategories()" href="#">Add</a>
+                          </div>
+                        </div>
+                      </div> -->
+
+
+
+
+
+
+
+                <!-- <div class="form-row form-dashboard" [class.hide]="!isAddCat"> -->
+                    <div class="form-row form-dashboard">
+                  <div class="form-group col-7">
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <div class="input-icon d-flex flex-grow-3">
+                          <input id="txtCategoies" class="form-control flex-grow-3" type="text" formControlName="txtCategoies">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="form-group col-5">
+                    <ul class="nav color-buttons align-items-center">
+                      <a class="nav-link green px-2 py-0">
+                        <i class="far fa-edit pr-1"></i>Save</a>
+                      <a class="nav-link blue px-2 py-0">
+                        <i class="fas fa-times pr-1"></i>Cancel</a>
+                    </ul>
+                  </div> -->
+                  <div _ngcontent-c45="" class="form-group col-5">
+                      <a class="nav-link float-left p-2 mr-2" (click)="saveNewCategoryName()" href="#">Save</a>
+                          <a class="nav-link p-2" href="#" (click)="clearCatName()">Cancel</a>
+                      </div>
+
+
+                </div>
+
+                <div class="form-dashboard col-12 p-1" >
+                  <table class="table light-striped-border" [ngClass]="{'disabled': addEdit}">
+                    <tbody>
+                      <tr st-select-row="row" *ngFor="let paycat of lstDDLPayCategories; let i = index" (click)="getProcedures(paycat.category_id)">
+                          <td>{{paycat.category_name}}</td>
+                            <td class="text-right">
+                                <a class="p-0 text-primary mr-2" (click)="editCategory(paycat)"><i class="far fa-edit"></i></a>
+                                <a class="p-0 text-danger" (click)="onDeleteCategory(paycat, i)"><i class="far fa-trash-alt"></i></a>
+                              </td>
+
+                        </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- ************************************************************** -->
+          <!-- ************************************************************** -->
+          <div class="div-column flex-column mr-0 pr-0 pt-0 pb-0 col-8 float-right">
+            <form [formGroup]="proceduresForm">
+             
+             
+             
+              <div class="custom-select-box pb-1" style="min-height: 300px;">
+                <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Procedures</h4>
+                <!-- <div class="form-row form-dashboard">
+                    <div class="form-group col-7">
+                      <div class="form-row form-dashboard">
+                        <div class="form-group col-12">
+                          <div class="input-icon d-flex flex-grow-3">
+                            <input id="txtProcedure" class="form-control flex-grow-3" type="text" formControlName="txtProcedure">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div _ngcontent-c45="" class="form-group col-5">
+                        <a class="nav-link float-left p-2 mr-2" (click)="saveNewProcedure()" href="#">Save</a>
+                            <a class="nav-link p-2" href="#">Cancel</a>
+                        </div>
+  
+  
+                  </div> -->
+
+
+                  <div class="form-row form-dashboard">
+                      <div class="form-group col-7">
+                        
+                          <div class="form-group has-search flex-grow-1">
+                              <span class="fa fa-search form-control-feedback"></span>
+                              <input type="text" class="form-control" formControlName="txtProcedure" placeholder="Search Procedure" autocomplete="off"
+                                #txtProcSearch (input)="onProcedureSearcInputChange($event)" (blur)="onProcedureSearhBlur($event)">
+            
+                              <inline-procedure-search *ngIf="showProcSearch" [procSearchCriteria]="procedureSearchCriteria"
+                                (onSelect)="addProcedureFromSearch($event)" (onClose)="closeProcedureSearch()"></inline-procedure-search>
+            
+                            </div>
+
+                      </div>
+                      <div _ngcontent-c45="" class="form-group col-5">
+                          <a class="nav-link float-left p-2 mr-2" (click)="saveNewProcedure()" href="#">Save</a>
+                              <a class="nav-link p-2" href="#">Cancel</a>
+                          </div>
+    
+    
+                    </div>
+
+
+
+
+
+
+
+                <div class="form-dashboard col-12 p-1">
+
+                  <table class="table light-striped-border">
+                    <tbody>
+                          <tr st-select-row="row" *ngFor="let paycat of lstPaymentCategoriesDetails; let i = index">
+                                    <td>{{paycat.proc_code}}</td>
+                                    <td>{{paycat.proc_description}}</td>
+                                    <td class="text-right">
+                                        <a class="p-0 text-danger" (click)="onDeleteProcedures(paycat, i)"><i class="far fa-trash-alt"></i></a>
+                                      </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+
+              
+            </form>
+          </div>
+          <!-- ************************************************************** -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  

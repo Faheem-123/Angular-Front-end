@@ -1,0 +1,228 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Check In / Check Out</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body custom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading" class="dashboard-content mt-0">
+
+    <div class="patient-summary patient-summary-green mb-2 ">
+      <div class="summary-info">
+        <img src="{{patPicURL}}" alt="pic" class="patient-pic rounded-circle" (error)="patPicErrorHandler($event)">
+
+        <div class="info-box">
+          <h3>{{patientName }}</h3>
+          <p>{{gender }}</p>
+        </div>
+
+        <div class="info-box">
+          <p>PID: {{pid}}</p>
+          <p>DOB: {{dob}}</p>
+        </div>
+        <div class="info-box" *ngIf="appOperation==='New'">
+          <button type="button" class="close" aria-label="Close" (click)="clearPatient()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="alert alert-warning rounded-2 fz-12 p-2 mb-2" role="alert" *ngIf="!isTodaysAppointmentExist">
+      Patient does not have any Appointment today.
+    </div>
+
+
+    <ng-template id="todaysCheckIn" [ngIf]="isTodaysAppointmentExist">
+      <ng-template id="checkIn-CheckOut" [ngIf]="!showContactUpdateDiv">
+
+        <div class="form-row form-dashboard mb-2" *ngIf="patientBalanceDue>0">
+          <div class="form-group col-12">
+            <div class="alert alert-danger rounded-2 fz-12 mb-0" role="alert">
+              Previous Balance Due: ${{patientBalanceDue}}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard mb-2" *ngIf="checkedInTime || checkedOutTime">
+
+          <div class="form-group col-6" *ngIf="checkedInTime">
+            <div class="alert alert-primary rounded-2 fz-12 mb-0" role="alert">
+              Checked in at {{checkedInTime}}
+            </div>
+          </div>
+
+          <div class="form-group col-6" *ngIf="checkedOutTime">
+            <div class="alert alert-primary rounded-2 fz-12 mb-0" role="alert">
+              Checked out at {{checkedOutTime}}
+            </div>
+          </div>
+        </div>
+
+        <form [formGroup]="checkInOutForm">
+
+          <div class="form-row form-dashboard">
+            <div class="form-group col-6">
+              <label for="locationName" class="col-form-label">Location</label>
+              <input id="locationName" type="text" class="form-control" value="{{locationName}}" disabled>
+            </div>
+
+            <div class="form-group col-6">
+              <label for="providerName" class="col-form-label">Provider</label>
+              <input id="providerName" type="text" class="form-control" value="{{providerName}}" disabled>
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group col-12">
+              <label for="cmbRoom" class="col-form-label">Room</label>
+              <div class="input-group">
+                <select id="cmbRoom" class="form-control" (change)="roomChanged($event.currentTarget.value)"
+                  formControlName="cmbRoom">
+                  <option *ngFor="let r of lstRooms" [value]="r.rooms_id">{{r.name}}</option>
+                </select>
+                <span class="input-group-btn" *ngIf="isRoomChanged">
+                  <button class="btn btn-dark btn-sm rounded-0 fz-12" type="button"
+                    (click)="roomChangeCancel()">Cancel</button>
+                </span>
+                <span class="input-group-btn" *ngIf="isRoomChanged">
+                  <button class="btn btn-success btn-sm fz-12" type="button"
+                    (click)="saveCheckInOutRoom('update_room')">Update Room</button>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group col-6">
+              <label for="cmbRoom" class="col-form-label">Print Super bill</label>
+              <div class="input-group">
+                <select id="cmbRoom" class="form-control" formControlName="cmbBill">
+                  <option *ngFor="let sb of lstSuperBill" [value]="sb">{{sb}}</option>
+                </select>
+                <span class="input-group-btn">
+                  <button class="btn btn-info btn-sm" type="button" (click)="onBillPrint()">
+                    <i class="fa fa-print fa-sm" aria-hidden="true"></i> Print</button>
+                </span>
+              </div>
+            </div>
+            <div class="form-group col-6">
+              <label for="cmbRoom" class="col-form-label"></label>
+              <div class="input-group justify-content-end">
+                <div class="alert alert-info rounded-2 fz-12 mb-0" role="alert">
+                  Primary Insurance Copay: ${{primary_insurance_copay}}
+                </div>
+                <!-- <select id="cmbRoom" class="form-control" formControlName="cmbBill">
+                  <option *ngFor="let sb of lstSuperBill" [value]="sb">{{sb}}</option>
+                </select> -->
+                <!-- <span class="input-group-btn">
+                  <button class="btn btn-info btn-sm" type="button" (click)="onBillPrint()">
+                    <i class="fa fa-print fa-sm" aria-hidden="true"></i> Print</button>
+                </span> -->
+              </div>
+            </div>
+          </div>
+          <div style="height: 10px;" *ngIf="checkInOutError"></div>
+          <div class="form-row form-dashboard" *ngIf="checkInOutError">
+            <div class="form-group col-12">
+              <div class="alert alert-danger " role="alert">
+                {{checkInOutError}}
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+
+      <ng-template id="ContactInfo" [ngIf]="showContactUpdateDiv">
+
+        <form [formGroup]="contactInfoForm">
+          <div class="form-row form-dashboard">
+            <div class="form-group col-12">
+              <div class="alert alert-warning " role="alert">
+                Please update Patient Contact Information.
+              </div>
+            </div>
+          </div>
+          <div class="form-row form-dashboard">
+            <div class="form-group col-6">
+              <label for="addLine1" class="col-form-label">Address Line 1</label>
+              <input id="addLine1" type="text" class="form-control" formControlName="txtAddressLine1">
+            </div>
+
+            <div class="form-group col-6">
+              <label for="addLine2" class="col-form-label">Address Line 2</label>
+              <input id="addLine2" type="text" class="form-control" formControlName="txtAddressLine2">
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group col-4">
+              <label for="txtZipCode" class="col-form-label">Zip</label>
+              <input id="txtZipCode" type="text" class="form-control" formControlName="txtZipCode"
+                (blur)="zipFocusOut($event.currentTarget.value)">
+            </div>
+
+            <div class="form-group col-2">
+              <label for="txtState" class="col-form-label"> State</label>
+              <input id="txtState" type="text" class="form-control" formControlName="txtState">
+            </div>
+
+            <div class="form-group col-6">
+              <label for="cmbCity" class="col-form-label">City</label>
+              <select id="cmbCity" class="form-control" formControlName="cmbCity">
+                <option *ngFor="let city of lstCitiesState" [value]="city.city">{{city.city}}</option>
+              </select>
+
+            </div>
+          </div>
+          <div class="form-row form-dashboard">
+            <div class="form-group col-6">
+              <label for="txtCellPhone" class="col-form-label">Cell Phone</label>
+              <input id="txtCellPhone" type="text" class="form-control" formControlName="txtCellPhone"
+                (blur)="cellPhoneFoucusOut($event.currentTarget.value)" fromControlName="txtCellPhone" maxlength="14">
+            </div>
+
+            <div class="form-group col-6">
+              <label for="txtHomePhone" class="col-form-label">Home Phone</label>
+              <input id="txtHomePhone" type="text" class="form-control" formControlName="txtHomePhone"
+                (blur)="homePhoneFoucusOut($event.currentTarget.value)" fromControlName="txtHomePhone" maxlength="14">
+            </div>
+          </div>
+          <div style="height: 10px;" *ngIf="contactUpdateError"></div>
+          <div class="form-row form-dashboard" *ngIf="contactUpdateError">
+            <div class="form-group col-12">
+              <div class="alert alert-danger " role="alert">
+                {{contactUpdateError}}
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>
+<div class="modal-footer custom">
+
+  <ng-template id="CheckInButtons" [ngIf]="!showContactUpdateDiv">
+    <button *ngIf="isTodaysAppointmentExist" type="button" style="width: 80px;" class="btn btn-outline-info btn-sm"
+      (click)="saveCheckInOutRoom('check_in')">Check In</button>
+    <button *ngIf="isTodaysAppointmentExist" type="button" style="width: 80px;" class="btn btn-outline-info btn-sm"
+      (click)="saveCheckInOutRoom('check_out')">Check Out</button>
+    <button *ngIf="!isTodaysAppointmentExist" type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">OK</button>
+  </ng-template>
+
+  <ng-template id="ContactInfoButtons" [ngIf]="showContactUpdateDiv">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="cancelContactInfoSave()">Cancel</button>
+    <button type="button" style="width: 80px;" class="btn btn-success btn-sm"
+      (click)="saveContactInfo(contactInfoForm.value)" [disabled]="!contactInfoForm.valid">Save</button>
+  </ng-template>
+</div>

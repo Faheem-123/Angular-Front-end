@@ -1,0 +1,303 @@
+<div class="d-flex flex-row flex-shrink-0 rounded-10-top-right">
+
+
+  <ul class="nav messages-bar flex-grow-1 justify-content-between align-items-center">
+    <div class="fz-15 font-weight-400 text-white pl-2">Fax Sent</div>
+  </ul>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue position-relative">
+
+  <div class="p-6 d-flex flex-column flex-grow-1">
+
+    <div class="border rounded bg-white px-2 py-1 mb-6 flex-shrink-0">
+      <form [formGroup]="faxSentSearchFormGroup">
+        <div class="form-row form-dashboard">
+          <div class="form-group horizental row zero col-md-2 col-sm-6 col-12">
+            <label for="dpDateFrom" class="col-form-label width-40">From:</label>
+
+            <div class="input-group col">
+              <input class="form-control date-control" placeholder="mm/dd/yyyy" formControlName="dpDateFrom"
+                name="dpDateFrom" ngbDatepicker #dpDateFrom="ngbDatepicker" [ngClass]="{ required : (faxSentSearchFormGroup.controls.dpDateFrom.errors?.required),
+                      'is-invalid': (faxSentSearchFormGroup.controls.dpDateFrom.errors?.invalidDate)}">
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="dpDateFrom.toggle()" type="button">
+                </button>
+              </span>
+            </div>
+
+          </div>
+
+          <div class="form-group horizental row zero col-md-2 col-sm-6 col-12">
+            <label for="dpDateTo" class="col-form-label width-40">To:</label>
+
+            <div class="input-group col">
+              <input class="form-control date-control" placeholder="mm/dd/yyyy" formControlName="dpDateTo"
+                name="dpDateTo" ngbDatepicker #dpDateTo="ngbDatepicker" [ngClass]="{ required : (faxSentSearchFormGroup.controls.dpDateTo.errors?.required),
+                      'is-invalid': (faxSentSearchFormGroup.controls.dpDateTo.errors?.invalidDate)}">
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="dpDateTo.toggle()" type="button">
+                </button>
+              </span>
+
+
+            </div>
+
+
+          </div>
+
+          <div class="form-group horizental row zero col-md-7 col-sm-6 col-12">
+            <label for="txtPatientSearch" class="col-form-label width-50">Patient:</label>
+
+            <div class="input-icon d-flex flex-grow-3">
+
+              <input labelForId="txtPatientSearch" formControlName="txtPatientSearch" class="form-control flex-grow-3"
+                type="text" #txtPatientSearch placeholder="Enter criteria and press Enter to search"
+                (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+
+              <input type="text" formControlName="txtPatientIdHidden" hidden>
+              <div class="icon">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </div>
+
+              <inline-patient-search #inlineFaxSentPatSearch id="inlineFaxSentPatSearch" *ngIf="showPatientSearch"
+                [searchValue]="txtPatientSearch.value" (onPatientSelect)="onPatientSelect($event)"
+                (onClose)="closePatientSearch()">
+              </inline-patient-search>
+
+            </div>
+            <!--
+            <div class="form-group has-search col">
+              <span class="fa fa-search form-control-feedback"></span>
+              <input class="form-control" placeholder="Enter criteria and press Enter to search" type="text">
+            </div>
+            -->
+          </div>
+
+          <div class="form-group horizental row zero col">
+            <button class="btn btn-sm btn-success w-100" type="button"
+              (click)="search(faxSentSearchFormGroup.value)">Search</button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1">
+      <div class="flex-2 d-flex flex-column">
+        <div
+          class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0 rounded-top flex-shrink-0">
+          <div class="title">Fax Details<span class="fz-12 font-weight-300 pl-1">({{totalRecords}})</span>
+          </div>
+
+          <div class="fz-12 d-flex px-2">
+
+
+            <div class="h-24-px">
+              <form [formGroup]="filterRadioButtonFormGroup">
+                <div class="btn-group radio-btn-tabs">
+                  <label class="btn btn-sm btn-secondary h-24-px fz-12"
+                    [ngClass]="{'active' : (dataFilterOption == 'all')}">
+                    <input type="radio" name="filterOption" autocomplete="off" checked formControlName="filterOption"
+                      value="all" (ngModelChange)="onRadioOptionChange($event)"> All
+                  </label>
+                  <label class="btn btn-sm btn-secondary h-24-px fz-12"
+                    [ngClass]="{'active' : (dataFilterOption == 'sent')}">
+                    <input type="radio" name="filterOption" autocomplete="off" checked formControlName="filterOption"
+                      value="sent" (ngModelChange)="onRadioOptionChange($event)"> Sent
+                  </label>
+                  <label class="btn btn-sm btn-secondary h-24-px fz-12"
+                    [ngClass]="{'active' : (dataFilterOption == 'failed')}">
+                    <input type="radio" name="filterOption" autocomplete="off" checked formControlName="filterOption"
+                      value="failed" (ngModelChange)="onRadioOptionChange($event)"> Failed
+                  </label>
+                  <label class="btn btn-sm btn-secondary h-24-px fz-12"
+                    [ngClass]="{'active' : (dataFilterOption == 'pending')}">
+                    <input type="radio" name="filterOption" autocomplete="off" checked formControlName="filterOption"
+                      value="pending" (ngModelChange)="onRadioOptionChange($event)"> Pending
+                  </label>
+                </div>
+
+              </form>
+
+            </div>
+
+            <div class="d-flex align-items-center">
+              <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                (click)="updateAllFaxStatus()"><i class="fas fa-sync-alt px-1" aria-hidden="true"></i>Update All Status
+              </button>
+
+              <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"><i
+                  class="far fa-file-excel px-1" aria-hidden="true"></i>Export
+              </button>
+            </div>
+
+
+          </div>
+        </div>
+
+        <div class="border border-top-0 rounded-bottom bg-white d-flex flex-column flex-grow-1 overflow-height">
+          <div class="flex-grow-1 overflow-auto max-height-100">
+            <table class="table sm layout-fixed light-striped-border" style="overflow-y:visible">
+              <thead>
+                <tr>
+                  <th class="width-30">&nbsp;</th>
+                  <th class="width-80">Date</th>
+                  <th class="width-120">Recipient Name</th>
+                  <th class="width-100">Fax Number</th>
+                  <th>Fax Subject</th>
+                  <th class="width-80">PID</th>
+                  <th class="width-120">Patient Name</th>
+                  <th>Recipient Organization</th>
+                  <th class="width-120">Last Fax Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let fax of lstFaxSentFiltered" [ngClass]="{'active': fax.fax_sent_id==selectedFaxSentId}"
+                  (click)="faxSentRowSelectionChange(fax.fax_sent_id)">
+
+
+                  <td class="overflow-visible">
+                    <div class="dropdown">
+                      <button class="table-link-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right schedular-card"
+                        aria-labelledby="dropdownMenuButton">
+                        <button class="dropdown-item px-2" (click)="updateSingleFaxStatus(fax)"> Update Status</button>
+                        <!--<button class="dropdown-item px-2"> Add to Correspondence</button>-->
+                        <button class="dropdown-item px-2" (click)="onFaxResend(fax)"> Resend</button>
+                        <button class="dropdown-item px-2" (click)="onDeleteFax(fax)"> Delete</button>
+                      </div>
+                    </div>
+
+                  </td>
+
+
+
+                  <!--
+                  <td ngbDropdown>
+                    <button class="btn btn-info btn-dropdown" id="dropdownBasic1" ngbDropdownToggle></button>
+                    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                      <button class="dropdown-item px-2"> Update Status</button>
+                      <button class="dropdown-item px-2"> Add to Correspondence</button>
+                      <button class="dropdown-item px-2"> Resend</button>
+                      <button class="dropdown-item px-2"> Delete</button>
+                    </div>
+                  </td>
+                  -->
+
+                  <td title="{{fax.sentdate}}">{{fax.sentdate}}</td>
+                  <td title="{{fax.receiver_name}}">{{fax.receiver_name}}</td>
+                  <td title="{{fax.receiver_no}}">{{fax.receiver_no}}</td>
+                  <td title="{{fax.subject}}">{{fax.subject}}</td>
+                  <td title="{{fax.pid}}">{{fax.pid}}</td>
+                  <td title="{{fax.pat_name}}">
+                    <button type="button" class="link-btn" (click)="openPatient(fax)">{{fax.pat_name}}</button>
+                  </td>
+                  <td title="{{fax.sender_organization}}">{{fax.sender_organization}}</td>
+                  <td><span
+                      [ngClass]="{'text-success': fax.fax_status=='Success','text-danger': fax.fax_status=='Fail'}">{{fax.fax_status}}</span>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row p3 flex-1 mt-1">
+        <div class="col-4 d-flex flex-column flex-grow-1">
+          <div
+            class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0 rounded-top flex-shrink-0">
+            <div class="title">Attachments</div>
+          </div>
+
+          <div class="border border-top-0 rounded-bottom bg-white d-flex flex-column flex-grow-1 overflow-height">
+            <div class="flex-grow-1 overflow-auto max-height-100">
+              <table class="table sm light-striped-border">
+
+                <!--
+                <thead>
+                  <tr>
+                    <th>Document Name</th>
+                    <th class="width-40">&nbsp;</th>
+                  </tr>
+                </thead>
+                -->
+
+                <tbody>
+                  <tr *ngFor="let att of lstFaxSentAttachments">
+                    <td>
+                      <button class="btn btn-sm btn-link p-0" (click)="onFaxAttachmentView(att)">
+                        {{att.doc_name}}
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-8 d-flex flex-column flex-grow-1">
+          <div
+            class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0 rounded-top flex-shrink-0">
+            <div class="title">Fax Sending Attempts</div>
+          </div>
+
+          <div class="border border-top-0 rounded-bottom bg-white d-flex flex-column flex-grow-1 overflow-height">
+            <div class="flex-grow-1 overflow-auto max-height-100">
+              <table class="table sm light-striped-border">
+                <thead>
+                  <tr>
+                    <th width="16%">Fax Date Time</th>
+                    <th width="6%">Fax Status</th>
+                    <th width="60%">Status Details</th>
+                    <th>Sent By</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let att of lstFaxSendingAttempts">
+                    <td>{{att.sentdate}}</td>
+                    <td>
+                      <span
+                        [ngClass]="{'text-success': att.fax_status=='Success','text-danger': att.fax_status=='Fail'}">
+                        {{att.fax_status}}
+                      </span>
+                    </td>
+                    <td>{{att.fax_status_detail}}</td>
+                    <td>{{att.created_user}}</td>
+                  </tr>
+
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isStatusUpdating">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Updating Fax Status...
+    </div>
+  </div>
+
+
+</div>

@@ -1,0 +1,85 @@
+<form [formGroup]="nokForm" (ngSubmit)="onSubmit(nokForm.value)"
+(keydown.enter)="$event.preventDefault()">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Guardian/Next of Kin</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading" class="dashboard-content mt-0">
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-6">
+          <label class="col-form-label required" for="txtFName">First Name</label>
+          <input class="form-control" id="txtFName" formControlName="txtFName" />
+        </div>
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtMName">Middle Name</label>
+          <input class="form-control" id="txtMName" formControlName="txtMName" />
+        </div>
+      </div>
+      <div class="form-row form-dashboard">
+        <div class="form-group col-6">
+          <label class="col-form-label required" for="txtLName">Last Name</label>
+          <input class="form-control" id="txtLName" formControlName="txtLName" />
+        </div>
+        <div class="form-group col-6">
+          <label class="col-form-label required" for="txtName">Relationship</label>
+          <select class="form-control" id="ddRelationship" formControlName="ddRelationship" (change)="relationsSelectchange($event)">
+            <option *ngFor="let rel of lookupList.lstRelationship" value="{{rel.code}}">{{rel.description}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row form-dashboard">
+        <div class="form-group col">
+          <label class="col-form-label" for="txtAddress">Address</label>
+          <input class="form-control" id="txtAddress" formControlName="txtAddress" />
+        </div>
+      </div>
+      <div class="form-row form-dashboard">
+        <div class="form-group col-4">
+          <label class="col-form-label" for="txtZipCode">Zip</label>
+          <input type="text" class="form-control" id="txtZipCode" formControlName="txtZipCode" (focusout)="zipFocusOut($event.target.value)"
+            (change)="zipChanged()">
+        </div>
+        <div class="form-group col-2">
+          <label class="col-form-label" for="txtState1">state</label>
+          <input class="form-control" id="txtState1" disabled value="{{state}}" />
+          <input class="form-control" id="txtState" hidden value="{{state}}" formControlName="txtState" />
+        </div>
+        <div class="form-group col-6">
+          <label class="col-form-label" for="ddCity">City</label>
+          <select class="form-control" id="ddCity" formControlName="ddCity">
+            <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+              {{obj.city}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtHomePhone">Home Phone</label>
+          <input class="form-control" id="txtHomePhone" formControlName="txtHomePhone" />
+        </div>
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtCellPhone">Cell Phone</label>
+          <input class="form-control" id="txtCellPhone" formControlName="txtCellPhone" />
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer custom">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="activeModal.dismiss('Cross click')">Cancel</button>
+    <button style="width: 80px;" class="btn btn-success btn-sm" [disabled]="!nokForm.valid" type="submit">Add</button>
+  </div>
+</form>

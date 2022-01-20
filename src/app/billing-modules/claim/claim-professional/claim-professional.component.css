@@ -1,0 +1,86 @@
+/*** FIRST COLUMN */
+.table-claim-procedure > thead:first-child > tr:first-child > th:first-child {
+    position: absolute;
+    display: inline-block;    
+    height: 26px;
+    z-index: 1;
+    padding-top: 6px;
+    background-color: #eee;
+    /* background: linear-gradient(to bottom, #77469a 0%,#bb88df 100%); */
+
+}
+.table-claim-procedure > tbody > tr > td:first-child {
+    position: absolute;
+    display: inline-block;
+    /* background-color: #77469a; */
+    background-color: #eee;
+    height: 26px;
+    z-index: 1;
+    /* border-right: 1px solid #77469a;
+    border-bottom: 1px solid #77469a; */
+    font-weight: 500;
+    color: #155724;
+
+}
+
+.table-claim-procedure > thead > tr >  th {
+    border-right: 1px solid #a0d5a7;
+    padding-left: 4px;
+    padding-right: 4px;
+ }
+ .table-claim-procedure > thead > tr >  td:last-child {
+    border-right: none !important;
+ }
+
+
+.table-claim-procedure > tbody > tr >  td {
+   border-right: 1px solid #a0d5a7;
+   padding-left: 4px ;
+   padding-right: 4px  ;
+}
+.table-claim-procedure > tbody > tr >  td:last-child {
+    border-right: none !important;
+ }
+
+.table-claim-procedure > thead:first-child > tr:first-child > th:nth-child(2) {
+    padding-left: 60px !important;;
+}
+
+.table-claim-procedure > tbody > tr > td:nth-child(2) {
+    padding-left: 60px !important;
+}
+/*** END FIRST COLUMN */
+
+/*** LAST COLUMN */
+/*
+.table-claim-procedure > thead:last-child > tr:last-child > th:last-child {
+    position: absolute;
+    display: inline-block;
+    background-color: #ddeaf5;
+    height: 22px;    
+    z-index: 1;
+    border-right: 1px solid #c4dbed;
+
+}
+.table-claim-procedure > tbody > tr > td:last-child {
+    position: absolute;
+    display: inline-block;
+ 
+   background-color: #f4fafe;
+    height: 27px;
+    z-index: 1;
+    border-right: 1px solid #e6eff8;
+}
+
+.table-claim-procedure > thead:last-child > tr:last-child > th:nth-last-child(2){
+    padding-right: 60px;
+}
+
+.table-claim-procedure > tbody > tr > td:nth-last-child(2) {
+    padding-right: 60px !important;
+}
+*/
+/*** END LAST COLUMN */
+
+
+

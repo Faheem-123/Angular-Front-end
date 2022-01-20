@@ -1,0 +1,285 @@
+<div class="patient-summary border-botom-0" *ngIf="!showGrowthChart">
+  <div class="summary-info" [ngClass]="{
+        'warning':(isRuleItemShow()==true)}">
+
+    <div class="cds-rule-cont d-flex flex-column" *ngIf="isCDSItemsShow">
+      <div class="header d-flex align-items-center justify-content-between flex-shrink-0">
+        <span>{{ruleMainHeading}}</span>
+        <button class="btn btn-link line-height-1 p-0" (click)="onCDSRunRule(true)">
+          <i class="fas fa-sync text-ihc-blue"></i>
+        </button>
+      </div>
+
+      <div class="flex-grow-1 overflow-auto">
+        <div *ngFor="let cds of acNotivications" class="item-rule">
+          <a class="btn fz-12 d-flex align-items-center px-0 py-0" data-toggle="collapse"
+            href="#summaryproblem{{cds.rule_id}}" aria-expanded="false">
+            <i class="fas fa-chevron-right text-secondary"></i>
+            <img class="img-h-14 mx-2" src="./assets/images/icons/view_ico.svg" alt="">
+            <span class="text-ihc-blue font-weight-500">{{cds.rule_notification}}</span>
+          </a>
+          <div class="pl-3 pb-2 pt-1 text-dark font-weight-normal" id="summaryproblem{{cds.rule_id}}" class="collapse"
+            class="collapse">
+            <div class="d-flex pt-1">
+              <button type="button" class="btn btn-sm fz-12 btn-outline-info mr-2"
+                (click)="showReferenceInfo(cds)">Reference Info</button>
+              <button type="button" class="btn btn-sm fz-12 btn-outline-success"
+                (click)="showDiagnosticTherapeuticInformation(cds)">Diagnostic/Therapeutic Info</button>
+            </div>
+
+            <div class="row zero mt-1">
+              <div class="form-view pr-2 fz-12 col-4">
+                <div class="title-normal font-weight-500">Intervension Developer:</div>
+                <div class="value">{{cds.intervention_developer}}</div>
+              </div>
+
+              <div class="form-view fz-12 col-8">
+                <div class="title-normal font-weight-500">Funding Source:</div>
+                <div class="value">{{cds.funding_source}}</div>
+              </div>
+
+              <div class="form-view pr-2 fz-12 col-12">
+                <div class="title-normal font-weight-500">Citation:</div>
+                <div class="value">{{cds.citation}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <ng-template #popTitle>
+      <div class="d-flex align-items-center justify-content-between">
+        <span>{{ruleMainHeading}}</span>
+        <button class="btn btn-link line-height-1 p-0" (click)="onCDSRunRule(true)">
+          <i class="fas fa-sync text-ihc-blue"></i>
+        </button>
+      </div>
+    </ng-template>
+    <ng-template #popContent>
+      <div class="d-flex flex-column">
+        <div *ngFor="let cds of acNotivications" class="item-rule">
+
+          <a class="btn fz-13 px-0 py-0" data-toggle="collapse" href="#summaryproblem{{cds.rule_id}}"
+            aria-expanded="false">
+            <i class="fas fa-chevron-right text-secondary"></i>
+            <img class="img-h-14 mx-2" src="./assets/images/icons/view_ico.svg" alt="">
+            <span class="text-ihc-blue font-weight-500">{{cds.rule_notification}}</span>
+          </a>
+          <div class="pl-3 pb-2 pt-1 text-dark font-weight-normal" id="summaryproblem{{cds.rule_id}}" class="collapse"
+            class="collapse">
+            <div class="d-flex">
+              <button type="button" class="btn btn-sm btn-outline-info mr-2">Reference Info</button>
+              <button type="button" class="btn btn-sm btn-outline-success">Diagnostic/Therapeutic Info</button>
+            </div>
+
+            <div class="row zero mt-1">
+              <div class="form-view pr-2 fz-13 col-4">
+                <div class="title-normal font-weight-500">Intervension Developer:</div>
+                <div class="value">{{cds.intervention_developer}}</div>
+              </div>
+
+              <div class="form-view fz-13 col-8">
+                <div class="title-normal font-weight-500">Funding Source:</div>
+                <div class="value">{{cds.funding_source}}</div>
+              </div>
+
+              <div class="form-view pr-2 fz-13 col-12">
+                <div class="title-normal font-weight-500">Citation:</div>
+                <div class="value">{{cds.citation}}</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isCDSLoding" class="item-rule d-flex align-items-center justify-content-between">
+        <span>CDS Rules Are Loading Please Wait...</span>
+      </div>
+    </ng-template>
+    <button type="button" *ngIf="isCDSShow" class="btn btn-cds-rule" (click)="isCDSItemsShow = !isCDSItemsShow"
+      [ngClass]="{'btn-warning':(isRuleItemShow()==true),'btn-green':(isRuleItemShow()==false)}">
+      <i class="fas fa-exclamation" [ngClass]="{'faa-flash animated':(isRuleItemShow()==true)}"></i>
+    </button>
+
+    <img src="{{patPicURL}}" alt="pic" class="patient-pic rounded-circle" (error)="patPicErrorHandler($event)"
+      (click)="onPicClick()">
+
+    <div class="info-box">
+      <h3>{{patLName}}, {{patFName}}</h3>
+      <p>{{patGender}} | {{patMaritalStatus}}</p>
+    </div>
+
+    <div class="info-box">
+      <p>PID: {{PID}}</p>
+      <p>DOB: {{patDOB}}</p>
+    </div>
+
+    <div class="info-box">
+      <p>
+        <i class="fas fa-phone"></i>
+        <span *ngIf="(patTemp!=patContactNo && patContactNo!='')">{{patContactNo | phonePipe}}</span>
+      </p>
+      <p>
+        <i class="fas fa-map-marker-alt"></i>
+        <span *ngIf="(patTemp!=patAddress && patAddress!='') 
+        || (patTemp!=patCity && patCity!='')
+        || (patTemp!=patState && patState!='')
+        || (patTemp!=patZip && patZip!='')">{{patAddress}} {{patCity}} {{patState}}, {{patZip}}</span>
+      </p>
+    </div>
+
+    <div class="status">
+      <h4>
+        <span *ngIf="patAgeYear">{{patAgeYear}}</span><span *ngIf="patAgeYear" class="fz-12 pr-1">Y</span>
+        <span *ngIf="patAgeMonth">{{patAgeMonth}}</span> <span *ngIf="patAgeMonth" class="fz-12 pr-1">M</span>
+        <span *ngIf="patAgeYear==0">{{patAgeDays}}</span><span *ngIf="patAgeYear==0" class="fz-12 pr-1">D</span>
+      </h4>
+      <p>Age</p>
+    </div>
+
+    <div class="status">
+      <h4>{{patWeight}}</h4>
+      <p>Weight (kg)</p>
+    </div>
+
+    <div class="status">
+      <h4>{{patHeight}}</h4>
+      <p>Height (ft.in)</p>
+    </div>
+
+    <div class="status">
+      <h4>{{patBMI}}</h4>
+      <p>BMI</p>
+    </div>
+
+    <div class="status">
+      <h4>{{patTemp}}<span *ngIf="patTemp!=undefined && patTemp!='' ">&#176;</span>
+      </h4>
+      <p>Temp (<span>&#176;F</span>)</p>
+    </div>
+
+    <div class="status">
+      <h4>{{patBP}}</h4>
+      <p>BP</p>
+    </div>
+  </div>
+</div>
+<div class="d-flex flex-column flex-grow-1" *ngIf="showGrowthChart">
+  <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+    <button class="left-back-btn" (click)="backFromGrowthChart()">
+      <i class="fas fa-arrow-left mr-2"></i>Back to Summary
+    </button>
+    <div class="d-flex flex-row flex-grow-1 justify-content-between align-items-center ml-12">
+      <p class="m-0 text-white font-weight-light"><strong>Growth Chart Of </strong>{{openPatientInfo.last_name+',
+        '+openPatientInfo.first_name}}</p>
+    </div>
+  </div>
+  <patient-growth-chart [patientId]="patientId" [openPatientInfo]="openPatientInfo"
+    class="border-content-box light-sky-blue border-top-0 rounded-bottom d-flex flex-row flex-grow-1 p-0">
+  </patient-growth-chart>
+</div>
+<ngb-tabset [hidden]="showGrowthChart" [destroyOnHide]="false" class="nav pateint-nav" #patientMaintab
+  (tabChange)="onTabChange($event)">
+  <ngb-tab id="tab-summary">
+    <ng-template ngbTabTitle>Summary</ng-template>
+    <ng-template ngbTabContent>
+      <patient-summary class="d-flex flex-column flex-grow-1 overflow-height" [openPatientInfo]="openPatientInfo"
+        [patGender]="patGender" [patientId]="patientId" *ngIf="loadSummary"></patient-summary>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-patient-info">
+    <ng-template ngbTabTitle>Patient Info</ng-template>
+    <ng-template ngbTabContent>
+      <patient-info class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height" [patientId]="patientId"
+        callingFrom="patient" (onSave)="loadPatientHeaderInfo($event)" addEditOperation="EDIT" *ngIf="loadInfo">
+      </patient-info>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-patient-payment" [disabled]="!this.lookupList.UserRights.cashregister_view">
+    <ng-template ngbTabTitle>Patient Payment</ng-template>
+    <ng-template ngbTabContent>
+      <patient-payment-main class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height"
+        *ngIf="loadPatientPayment" [patientId]="patientId">
+      </patient-payment-main>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-encounter" [disabled]="!this.lookupList.UserRights.canViewChart">
+    <ng-template ngbTabTitle>Encounters</ng-template>
+    <ng-template ngbTabContent>
+      <patient-encounter class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height" *ngIf="loadEncounter"
+        [openPatientInfo]="openPatientInfo" [patientToOpen]="patientToOpen" [patientId]="patientId"
+        (showGrowthChart)="isShowGrowthChart()"></patient-encounter>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-claim" [disabled]="!this.lookupList.UserRights.claim_view">
+    <ng-template ngbTabTitle>Claims</ng-template>
+    <ng-template ngbTabContent>
+      <patient-claim class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height" *ngIf="loadClaim"
+        [patientToOpen]="patientToOpen" [patientId]="patientId"></patient-claim>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-results">
+    <ng-template ngbTabTitle>Lab Results</ng-template>
+    <ng-template ngbTabContent>
+      <patient-labs class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height" [patientId]="patientId"
+        [openPatientInfo]="openPatientInfo" *ngIf="loadLabs"></patient-labs>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="tab-documents" [disabled]="!this.lookupList.UserRights.document_view">
+    <ng-template ngbTabTitle>Documents</ng-template>
+    <ng-template ngbTabContent>
+      <patient-documents class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height" [patientId]="patientId"
+        callingFrom="patient" *ngIf="loadDocments"></patient-documents>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-referral" [disabled]="!this.lookupList.UserRights.ViewReferral">
+    <ng-template ngbTabTitle>Referral</ng-template>
+    <ng-template ngbTabContent>
+      <patient-referral-main [patientId]="patientId" [patient]="patientToOpen"
+        class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height" *ngIf="loadReferral">
+      </patient-referral-main>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-consults" [disabled]="!this.lookupList.UserRights.view_consults">
+    <ng-template ngbTabTitle>Consults</ng-template>
+    <ng-template ngbTabContent>
+      <patient-consults class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height" *ngIf="loadConsults"
+        [patientId]="patientId"></patient-consults>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-letter" [disabled]="!this.lookupList.UserRights.letter_view">
+    <ng-template ngbTabTitle>Letters</ng-template>
+    <ng-template ngbTabContent>
+      <letters-main [openPatientInfo]="openPatientInfo" class="patient-all-comp" *ngIf="loadLetters"></letters-main>
+
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-correspondance" [disabled]="!this.lookupList.UserRights.view_correspondence">
+    <ng-template ngbTabTitle>Correspondence</ng-template>
+    <ng-template ngbTabContent>
+      <patient-correspondence class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height"
+        *ngIf="loadCorrespondence" [patientId]="patientId">
+      </patient-correspondence>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-appointment" [disabled]="!this.lookupList.UserRights.scheduler_view">
+    <ng-template ngbTabTitle>Appointments</ng-template>
+    <ng-template ngbTabContent>
+      <rpt-appointments class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height" *ngIf="loadAppointments"
+        [lstData]="lstAppiontmentData">
+      </rpt-appointments>
+
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="tab-pat-messages" *ngIf="this.lookupList.UserRights.message_view">
+    <ng-template ngbTabTitle>Messages</ng-template>
+    <ng-template ngbTabContent>
+      <messages-main class="patient-all-comp d-flex flex-column flex-grow-1 overflow-height"
+        [patient_name]="patientToOpen.patient_name" [patient_id]="patientId" *ngIf="loadMessages">
+      </messages-main>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

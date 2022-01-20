@@ -1,0 +1,176 @@
+<form [formGroup]="claimNotesFormGroup" (ngSubmit)="onSubmit(claimNotesFormGroup.value)"
+  class="d-flex flex-column flex-grow-1">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">{{addEdittitle}} Claim Note [{{openedClaimInfo.dos}}]</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom p-0 d-flex flex-column" style="max-height: 400px !important">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+
+    <div class="inner-tool-tab h-20  px-2">
+      <span *ngIf="openedClaimInfo.claimId!=undefined" class="title-other-info">
+        Claim ID: {{openedClaimInfo.claimId}}
+      </span>
+      <span class="v-separtor h-20"></span>
+      <span *ngIf="openedClaimInfo.dos!=undefined" class="title-other-info">
+        DOS: {{openedClaimInfo.dos}}
+      </span>
+    </div>
+
+
+    <div *ngIf="!isLoading && !showLastNote" class="dashboard-content m-2">
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-12">
+          <div class="d-flex  justify-content-end ">
+            <button type="button" class="btn btn-link text-primary line-height-1 p-0 mr-2" (click)="onVoiceSatrt()"
+              title="Start Microphone to Write">
+              <i class="fas fa-microphone"></i>
+            </button>
+            <button type="button" class="btn btn-link line-height-1 p-0 mr-2 text-danger" (click)="onVoiceStop()"
+              title="Stop Microphone">
+              <i class="fas fa-microphone-slash"></i>
+            </button>
+          </div>
+          <textarea #txtClaimNotes class="form-control required" id="txtClaimNotes" formControlName="txtNotes" rows="6"
+            maxlength="500"></textarea>
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard" *ngIf="isBillingUser">
+
+        <div class="form-group">
+          <div class="form-check-cont">
+
+            <div class="custom-control custom-checkbox green-checkbox">
+              <input type="checkbox" class="custom-control-input" id="chkAddToPatientNotes"
+                formControlName="chkAddToPatientNotes">
+              <label class="custom-control-label" for="chkAddToPatientNotes">Add to Patient Notes</label>
+            </div>
+
+           
+          </div>
+        </div>
+        <small class="form-text text-muted font-italic">Notes will be shown to Front Office.</small>
+      </div>
+
+    </div>
+
+
+    <div class="inner-tool-tab justify-content-end pr-0 flex-shrink-0 h-25 border-top "
+      *ngIf="!isLoading && showLastNote">
+      <button class="btn btn-sm btn-link" (click)="onAddEditClaimNote(undefined)">Add New Note</button>
+    </div>
+    <div class="overflow-auto flex-grow-1 max-height-100" *ngIf="!isLoading && showLastNote">
+
+      <table class="table sm layout-fixed light-striped-border">
+        <tbody>
+
+          <tr *ngFor="let note of lstClaimNotes">
+
+            <td class="width-150 border-right">
+
+              <div class="form-view fz-10 d-flex flex-column">
+                <div class="text-muted font-italic mt-0">
+                  {{note.date_modified}}
+                </div>
+                <div class="text-muted font-italic mt-0">
+                  {{note.modified_user}}
+                </div>
+
+              </div>
+            </td>
+
+            <td>
+              <div class="form-view">
+                <div class="value">
+                  <pre>{{note.notes}}</pre>
+                </div>
+              </div>
+            </td>
+
+            <td class="width-80 text-right border-left">             
+              <button class="btn btn-sm btn-link p-0" type="button" 
+              *ngIf="canEditNote(note) && !note.is_auto && !openedClaimInfo.deleted"
+              (click)="onAddEditClaimNote(note)">Edit</button>
+
+
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+
+    <!--
+    <div *ngIf="!isLoading && showLastNote" class="dashboard-content mt-0">
+
+
+      <div class="inner-tool-tab justify-content-end pr-0 flex-shrink-0 h-25">
+        <button class="btn btn-sm btn-info rounded-0" (click)="onAddEditClaimNote(undefined)">Add New Note</button>
+      </div>
+
+
+      <div class="col-12 px-1 pb-1">
+        <div class="pt-1 pb-0 d-flex flex-grow-1" *ngFor="let note of lstClaimNotes">
+          <div class="info-box-stipes rounded-3 d-flex flex-column flex-grow-1">
+            <div class="form-row form-dashboard pl-2 pr-2" style="height: 18px;">
+
+              <div class="form-view fz-11">
+                <div class="value form-row form-dashboard">
+                  <span class="form-text text-muted font-italic mt-0">
+                    {{note.date_modified}}</span>
+                  <span class="v-separtor h-75"></span>
+                  <span class="form-text text-muted font-italic mt-0">
+                    {{note.modified_user}}</span>
+
+                  <span *ngIf="note.is_auto" class="v-separtor h-75 "></span>
+                  <span *ngIf="note.is_auto" class="form-text text-info font-italic mt-0">&nbsp;&nbsp;[ Auto Note
+                    ]</span>
+                </div>
+              </div>
+
+              <div class="flex-grow-1">&nbsp;</div>
+
+              <a class="text-primary btn-sm py-0 pr-1 cursor-default" (click)="onAddEditClaimNote(note)">Edit</a>
+            </div>
+
+            <div class="form-row form-dashboard pl-2 pr-2">
+              <div class="form-view">
+                <div class="value">
+                  <pre>{{note.notes}}</pre>
+                </div>
+              </div>
+
+            </div>
+
+
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    -->
+
+  </div>
+
+
+  <div class="modal-footer custom">
+    <button style="width: 80px;" class="btn btn-success btn-sm" [disabled]="!claimNotesFormGroup.valid"
+      *ngIf="!showLastNote" type="submit">Save</button>
+
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+
+  </div>
+</form>

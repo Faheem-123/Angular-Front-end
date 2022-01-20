@@ -1,0 +1,352 @@
+<div class="d-flex flex-column flex-grow-1" *ngIf="isSummary">
+
+    <div class="dashboard" [ngClass]="{'mx-1': this.isCallingFrom==='patient'}">
+        <div class="h-30 rounded-top-inherited" [ngClass]="{
+            'bg-green-ihc  px-3 d-flex align-items-center  flex-shrink-0 m-0': this.isCallingFrom==='letters',
+            'dashboard-title ': this.isCallingFrom==='patient'}">
+            <div [ngClass]="{
+                    'fz-15 font-weight-400 text-white': this.isCallingFrom==='letters',
+                    'title': this.isCallingFrom==='patient'}">Letters</div>
+            <div class="flex-grow-1"></div>
+            <div class="d-flex">
+                <ul [ngClass]="{
+                        'nav messages-bar flex-grow-1 justify-content-end h-100': this.isCallingFrom==='letters',
+                        'mt-3': this.isCallingFrom==='patient'}">
+                    <a class="btn btn-link fz-13" [ngClass]="{
+                                'title-bar-white-btn':isCallingFrom==='letters',
+                                'title-bar-blue-btn': isCallingFrom==='patient'}" (click)="onNewLetter()"> <i
+                            class="fas fa-plus  mr-1"></i>New
+                        Letter</a>
+                    <a class="btn btn-link fz-13 title-bar-white-btn " (click)="onLetterTemplate()"
+                        *ngIf="!callShowHide">Add/Modify Template</a>
+                </ul>
+            </div>
+        </div>
+
+
+
+
+        <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+
+
+            <div class="p-6" *ngIf="isCallingFrom!='patient'">
+                <form [formGroup]="searchLettersForm">
+                    <div class="custom-select-box" style="overflow: visible;">
+                        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+
+                        <div class="p-6 pt-0">
+                            <div class="form-row form-dashboard">
+                                <div class="form-group col-3">
+                                    <label for="mainPatientSearch">Patient:</label>
+                                    <div class="form-row form-dashboard">
+                                        <div class="form-group col-12">
+                                            <div class="input-icon d-flex flex-grow-3">
+                                                <input id="mainPatientSearch" class="form-control flex-grow-3"
+                                                    type="text" #mainPatientSearch placeholder="Search Patient"
+                                                    (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                                                    (input)="onPatientSearchInputChange(mainPatientSearch.value)"
+                                                    (blur)="onPatientSearchBlur()" formControlName="mainPatientSearch">
+
+                                                <div class="icon">
+                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                </div>
+                                                <inline-patient-search *ngIf="showPatientSearch"
+                                                    [searchValue]="mainPatientSearch.value"
+                                                    (onPatientSelect)="openSelectPatient($event)"
+                                                    (onClose)="closePatientSearch()"></inline-patient-search>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-2">
+                                    <label for="cmbDateType">Date Type:</label>
+                                    <select class="form-control flex-grow-1" formControlName="mainDateType">
+                                        <option value="dos" selected="selected">DOS</option>
+                                        <option value="createddate">Created Date</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group col-2">
+                                    <label for="mainFromDate">From:</label>
+                                    <div class="input-group">
+                                        <input class="form-control" placeholder="mm/dd/yyyy" name="mainFromDate"
+                                            formControlName="mainFromDate" ngbDatepicker #mainFromDate="ngbDatepicker">
+
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-outline-primary" (click)="mainFromDate.toggle()"
+                                                type="button">
+                                                <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-2">
+                                    <label for="mainToDate">To:</label>
+                                    <div class="input-group">
+                                        <input class="form-control" placeholder="mm/dd/yyyy" name="mainToDate"
+                                            formControlName="mainToDate" ngbDatepicker #mainToDate="ngbDatepicker">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-outline-primary" (click)="mainToDate.toggle()"
+                                                type="button">
+                                                <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-2">
+                                    <label for="cmbLocation">User</label>
+                                    <select class="form-control flex-grow-3" formControlName="mainUserSearch">
+                                        <option [value]="0">All</option>
+                                        <option *ngFor="let s of lookupList.listpracticeUserName" [value]="s.user_name">
+                                            {{s.name}}</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-1 d-flex align-items-end">
+                                    <button type="button" ng-disabled="btnHide" class="btn btn-success w-100"
+                                        (click)="searchLetters(searchLettersForm.value)">Search</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="dashboard-content">
+                <div *ngIf="isLoding" class="div-loader"></div>
+                <table class="table light-striped-border">
+                    <thead>
+                        <tr>
+                            <th>DOS</th>
+                            <th>Letter Name</th>
+                            <th>Patient</th>
+                            <th>DOB</th>
+                            <th>Signed By</th>
+                            <th>Fax Status</th>
+                            <th>Created User</th>
+                            <th>Created Date</th>
+                            <th>Modified User</th>
+                            <th>Modified Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let ltr of lstSearchLetters"
+                            [ngClass]="{'active' : (ltr.patient_letter_id === isSelectedLtrID)}"
+                            (click)="changeLetter(ltr)">
+                            <td>{{ltr.dos}}</td>
+                            <td>{{ltr.letter_name}}</td>
+                            <td>{{ltr.patient_name}}</td>
+                            <td>{{ltr.dob}}</td>
+                            <td>{{ltr.signed_by_name}}</td>
+                            <td>{{ltr.fax_status}}</td>
+                            <td>{{ltr.created_user}}</td>
+                            <td>{{ltr.client_date_created}}</td>
+                            <td>{{ltr.modified_user}}</td>
+                            <td>{{ltr.client_date_modified}}</td>
+                            <td>
+                                <button class="mr-5-px link-btn">
+                                    <a (click)="openSelectedLetter(ltr)" class="mr-5-px text-primary"
+                                        title="Preview Letter">
+                                        <i class="fas fa-eye fa-md" aria-hidden="true"></i>
+                                    </a>
+                                </button>
+                                <button [disabled]="!this.lookupList.UserRights.letter_delete" class="mr-5-px link-btn"
+                                    (click)="DeleteSelectedLetter(ltr)">
+                                    <i class="far fa-trash-alt fa-md text-danger" title="Delete Letter"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</div>
+<div class="dashboard-container d-flex flex-column " *ngIf="isNewLetter">
+    <div class="dashboard ">
+        <div class="rounded-top-inherited">
+
+
+
+
+            <div class="h-30 d-flex justify-content-between align-items-center rounded-top-inherited" [ngClass]="{
+                            'bg-green-ihc flex-shrink-0': this.isCallingFrom==='letters',
+                            'dashboard-title ': this.isCallingFrom==='patient'}">
+                <!-- this.isCallingFrom == "patient" -->
+                <div class="d-flex">
+                    <button class="btn " (click)="onBackToSummary()" [ngClass]="{
+                        'new-meesage rounded-10-top-left': this.isCallingFrom==='letters',
+                        'btn-link btn-sm': this.isCallingFrom==='patient'}">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Home</button>
+                    <div class="mt-1 ml-2 text-white">{{txt_ltr_headder}}
+                        <!-- NewLetters -->
+                    </div>
+                </div>
+
+                <div *ngIf="!isPreviewBtn" class="nav insurance-summary-nav justify-content-end">
+                    <div class="d-flex">
+                        <a class="btn btn-link fz-12 title-bar-white-btn font-weight-400 py-1 h-30"
+                            (click)="previewLtrTemplate()" href="#">Preview</a>
+                    </div>
+                    <ul class="nav color-buttons align-items-center">
+                        <button class="btn rounded-0" (click)="savePatientLetter()" [ngClass]="{
+                                'h-30 btn-green py-0 text-white ': this.isCallingFrom==='letters',
+                                'btn-sub-nav btn-success': this.isCallingFrom==='patient'}">Save</button>
+                        <button class="btn btn-dark rounded-0 " [ngClass]="{
+                            'h-30 rounded-10-top-right  py-0': this.isCallingFrom==='letters',
+                            'btn-sub-nav': this.isCallingFrom==='patient'}" (click)="cancelPreview()">Cancel</button>
+                    </ul>
+                </div>
+
+                <ul class="nav align-items-center justify-content-end" *ngIf="isPreviewBtn">
+
+                    <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                        (click)="onFax()"><i class="fas fa-fax pr-1"></i>Fax</button>
+                    <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                        (click)="printLetter()"><i class="fas fa-print pr-1"></i>{{textBtnPrint}}</button>
+                    <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                        [disabled]="!enableSign" (click)="editLetter()"><i class="far fa-edit pr-1"></i>Edit</button>
+                    <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                        [disabled]="!enableSign" (click)="signLetter()"><i
+                            class="fas fa-file-signature pr-1"></i>Sign</button>
+
+                </ul>
+
+
+            </div>
+
+
+
+        </div>
+
+        <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue overflow-auto overflow-height">
+            <div class="border rounded bg-white px-2 py-1" *ngIf="panelShowHidePrev">
+                <form [formGroup]="letterMainForm">
+                    <div class="form-row form-dashboard">
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label ">Select Patient:</label>
+                            <div class="form-group has-search col-sm-10">
+                                <div class="input-icon d-flex flex-grow-3">
+                                    <input id="mainPatientSearchnew" class="form-control flex-grow-3" type="text"
+                                        #mainPatientSearchnew placeholder="Search Patient"
+                                        (keydown)="onPatientSearchKeydownnew($event)" autocomplete="off"
+                                        (input)="onPatientSearchInputChangenew(mainPatientSearchnew.value)"
+                                        (blur)="onPatientSearchBlurnew()" formControlName="mainPatientSearchnew"
+                                        [readOnly]="disableNewField">
+
+                                    <div class="icon">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </div>
+                                    <inline-patient-search *ngIf="showPatientSearchnew"
+                                        [searchValue]="mainPatientSearchnew.value"
+                                        (onPatientSelect)="openSelectPatientnew($event)"
+                                        (onClose)="closePatientSearchnew()"></inline-patient-search>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-4 col-form-label ">DOS:</label>
+                            <div class="input-group  col-sm-8">
+                                <input class="form-control date-control required" placeholder="mm/dd/yyyy"
+                                    name="dateDOS" formControlName="dateDOS" ngbDatepicker #dateDOS="ngbDatepicker">
+
+                                <span class="input-group-btn">
+                                    <button class="btn date-control-btn" (click)="dateDOS.toggle()" type="button">
+                                    </button>
+                                </span>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Letter Templates:</label>
+                            <select class="form-control col-sm-10" labelForId="input1"
+                                formControlName="ddl_lettertemplates" (change)="changeDDLltrTempValues()">
+                                <option *ngFor="let ltrtemp of lstLetterTemplate; let i = index" id="i"
+                                    [value]="ltrtemp.template_id">{{ltrtemp.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Header:</label>
+                            <select class="form-control col-sm-10" labelForId="input1" formControlName="ddl_header">
+                                <option [value]="-1"></option>
+                                <option *ngFor="let ltrhdr of lstLetterHeader" [value]="ltrhdr.header_id">
+                                    {{ltrhdr.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Section:</label>
+                            <select class="form-control col-sm-10" labelForId="input1" formControlName="ddl_section">
+                                <option [value]="-1"></option>
+                                <option *ngFor="let ltrsec of acLetterSections" [value]="ltrsec.section_id">
+                                    {{ltrsec.section_name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Optional Section:</label>
+                            <select class="form-control col-sm-10" labelForId="input2"
+                                formControlName="ddl_optionalsection">
+                                <option [value]="-1"></option>
+                                <option *ngFor="let sec of acLetterSubSections" [value]="sec.sub_section_id">
+                                    {{sec.sub_section_name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class=" bg-white row zero justify-content-md-center mt-1 d-flex flex-grow-1" *ngIf="!previewPrint">
+
+
+                <quill-editor id="letterTempRichEditor" #letterTempRichEditor [required]="true"
+                    [formControl]="letterTempText" class="d-flex flex-column flex-grow-1 col-12">
+                </quill-editor>
+
+
+            </div>
+
+            <div class="border rounded bg-white p-6 col-12 " *ngIf="previewPrint">
+                <div class="dashboard-content HTMLPrevDiv p-3" [innerHTML]="print_html">
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="dashboard-container d-flex flex-column" *ngIf="isLetterTemplate">
+    <letter-templates class="d-flex flex-column flex-grow-1" (backToLettersMain)="backToLettersMain()">
+    </letter-templates>
+</div>
+
+<div class="dashboard-container d-flex flex-column mb-8-px mt-8-px" *ngIf="isTemplateSetting">
+
+</div>
+
+
+<div class="border rounded bg-white p-6 mt-1 d-flex flex-grow-1 overflow-auto col-12 " *ngIf="prev_from_main">
+    <div class="dashboard-content HTMLPrevDiv" [innerHTML]="prevMainHTML">
+    </div>
+</div>

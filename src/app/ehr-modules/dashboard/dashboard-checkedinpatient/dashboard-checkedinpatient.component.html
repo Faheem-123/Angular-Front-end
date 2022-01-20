@@ -1,0 +1,103 @@
+<div class="dashboard">
+    <div class="dashboard-title position-relative">
+        <div class="icon light-gray">
+            <img class="img-h-32" src="./assets/images/icons/Dashboard_checked_in_patient.svg" alt="">
+        </div>
+
+        <div class="title">
+            Checkedin Patients <span class="text-danger ml-2"> ({{checkincount}}) </span>
+        </div>
+        <div class="title-btn-link dropdown position-initial">
+            <button class="btn-dropdown p-0 line-height-1" type="button" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" (click)="showHidetoggle()">
+                <img class="img-h-25" src="./assets/images/icons/ico_filter_green.svg" alt="">
+            </button>
+
+            <div class="dropdown-menu dashboard-dropdown rounded shadow-md m-0 t-0"
+                [ngClass]="{'hide': showHideSearch}">
+                <div class="dropdown-title">Provider & Location Selection
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                
+                </div>
+                <form [formGroup]="filterForm" (ngSubmit)="onFilter(filterForm.value)">
+                    <div class="form-row form-dashboard">
+                        <div class="form-group col-12">
+                            <label for="input1">Provider</label>
+                            <select class="form-control" formControlName="ctrlproviderSearch">
+                                <option value="all">All</option>
+                                <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="input1">Location</label>
+                            <select class="form-control" formControlName="ctrllocationSearch">
+                                <option value="all">All</option>
+                                <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12 text-right">
+                            <button type="submit" class="btn btn-success btn-search  mt-2">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="title-btn-link">
+            <button type="button" (click)="onRefresh(filterForm.value)"><img class="img-h-25"
+                    src="./assets/images/icons/ico_refresh_green.svg" alt=""></button>
+        </div>
+    </div>
+
+    <div class="dashboard-content position-relative">
+
+        <table class="table light-striped-border wide">
+            <thead>
+                <tr>
+                    <th width='75'>App. Time</th>
+                    <th width='75'>Checkin</th>
+                    <th>Patient</th>
+                    <th>Provider</th>
+                    <th>Room</th>
+                    <th>Location</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let pat of lstPatient">
+                    <td><button [disabled]="!this.lookupList.UserRights.patient_view" type="button" class="link-btn"
+                            (click)="openPatient(pat)">{{pat.app_time}}</button></td>
+                    <td>{{pat.checkin_time}}</td>
+                    <td>
+                        <p><button type="button" [disabled]="!this.lookupList.UserRights.canViewChart" class="link-btn"
+                                (click)="openPatientEncounter(pat)">{{pat.patient_name}}</button></p>
+                    </td>
+                    <td>
+                        <p>{{pat.provider_name}}</p>
+                    </td>
+                    <td>{{pat.room_name}}</td>
+                    <td>{{pat.location_name}}</td>
+                    <td>
+                        <button type="button" title="CheckIn/Out" class="link-btn text-primary pl-2"
+                            (click)="showCheckInCheckOutPopUp(pat)">
+                            <i class="fas fa-user-check"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+            <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+            </div>
+        </div>
+    </div>
+
+</div>

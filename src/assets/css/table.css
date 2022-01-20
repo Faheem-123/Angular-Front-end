@@ -1,0 +1,648 @@
+/**************************** Main Table without border ****************************/
+.table.light-blue-striped {
+    margin-bottom: 0;
+}
+
+.table.light-blue-striped,
+.table.light-blue-striped thead th,
+.table.light-blue-striped tbody td {
+    border: none;
+    white-space: nowrap;
+}
+
+.table.light-blue-striped thead tr {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: #252525;
+    font-weight: 500;
+    background-color: rgba(213, 229, 243, .8);
+    height: 25px;
+}
+
+.table.light-blue-striped tbody tr {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: #353535;
+    font-weight: 400;
+    height: 25px;
+}
+
+.table.light-blue-striped tbody tr:nth-of-type(odd) {
+    background-color: #e9ecef;
+
+}
+
+/*
+.table.light-blue-striped tbody tr.active {
+    color: #101010;
+    background-color: #c1d9ed;
+}
+*/
+
+.table.light-blue-striped thead th p,
+.table.light-blue-striped tbody td p,
+.table.light-blue-striped thead th span,
+.table.light-blue-striped tbody td span {
+    display: block;
+    margin: 0;
+    white-space: nowrap;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table td, .table th {
+    padding: 4px 8px;
+}
+.table td  pre{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    margin-bottom: 2px;
+    color: unset;
+    overflow: inherit;
+    text-overflow: inherit;
+}
+
+
+
+/**************************** Table DANGER with border ****************************/
+.table.table-danger thead tr {   
+    color: #721c24 !important;
+    background-color: #f8d7da !important;
+    border-bottom: 1px solid #f5c6cb !important;
+}
+
+.table.table-danger tbody tr {
+    color: #7c2029 !important;   
+    border-bottom: 1px solid #f5c6cb !important;
+}
+
+.table.table-danger tbody tr:nth-of-type(odd) {
+    background-color:  #fcfcfc99 !important;
+}
+.table.table-danger tbody tr:nth-of-type(even) {
+    background-color:  #fcfcfcbf !important;
+}
+/****************** END Table DANGER ********************************************/
+
+/**************************** Table WARNING with border ****************************/
+.table.table-warning thead tr {   
+    color: #856404 !important;
+    background-color: #fff3cd !important;
+    border-bottom: 1px solid #ffeeba !important;
+}
+
+.table.table-warning tbody tr {
+    color: #866709 !important;   
+    border-bottom: 1px solid #ffeeba !important;
+}
+
+.table.table-warning tbody tr:nth-of-type(odd) {
+    background-color:  #fcfcfc99 !important;
+}
+.table.table-warning tbody tr:nth-of-type(even) {
+    background-color:  #fcfcfcbf !important;
+}
+/****************** END Table WARNING ********************************************/
+
+/**************************** Table INFO with border ****************************/
+.table.table-info thead tr {   
+    color: #0c5460 !important;
+    background-color: #d1ecf1 !important;
+    border-bottom: 1px solid #bee5eb !important;
+}
+
+.table.table-info tbody tr {
+    color: #105864 !important;   
+    border-bottom: 1px solid #bee5eb !important;
+}
+
+.table.table-info tbody tr:nth-of-type(odd) {
+    background-color:  #fcfcfc99 !important;
+}
+.table.table-info tbody tr:nth-of-type(even) {
+    background-color:  #fcfcfcbf !important;
+}
+/****************** END Table INFO ********************************************/
+
+
+/**************************** Main Table with border ****************************/
+.table.light-blue-striped-border {
+    margin-bottom: 0;
+}
+
+.table.light-blue-striped-border,
+.table.light-blue-striped-border thead th,
+.table.light-blue-striped-border tbody td {
+    border: none;
+    white-space: nowrap;
+}
+
+.table.narrow thead th,
+.table.narrow  tbody td {
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+}
+
+.table.td-normal-wrap tbody td {
+    white-space:normal;
+}
+.table.light-blue-striped-border thead tr {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: #252525;
+    font-weight: 500;
+    background-color: rgba(213,229,243,0.8);
+    height: 27px;
+    border-bottom: 1px solid #c4dbed;
+}
+
+.table.light-blue-striped-border tbody tr {
+font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: #353535;
+    font-weight: 400;
+    height: 27px;
+   /* border-bottom: 1px solid #e6eff8;*/
+    border-bottom: 1px solid #e5e8ea;
+    
+}
+
+
+/*
+.table.light-blue-striped-border tbody tr:last-child {
+    border-bottom: none;
+}
+*/
+.table.light-blue-striped-border tbody tr:nth-of-type(odd) {
+    /*background-color: rgba(235,242,249,0.5);*/
+    background-color: #f4f4f4;
+}
+.table.sm.light-blue-striped-border tbody tr:nth-of-type(even) {
+    background-color: rgba(255,255,255,1.0);
+}
+
+/*
+.table.light-blue-striped-border tbody tr.active {
+    color: #101010;
+    background-color: #c1d9ed;
+}
+*/
+
+.table.layout-fixed.light-blue-striped-border {
+    margin-bottom: 0;
+    table-layout: fixed;
+}
+
+.table.layout-fixed.light-blue-striped-border,
+.table.layout-fixed.light-blue-striped-border thead th,
+.table.layout-fixed.light-blue-striped-border tbody td {
+    border: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/**************************** Main Table with ROW Column border ****************************/
+.table.light-blue-striped-row-column-border {
+    margin-bottom: 0;
+    
+font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+}
+
+.table.light-blue-striped-row-column-border,
+.table.light-blue-striped-row-column-border thead th,
+.table.light-blue-striped-row-column-border tbody td {    
+    
+    border: 1px solid #c1d9ed;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table.light-blue-striped-row-column-border thead tr {    
+    color: #252525;
+    font-weight: 500;
+    background-color: rgba(213,229,243,0.8);
+    height: 27px;
+    border: 1px solid #c1d9ed;
+}
+
+.table.light-blue-striped-row-column-border tbody tr {   
+    color: #353535;
+    font-weight: 400;
+    height: 27px;
+    border: 1px solid #c1d9ed;
+}
+
+/*
+.table.light-blue-striped-row-column-border tbody tr:last-child {
+    border-bottom: none;
+}
+*/
+
+.table.light-blue-striped-row-column-border tbody tr:nth-of-type(odd) {
+    background-color: rgba(235,242,249,0.5);
+}
+
+/*
+.table.light-blue-striped-row-column-border tbody tr.active {
+    color: #101010;
+    background-color: #c1d9ed;
+}
+*/
+
+.table.layout-fixed.light-blue-striped-row-column-border {
+    margin-bottom: 0;
+    table-layout: fixed;
+}
+
+
+/******************************************/
+
+.table td, .table th {
+    padding: 4px 8px;
+}
+
+.table .table-link-btn {
+    color: #007bff;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.table .table-link-btn:hover {
+    color: #0056b3;
+}
+
+.table .table-td-checkbox {
+    vertical-align: middle;
+    height: 16px;
+    width: 16px;
+    min-height: 1rem;
+}
+
+.table .table-group-row{
+    background-color: #17a2b833 !important;
+}
+.table .table-td-select {
+    background-color: #fcfcfc;
+    font-size: 13px;
+    line-height: normal;
+    padding: 1px 5px;
+    min-height: 20px;
+    border-radius: 3px;
+    height: auto;
+    resize: none;
+    border: 1px solid #ced4da;
+    color: #495057;
+}
+
+.table .table-td-input {
+    background-color: #fcfcfc;
+    font-size: 13px;
+    line-height: normal;
+    padding: 1px 5px;
+    min-height: 21px !important;
+    border-radius: 3px;
+    height: auto;
+    resize: none;
+    border: 1px solid #ced4da;
+    color: #495057;
+}
+
+.table .table-td-date-input {
+    background-color: #fcfcfc;
+    font-size: 13px;
+    line-height: normal;
+    padding: 1px 2px !important;
+    min-height: 21px !important;
+    border-radius: 2px !important;
+    height: 21px;
+    resize: none;
+    border: 1px solid #ced4da;
+    color: #495057;
+    z-index: 0 !important;
+
+}
+
+.table .table-td-date-button {   
+    height: 21px;    
+    min-height: 21px !important;
+    padding: 0px 3px !important;
+}
+.table .table-td-date-button:before {   
+    font-size: 12px !important;
+ }
+
+
+.table .table-td-input-disabled {    
+    background-color: #e9ecef !important;
+}
+
+
+
+.table .is-invalid{
+    border-color: #dc3545;
+}
+
+.table .required{
+    background-color: #f9f9e4;
+}
+
+.table .table-td-input-group{
+    height: 21px !important;
+    flex-wrap: nowrap;
+}
+
+.table .input-group-prepend{
+    height: 21px !important;
+}
+
+
+.table .table-td-input-group-text{
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    font-size: 12px !important;
+    min-height: 21px !important;
+}
+
+.td-payment-source{
+    background-color: #d0ecf14a;    
+    border-right: 1px solid #e6eff8 !important;
+}
+
+.th-bg {
+    color: #2e7fc1;
+    font-weight: 500;
+    background-color: rgba(213,229,243,1);
+}
+
+
+/* tr Active */
+.table tr.active {
+    color: #101010;
+    background-color: #c1d9ed !important;
+}
+.table tr.active-blue  {
+    color: #ffffff;
+    background-color: #0073aa !important;
+}
+.table tr.active-yellow {
+    color: #101010;
+    background-color: #ffc10738 !important;
+}
+.table tr.active-green {
+    color: #ffffff;
+    background-color: #1a73e8 !important;
+}
+
+
+/* END tr Active */
+
+.table.row-border {
+    margin-bottom: 0;
+}
+
+.table.row-border,
+.table.row-border thead th,
+.table.row-border tbody td {
+    border: none;
+    white-space: nowrap;
+}
+.table.row-border thead tr {
+font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: #252525;
+    font-weight: 500;
+    background-color: rgba(213,229,243,0.8);
+    height: 27px;
+    border-bottom: 1px solid #c4dbed;
+}
+
+.table.row-border tbody tr {
+font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: #353535;
+    font-weight: 400;
+    height: 27px;
+   /* border-bottom: 1px solid #e6eff8;*/
+    border-bottom: 1px solid #e5e8ea;
+    
+}
+.table.layout-fixed.row-border {
+    margin-bottom: 0;
+    table-layout: fixed;
+}
+
+.table.layout-fixed.row-border,
+.table.layout-fixed.row-border thead th,
+.table.layout-fixed.row-border tbody td {
+    border: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table.row-border.wide thead th,
+.table.row-border.wide tbody td {
+    padding: 8px 8px !important;
+}
+
+
+.table.row-border thead tr {
+    font-size: 14px;
+    color: #f1f1f1;
+    font-weight: 500;
+    background-color: var(--ihc-green-light) ;
+    height: 27px;
+}
+
+
+
+
+
+
+
+
+/**************************** Main Table with ROW Column****************************/
+.table.light-striped-row-column-border {
+    margin-bottom: 0;
+    
+font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+}
+
+.table.light-striped-row-column-border,
+.table.light-striped-row-column-border thead th,
+.table.light-striped-row-column-border tbody td {    
+    
+    border: 1px solid #cee7d4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table.light-striped-row-column-border thead tr {    
+    color: #000000;
+    font-weight: 500;
+    background-color: rgb(255 255 255);
+    height: 27px;
+    border: 1px solid #cee7d4;
+}
+
+.table.light-striped-row-column-border tbody tr {   
+    color: #353535;
+    font-weight: 400;
+    height: 27px;
+    border: 1px solid #cee7d4;
+}
+
+/*
+.table.light-blue-striped-row-column-border tbody tr:last-child {
+    border-bottom: none;
+}
+*/
+
+.table.light-striped-row-column-border tbody tr:nth-of-type(odd) {
+    background-color: rgba(235,242,249,0.5);
+}
+
+/*
+.table.light-blue-striped-row-column-border tbody tr.active {
+    color: #101010;
+    background-color: #c1d9ed;
+}
+*/
+
+.table.layout-fixed.light-striped-row-column-border {
+    margin-bottom: 0;
+    table-layout: fixed;
+}
+
+
+/******************************************/
+
+
+/**************************** Main Table with border ****************************/
+.table.light-striped-border {
+    margin-bottom: 0;
+}
+
+.table.light-striped-border,
+.table.light-striped-border thead th,
+.table.light-striped-border tbody td {
+    border: none;
+    white-space: nowrap;
+}
+
+
+.table.light-striped-border thead tr {
+font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+    color: #000;
+    font-weight: 500;
+    /*background-color: #1a73e8;    
+    border-bottom: 1px solid #a0d5a7;
+    */
+    
+    height: 27px;
+    border-bottom: 1px solid #77469a;
+    background: #fff;
+}
+
+.table.light-striped-border tbody tr {
+font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: #000;
+    font-weight: bold;
+    height: 27px;
+   /* border-bottom: 1px solid #e6eff8;*/
+    border-bottom: 1px solid #1a73e8;
+    
+}
+
+
+/*
+.table.light-blue-striped-border tbody tr:last-child {
+    border-bottom: none;
+}
+*/
+.table.light-striped-border tbody tr:nth-of-type(odd) {
+    /*background-color: rgba(235,242,249,0.5);*/
+    background-color: #f4f4f4;
+}
+.table.sm.light-striped-border tbody tr:nth-of-type(even) {
+    background-color: rgba(255,255,255,1.0);
+}
+
+
+
+.table.layout-fixed.light-striped-border {
+    margin-bottom: 0;
+    table-layout: fixed;
+}
+
+.table.layout-fixed.light-striped-border,
+.table.layout-fixed.light-striped-border thead th,
+.table.layout-fixed.light-striped-border tbody td {
+    border: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table.light-striped-border tr.active {
+    color: #343a40  !important;
+    background-color: #ddd  !important;
+}
+/*
+.table.sm.light-striped-border tr.active {
+    color: #343a40  !important;
+    background-color: #d3e7da  !important;
+}
+*/
+
+
+/******/
+
+.tabletest{border-collapse: collapse;
+    font-size:9px; 
+    font-family: Verdana;
+    width: 100%;
+} 
+
+.tabletestwoBorder{border-collapse: collapse;
+    font-size:9px; 
+    font-family: Verdana;
+    width: 100%;
+} 
+
+.tabletest, .tabletest td, .tabletest th{border: 1px solid black;}
+.tablewrite tr, .tblvitals tr{height:20px;}
+.tblvitals
+{
+    border:1px solid black;
+    border-bottom:0;
+    border-collapse: collapse;
+    height:20px;
+    font-family: Verdana;
+    font-size: 9px;}
+.tblvitals td{border-left:1px solid black;}  
+
+
+.superBillrowHeader{
+    background-color: #c0c0c0;
+    border: 1px solid black;
+    text-align: center;
+}
+.superbilltdWidth-12{
+    width: 12.5%;
+}
+.imctable tr{height: 20px;}
+
+/* table#mVtl tr td:first-child {
+    color: white; } */

@@ -1,0 +1,147 @@
+<div class="d-flex flex-column flex-1">
+  <div
+    class="light-title-bar rounded-top h-30 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400">User Roles</div>
+    <div class="d-flex align-items-center">
+      <!-- <button class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" type="button">
+        <i class="fas fa-plus"></i> Add</button> -->
+    </div>
+  </div>
+
+  <div *ngIf="isRoleShow" class="position-absolute d-flex flex-column w-300 h-200 z-100" style="top:70px;right:5;">
+    <div class="sm-modal-header rounded-top">
+      <h4 class="modal-title fz-14 font-weight-400 pl-2" id="modal-basic-title">Add/Edit Role</h4>
+      <button class="btn btn-sm btn-danger border-0" type="button" (click)="onCancel()"><i
+          class="fas fa-times"></i></button>
+    </div>
+
+    <div class="sm-modal-body">
+      <div class="form-row form-dashboard">
+        <form [formGroup]="inputForm" class="col-12" >
+          <div class="form-group horizental row zero col-12" >
+            <label class="col-form-label text-left col-4">Role Name:</label>
+            <input type="text" class="form-control col-8" formControlName="txtRoleName" autofocus id="txtRoleName" >
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="bg-light border border-top-0 rounded-bottom text-right px-2 py-1">
+      <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" (click)="onRoleSave()">Save</button>
+      <button class="btn btn-sm btn-dark top-right-radius h-30" (click)="onRoleCancel()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="bg-white border border-top-0 rounded-bottom flex-grow-1 overflow-auto">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>
+            <div class="d-flex float-right">
+              <button *ngIf="roleOperation==''" type="button"
+                class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onAddNew()"><i
+                  class="fas fa-plus"></i>
+                Add</button>
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let u of arrRoles;let i = index" (click)="onRoleSelectionChange(i,u)" [ngClass]="{ 'active': i==selectedRoleIndex,
+          'disabled': isDisable
+          }">
+          <td>{{u.role_name}}</td>
+          <td class="text-right">
+            <button type="button" class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+              (click)="onRoleEdit(u)">
+              <i class="far fa-edit fa-sm"></i>
+            </button>
+            <button type="button" class="btn btn-link btn-sm text-danger line-height-1 p-0" (click)="onRoleDelete(u)">
+              <i class="far fa-trash-alt fa-sm"></i>
+            </button>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-3 ml-8">
+  <div class="border-content-box light-sky-blue border-0 rounded-custom d-flex flex-column flex-3">
+    <ngb-tabset [destroyOnHide]="false"
+      class="inner-sub-horizental-tab tab-h30 border border-top-0 tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden rounded-custom">
+      <ngb-tab>
+        <ng-template ngbTabTitle><span>Privileges</span></ng-template>
+        <ng-template ngbTabContent>
+
+
+          <div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-25">
+            <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400  d-flex  pt-2-px">Privileges
+            </h4>
+            <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-26" [disabled]="isLoading"
+              (click)="onSave()">Save</button>
+          </div>
+
+
+
+          <!--
+          <div class="bg-white d-flex flex-column flex-grow-1 overflow-auto">
+            <table class="table light-striped-border">
+              <tbody>
+                <tr *ngFor="let u of lstModules;let i = index">
+                  <td width="2%">
+                    <div>
+                      <input (click)="IsSelect($event.currentTarget.checked,u)" id="customCheck1" type="checkbox"
+                        value={{u.is_enabled}} [checked]="u.is_enabled">
+                      <label for={{u.module_id}}>&nbsp;</label>
+                    </div>
+                  </td>
+                  <td>{{u.module_name}}</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+-->
+          <!-- <privileges class="d-flex flex-column flex-grow-1"></privileges> -->
+
+          <div class="d-flex flex-column bg-white p-2 flex-grow-1 overflow-height">
+            <div class="flex-grow-1 overflow-auto" style="overflow-x: hidden;">
+              <!-- <div *ngIf="isLoading" class="div-loader"></div> -->
+              <div class="div-loader-message-box" *ngIf="isLoading">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+              </div>
+              <div class="div-loader-message-box" *ngIf="isSaving">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Saving . . .
+              </div>
+              <!-- <div class="d-flex p-8 flex-grow-1"> -->
+              <ngx-treeview [config]="config" [items]="items" (filterChange)="onFilterChange($event)"
+                (selectedChange)="values = $event" class="fz-12">
+              </ngx-treeview>
+              <!-- </div> -->
+            </div>
+          </div>
+
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab *ngIf="(callingFrom.toUpperCase() != 'BILLING')">
+        <ng-template ngbTabTitle><span>Administration Modules</span></ng-template>
+        <ng-template ngbTabContent>
+          <administration-modules class="d-flex flex-column flex-grow-1 overflow-height" [role_id]="role_id">
+          </administration-modules>
+        </ng-template>
+      </ngb-tab>
+      <!-- *ngIf="(this.isCallFromBilling.toUpperCase() == 'BILLING')" -->
+      <ngb-tab *ngIf="(callingFrom.toUpperCase() != 'BILLING')">
+        <ng-template ngbTabTitle><span>CDR Rules</span></ng-template>
+        <ng-template ngbTabContent>
+          <cdr-rules class="d-flex flex-column flex-grow-1 overflow-height" [role_id]="role_id"></cdr-rules>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

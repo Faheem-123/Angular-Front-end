@@ -1,0 +1,33 @@
+export class ORMPractice{
+    practice_id:String;
+    practice_name:String;
+    address1:String;
+    address2:String;
+    zip:String;
+    city:String;
+    state:String;
+    phone:String;
+    fax:String;
+    taxid:String;
+    website:String;
+    account_type:String;
+    billing_percentage:String;	
+    contact_person_name:String;	
+    contact_person_number:String	;
+    notes:String;
+    noshow_charges:String;
+    domain_name:String;
+    deleted:Boolean;
+    created_user:String;
+    client_date_created:String;
+    modified_user:String;
+    client_date_modified:String;
+    date_created:String;
+    date_modified:String;
+    fax_url:String;
+    fax_user:String;
+    fax_password:String;	
+    system_ip:String;
+    inactive:Boolean;
+    npi:String;
+}

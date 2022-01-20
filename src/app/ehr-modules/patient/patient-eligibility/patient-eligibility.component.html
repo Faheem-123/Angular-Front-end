@@ -1,0 +1,272 @@
+<div class="modal-header custom"
+(keydown.esc)="closePopUP()">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Patient Eligibility</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="closePopUP()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+<div class="modal-body custom d-flex flex-column" style="height: 550px;"
+(keydown.esc)="closePopUP()">
+
+
+  <ng-template id="patEligibility" [ngIf]="!isLoading && isSuccess">
+
+    <div class="d-flex flex-row mb-2">
+      <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 mr-1">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          EHR Info
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1 ">
+          <div class="pl-8-px pr-8-px pt-4-px pb-8-px">
+            <div class="form-row form-dashboard">
+              <div class="form-group col-8">
+                <label class="col-form-label">Patient Name</label>
+                <label readonly type="text" class="form-control pt-1" [ngClass]="{                  
+              'alert alert-success bg-success-alert' : patientMatched=='Y',
+              'alert alert-danger bg-danger-alert' : patientMatched=='N'
+            }">{{ehrPatientName}}</label>
+              </div>
+              <div class="form-group col-4">
+                <label class="col-form-label">Policy Number</label>
+                <label readonly type="text" class="form-control pt-1" [ngClass]="{                  
+              'alert alert-success bg-success-alert' : policyNoMatched=='Y',
+              'alert alert-danger bg-danger-alert' : policyNoMatched=='N'          
+            }">{{ehrPolicyNo}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-content-box rounded-3  bg-white d-flex flex-column  flex-1 ml-1">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          Insurance Info
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1 ">
+          <div class="pl-8-px pr-8-px pt-4-px pb-8-px">
+            <div class="form-row form-dashboard">
+              <div class="form-group col-8">
+                <label class="col-form-label ">Patient Name</label>
+                <label readonly type="text" class="form-control pt-1" [ngClass]="{                  
+              'alert alert-success bg-success-alert' : patientMatched=='Y',
+              'alert alert-danger bg-danger-alert' : patientMatched=='N'              
+            }">{{insurancePatientName}}</label>
+              </div>
+              <div class="form-group col-4">
+                <label class="col-form-label">Policy Number</label>
+                <label readonly type="text" class="form-control  pt-1" [ngClass]="{                  
+              'alert alert-success bg-success-alert' : policyNoMatched=='Y',
+              'alert alert-danger bg-danger-alert' : policyNoMatched=='N'          
+            }">{{insurancePolicyNo}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="d-flex flex-row mb-2">
+
+      <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 ">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          Eligiblility Info
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1 ">
+          <div class="pl-8-px pr-8-px pt-4-px pb-8-px">
+            <div class="form-row form-dashboard">
+
+              <div class="form-group col-6">
+                <label class="col-form-label">Insurance Name</label>
+                <label readonly type="text" class="form-control pt-1">{{insuranceName}}</label>
+              </div>
+              <div class="form-group col-3">
+                <label class="col-form-label">Insurance Status</label>
+                <label readonly type="text" class="form-control pt-1" [ngClass]="{    
+                    'alert alert-success bg-success-alert' : elilgibilityStatus=='A',
+                    'alert alert-danger bg-danger-alert' : patientMatched=='I',
+                    'alert alert-primary bg-primary-alert' : patientMatched=='U'        
+                  }">{{elilgibilityStatusDescription}}</label>
+              </div>
+              <div class="form-group col-3">
+                <label class="col-form-label">Validation Date</label>
+                <label readonly type="text" class="form-control pt-1">{{eligibilityDate}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="d-flex flex-row flex-grow-1">
+
+      <div class="border-content-box rounded-3  bg-white flex-grow-1 d-flex flex-column flex-1 mr-1">
+
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          Insurance Benefits
+        </div>
+
+        <div class="flex-grow-1 max-height-100 overflow-height overflow-auto">
+          <div class="pl-8-px pr-8-px pt-4-px pb-8-px fz-12 overflow-auto">
+
+
+            <div class="encounter-data-accordian accordian-data rounded-0 border-top-0">
+              <div class="accordian-header" role="tab" id="headingOne">
+                <h5>
+                  <a data-toggle="collapse" href="#patEligCopaymentInfo" aria-expanded="false" class="accordian-link">
+                    <span class="accordian-main-header-title pl-1 pr-1">Co-Payment</span>
+                  </a>
+                </h5>
+              </div>
+
+              <div id="patEligCopaymentInfo" class="collapse show">
+                <div class="accordian-body bg-transparent">
+
+                  <table class="table sm light-striped-border layout-fixed"
+                    *ngIf="!isLoading &&  (lstCopayment!=undefined && lstCopayment.length>=0)">
+                    <tbody>
+                      <tr *ngFor="let coPayment of lstCopayment">
+                        <td [innerHTML]="coPayment"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+
+                  <div *ngIf="!isLoading &&  (lstCopayment==undefined || lstCopayment.length==0)"
+                    class="no-content p-0">
+                    N/A
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="encounter-data-accordian accordian-data rounded-0 border-top-0">
+              <div class="accordian-header" role="tab" id="headingOne">
+                <h5>
+                  <a data-toggle="collapse" href="#patEligDeductableInfo" aria-expanded="false" class="accordian-link">
+                    <span class="accordian-main-header-title pl-1 pr-1">Deductable</span>
+                  </a>
+                </h5>
+              </div>
+
+              <div id="patEligDeductableInfo" class="collapse show">
+                <div class="accordian-body bg-transparent">
+
+                  <table class="table sm light-striped-border  layout-fixed"
+                    *ngIf="!isLoading &&  (lstDeductable!=undefined && lstDeductable.length>=0)">
+                    <tbody>
+                      <tr *ngFor="let deductable of lstDeductable">
+                        <td [innerHTML]="deductable"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div *ngIf="!isLoading &&  (lstDeductable==undefined || lstDeductable.length==0)"
+                    class="no-content p-0">
+                    N/A
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+
+            <div class="encounter-data-accordian accordian-data rounded-0 border-top-0">
+              <div class="accordian-header" role="tab" id="headingOne">
+                <h5>
+                  <a data-toggle="collapse" href="#patEligOtherInfo" aria-expanded="false" class="accordian-link">
+                    <span class="accordian-main-header-title pl-1 pr-1">Other Info</span>
+                  </a>
+                </h5>
+              </div>
+
+              <div id="patEligOtherInfo" class="collapse show">
+                <div class="accordian-body bg-transparent">
+
+                  <table class="table sm light-striped-border  layout-fixed"
+                    *ngIf="!isLoading &&  (lstOtherInfo!=undefined && lstOtherInfo.length>=0)">
+                    <tbody>
+                      <tr *ngFor="let otherInfo of lstOtherInfo">
+                        <td [innerHTML]="otherInfo"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div *ngIf="!isLoading &&  (lstOtherInfo==undefined || lstOtherInfo.length==0)"
+                    class="no-content p-0">
+                    N/A
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="border-content-box rounded-3  bg-white flex-grow-1 d-flex flex-column flex-1 ml-1">
+
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          Benefits & Coverage
+        </div>
+
+        <div class="flex-grow-1 max-height-100 overflow-height overflow-auto">
+          <div class="pl-8-px pr-8-px pt-4-px pb-8-px fz-12 overflow-auto">
+
+
+            <table class="table sm td-normal-wrap light-striped-border  layout-fixed"
+              *ngIf="!isLoading &&  (lstBenefitsAndCoverage!=undefined && lstBenefitsAndCoverage.length>=0)">
+              <tbody>
+                <tr *ngFor="let benefits of lstBenefitsAndCoverage">
+                  <td [innerHTML]="benefits"></td>
+                </tr>
+              </tbody>
+            </table>
+
+
+            <div *ngIf="!isLoading &&  (lstBenefitsAndCoverage==undefined || lstBenefitsAndCoverage.length==0)"
+              class="no-content p-0">
+              N/A
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </ng-template>
+
+  <div class="alert fz-12 m-2" role="alert"
+    [ngClass]="{'alert-info': msgType=='info','alert-danger': msgType=='error' }"
+    *ngIf="!isLoading && strPromptMsg!=''">
+    <strong>{{strPromptMsg}}</strong>
+
+    <ul *ngIf="lstErrors!=undefined && lstErrors.length>0">
+      <li *ngFor="let error of lstErrors">{{error}}</li>
+    </ul>
+
+  </div>
+
+
+  <div class="div-loader-message-box" *ngIf="isLoading">
+    <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+  </div>
+
+</div>
+
+<div class="modal-footer custom" *ngIf="!isLoading && strPromptMsg!=''">
+  <button style="width: 80px;" class="btn btn-dark btn-sm" (click)="closePopUP()" type="button">Ok</button>
+</div>

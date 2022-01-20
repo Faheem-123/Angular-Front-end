@@ -1,0 +1,43 @@
+<!--
+  <div class="modal-header custom">
+    <h4 class="modal-title">{{promptHeading}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom alert alert-warning m-0">
+      <p class="m-2">
+          <i class="fa fa-exclamation-triangle " aria-hidden="true"></i> {{promptMessage}}
+      </p>  
+    
+  </div>
+  <div class="modal-footer custom">
+    <button type="button" style="width: 80px;" class="btn btn-info btn-sm" (click)="okClicked()">OK</button>
+  </div>
+-->
+<div class="modal-header dialog px-3 py-2 alert" style="height: 40px" [ngClass]="{
+  'alert-primary' : (alertType === 'primary'),
+  'alert-info' : (alertType === 'info'),
+  'alert-warning' : (alertType === 'warning'),
+  'alert-danger' : (alertType === 'danger'),
+  'alert-success' : (alertType === 'success')}" role="alert">
+  <h6><img class="mr-2" src="./assets/images/logo-small.png">{{promptHeading}}</h6>
+</div>
+<!-- <hr class="mt-0" > -->
+<div class="dialog mb-2" style="min-height: 50px;padding-left: 15px;">
+  <div class="d-flex align-items-center fz-14">
+    <!-- <i class="fa fa-exclamation-triangle text-danger alertIco" 
+          aria-hidden="true"></i> -->
+    <i class="fa fa-2x mr-3" [ngClass]="{
+          'text-primary' : (alertType === 'primary'),          
+          'fas fa-check-circle text-success' : (alertType === 'info' || alertType === 'success'),
+          'fas fa-exclamation-triangle alert-warning-text' : (alertType === 'warning'),
+          'fas fa-times-circle text-danger' : (alertType === 'danger')}"></i>
+    <div class="col col-10 pl-0" [innerHTML]="promptMessage">
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer custom">
+  <button type="button" style="width: 80px;" class="btn btn-sm btn-info" (click)="okClicked()">OK</button>
+</div>

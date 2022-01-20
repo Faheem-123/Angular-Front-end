@@ -1,0 +1,14 @@
+<ngb-tabset [destroyOnHide]="false" class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden" #tabMainPaymentCollection>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Provider Wise Collection</span></ng-template>
+    <ng-template ngbTabContent>
+        <rpt-provider-wise-collection class="d-flex flex-column flex-grow-1"></rpt-provider-wise-collection>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+      <ng-template ngbTabTitle><span>Source Wise Collection</span></ng-template>
+      <ng-template ngbTabContent>
+          <rpt-source-wise-collection class="d-flex flex-column flex-grow-1"></rpt-source-wise-collection>
+      </ng-template>
+    </ngb-tab>
+</ngb-tabset>

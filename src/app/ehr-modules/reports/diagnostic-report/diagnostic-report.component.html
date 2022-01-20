@@ -1,0 +1,326 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">Diagnostics Report</div>
+    <div class="fz-13 text-white">
+      Total Record(s): {{totalRecords}}
+    </div>
+  </div>
+
+  <div class="p-0 d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 bg-white">
+
+    <!-- ************************************************************** -->
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchCriteriaDiagnosticRpt" aria-expanded="true"
+            class="accordian-link rounded-0">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+      <div id="SearchCriteriaDiagnosticRpt" class="show">
+        <div class="accordian-body bg-transparent">
+          <form [formGroup]="diagnosticReportForm">
+
+
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+
+
+                <div class="form-group col-6">
+                  <label class="col-form-label required" for="dateFrom">Date Range:</label>
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dateFrom" formControlName="dateFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateFrom.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dateTo" formControlName="dateTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateTo" ngbDatepicker #dateTo="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateTo.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+
+
+                <div class="form-group col-3">
+                  <label for="input2" class="col-form-label">Location:</label>
+
+                  <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                    <option value="">All</option>
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+
+                </div>
+
+                <div class="form-group col-3">
+                  <label for="cmbProvider" class="col-form-label">Provider:</label>
+                  <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider">
+                    <option value="">All</option>
+                    <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+                  </select>
+                </div>
+
+
+
+              </div>
+
+              <div class="form-row form-dashboard">
+
+                <div class="form-group col-4">
+                  <label for="txtPatientSearch" class="col-form-label">Patient:</label>
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-12">
+                      <div class="input-icon d-flex flex-grow-3">
+
+                        <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text"
+                          #txtPatientSearch formControlName="txtPatientSearch" placeholder="Search Patient"
+                          (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                          (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+                        <input type="text" formControlName="txtPatientIdHidden" hidden>
+                        <div class="icon">
+                          <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+
+                        <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                          (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                        </inline-patient-search>
+
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div class="form-group col-4">
+                  <label for="txtLabtest" class="col-form-label">Lab Test:</label>
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-12">
+                      <div class="input-icon d-flex flex-grow-3">
+
+                        <input id="txtLabtest" class="form-control flex-grow-3" type="text" #txtLabtest
+                          formControlName="txtLabtest" placeholder="Search Patient"
+                          (keydown)="onLabTestSearchKeydown($event)" autocomplete="off"
+                          (input)="onLabTestSearchInputChange(txtLabtest.value)" (blur)="onLabTestSearchBlur()">
+                        <input type="text" formControlName="txtLabTestIdHidden" hidden>
+                        <div class="icon">
+                          <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+
+                      </div>
+
+                      <!-- <inline-labtest-search *ngIf="showLabTestSearch" [searchValue]="txtLabtest.value" (onLabTestSelect)="openSelectLabTest($event)"
+                      (onClose)="closePatientSearch()"></inline-labtest-search> -->
+                      
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div class="form-group col-4">
+                  <label for="txtLabCatSearch" class="col-form-label">Lab Category:</label>
+
+                  <ng-multiselect-dropdown formControlName="txtLabCatSearch" [data]="this.lookupList.lstLabCategory"
+                    [settings]="dropdownSettings" (onSelect)="onItemSelect($event)" (onUnSelect)="closeIT($event)"
+                    (onSelectAll)="onSelectAll($event)">
+                  </ng-multiselect-dropdown>
+
+                </div>
+
+              </div>
+
+              <div class="form-row form-dashboard">
+
+                <div class="form-group col-6">
+                  <label class="col-form-label required" for="dateStatusFrom">Status Date Range:</label>
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dateStatusFrom" formControlName="dateStatusFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateStatusFrom" ngbDatepicker #dateStatusFrom="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateStatusFrom.toggle()" type="button"
+                          focusable="false" tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dateStatusTo" formControlName="dateStatusTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateStatusTo" ngbDatepicker #dateStatusTo="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateStatusTo.toggle()" type="button"
+                          focusable="false" tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+                <div class="form-group col-2">
+                  <label for="cmbStatus" class="col-form-label">Status:</label>
+                  <select class="form-control" formControlName="cmbStatus">
+                    <option *ngFor="let status of lookupList.arrLabStatus" [value]="status.value">{{status.value}}
+                    </option>
+                  </select>
+                </div>
+
+
+
+                <div class="form-group col-2">
+
+                </div>
+
+
+                <div class="form-group col-2 d-flex flex-column justify-content-end mb-2">
+                  <button type="button" class="btn btn-success w-100"
+                    (click)="searchDiagReport(diagnosticReportForm.value, paggingForm.value)">Search</button>
+                </div>
+
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ************************************************************** -->
+
+    <div class="custom-select-box pb-1 mt-1 d-flex flex-column flex-grow-1 overflow-height">
+      <div class="d-flex align-items-center justify-content-between">
+        <h4 class="form-edit-sub-heading m-0 pl-1 border-bottom-0">Details</h4>
+
+        <form [formGroup]="paggingForm" class="fz-12">
+          <table>
+            <tr>
+              <td valign="middle" style="line-height: 10px; width: 20px;">
+                <i class="fa fa-step-backward" style="cursor: pointer; color: #16b668;" alt="Previous Page"
+                  title="Previous Page" (click)="gotoPrevPage(diagnosticReportForm.value, paggingForm.value)">
+                </i>
+              </td>
+              <td valign="middle" style="line-height: 10px; width: 22px;">
+                <i class="fa fa-fast-backward" style="cursor: pointer; color: #16b668;" alt="Go to first page"
+                  title="Go to first Page" (click)="gotoFirstPage(diagnosticReportForm.value, paggingForm.value)"></i>
+              </td>
+              <td valign="middle" style="line-height: 10px; width: 110px">
+                <input type="text" id="txtPageNo" style="width: 25px; color: #16b668; height: 17px;"
+                  formControlName="txtPageNo" value="1"
+                  (keyup.enter)="changeSearchKeydown(diagnosticReportForm.value, paggingForm.value)" />
+                &nbsp;&nbsp;of
+                <span class="badge badge-pill">{{totalPages}}</span>
+              </td>
+              <td valign="middle" style="line-height: 10px; width: 25px;">
+                <i class="fa fa-step-forward" style="cursor: pointer; color: #16b668;" alt="Next Page" title="Next Page"
+                  (click)="gotoNextPage(diagnosticReportForm.value, paggingForm.value)"></i>
+              </td>
+              <td valign="middle" style="line-height: 10px; width: 25px;">
+                <i class="fa fa-fast-forward" style="cursor: pointer; color: #16b668;" alt="Go to last Page"
+                  title="Go to last Page" (click)="gotoLastPage(diagnosticReportForm.value, paggingForm.value)"></i>
+              </td>
+              <td valign="middle">
+                <span style="padding-right: 6px">Per Page</span>
+
+                <select id="ddl_perpagerecord" formControlName="ddl_perpagerecord"
+                  (change)="changeSearch(diagnosticReportForm.value, paggingForm.value)">
+                  <option selected [value]="25">25</option>
+                  <option [value]="50">50</option>
+                  <option [value]="100">100</option>
+                  <option [value]="150">150</option>
+                  <option [value]="200">200</option>
+                  <option [value]="500">500</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+
+      <div class="overflow-auto">
+
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+
+              <th>Order Date</th>
+              <th>Order Status</th>
+              <th>PID</th>
+              <th>Patient Name</th>
+              <th>DOB</th>
+              <th>Provider</th>
+              <th>Location</th>
+              <th>Procedure Codes Detail </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let diag of lstDiagReport">
+              <td>{{diag.order_date}}</td>
+              <td>{{diag.status}}</td>
+              <td>{{diag.pid}}</td>
+              <td>{{diag.patient}}</td>
+              <td>{{diag.dob}}</td>
+              <td>{{diag.provider}}</td>
+              <td>{{diag.location}}</td>
+              <td>
+                <ul>
+                  <li *ngFor="let diag of loopCptList(diag.cptlist)">
+                    <!-- <p>{{diag.cptlist}}</p> -->
+                    {{diag}}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </div>
+</div>

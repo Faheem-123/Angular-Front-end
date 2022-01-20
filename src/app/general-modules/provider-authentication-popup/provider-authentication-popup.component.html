@@ -1,0 +1,41 @@
+<form [formGroup]="providerAuthForm" (ngSubmit)="onSubmit(providerAuthForm.value)">
+    <div class="modal-header custom">
+        <img class="logo" src="./assets/images/logo-small.png">
+        <h4 class="modal-title">Provider Sign Authentication</h4>
+        <br>
+        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body custom">
+        <div class="dashboard-content mt-0">
+            <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                    <label for="cmbProvider" class="col-form-label required">Provider</label>
+                    <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider" (change)="onProviderChange()" disabled>
+                        <option *ngFor="let prov of lstProviderUsers" [value]="prov.provider_id">{{prov.provider_name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                    <label for="txtUserID">User ID</label>
+                    <input type="text" formControlName="txtUserID" class="form-control" placeholder="Password" disabled>
+                </div>
+            </div>
+            <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                    <label for="txtPassword">Password</label>
+                    <input type="password" formControlName="txtPassword" class="form-control bg-light" placeholder="Password">
+                </div>
+            </div>
+        </div>        
+    </div>
+    <div class="modal-footer custom pl-0">
+        <div class="flex-grow-1">&nbsp;</div>
+        <button type="button" style="width: 88px;" class="btn btn-dark btn-sm"
+            (click)="activeModal.dismiss('Cross click')">Cancel</button>
+        <button style="width: 88px;" class="btn btn-success btn-sm" type="submit">Authenticate</button>
+
+    </div>
+</form>

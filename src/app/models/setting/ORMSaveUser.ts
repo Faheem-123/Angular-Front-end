@@ -1,0 +1,32 @@
+export class ORMSaveUser {
+	user_id: number;
+	user_name: string;
+	password: string;
+	first_name: string;
+	mname: string;
+	last_name: string;
+	user_type: string;
+	is_provider: boolean;
+	is_blocked: boolean;
+	signature_path: string;
+	practice_id: number;
+	provider_id: number;
+	default_physician: number;
+	default_billing_phy: number;
+	default_role: string;
+	default_location: number;
+	default_bill: number;	
+	created_user: string;
+	modified_user: string;
+	client_date_created: string;
+	client_date_modified: string;
+	date_created: string;
+	date_modified: string;
+	system_ip:string;
+	default_chart_setting: number;
+	default_prescription_role: string;
+	lab_assigned: boolean;
+	is_lab_user: boolean;
+	phr_access_allowed: boolean;
+	allowed_ip:boolean;
+}

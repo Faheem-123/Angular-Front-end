@@ -1,0 +1,128 @@
+<div class="light-title-bar  h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Facility</div>
+  <div class="d-flex align-items-center">
+    <button *ngIf="facilityOperation==''  && lookupList.UserRights.facility_add" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onAddNew()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <button *ngIf="facilityOperation==''  && lookupList.UserRights.facility_edit" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"  (click)="onEdit()">
+      <i class="far fa-edit"></i>
+      Edit</button>
+    <button *ngIf="facilityOperation==''  && lookupList.UserRights.facility_delete" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"  (click)="onDelete()">
+      <i class="far fa-trash-alt"></i>
+      Delete</button>
+    <button *ngIf="facilityOperation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30"  (click)="onSave()">Save</button>
+    <button *ngIf="facilityOperation!=''" class="btn btn-sm btn-dark top-right-radius h-30"  (click)="onCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 rounded-0 border-content-box border-top-0 light-sky-blue">
+  <div class="border-bottom bg-white px-2 py-6 flex-shrink-0">
+    <form [formGroup]="inputForm">
+      <div class="form-row form-dashboard align-items-start">
+        <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+          <label for="input1" class="col-form-label label-w-60">Name:</label>
+          <input type="text" class="form-control flex-grow-1" id="input1" formControlName="txtName">
+        </div>
+
+        <div class="col-md-4 col-sm-6 col-12">
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+              <label for="input7" class="col-form-label label-w-50">Zip:</label>
+              <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtZip" (focusout)="zipFocusOut($event.target.value)">
+            </div>
+
+            <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+              <label for="input8" class="col-form-label label-w-30">City:</label>
+              <select class="form-control flex-grow-1" id="input9" formControlName="drpCity">
+                  <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+                      {{obj.city}}
+                    </option>
+              </select>
+            </div>
+
+            <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+              <label for="input9" class="col-form-label label-w-40">State:</label>
+              <input type="text" class="form-control flex-grow-1" id="input9" formControlName="txtState">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+          <label for="input3" class="col-form-label label-w-50">Email:</label>
+          <input type="text" class="form-control flex-grow-1" id="input3" formControlName="txtEmail">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-60">Address:</label>
+          <textarea rows="3" class="form-control flex-grow-1" id="input6" formControlName="txtAddress"></textarea>
+        </div>
+
+        <div class="col-md-8 col-sm-12 col-12">
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input4" class="col-form-label label-w-50">Phone:</label>
+              <input type="text" class="form-control flex-grow-1" id="input4" formControlName="txtPhone">
+            </div>
+
+            <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input5" class="col-form-label label-w-50">Fax:</label>
+              <input type="text" class="form-control flex-grow-1" id="input5" formControlName="txtFax">
+            </div>
+
+            <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+              <label for="input7" class="col-form-label label-w-50">NPI:</label>
+              <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtNPI">
+            </div>
+
+            <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+              <label for="input8" class="col-form-label label-w-50">POS:</label>
+              <select class="form-control flex-grow-1" id="input9" formControlName="drpPos">
+                  <option *ngFor="let obj of arrPOS" [value]="obj.code">
+                      {{obj.code}}, {{obj.description}}
+                    </option>
+              </select>
+            </div>
+
+            <div class="form-group horizental d-flex align-items-center justify-content-end col-md-6 col-sm-6 col-12">
+              <div class="custom-control custom-checkbox green-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck2" formControlName="chkDefault">
+                <label class="custom-control-label" for="customCheck2">Default</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Zip</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Phone</th>
+          <th>Fax</th>
+        </tr>
+      </thead>
+
+      <tbody>
+          <tr *ngFor="let pr of arrFacility; let i = index" (click)="onSelectionChange(i,pr)" [ngClass]="{ 'active': i==facilitySelectedIndex,
+          'disabled': isDisable
+          }">
+          <td>{{pr.name}}</td>
+          <td>{{pr.address}}</td>
+          <td>{{pr.zip}}</td>
+          <td>{{pr.city}}</td>
+          <td>{{pr.state}}</td>
+          <td>{{pr.phone}}</td>
+          <td>{{pr.fax}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

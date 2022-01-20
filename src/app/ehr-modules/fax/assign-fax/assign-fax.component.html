@@ -1,0 +1,105 @@
+<form [formGroup]="assignFaxFormGroup">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Assign Fax</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom">
+
+    <div class="d-flex flex-column flex-grow-1 border-content-box light-sky-blue rounded-3 p-3 pt-1">
+
+      <div class="form-row form-dashboard justify-content-end">
+        <div class="form-group">
+          <div class="form-check form-check-inline m-0 pt-0 pl-2">
+            <input class="form-check-input" id="chkHighImportance" type="checkbox" formControlName="chkHighImportance"
+              #chkHighImportance>
+            <label class="form-check-label col-form-label" for="chkHighImportance">
+              <i class=" fas fa-exclamation pr-1 text-danger"></i>
+              High Importance</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col">
+          <label for="txtAssignedTo" class="col-form-label ">Assigned To:</label>
+
+          <ng-multiselect-dropdown formControlName="txtAssignedTo" [data]="lookupList.lstAssignedToUsersList"
+            class="col" [settings]="dropdownSettings">
+          </ng-multiselect-dropdown>
+
+        </div>
+      </div>
+      <!--
+      <div class="form-row form-dashboard mb-1">
+
+
+        
+        <div class="form-group horizental row zero col-12">
+
+          <div class="input-group d-flex col">
+
+
+
+            <span class="input-group-prepend">
+              <button class="btn btn-sm btn-outline-info  fz-12 width-60" (click)="onToClicked()"
+                type="button">To</button>
+            </span>
+
+
+            <input type="text" class="form-control" id="txtAssignedTo" placeholder="Assigned To"
+              formControlName="txtAssignedTo">
+
+
+          </div>
+
+        </div>
+
+
+
+
+      </div>
+      -->
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group col">
+          <label class="col-form-label " for="txtFaxName">Name:</label>
+          <input class="form-control col" id="txtFaxName" formControlName="txtFaxName" labelForId="txtFaxName"
+            type="text">
+        </div>
+
+      </div>
+      <div class="form-row form-dashboard">
+        <div class="form-group col">
+          <label for="txtNotes" class="col-form-label ">Comments:</label>
+          <textarea class="form-control col" id="txtNotes" formControlName="txtNotes" rows="3"></textarea>
+        </div>
+      </div>
+
+
+
+
+    </div>
+
+
+
+
+
+    <div class="div-loader-message-box" *ngIf="isLoading">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+
+  </div>
+  <div class="modal-footer custom">
+
+    <button type="button" class="btn btn-dark btn-sm width-80" (click)="onCancel()">Cancel</button>
+    <button type="button" class="btn btn-success btn-sm width-80" type="button"
+      (click)="onSave(assignFaxFormGroup.value)">Save</button>
+
+  </div>
+</form>

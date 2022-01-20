@@ -1,0 +1,27 @@
+<ngb-tabset class="inner-vertical-tab white d-flex flex-row flex-grow-1 max-height-100">
+    <!-- class="inner-horizental-green-tab d-flex flex-column" -->
+    
+    <ngb-tab>
+      <ng-template ngbTabTitle><span>Immunization</span></ng-template>
+        <ng-template ngbTabContent>
+          <immunization-setup class="d-flex flex-column flex-grow-1 overflow-height"></immunization-setup>
+        </ng-template>
+    </ngb-tab>
+  
+    <ngb-tab>
+      <ng-template ngbTabTitle><span>Inventory</span></ng-template>
+        <ng-template ngbTabContent>
+           <immunization-inventory-setup class="d-flex flex-column flex-grow-1 overflow-height"></immunization-inventory-setup> 
+        </ng-template>
+    </ngb-tab>
+  
+    <ngb-tab [disabled]="!immRegEnabled">
+      <ng-template ngbTabTitle><span>Registry</span></ng-template>
+        <ng-template ngbTabContent>
+          <immunization-registry-messages-main class="d-flex flex-column flex-grow-1 overflow-height p-8"></immunization-registry-messages-main> 
+        </ng-template>
+    </ngb-tab>
+  
+    
+  </ngb-tabset>
+  

@@ -1,0 +1,155 @@
+<div class="light-title-bar rounded-top h-30 d-flex align-items-center justify-content-between flex-shrink-0">
+
+
+
+
+  <div class="d-flex flex-row flex-shrink-0">
+    <button class="left-back-btn btn new-meesage flex-shrink-0" (click)="onBackToMainIns()">
+      <i class="fas fa-arrow-left mr-2"></i>Back to Home</button>
+  </div>
+</div>
+
+<div
+  class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+  <div class="border-bottom bg-white px-2 py-6 flex-shrink-0">
+    <div class="form-row form-dashboard align-items-start">
+
+      <div class="p-6 pt-0 col-12">
+        <form [formGroup]="searchInsSetupForm">
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+              <label for="input1" class="col-form-label label-w-70">Insurance:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtSrchInsurance"
+                formControlName="txtSrchInsurance" (keydown.enter)="$event.preventDefault()">
+            </div>
+            <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+              <label for="input2" class="col-form-label label-w-70">Payer:</label>
+              <!-- <input type="text" class="form-control flex-grow-1" id="txtSrchPayer" formControlName="txtSrchPayer"> -->
+              <div class="input-icon d-flex flex-grow-3">
+
+                <input id="txtPayerSearch" class="form-control flex-grow-3" type="text" #txtPayerSearch
+                  formControlName="txtPayerSearch" placeholder="Search by Payer Name or Payer number."
+                  (keydown)="onPayerSearchKeydown($event)" autocomplete="off"
+                  (input)="onPayerSearchInputChange(txtPayerSearch.value)" (blur)="onPatientSearchBlur()">
+                <div class="icon">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </div>
+                <inline-payer-search *ngIf="showPayerSearch" [searchValue]="txtPayerSearch.value"
+                  (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()"></inline-payer-search>
+              </div>
+            </div>
+
+
+          </div>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-group horizental d-flex col-md-6 col-sm-6 col-12">
+              <label for="input2" class="col-form-label label-w-70">Payer Type:</label>
+              <!-- <input type="text" class="form-control flex-grow-1" id="txtSrchPayerType" formControlName="txtSrchPayerType"> -->
+              <select class="form-control flex-grow-1" id="ddlSrchPayerType" formControlName="ddlSrchPayerType">
+                <option [value]="-1">All</option>
+                <option *ngFor="let obj of lstPayerType" [value]="obj.payertype_id">
+                  {{obj.name}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group horizental d-flex col-md-1 col-sm-6 col-12">
+              <button class="btn btn-sm bg-success w-100" (click)="searchInsuranceSetup()">Search</button>
+            </div>
+          </div>
+
+
+
+
+        </form>
+
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rounded overflow-auto  bg-white flex-grow-1 max-height-100">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Payer Type</th>
+          <th>Payer No</th>
+          <th>Payer Name</th>
+          <th>Insurance Name</th>
+          <th>Address</th>
+          <th>City</th>
+          <th>State</th>
+          <th>ZIP</th>
+          <th>Website</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pay of lstInsuranceSearch" (click)="selectPayerRow(pay)"
+          [ngClass]="{'active' : (pay.insurance_id === isSelectedPayID)}">
+          <td>{{pay.payer_type_name}}</td>
+          <td>{{pay.payer_number}}</td>
+          <td>{{pay.payer_name}}</td>
+          <td>{{pay.insurance_name}}</td>
+          <td>{{pay.insurance_address}}</td>
+          <td>{{pay.insurance_city}}</td>
+          <td>{{pay.insurance_state}}</td>
+          <td>{{pay.insurance_zip}}</td>
+          <td>{{pay.website}}</td>
+          <td class="text-right">
+            <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2">
+              <i class="far fa-edit" aria-hidden="true" data-toggle="modal" data-target="#reqEditModel"
+                (click)="editSelectedRow(pay)"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoadingSearch">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+  <div id="reqEditModel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <form [formGroup]="editWebsiteForm">
+          <div class="modal-header custom">
+            <img class="logo" src="./assets/images/logo-small.png">
+            <h4 class="modal-title">Insurance Website</h4>
+            <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <!-- model body section -->
+
+          <div class="modal-body custom">
+            <div class="form-group horizental row zero col-12">
+              <label for="input2" class="col-sm-2 col-form-label">Website:</label>
+              <input type="text" class="form-control flex-grow-1" id="txtEditWebsite" formControlName="txtEditWebsite">
+            </div>
+          </div>
+
+
+          <div class="modal-footer custom">
+            <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal"
+              (click)="cancelWebsiteEdit()">Cancel</button>
+            <button type="submit" class="btn btn-sm btn-success" data-dismiss="modal"
+              (click)="editWebsite(editWebsiteForm.value)">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+</div>

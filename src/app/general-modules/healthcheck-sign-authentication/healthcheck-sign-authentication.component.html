@@ -1,0 +1,30 @@
+<div class="modal-content custom" style="height: 300px">
+  <div class="modal-header custom">
+    <h4 class="modal-title">{{modalTitle}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom dashboard" >
+    <form [formGroup]="filterForm" (ngSubmit)="onSubmit(filterForm.value)" ng-if='!booleanCheck'>
+      <div class="form-row form-dashboard">
+        <div class="form-group col-12">
+          <label for="input1">Provider</label>
+          <select class="form-control" formControlName="ctrlproviderSearch" (change)="onProviderChange()">
+            <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-12">
+          <label for="input1">User</label>
+          <input type="text" class="form-control" id="txt_user" formControlName="txt_user"
+          [readonly]=true>
+        </div>
+        <div class="form-group col-12">
+          <label for="input1">Password</label>
+          <input type="password" class="form-control" id="txt_passowrd" formControlName="txt_passowrd">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success btn-sm" type="submit">Authenticate</button>
+      </div>
+ 

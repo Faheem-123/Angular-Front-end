@@ -1,0 +1,725 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': (addEditView==true),
+  'encounter-header': addEditView==false}">
+
+  <div class="title pl-8">{{title}}
+    <span
+      *ngIf="immunizationEntryTypeDisplay!=undefined && immunizationEntryTypeDisplay!=''">[{{immunizationEntryTypeDisplay}}]</span>
+  </div>
+  <ul class="nav color-buttons align-items-center" *ngIf="canAddEdit && canView && !isLoading">
+
+
+    <ng-template id="sectionCanAddModifyButtons" [ngIf]="canAddEdit">
+
+      <button *ngIf="!addEditView && !readOnlyView && canTransmitToRegistry && immRegEnabled"
+        (click)="onRegistryClicked()" class="nav-link blue px-2 py-0">
+        <!--<i class="fas fa-cubes"></i>-->
+        <i class="fas fa-cubes pr-1"></i>Registry
+      </button>
+
+
+
+
+      <div class="btn-group" *ngIf="!addEditView && !readOnlyView">
+
+        <button *ngIf="canAddEdit && canView" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+          class="nav-link green px-2 py-0 top-right-radius">
+          <i class="far fa-plus-square pr-1"></i>Add
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+          <a class="dropdown-item cursor-default" (click)="onAddImmunization('administered')">
+            New Administered
+          </a>
+
+          <a class="dropdown-item cursor-default" (click)="onAddImmunization('historical')">
+            Historical
+          </a>
+
+          <a class="dropdown-item cursor-default" (click)="onAddImmunization('refused')">
+            Refusal
+          </a>
+
+
+        </div>
+      </div>
+
+      <button *ngIf="addEditView && canTransmitToRegistry && immRegEnabled"
+        (click)="onSaveImmunizationClicked(vaccineFormGroup.value,true)" [disabled]="!vaccineFormGroup.valid"
+        class="nav-link blue px-2 py-0 ">
+        <i class="fas fa-cubes  pr-1"></i>Save and Submit to Registry
+      </button>
+
+      <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+        (click)="onSaveImmunizationClicked(vaccineFormGroup.value,false)">
+        <i class="far fa-save pr-1"></i>Save
+      </button>
+
+
+      <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="onCancel()">
+        <i class="fas fa-times pr-1"></i>Cancel
+      </button>
+
+    </ng-template>
+
+    <button *ngIf="readOnlyView && !isRegistryFileProcessing" (click)="onClose()"
+      class="nav-link btn-danger px-2 py-0 top-right-radius">
+      <i class="fas fa-times pr-1"></i>Close
+    </button>
+
+  </ul>
+</div>
+
+
+<ng-template id="sectionCanAccess" [ngIf]="canView && !isLoading">
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+    <div *ngIf="!isLoading &&  !addEditView && !readOnlyView && canView">
+      <form [formGroup]="radioForm">
+        <div class="btn-group radio-btn-tabs px-1">
+          <label class="btn btn-sm btn-secondary " [ngClass]="{'active' : (dataOption == 'all')}">
+            <input type="radio" name="radioOption" autocomplete="off" formControlName="radioOption" value="all"
+              (ngModelChange)="onRadioOptionChange($event)"> All
+          </label>
+          <label class="btn btn-sm btn-secondary " [ngClass]="{'active' : (dataOption == 'current_dos')}">
+            <input type="radio" name="radioOption" autocomplete="off" formControlName="radioOption" value="current_dos"
+              (ngModelChange)="onRadioOptionChange($event)"> Current Visit
+          </label>
+          <label class="btn btn-sm btn-secondary " [ngClass]="{'active' : (dataOption == 'other_dos')}">
+            <input type="radio" name="radioOption" autocomplete="off" formControlName="radioOption" value="other_dos"
+              (ngModelChange)="onRadioOptionChange($event)"> Other Visits
+          </label>
+          <label class="btn btn-sm btn-secondary " [ngClass]="{'active' : (dataOption == 'deleted')}">
+            <input type="radio" name="radioOption" autocomplete="off" formControlName="radioOption" value="deleted"
+              (ngModelChange)="onRadioOptionChange($event)"> Deleted
+          </label>
+        </div>
+      </form>
+    </div>
+
+
+
+
+    <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+
+
+    <div *ngIf="!noRecordFound && !addEditView && !readOnlyView && canView">
+      <div class="encounter-data-accordian accordian-data" *ngFor="let v of lstChartImmunizationsFiltered">
+        <div class="accordian-header" role="tab" id="headingOne">
+
+
+
+          <div class="custom-control custom-checkbox green-checkbox ml-2"
+            *ngIf="canTransmitToRegistry && immRegEnabled">
+            <input type="checkbox" class="custom-control-input" id="chk_{{v.chart_immunization_id}}"
+              (change)="onImmunizationSelectionChagned($event,v)">
+            <label class="custom-control-label" for="chk_{{v.chart_immunization_id}}"></label>
+          </div>
+
+          <h5>
+            <a data-toggle="collapse" href="#immunizationSummary{{v.chart_immunization_id}}" aria-expanded="false">
+
+              <div class="row p-0">
+                <div class="col-2">
+                  <span class="accordian-sub-header-title">{{v.datetime_administered}}</span>
+                </div>
+
+
+                <div class="col-6">
+                  <div class="row pl-2">
+
+                    <ng-template id="sectionWithTrade" [ngIf]="v.trade_name!=undefined && v.trade_name!=''">
+                      <span class="accordian-sub-header-title px-1 font-weight-500" [ngClass]="{                  
+                      'text-brown' : (v.registry_status=='AQ'),
+                      'text-primary' : (v.registry_status=='AT'),
+                      'text-teal' : (v.registry_status=='AA' || v.registry_status=='AA_IW'),
+                      'text-danger' : (v.registry_status=='AR' || v.registry_status=='TF' || v.registry_status=='AF' || v.registry_status=='AE')
+                    }" title="{{getRegStatusDescription(v.registry_status)}}">{{v.trade_name}}</span>
+                      <span>({{v.immunization_name}})</span>
+                    </ng-template>
+                    <ng-template id="sectionWithoutTrade" [ngIf]="v.trade_name==undefined || v.trade_name==''">
+                      <span class="accordian-sub-header-title pl-1 font-weight-500" [ngClass]="{                  
+                      'text-brown' : (v.registry_status=='AQ'),
+                      'text-primary' : (v.registry_status=='AT'),
+                      'text-teal' : (v.registry_status=='AA' || v.registry_status=='AA_IW'),
+                      'text-danger' : (v.registry_status=='AR' || v.registry_status=='TF' || v.registry_status=='AF' || v.registry_status=='AE')
+                    }" title="{{getRegStatusDescription(v.registry_status)}}">{{v.immunization_name}}</span>
+                    </ng-template>
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <span class="accordian-sub-header-title px-1">
+                    {{getAdministeredDescriptions(v)[0]}}</span>
+                  <span>{{getAdministeredDescriptions(v)[1]}}</span>
+                </div>
+              </div>
+
+            </a>
+          </h5>
+
+          <button type="button" class="btn btn-link btn-md text-primary" (click)="onEditView(v,false)"
+            *ngIf="!v.deleted && lookupList.UserRights.AddModifyImmunization && dataOption == 'current_dos'">
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" class="btn btn-link btn-md btn-delete" (click)="onDelete(v)"
+            *ngIf="!v.deleted && lookupList.UserRights.AddModifyImmunization && dataOption == 'current_dos'">
+            <i class="far fa-trash-alt"></i>
+          </button>
+          <button type="button" class="btn btn-link btn-md text-info" (click)="onEditView(v,true)"
+            *ngIf="v.deleted || !lookupList.UserRights.AddModifyImmunization || dataOption != 'current_dos' ">
+            <i class="fas fa-eye"></i>
+          </button>
+
+        </div>
+        <div id="immunizationSummary{{v.chart_immunization_id}}" class="collapse">
+          <div class="accordian-body">
+            <div class="row" *ngIf="v.entry_type.toLowerCase() == 'administered'">
+              <div class="col col-3">
+                <p>CVX Code:<strong>{{v.cvx_code}}</strong></p>
+                <p>NDC Code:<strong>{{v.ndc_code}}</strong></p>
+              </div>
+              <div class="col col-3">
+                <p>Lot Number:<strong>{{v.lot_number}}</strong></p>
+                <p>Expiration Date:<strong>{{v.expiration_date}}</strong></p>
+              </div>
+              <div class="col col-6">
+                <p>Manufacturer :<strong>{{v.manufacturer_info}}</strong></p>
+                <p>
+                  Administered By:
+                  <strong
+                    *ngIf="v.administering_user_info && v.administering_user_info.split('^').length>=3">{{v.administering_user_info.split('^')[1]}},
+                    {{v.administering_user_info.split('^')[2]}}</strong>
+                </p>
+              </div>
+            </div>
+            <div class="row" *ngIf="v.entry_type.toLowerCase() == 'historical'">
+              <div class="col col-3">
+                <p>CVX Code:<strong>{{v.cvx_code}}</strong></p>
+              </div>
+              <div class="col col-9">
+                <p>Information Source:<strong>{{v.administered_code_description}}</strong></p>
+              </div>
+            </div>
+            <div class="row" *ngIf="v.entry_type.toLowerCase() == 'refused'">
+              <div class="col col-3">
+                <p>CVX Code:<strong>{{v.cvx_code}}</strong></p>
+              </div>
+              <div class="col col-9">
+                <p>Refusal Rason:<strong>{{v.reason_description}}</strong></p>
+              </div>
+            </div>
+
+          </div>
+          <div class="encounter-footer-credential">
+            <div class="col-6 p-0" [ngClass]="{                  
+            'text-brown' : (v.registry_status=='AQ'),
+            'text-primary' : (v.registry_status=='AT'),
+            'text-teal' : (v.registry_status=='AA' || v.registry_status=='AA_IW'),
+            'text-danger' : (v.registry_status=='AR' || v.registry_status=='TF' || v.registry_status=='AF' || v.registry_status=='AE')
+          }">
+              <p>{{getRegStatusDescription(v.registry_status)}}</p>
+            </div>
+            <div class="col-6 p-0 text-right">
+              <p class="form-text text-muted">Last modified by {{getEnteredByUserName(v.entered_by_user_info)}}
+                at {{v.date_modified}}</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="addEditView || readOnlyView">
+
+      <form [formGroup]="vaccineFormGroup">
+
+        <div class="px-2 py-1">
+          <div class="row p3">
+
+            <div class="col-6 d-flex flex-column">
+              <div class="border rounded bg-white px-2 py-1 flex-grow-1">
+
+                <div class="form-row form-dashboard border-bottom" *ngIf="!readOnlyView">
+                  <div class="form-group horizental row zero col">
+                    <div class="form-group has-search col ">
+                      <span class="fa fa-search form-control-feedback"></span>
+                      <input id="txtImmunizaionSearch" class="form-control search-highlight"
+                        placeholder="Search Vaccine by Name/CVX Code/Trade Name/NDC" type="text" #txtImmunizaionSearch
+                        (input)="onImmunizationSearchKeydown(txtImmunizaionSearch.value)"
+                        (focusout)="onImmunizationSearchFocusOut()" autocomplete="off">
+                      <inline-immunization-search *ngIf="showImmunizationSearch"
+                        [lstImmunization]="lstImmunizationMyListFiltered" (onSelect)="addImmunization($event)"
+                        (onClose)="closeImmunizationSearch($event)">
+                      </inline-immunization-search>
+                    </div>
+                  </div>
+
+                  <div class="form-check-cont d-flex align-item-center mx-1">
+
+                    <div class="custom-control custom-radio green-radio">
+                      <input class="custom-control-input" type="radio"
+                        id="rbmylistImm_{{objencounterToOpen.controlUniqueId}}" formControlName="rbCondition"
+                        name="rbCondition" value="mylist" (ngModelChange)="onRadioOptionChange($event)">
+                      <label class="custom-control-label"
+                        for="rbmylistImm_{{objencounterToOpen.controlUniqueId}}">My
+                        List</label>
+                    </div>
+
+
+                    <div class="custom-control custom-radio green-radio">
+                      <input class="custom-control-input" type="radio"
+                        id="rballImm_{{objencounterToOpen.controlUniqueId}}" formControlName="rbCondition"
+                        name="rbCondition" value="all" (ngModelChange)="onRadioOptionChange($event)">
+
+                      <label class="custom-control-label"
+                        for="rballImm_{{objencounterToOpen.controlUniqueId}}">All</label>
+                    </div>
+
+
+                  </div>
+
+
+             
+
+                </div>
+
+                <div class="form-row form-dashboard">
+
+                  <div class="form-group col">
+                    <label class="col-form-label module-view-headding">Vaccine (CVX Code | Vaccine)</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text width-45">{{selectedCVXCode}}</span>
+                      </div>
+                      <input readonly type="text" class="form-control" disabled value="{{selectedImmunizationDisplay}}">
+                    </div>
+                  </div>
+
+                </div>
+
+                <ng-template id="section_vaccine_administered" [ngIf]="immunizationEntryType=='administered'">
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-8">
+                      <label class="col-form-label module-view-headding">Manufacturer</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text width-45">{{selectedMVXCode}}</span>
+                        </div>
+                        <input readonly type="text" class="form-control " disabled value="{{selectedManufacturer}}">
+                      </div>
+                    </div>
+
+                    <div class="form-group col-4">
+                      <label class="col-form-label module-view-headding">Manufacturer Info</label>
+                      <input type="text" class="form-control " formControlName="txtManufacterInfo">
+                    </div>
+
+                  </div>
+
+                  <div class="form-row form-dashboard">
+
+                    <div class="form-group  col-4">
+                      <label class="col-form-label module-view-headding" for="txtNDC">NDC Code</label>
+                      <input type="text" list="dlNDC" name="txtNDC" class="form-control" formControlName="txtNDC"
+                        autocomplete="off"
+                        [ngClass]="{'is-invalid': (vaccineFormGroup.controls.txtNDC.errors?.pattern)}">
+                      <datalist id="dlNDC">
+                        <option *ngFor="let ndc of lstImmNDC">{{ndc.ndc_code}}</option>
+                      </datalist>
+                    </div>
+
+
+                    <div class="form-group  col-4">
+                      <div class="input-group">
+                        <label class="col-form-label module-view-headding" for="txtlotNumber">Lot
+                          Number</label>
+                        <label class="col-form-label module-view-headding pl-3">
+                          <small class="form-text text-muted font-italic"> Case Sensitive</small>
+                        </label>
+                      </div>
+
+                      <!--
+                        <label class="col-form-label module-view-headding row pl-3">Lot Number <small
+                            class="form-text text-muted font-italic"> Case Sensitive</small></label>
+                        -->
+                      <input type="text" class="form-control" formControlName="txtlotNumber">
+                    </div>
+
+                    <div class="form-group  col-4">
+                      <label class="col-form-label module-view-headding" for="dpExpiryDate">Expiry Date</label>
+                      <div class="input-group">
+                        <input id="dpExpiryDate" formControlName="dpExpiryDate" class="form-control date-control"
+                          placeholder="mm/dd/yyyy" name="dpExpiryDate" ngbDatepicker #dpExpiryDate="ngbDatepicker"
+                          data-container="body" (blur)="onDateFocusOut($event.currentTarget.value,'dpExpiryDate')"
+                          [ngClass]="{'is-invalid': (vaccineFormGroup.controls.dpExpiryDate.errors?.invalidDate)}">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" [disabled]="readOnlyView" (click)="dpExpiryDate.toggle()"
+                            type="button">
+                          </button>
+                        </span>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group  col">
+                      <label class="col-form-label module-view-headding">Vaccine Funding Program Eligiblity</label>
+                      <select class="form-control" formControlName="ddVFCFinancialClass" id="ddVFCFinancialClass">
+                        <option *ngFor="let item of lstImmunizationCodeSet | listFilter :'type' :'VFC'"
+                          [value]="item.code">
+                          {{item.description}}</option>
+                      </select>
+
+                    </div>
+                  </div>
+
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group  col">
+                      <label class="col-form-label module-view-headding">Funding Source</label>
+                      <select class="form-control " formControlName="ddFundingSource" id="ddFundingSource">
+                        <option *ngFor="let item of lstImmunizationCodeSet | listFilter :'type' :'FUNDS'"
+                          [value]="item.code">
+                          {{item.description}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-row form-dashboard" *ngIf="selectedCVXCode!=undefined && selectedCVXCode!=''">
+
+                    <div class="col-12 pt-2">
+                      <div class="border rounded bg-white">
+                        <div class="rounded-box-title-bar">
+                          Vaccine Information Statement
+
+                          <div class="flex-grow-1">&nbsp;</div>
+                          <a class="pr-2 fz-12 font-weight-normal text-primary cursor-default justify-content-end"
+                            (click)="addVIS_Clicked()" *ngIf="!readOnlyView">Add VIS</a>
+                          <a class="fz-12 font-weight-normal text-primary cursor-default justify-content-end"
+                            *ngIf="selectedCVXCode!=undefined && selectedCVXCode!=''"><i class="fas fa-history"></i>
+                            History</a>
+                        </div>
+
+
+                        <div class="overflow-auto" *ngIf="lstChartImmVIS!=undefine && lstChartImmVIS.length>0">
+                          <table class="table sm layout-fixed light-striped-border">
+                            <thead>
+                              <tr>
+                                <td class="align-middle width-80">Edition</td>
+                                <td class="align-middle">VIS</td>
+                                <td class="align-middle width-130">Date Presented</td>
+                                <td class="width-30">&nbsp;</td>
+                              </tr>
+
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let vis of lstChartImmVIS ; let i = index">
+                                <td class="align-middle">{{vis.vis_date_published}}</td>
+                                <td class="align-middle">{{vis.vis_info}}</td>
+                                <td class="align-middle">
+
+                                  <div class="input-group table-td-input-group">
+                                    <input id="dpVISPresented"
+                                      class="form-control date-control table-td-date-input required"
+                                      placeholder="mm/dd/yyyy" name="dpVISPresented" ngbDatepicker
+                                      #dpVISPresented="ngbDatepicker" data-container="body"
+                                      formControlName="dpVISPresented_{{vis.chart_imm_vis_id}}">
+
+                                    <span class="input-group-btn">
+                                      <button class="btn date-control-btn table-td-date-button"
+                                        [disabled]="readOnlyView" (click)="dpVISPresented.toggle()" type="button">
+                                      </button>
+                                    </span>
+
+                                  </div>
+
+                                </td>
+                                <td class="align-middle border-left">
+                                  <a class="p-0 btn-delete" (click)="removeVIS(i)" *ngIf="!readOnlyView"><i
+                                      class="far fa-trash-alt fa-md"></i></a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+
+                </ng-template>
+
+              </div>
+            </div>
+
+            <div class="col-6 d-flex flex-column">
+
+              <div class="border rounded bg-white px-2 py-1 flex-grow-1">
+
+                <div class="form-row form-dashboard">
+
+
+                  <div class="form-group col-12">
+
+
+                    <label class="col-form-label module-view-headding required" for="dpAdministeredDate">Date Time
+                      Administered:</label>
+                    <div class="d-flex flex-row">
+                      <div class="input-group mr-1">
+                        <input class="form-control date-control required" placeholder="mm/dd/yyyy"
+                          name="dpAdministeredDate" formControlName="dpAdministeredDate" ngbDatepicker
+                          #dpAdministeredDate="ngbDatepicker"
+                          (blur)="onDateFocusOut($event.currentTarget.value,'dpAdministeredDate')"
+                          [ngClass]="{'is-invalid': (vaccineFormGroup.controls.dpAdministeredDate.errors?.invalidDate)}">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="dpAdministeredDate.toggle()" type="button">
+                          </button>
+                        </span>
+
+                      </div>
+
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text ngb-timepicker-input-group-text"><i
+                              class="far fa-clock"></i></span>
+                        </div>
+                        <ngb-timepicker id="tpAdministeredTime"
+                          class="form-control form-control-ngb-timepicker required" formControlName="tpAdministeredTime"
+                          meridian="ON">
+                        </ngb-timepicker>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                </div>
+
+
+                <div class="form-row form-dashboard" *ngIf="immunizationEntryType =='historical'">
+
+                  <div class="form-group  col-12">
+                    <label class="col-form-label module-view-headding required">Information Source</label>
+                    <select class="form-control required" formControlName="ddInformationSource"
+                      id="ddInformationSource">
+                      <option *ngFor="let item of lstImmunizationCodeSet | listFilter :'type' :'HISTORICAL_SOURCE'"
+                        [value]="item.code">
+                        {{item.description}}</option>
+                    </select>
+                  </div>
+
+                </div>
+
+
+                <div class="form-row form-dashboard" *ngIf="immunizationEntryType =='refused'">
+
+                  <div class="form-group col-12">
+                    <label for="ddRefusalReason" id="ddRefusalReason"
+                      class="col-form-label module-view-headding required">Reason
+                      Refused</label>
+                    <div class="input-group">
+                      <select class="form-control mr-1 col-4 required" formControlName="ddRefusalReason">
+                        <option *ngFor="let item of lstImmunizationCodeSet | listFilter :'type' :'REFUSAL_REASON'"
+                          [value]="item.code">
+                          {{item.description}}</option>
+                      </select>
+                      <input type="text" id="txtOtherReason" name="txtOtherReason" class="form-control col-8 required"
+                        formControlName="txtOtherReason" autocomplete="off"
+                        *ngIf="vaccineFormGroup.get('ddRefusalReason').value=='02' ">
+
+
+                    </div>
+                  </div>
+
+                </div>
+
+
+                <ng-template id="section_new_administered" [ngIf]="immunizationEntryType=='administered'">
+
+                  <div class="form-row form-dashboard">
+
+                    <div class="form-group col">
+                      <label for="ddOrderingProvider" class="col-form-label module-view-headding required">Ordering
+                        Provider</label>
+                      <select formControlName="ddOrderingProvider" class="form-control required">
+                        <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                      </select>
+                    </div>
+
+                  </div>
+
+
+                  <div class="form-row form-dashboard">
+
+                    <div class="form-group col-6">
+                      <label for="ddStatus" class="col-form-label module-view-headding required">Completion
+                        Status</label>
+                      <select class="form-control required" formControlName="ddStatus"
+                        (change)="onStatusChange($event)">
+                        <option *ngFor="let status of lstCompletionStatus" [value]="status.status_code">
+                          {{status.status_description}}</option>
+                      </select>
+
+                    </div>
+
+                    <div class="form-group col-6"
+                      *ngIf="vaccineFormGroup.get('ddStatus').value=='CP' || vaccineFormGroup.get('ddStatus').value=='PA'">
+                      <label for="ddAdministeredBy" class="col-form-label module-view-headding required">Administered
+                        By</label>
+                      <select formControlName="ddAdministeredBy" id="ddAdministeredBy" class="form-control required">
+                        <option [ngValue]="null"></option>
+                        <option *ngFor="let user of lookupList.practiceUsersList" [value]="user.user_id">
+                          {{user.full_name}}
+                        </option>
+                      </select>
+                    </div>
+
+                  </div>
+
+
+                  <ng-template id="section_administered"
+                    [ngIf]="vaccineFormGroup.get('ddStatus').value=='CP' || vaccineFormGroup.get('ddStatus').value=='PA'">
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-2">
+                        <label for="txtDose" class="col-form-label module-view-headding">Dose</label>
+                        <input formControlName="txtDose" type="text" class="form-control" id="txtDose">
+                      </div>
+
+                      <div class="form-group col-2">
+                        <label for="ddUnit" class="col-form-label module-view-headding">Unit</label>
+                        <select formControlName="ddUnit" id="ddUnit" class="form-control">
+                          <option *ngFor="let unit of lstUnits" [value]="unit">{{unit}}</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-4">
+                        <label for="ddRoutes" class="col-form-label module-view-headding">Route</label>
+                        <select formControlName="ddRoutes" id="ddRoutes" class="form-control">
+                          <option *ngFor="let route of lstImmRoutesFiltered" [value]="getRounteDropDownValue(route)">
+                            {{route.route_description}}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-4">
+                        <label for="ddSite" class="col-form-label module-view-headding">Site</label>
+                        <select class="form-control" formControlName="ddSite" id="ddSite">
+                          <option *ngFor="let site of lookupList.lstImmSites" [value]="site.site_code">
+                            {{site.site_description}}</option>
+                        </select>
+                      </div>
+
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <label for="txtReaction" class="col-form-label module-view-headding">Adverse Reaction</label>
+                        <input formControlName="txtReaction" autocomplete="off" type="text" class="form-control"
+                          id="txtReaction">
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-6">
+                        <label for="rbBillable" class="col-form-label module-view-headding">Billable</label>
+                        <div class="form-control form-check form-check-inline mt-0 pt-1">
+                          <input class="form-check-input" id="rbBillableNo" type="radio" name="rbBillable"
+                            formControlName="rbBillable" [value]="false">
+                          <label class="form-check-label" for="rbBillableNo">No</label>
+                          <input class="form-check-input ml-3" id="rbBillableYes" type="radio" name="rbBillable"
+                            formControlName="rbBillable" [value]="true">
+                          <label class="form-check-label" for="rbBillableYes">YES</label>
+                        </div>
+                      </div>
+
+
+                      <div class="form-group col-6" *ngIf="vaccineFormGroup.get('rbBillable').value==true">
+                        <label class="col-form-label module-view-headding required" for="txtProcCode">Procedure:</label>
+                        <input type="text" list="ldProcedures" name="txtProcCode" class="form-control required"
+                          formControlName="txtProcCode" autocomplete="off">
+                        <datalist id="ldProcedures">
+                          <option *ngFor="let proc of lstImmProcedures" value="{{proc.proc_code}}">{{proc.proc_code}}
+                          </option>
+                        </datalist>
+                      </div>
+
+                    </div>
+                  </ng-template>
+
+                  <div class="form-row form-dashboard" *ngIf="vaccineFormGroup.get('ddStatus').value=='NA'">
+
+                    <div class="form-group col-12">
+                      <label for="ddReasonType" class="col-form-label module-view-headding required">Not Administered
+                        Reason</label>
+                      <div class="input-group">
+                        <select class="form-control mr-1 col-4 required" formControlName="ddReasonType"
+                          (change)="onddReasonTypeChange($event)">
+                          <option>Immunity</option>
+                          <option>Medical Precaution</option>
+                          <option>Availability</option>
+                        </select>
+                        <select class="form-control col-8 required" formControlName="ddReasonValue" id="ddReasonValue">
+                          <option [ngValue]="null"></option>
+                          <option *ngFor="let reason of lstReasonValue" [value]="reason.code">{{reason.description}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                </ng-template>
+
+                <div class="form-row form-dashboard">
+                  <div class="form-group col">
+                    <label class="col-form-label module-view-headding" for="txtNotes">Notes / Instructions /
+                      Comments:</label>
+                    <textarea class="form-control" id="txtNotes" formControlName="txtNotes" maxlength="500"
+                      autocomplete="off"></textarea>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </form>
+      <div *ngIf="isAddEditLoading" class="div-loader"></div>
+    </div>
+
+
+
+    <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && canView && !addEditView">
+      <button class="btn btn-sm btn-link pr-0" type="button" (click)="showHistory()">View Log</button>
+    </div>
+
+
+  </div>
+</ng-template>
+
+<ng-template id="sectionAccessDenied" [ngIf]="!canView && !isLoading">
+
+  <div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+    <div *ngIf="!isLoading && !canView" class="access-denied">
+      <i class="fas fa-ban mr-2"></i> Access Denied
+    </div>
+
+  </div>
+</ng-template>

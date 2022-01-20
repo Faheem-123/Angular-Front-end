@@ -1,0 +1,146 @@
+<div class="dashboard">
+  <!-- <div
+    class="light-title-bar h-30 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-14 font-weight-500 py-1">Problem Based Templates</div>
+    <div class="flex-grow-1"></div>
+  </div> -->
+  <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+      
+      <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+
+        <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+          <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+            <div class="rounded-box-title-bar justify-content-between">
+              <span>Templates</span>
+              <div class="d-flex align-items-center">
+                <button class="btn btn-sm btn-link line-height-1 p-0 mr-2" (click)="addNewTemplate()"
+                  *ngIf="newTemplate">New</button>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column flex-grow-1">
+              <div class="border-top bg-white flex-grow-1 overflow-auto d-flex overflow-height">
+                <table class="table layout-fixed sm light-striped-border" id="tbl">
+                  <tbody>
+                    <tr st-select-row="row" *ngFor="let temp of listTemplateResult; let i=index;" (click)="PopTemplateSetup(temp,i)"
+                      [ngClass]="{'active' : (temp.template_id === isSelectedID),
+                      'disabled': isDisable}">
+                      <td width="70%">{{temp.name}}</td>
+                      <td class="text-right">
+                        <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                          (click)="editSeletedTemplate(temp)"><i class="far fa-edit"></i></button>
+                        <button class="btn btn-link fz-14 text-danger line-height-1 p-0"
+                          (click)="deleteSeletedTemplate(temp)"><i class="far fa-trash-alt"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-12 d-flex flex-column flex-grow-1"
+        [ngClass]="{ 'col-md-9' : (callingFrom ==='user_admin'),
+                     'col-md-6' : (callingFrom=='admin_main') }">
+
+          <div class="bg-white d-flex flex-column flex-grow-1">
+            <div class="border   rounded-top bg-white px-2 py-1 flex-shrink-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero col-12">
+                  <form [formGroup]="tempSetUpForm" class="form-group horizental row zero col-12">
+                    <label class="col-sm-3 col-form-label " for="input2">Template Name:</label>
+                    <input type="text" class="form-control col-sm-9 mr-2" formControlName="txt_TemplateName" [readonly]="newTemplate">
+                 
+                  <div class="d-flex align-items-center" *ngIf="!newTemplate">
+                    <button class="btn rounded-0 btn-sm bg-green-ihc text-white mr-1" (click)="saveTemplateSetup()">Save</button>
+                    <button class="btn btn-sm btn-dark top-right-radius" (click)="cancelNewTemplate()">Cancel</button>
+                  </div>
+                </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-bottom d-flex flex-grow-1 overflow-auto">
+              <!-- <div class="form-row form-dashboard p-6 pt-0" style="max-height: 485px;overflow: auto;"> -->
+                <form [formGroup]="inputForm" class="form-row form-dashboard p-6 pt-0 col-12" >
+                  <div class="form-group col-12">
+                    <label for="input05" class="font-weight-500">Reason For Visit:</label>
+                    <textarea autosize class="form-control required " formControlName="RFVSetuptxt" #RFVSetuptxt id="RFVSetuptxt"></textarea>
+                  </div>
+            
+                  <div class="form-group col-12" >
+                    <label for="input06" class="font-weight-500">HPI:</label>
+                    <textarea autosize class="form-control required " formControlName="HPISetuptxt" #HPISetuptxt id="HPISetuptxt"></textarea>
+                  </div>
+            
+                  <div class="form-group col-12" >
+                    <label for="input07" class="font-weight-500">Past Medical History:</label>
+                    <textarea autosize class="form-control required " formControlName="PMHSetuptxt" #PMHSetuptxt id="PMHSetuptxt"></textarea>
+                  </div>
+            
+                  <div class="form-group col-12" > 
+                    <label for="input08" class="font-weight-500">Review Of System:</label>
+                    <textarea autosize class="form-control required " formControlName="ROSSetuptxt" #ROSSetuptxt id="ROSSetuptxt"></textarea>
+                  </div>
+            
+                  <div class="form-group col-12" >
+                    <label for="input09" class="font-weight-500">Physical Exam:</label>
+                    <textarea autosize class="form-control required " formControlName="PESetuptxt" #PESetuptxt id="PESetuptxt"></textarea>
+                  </div>
+            
+                  <div class="form-group col-12">
+                    <label for="input10" class="font-weight-500">Plan:</label>
+                    <textarea autosize class="form-control required " formControlName="planSetuptxt" #planSetuptxt id="planSetuptxt"></textarea>
+                    <!-- <div class="p-6" hidden>
+                      <form [formGroup]="richForm">
+                        <quill-editor #richEditorTemp format="text|html" id="richEditorTemp" [required]="true" [formControl]="content" >
+                
+                        </quill-editor>
+                      </form>
+                    </div> -->
+                  </div>
+                </form>
+            </div>
+            <div class="rounded mt-1 d-flex flex-grow-1 overflow-auto">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1" *ngIf="callingFrom=='admin_main'">
+          <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+            <div class="rounded-box-title-bar justify-content-between">
+              <span>Providers</span>
+              <div class="d-flex align-items-center">
+                <button class="btn btn-sm btn-link line-height-1 p-0 mr-2" (click)="editProvider()"
+                  *ngIf="enableDisableCheckBox">Edit</button>
+                <button class="btn rounded-0 btn-sm bg-green-ihc text-white" (click)="saveSelectedProvider()"
+                  *ngIf="!enableDisableCheckBox">Save</button>
+                <button class="btn btn-sm btn-dark top-right-radius" (click)="cancelProvider()"
+                  *ngIf="!enableDisableCheckBox">Cancel</button>
+              </div>
+            </div>
+
+            <div class="d-flex flex-column flex-grow-1">
+              <div class="border-top  bg-white flex-grow-1 overflow-auto d-flex overflow-height">
+                <table class="table layout-fixed sm light-striped-border">
+                  <tbody>
+                    <tr st-select-row="row" (click)="onProviderClick(prov)"
+                      [ngClass]="{'active' : (prov.provider_id === selectedProvidersID),
+                      'disabled': isDisable}"
+                      *ngFor="let prov of listTemplateproviders; let i = index">
+                      <td class="width-30">
+                        <input class="v-align-middle" [disabled]="enableDisableCheckBox"
+                          (change)="checkChkBox(prov.provider_id,$event.currentTarget.checked)" type="checkbox"
+                          [checked]="prov.chkbox"></td>
+                      <td>{{prov.provider_name}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+  </div>
+</div>

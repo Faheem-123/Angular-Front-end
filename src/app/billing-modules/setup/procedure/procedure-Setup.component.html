@@ -1,0 +1,168 @@
+<div class="light-title-bar  h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Procedure</div>
+  <div class="d-flex align-items-center">
+    <button *ngIf="operation==''" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"
+      (click)="onAddNew()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <button *ngIf="operation=='' && this.lookupList.logedInUser.userPracticeId==499" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"
+      (click)="onEdit()">
+      <i class="far fa-edit"></i>
+      Edit</button>
+    <button *ngIf="operation=='' && this.lookupList.logedInUser.userPracticeId==499" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"
+      (click)="onDelete()">
+      <i class="far fa-trash-alt"></i>
+      Delete</button>
+    <button *ngIf="operation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30"
+      (click)="onSave()">Save</button>
+    <button *ngIf="operation!=''" class="btn btn-sm btn-dark top-right-radius h-30" (click)="onCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+  <div class="border-bottom bg-white px-2 py-6 flex-shrink-0">
+    <form [formGroup]="inputForm">
+      <div class="form-row form-dashboard align-items-start">
+
+        <div class="form-group horizental d-flex col-3">
+          <label for="input1" class="col-form-label label-w-60 required">Code</label>
+          <input type="text" class="form-control flex-grow-1" id="input1" formControlName="txtCode">
+        </div>
+        <div class="form-group horizental d-flex col-9">
+          <label for="input9" class="col-form-label label-w-80">Description</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtDescription">
+        </div>
+        <div class="form-group horizental d-flex col-6">
+          <label for="input9" class="col-form-label label-w-60">POS</label>
+          <select class="form-control flex-grow-1" id="input9" formControlName="drpPos">
+            <option *ngFor="let obj of arrPOS" [value]="obj.code">
+              {{obj.code}}, {{obj.description}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group horizental d-flex col-3">
+          <label for="input9" class="col-form-label label-w-80">Expired Date</label>
+          <div class="input-group flex-grow-1">
+            <input id="txtdob" formControlName="txtExpiredDate" class="form-control date-control"
+              placeholder="mm/dd/yyyy" name="txtExpiredDate" ngbDatepicker #txtExpiredDate="ngbDatepicker"
+              [ngClass]="{'is-invalid': inputForm.controls.txtExpiredDate.errors?.invalidDate}" maxlength="10">
+
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="txtExpiredDate.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="form-group horizental d-flex col-3">
+          <label for="input9" class="col-form-label label-w-80">Charges</label>
+          <input type="text" class="form-control flex-grow-1" id="input1" formControlName="txtCharges">
+        </div>
+        <div class="form-group horizental d-flex col-2">
+          <label for="input9" class="col-form-label label-w-60">Gender</label>
+          <select class="form-control flex-grow-1" id="input9" formControlName="drpGender">
+            <option value=""></option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
+        <div class="form-group horizental d-flex col-2">
+          <label for="input9" class="col-form-label label-w-40">Age</label>
+          <select class="form-control flex-grow-1" id="input9" formControlName="drpAge"  (change)="onAgeChange($event)">
+            <option value=""></option>
+            <option value="Less Then">Less Then</option>
+            <option value="Greater Then">Greater Then</option>
+            <option value="Between">Between</option>
+          </select>
+        </div>
+        <div class="form-group horizental d-flex col-1">
+          <label for="txtYearsFrom" class="col-form-label label-w-40">Year(s)</label>
+          <input class=" table-td-input pl-0 pr-0 text-right  width-50" type="number" min="1" maxlength="2"
+            id="txtYearsFrom" formControlName="txtYearsFrom" autocomplete="off">
+        </div>
+        <div class="form-group horizental d-flex col-1 ml-2">
+          <label for="txtMonthFrom" class="col-form-label label-w-60">Month(s)</label>
+          <input class=" table-td-input pl-0 pr-0 text-right  width-50" type="number" min="1" maxlength="2"
+            id="txtMonthFrom" formControlName="txtMonthFrom" autocomplete="off">
+        </div>
+        <div class="form-group horizental d-flex col-1  ml-2">
+          <!-- <label for="input9" class="col-form-label">To</label> -->
+          <label for="txtYearsTo" class="col-form-label label-w-40 ml-4 mr-1">Year(s)</label>
+          <input class=" table-td-input pl-0 pr-0 text-right  width-50" type="number" min="1" maxlength="2"
+            id="txtYearsTo" formControlName="txtYearsTo" autocomplete="off">
+        </div>
+        <div class="form-group horizental d-flex col-1  ml-2">
+          <label for="txtMonthTo" class="col-form-label label-w-60 ml-4">Month(s)</label>
+          <input class=" table-td-input pl-0 pr-0 text-right  width-50" type="number" min="1" maxlength="2"
+            id="txtMonthTo" formControlName="txtMonthTo" autocomplete="off">
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="rounded-bottom   bg-white ">
+    <div class="fz-15 font-weight-400 pl-3 light-title-bar h-25">Procedure Details</div>
+    <form [formGroup]="searchForm">
+      <div class="form-row form-dashboard pl-3">
+        <div class="form-group col-12 d-flex">
+          <div class="custom-control custom-radio green-radio">
+            <input type="radio" class="custom-control-input" id="chkCode" name="codeSearch" formControlName="codeSearch"
+              value="check_code" checked>
+            <label class="custom-control-label" for="chkCode">Search By Code</label>
+          </div>
+
+          <div class="custom-control custom-radio green-radio">
+            <input type="radio" class="custom-control-input" id="ckhDescription" name="codeSearch"
+              formControlName="codeSearch" value="check_description">
+            <label class="custom-control-label" for="ckhDescription">Search By Description</label>
+          </div>
+
+          <div class="custom-control custom-radio green-radio">
+            <input type="radio" class="custom-control-input" id="chkPos" name="codeSearch" formControlName="codeSearch"
+              value="check_pos">
+            <label class="custom-control-label" for="chkPos">Search By POS</label>
+          </div>
+          <div class="custom-control custom-radio green-radio">
+            <input type="radio" class="custom-control-input" id="chkExpired" name="codeSearch"
+              formControlName="codeSearch" value="check_date">
+            <label class="custom-control-label" for="chkExpired">Search By Expired</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-dashboard ml-1">
+        <div class="form-group horizental d-flex col-12">
+          <input id="txtProcedureSearch" class="form-control flex-grow-3 required col-11" type="text"
+            placeholder="Search Procedure" (keydown)="onProcedureSearchKeydown($event)" autocomplete="off"
+            #txtProcedureSearch formControlName="txtProcedureSearch">
+          <div class="icon mt-1">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="rounded-bottom overflow-auto overflow-height bg-white flex-grow-1 max-height-100">
+    <table class="table light-striped-border layout-fixed">
+      <thead>
+        <tr>
+          <th class="width-80">Code</th>
+          <th>Description</th>
+          <th class="width-80">POS</th>
+          <th class="width-100">Expired Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let pr of arrProcedure; let i = index" (click)="onSelectionChange(i,pr)" [ngClass]="{ 'active': i==selectedIndex,
+          'disabled': isDisable
+          }">
+          <td class="width-80">{{pr.proc_code}}</td>
+          <td>{{pr.description}}</td>
+          <td class="width-80">{{pr.pos}}</td>
+          <td class="width-100">{{pr.expiry_date}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -1,0 +1,50 @@
+<div class="p-2">
+  <h6>
+    <span class="title-blue">{{yearMonthDispay}}</span>
+    <span class="v-separtor"></span>
+    <span class="title-other-info fz-14 font-weight-400">{{locationName}}</span>
+    <span class="v-separtor"></span>
+    <span class="title-other-info fz-14 font-weight-400">{{providerName}}</span>
+  </h6>
+  <table cellpadding="0" cellspacing="0" class="calendar">
+    <thead>
+      <tr>
+        <th class="calendar-day-head">Monday</th>
+        <th class="calendar-day-head">Tuesday</th>
+        <th class="calendar-day-head">Wednesday</th>
+        <th class="calendar-day-head">Thursday</th>
+        <th class="calendar-day-head">Friday</th>
+        <th class="calendar-day-head">Saturday</th>
+        <th class="calendar-day-head">Sunday</th>
+      </tr>
+
+    </thead>
+    <tbody>
+
+      <tr class="calendar-row" *ngFor="let wr of lstMonthView">
+
+        <td class="calendar-day" *ngFor="let wd of wr.week_days" [ngClass]="{'calendar-day-np': !wd.day_active }">
+
+          <div class="day-number" *ngIf="wd.day_active">
+            <button class="btn btn-link day-number-button" (click)="openNormalSchedulerView(wd.day_no)"
+              [ngClass]="{'today': (todayDate==wd.date)}">
+              {{wd.day_no}}
+            </button>
+          </div>
+
+          <!--
+          <ng-template id="secCount"
+          [ngIf]="wd.day_active &&  !((wd.week_day_no==6 || wd.week_day_no==7) && wd.total_appointments==0)">
+          -->
+
+          <ng-template id="secCount" [ngIf]="wd.day_active && wd.total_appointments > 0">
+            <p class="appointment_count_main">Total: {{wd.total_appointments}}</p>
+            <p class="appointment_count_sub">Completed: {{wd.completed}}</p>
+          </ng-template>
+
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>

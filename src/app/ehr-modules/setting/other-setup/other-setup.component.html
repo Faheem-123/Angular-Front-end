@@ -1,0 +1,15 @@
+<ngb-tabset class="inner-vertical-tab white d-flex flex-row">
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Application Setting</span></ng-template>
+    <ng-template ngbTabContent>
+      <application-setup class="d-flex flex-column flex-grow-1 pl-1"></application-setup>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Merge Patient</span></ng-template>
+    <ng-template ngbTabContent>
+      <merge-patient class="d-flex flex-column flex-grow-1 pl-1" callingFrom='settings'></merge-patient>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

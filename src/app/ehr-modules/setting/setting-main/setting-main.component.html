@@ -1,0 +1,46 @@
+<div class="dashboard-container d-flex flex-column">
+
+  <div class="dashboard m-2">
+
+
+    <ngb-tabset class="inner-horizental-green-tab rounded-10 d-flex flex-column" [destroyOnHide]="false">
+      <ngb-tab>
+        <ng-template ngbTabTitle>User Settings</ng-template>
+        <ng-template ngbTabContent>
+          <user-setting class="d-flex flex-column flex-grow-1  pt-1"></user-setting>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab>
+        <ng-template ngbTabTitle>Setup</ng-template>
+        <ng-template ngbTabContent>
+          <general-setup class="d-flex flex-column flex-grow-1  pt-1"></general-setup>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab>
+        <ng-template ngbTabTitle>Immunization Setup</ng-template>
+        <ng-template ngbTabContent>
+          <immunization-setting class="d-flex flex-column flex-grow-1  pt-1"></immunization-setting>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab>
+        <ng-template ngbTabTitle>Billing Setup</ng-template>
+        <ng-template ngbTabContent>
+          <billing-setup class="d-flex flex-column flex-grow-1  pt-1"></billing-setup>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab>
+        <ng-template ngbTabTitle>Other</ng-template>
+        <ng-template ngbTabContent>
+          <other-setup class="d-flex flex-column flex-grow-1  pt-1"></other-setup>
+        </ng-template>
+      </ngb-tab>
+
+     
+    </ngb-tabset>
+
+  </div>
+</div>

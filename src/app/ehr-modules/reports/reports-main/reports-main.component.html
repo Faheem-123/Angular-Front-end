@@ -1,0 +1,378 @@
+<div class="dashboard-container d-flex flex-column">
+  <div class="dashboard">
+
+    <div class="bg-green-ihc rounded-10-top h-30 d-flex align-items-center justify-content-between flex-shrink-0">
+      <div class="fz-15 font-weight-400 text-white ml-2 mt-1">Reports</div>
+    </div>
+
+    <!--
+    <div class="dashboard-title">
+      <div class="title">Reports</div>
+    </div>
+    -->
+
+    <div class="dashboard-content d-flex flex-row m-1 rounded-10-bottom">
+
+      <div class="scheduler-left width-206">
+        <div class="d-flex flex-column flex-grow-1">
+          <!-- ******************** -->
+          <aside class="reports-main-sidebar">
+            <section class="reports-sidebar">
+              <ul class="reports-sidebar-menu">
+                <li class="active treeview">
+                  <a href="#">
+                    <i class="fas fa-angle-right"></i>
+                    <span class="ml-2">Daily Reports</span>
+                  </a>
+                  <ul class="reports-treeview-menu">
+                    <li class=" rpt-pointer" [ngClass]="{'active-green-round': componentName=='encounter-report'}"><a
+                        (click)="generalOnChange('encounter-report')">Encounter Report</a>
+                    </li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='diagnostic-report'}"><a
+                        (click)="generalOnChange('diagnostic-report')">Diagnostic Report</a></li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='cash-register'}"><a
+                        (click)="generalOnChange('cash-register')">Cash Register</a></li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='appointment-report'}"><a
+                        (click)="generalOnChange('appointment-report')">Appointment Report</a>
+                    </li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='patient-eligibility'}"><a
+                        (click)="generalOnChange('patient-eligibility')">Patient Eligibility</a>
+                    </li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='encounter-diag-proc'}"><a
+                        (click)="generalOnChange('encounter-diag-proc')">Encounter Diag-Proc</a>
+                    </li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='encounter-count'}"><a
+                        (click)="generalOnChange('encounter-count')">Encounter Count</a></li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='daily-deposit'}"><a
+                        (click)="generalOnChange('daily-deposit')">Daily Deposit</a></li>
+                    <li class="rpt-pointer"
+                      [ngClass]="{'active-green-round': componentName=='eligibility-verification'}"><a
+                        (click)="generalOnChange('eligibility-verification')">Eligibility Verification</a></li>
+                  </ul>
+                </li>
+                <li class="treeview">
+                  <a href="#">
+                    <i class="fas fa-angle-right"></i>
+                    <span class="ml-2">Claim Report</span>
+                  </a>
+                  <ul class="reports-treeview-menu">
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='claim-detail'}"><a
+                        (click)="generalOnChange('claim-detail')">Claim Report</a></li>
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.rptSourceWiseCollection"
+                      [ngClass]="{'active-green-round': componentName=='source-wise-collection'}"><a
+                        (click)="generalOnChange('source-wise-collection')">Payment Collection</a></li>
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.ViewrptBillingAging"
+                      [ngClass]="{'active-green-round': componentName=='rpt-aging-tab'}"><a
+                        (click)="generalOnChange('rpt-aging-tab')">Billing Aging</a></li>
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.ViewrptBankDeposit"
+                      [ngClass]="{'active-green-round': componentName=='bank-deposit'}"><a
+                        (click)="generalOnChange('bank-deposit')">Bank Deposit Report</a></li>
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.ViewrptClaimBatch"
+                      [ngClass]="{'active-green-round': componentName=='claim-batch-report'}"><a
+                        (click)="generalOnChange('claim-batch-report')">Claim Batch Report</a></li>
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.ViewrptCPTWisePayment"
+                      [ngClass]="{'active-green-round': componentName=='cpt-wise-payment'}"><a
+                        (click)="generalOnChange('cpt-wise-payment')">CPT Wise Report</a></li>
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.ViewrptPaymentSummary"
+                      [ngClass]="{'active-green-round': componentName=='payer-wise-payment'}"><a
+                        (click)="generalOnChange('payer-wise-payment')">Payer Wise Summary</a></li>
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.ClaimSummaryReport"
+                      [ngClass]="{'active-green-round': componentName=='rpt-claim-summary'}"><a
+                        (click)="generalOnChange('rpt-claim-summary')">Claim Summary</a></li>
+
+                  </ul>
+                </li>
+                <li class="treeview">
+                  <a href="#">
+                    <i class="fas fa-angle-right"></i>
+                    <span class="ml-2">Other Reports</span>
+                  </a>
+                  <ul class="reports-treeview-menu">
+
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.rptpayroll"
+                      [ngClass]="{'active-green-round': componentName=='provider-payroll'}"><a
+                        (click)="generalOnChange('provider-payroll')">Provider Payroll</a></li>
+
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.rptworkReport"
+                      [ngClass]="{'active-green-round': componentName=='provider-work'}"><a
+                        (click)="generalOnChange('provider-work')">Provider Work Report</a></li>
+
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.rptReminderCall"
+                      [ngClass]="{'active-green-round': componentName=='reminder-call'}"><a
+                        (click)="generalOnChange('reminder-call')">Appointment Reminders</a></li>
+
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.rptNotPaidReason"
+                      [ngClass]="{'active-green-round': componentName=='not-paid-reason'}"><a
+                        (click)="generalOnChange('not-paid-reason')">Not Paid Reason</a></li>
+
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.rptPayerWisePatient"
+                      [ngClass]="{'active-green-round': componentName=='payerwise-patient'}"><a
+                        (click)="generalOnChange('payerwise-patient')">Payerwise Patient</a></li>
+
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='rpt-css-call-log'}"><a
+                        (click)="generalOnChange('rpt-css-call-log')">CSS Call Log</a></li>
+
+
+                    <li class="rpt-pointer" [ngClass]="{'active-green-round': componentName=='rpt-patient-not-seen'}"><a
+                        (click)="generalOnChange('rpt-patient-not-seen')">Patient Not Seen</a></li>
+
+
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.GeneralReport"
+                      [ngClass]="{'active-green-round': componentName=='rpt-general'}"><a
+                        (click)="generalOnChange('rpt-general')">General Report</a></li>
+
+                    <li class="rpt-pointer" *ngIf="this.lookupList.UserRights.CorrespondenceReport"
+                      [ngClass]="{'active-green-round': componentName=='rpt-correspondence'}"><a
+                        (click)="generalOnChange('rpt-correspondence')">Correspondence Report</a></li>
+
+
+                  </ul>
+                </li>
+
+              </ul>
+            </section>
+          </aside>
+          <!-- ******************* -->
+        </div>
+      </div>
+      <div class="scheduler-right pl-0 d-flex flex-column flex-grow-1">
+        <ngb-tabset
+          class="inner-horizental-green-tab tab-set-with-no-tab-headings content-flex d-flex flex-column flex-grow-1 overflow-hidden"
+          [destroyOnHide]="false" #tabMainrpt [activeId]="componentName">
+          <ngb-tab id="encounter-report">
+            <ng-template ngbTabTitle><span>Encounter Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <encounter-report class="d-flex flex-column flex-grow-1"></encounter-report>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="diagnostic-report">
+            <ng-template ngbTabTitle><span>Diagnostic Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <diagnostic-report class="d-flex flex-column flex-grow-1"></diagnostic-report>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="cash-register">
+            <ng-template ngbTabTitle><span>Cash Register</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-cash-register class="d-flex flex-column flex-grow-1"></rpt-cash-register>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="appointment-report">
+            <ng-template ngbTabTitle><span>Appointment Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <div class="d-flex flex-column flex-grow-1">
+                <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+                  <div class="d-flex">
+                    <div class="fz-15 font-weight-400 text-white">Appointment Report</div>
+                  </div>
+                </div>
+                <rpt-appointments class="d-flex flex-column flex-grow-1" [lstData]="lstAppiontmentReportData">
+                </rpt-appointments>
+              </div>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="patient-eligibility">
+            <ng-template ngbTabTitle><span>Patient Eligibility</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-patient-eligibility class="d-flex flex-column flex-grow-1"></rpt-patient-eligibility>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="encounter-diag-proc">
+            <ng-template ngbTabTitle><span>Encounter Diag-Proc</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-encounter-proc-diag class="d-flex flex-column flex-grow-1"></rpt-encounter-proc-diag>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="encounter-count">
+            <ng-template ngbTabTitle><span>Encounter Count</span></ng-template>
+            <ng-template ngbTabContent>
+              <encounter-count class="d-flex flex-column flex-grow-1"></encounter-count>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="daily-deposit">
+            <ng-template ngbTabTitle><span>Daily Deposit</span></ng-template>
+            <ng-template ngbTabContent>
+              <daily-deposit class="d-flex flex-column flex-grow-1"></daily-deposit>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="eligibility-verification">
+            <ng-template ngbTabTitle><span>Eligibility Verification</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-eligibility-verification class="d-flex flex-column flex-grow-1"></rpt-eligibility-verification>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="claim-detail">
+            <ng-template ngbTabTitle><span>Claim Detail</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-claim-detail class="d-flex flex-column flex-grow-1" callingFrom="reports"></rpt-claim-detail>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="source-wise-collection">
+            <ng-template ngbTabTitle><span>Source Wise Collection</span></ng-template>
+            <ng-template ngbTabContent>
+              <!-- <rpt-source-wise-collection class="d-flex flex-column flex-grow-1"></rpt-source-wise-collection> -->
+              <rpt-payment-collection class="d-flex flex-column flex-grow-1"></rpt-payment-collection>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="rpt-aging-tab" *ngIf="this.lookupList.UserRights.ViewrptBillingAging">
+            <ng-template ngbTabTitle><span>Billing Aging</span></ng-template>
+            <ng-template ngbTabContent>
+              <!-- <rpt-aging class="d-flex flex-column flex-grow-1" callingFrom="reports"></rpt-aging> -->
+              <rpt-aging-tab class="d-flex flex-column flex-grow-1" callingFrom="reports"></rpt-aging-tab>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="bank-deposit" *ngIf="this.lookupList.UserRights.ViewrptBankDeposit">
+            <ng-template ngbTabTitle><span>Bank Deposit</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-bankdeposit class="d-flex flex-column flex-grow-1" callingFrom="reports"></rpt-bankdeposit>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="claim-batch-report" *ngIf="this.lookupList.UserRights.ViewrptClaimBatch">
+            <ng-template ngbTabTitle><span>Claim Batch Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-claim-batch-detail class="d-flex flex-column flex-grow-1" callingFrom="reports">
+              </rpt-claim-batch-detail>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="cpt-wise-payment" *ngIf="this.lookupList.UserRights.ViewrptCPTWisePayment">
+            <ng-template ngbTabTitle><span>CPT Wise Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-cpt-wise-payment class="d-flex flex-column flex-grow-1"></rpt-cpt-wise-payment>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="payer-wise-payment">
+            <ng-template ngbTabTitle><span>Payer Wise Summary</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-payer-wise-payment class="d-flex flex-column flex-grow-1" callingFrom="reports">
+              </rpt-payer-wise-payment>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="rpt-claim-summary" *ngIf="this.lookupList.UserRights.ClaimSummaryReport">
+            <ng-template ngbTabTitle><span>Claim Summary</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-claim-summary class="d-flex flex-column flex-grow-1" callingFrom="reports"></rpt-claim-summary>
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="provider-payroll">
+            <ng-template ngbTabTitle><span>Provider Payroll Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-provider-payroll class="d-flex flex-column flex-grow-1"></rpt-provider-payroll>
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="provider-work">
+            <ng-template ngbTabTitle><span>Provider Work Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-provider-work class="d-flex flex-column flex-grow-1"></rpt-provider-work>
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="reminder-call">
+            <ng-template ngbTabTitle><span>Reminder Call</span></ng-template>
+            <ng-template ngbTabContent>
+              <reminder-call class="d-flex flex-column flex-grow-1"></reminder-call>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="not-paid-reason">
+            <ng-template ngbTabTitle><span>Not Paid Reason</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-patient-notpaid-reason class="d-flex flex-column flex-grow-1"></rpt-patient-notpaid-reason>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="payerwise-patient">
+            <ng-template ngbTabTitle><span>Payerwise Patient</span></ng-template>
+            <ng-template ngbTabContent>
+              <payerwise-patient class="d-flex flex-column flex-grow-1"></payerwise-patient>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="rpt-css-call-log">
+            <ng-template ngbTabTitle><span>CSS Call Log</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-css-call-log class="d-flex flex-column flex-grow-1"></rpt-css-call-log>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="rpt-patient-not-seen">
+            <ng-template ngbTabTitle><span>Patient Not Seen</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-patient-not-seen class="d-flex flex-column flex-grow-1"></rpt-patient-not-seen>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="rpt-general" *ngIf="this.lookupList.UserRights.GeneralReport">
+            <ng-template ngbTabTitle><span>General Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <rpt-general class="d-flex flex-column flex-grow-1 "></rpt-general>
+            </ng-template>
+          </ngb-tab>
+          <ngb-tab id="rpt-correspondence" *ngIf="this.lookupList.UserRights.CorrespondenceReport">
+            <ng-template ngbTabTitle><span>Correspondence Report</span></ng-template>
+            <ng-template ngbTabContent>
+              <!-- <rpt-correspondence class="d-flex flex-column flex-grow-1 "></rpt-correspondence> -->
+            </ng-template>
+          </ngb-tab>
+
+        </ngb-tabset>
+        <!-- <encounter-report class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='encounter-report'">
+        </encounter-report>
+        <diagnostic-report class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='diagnostic-report'">
+        </diagnostic-report>
+
+        <rpt-cash-register class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='cash-register'">
+        </rpt-cash-register>
+
+        <rpt-eligibility-verification class="d-flex flex-column flex-grow-1"
+        [class.hide]="componentName!='eligibility-verification'"></rpt-eligibility-verification>
+        <rpt-encounter-proc-diag class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='encounter-diag-proc'">
+        </rpt-encounter-proc-diag>
+        <new-patient class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='new-patient'"></new-patient>
+        <reminder-call class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='reminder-call'"></reminder-call>
+        <gyn-missed-visit class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='gyn-missed-visit'">
+        </gyn-missed-visit>
+        <pregnancy-register class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='pregnancy-register'">
+        </pregnancy-register>
+        <payerwise-patient class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='payerwise-patient'">
+        </payerwise-patient>
+        <cross-report class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='cross-report'"></cross-report>
+
+        <daily-deposit class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='daily-deposit'"></daily-deposit>
+        <encounter-count class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='encounter-count'">
+        </encounter-count>
+
+        <div class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='appointment-report'">
+          <div
+            class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+            <div class="d-flex">              
+              <div class="fz-15 font-weight-400 text-white">Appointment Report</div>
+            </div>
+          </div>
+          <rpt-appointments class="d-flex flex-column flex-grow-1" [lstData]="lstAppiontmentReportData"></rpt-appointments>
+        </div>
+
+        <rpt-patient-eligibility class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='patient-eligibility'">
+        </rpt-patient-eligibility>
+
+        <rpt-claim-detail class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='claim-detail'">
+        </rpt-claim-detail>
+        <rpt-source-wise-collection class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='source-wise-collection'">
+        </rpt-source-wise-collection>
+        <rpt-aging class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='rpt-aging'">
+          </rpt-aging>
+        
+        
+
+        <rpt-payment-categories class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='payment-categories'">
+        </rpt-payment-categories>
+        <rpt-bankdeposit class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='bank-deposit'"></rpt-bankdeposit>
+        <rpt-claim-batch-detail class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='claim-batch-report'"></rpt-claim-batch-detail>
+        <rpt-cpt-wise-payment class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='cpt-wise-payment'"></rpt-cpt-wise-payment>
+        <rpt-payer-wise-payment class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='payer-wise-payment'"></rpt-payer-wise-payment>
+        
+        <cqm-report class="d-flex flex-column flex-grow-1" [class.hide]="componentName!='cqm-report'"></cqm-report>
+
+        <rpt-provider-payroll class="d-flex flex-column flex-grow-1"
+        *ngIf="componentName=='provider-payroll'"></rpt-provider-payroll> -->
+
+      </div>
+    </div>
+  </div>
+</div>

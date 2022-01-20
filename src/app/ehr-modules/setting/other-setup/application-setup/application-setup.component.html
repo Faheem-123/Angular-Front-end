@@ -1,0 +1,57 @@
+<form [formGroup]="appSettingFormGroup" class="d-flex flex-column flex-grow-1">
+
+  <div
+    class="light-title-bar rounded-top h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400">Application Setting</div>
+    <div class="d-flex align-items-center">
+      <button *ngIf="!editView" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+        (click)="onEdit()"><i class="far fa-edit"></i>
+        Edit</button>
+
+      <button *ngIf="editView" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" type="button"
+        (click)="onSave(appSettingFormGroup.value)">Save</button>
+      <button *ngIf="editView" class="btn btn-sm btn-dark top-right-radius h-30" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+  <div
+    class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue overflow-height max-height-100">
+
+    <div class="rounded-bottom overflow-auto bg-white flex-grow-1">
+      <table class="table light-striped-border" style="table-layout: auto">
+        <tbody>
+          <tr *ngFor="let setting of lstAppSettings">
+            <td class="align-middle">{{setting.detail}}</td>
+            <td *ngIf="editView">
+              <input *ngIf="setting.control_type=='Text'" type="text" formControlName="setting_{{setting.setting_id}}"
+                class="form-control table-td-input" id="setting_{{setting.setting_id}}" autocomplete="off">
+
+              <div *ngIf="setting.control_type=='CheckBox' "
+                class="form-control form-check form-check-inline mt-0 pt-0">
+                <input class="form-check-input" id="setting_{{setting.setting_id}}_No" type="radio"
+                  name="setting_{{setting.setting_id}}" formControlName="setting_{{setting.setting_id}}"
+                  [value]="false">
+                <label class="form-check-label" for="setting_{{setting.setting_id}}_No">No</label>
+                <input class="form-check-input ml-3" id="setting_{{setting.setting_id}}_Yes" type="radio"
+                  name="setting_{{setting.setting_id}}" formControlName="setting_{{setting.setting_id}}" [value]="true">
+                <label class="form-check-label" for="setting_{{setting.setting_id}}_Yes">YES</label>
+              </div>
+            </td>
+            <td *ngIf="!editView">
+              <span *ngIf="setting.control_type=='CheckBox' "> {{setting.value == 'true' ? 'Yes' : 'No'}} </span>
+              <span *ngIf="setting.control_type=='Text' "> {{setting.value}} </span>
+            </td>
+            <td class="w-100" *ngIf="editView">
+              <button class="btn btn-sm btn-link p-0" (click)="setDefualtValue(setting.setting_id)">Set Default
+                Value</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="div-loader-message-box" *ngIf="isLoading">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+</form>

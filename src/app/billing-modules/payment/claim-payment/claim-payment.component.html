@@ -1,0 +1,1058 @@
+<div *ngIf="!showEra && !showEob"
+  class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1 position-relative">
+  <form class="d-flex flex-column flex-grow-1" [formGroup]="formGroup" (keydown.enter)="$event.preventDefault()">
+    <div class="inner-tool-tab h-25 justify-content-between pr-0 flex-shrink-0">
+
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400 d-flex ">Claim Payment
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.claimId!=undefined " class="title-other-info">
+          Claim ID: {{openedClaimInfo.claimId}}
+        </span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.dos!=undefined " class="title-other-info">
+          DOS: {{openedClaimInfo.dos}}
+        </span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.providerName!=undefined " class="title-other-info">
+          Billing Physician: {{openedClaimInfo.providerName}}
+        </span>
+
+      </h4>
+
+      <div class="btn-group pr-2"
+        *ngIf="!entryMode && lookupList.UserRights.payment_add && !this.openedClaimInfo.deleted">
+        <button class="btn btn-link title-bar-blue-btn font-weight-400 p-0" type="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+          <section *ngFor="let ins of lstClaimInsurance">
+            <a class="dropdown-item cursor-default" (click)="addEobEraPayment(ins)">
+              <span class="font-weight-500">Add {{ins.insurace_type}} Payment</span>
+              <span class="row pl-4 ml-4 mr-1">{{ins.name}}</span>
+              <span class="row pl-4 ml-4 mr-1">Policy No: {{ins.policy_number}}</span>
+            </a>
+
+          </section>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item cursor-default" (click)="addEobEraPayment('Patient')">
+            Add Patient EOB Payment
+          </a>
+
+          <a class="dropdown-item cursor-default" (click)="importCashRegisterPayment()">
+            Import Patient Payment
+          </a>
+
+          <a class="dropdown-item cursor-default" (click)="postPatientWreiteOff()">
+            Post Patient Write Off
+          </a>
+
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item cursor-default" (click)="refundPatientPayment()">
+            Refund Patient Payment
+          </a>
+
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="p-6 d-flex flex-column flex-grow-1 overflow-auto overflow-height">
+      <div class="d-flex flex-column flex-shrink-1" *ngIf="entryMode">
+        <div class="info-box-stipes rounded d-flex flex-column flex-grow-1">
+
+          <div class="title-bar px-2">{{selectedInsuranceName}} [{{selectedPaymentSource}}]</div>
+
+          <div class="p-6 pt-0">
+            <div class="row p6">
+              <div class="col-md-4 col-sm-6 col-12 d-flex flex-column">
+                <div class="border rounded flex-grow-1">
+
+                  <div class="px-2 py-1">
+
+                    <div class="form-row form-dashboard border-bottom pb-1 mb-1">
+
+                      <div class="col">
+
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-flex flex-grow-1">
+                            <label class="width-100" for="rbEntryType">Entry Type:</label>
+
+                            <div class="form-check-cont d-flex align-item-center mx-1">
+
+                              <div class="custom-control custom-radio green-radio">
+                                <input class="custom-control-input" type="radio" id="rbPayment_{{controlUniqueId}}"
+                                  formControlName="rbEntryType" name="rbEntryType" value="Payment">
+                                <label class="custom-control-label" for="rbPayment_{{controlUniqueId}}">Payment</label>
+                              </div>
+
+
+                              <div class="custom-control custom-radio green-radio">
+                                <input class="custom-control-input" type="radio" id="rbReversal_{{controlUniqueId}}"
+                                  formControlName="rbEntryType" name="rbEntryType" value="Reversal">
+                                <label class="custom-control-label"
+                                  for="rbReversal_{{controlUniqueId}}">Reversal</label>
+                              </div>
+
+
+                            </div>
+
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="form-row form-dashboard  border-bottom  pb-1 mb-1">
+
+                      <div class="col">
+                        <div class="pl-1 pr-1">
+
+
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <div class="form-group flex-grow-1">
+                              <div class="input-group">
+                                <select class="form-control max-width-100" id="ddEobEraType"
+                                  formControlName="ddEobEraType"
+                                  [ngClass]="{ 'is-invalid' : (formGroup.get('ddEobEraType').errors)}"
+                                  (change)="ddEobEraTypeChanged($event.target.value)">
+                                  <option value="ERA">ERA</option>
+                                  <option value="EOB">EOB</option>
+                                </select>
+                                <input type="text" class="form-control required " placeholder="Enter {{eobEraType}} ID"
+                                  (paste)="onPaste($event,'txtEobEraId')" id="txtEobEraId" autocomplete="off"
+                                  formControlName="txtEobEraId"
+                                  [ngClass]="{ 'is-invalid' : (formGroup.get('txtEobEraId').errors)}"
+                                  (blur)="onEobEraIdFocusOut($event)">
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="form-flex pb-1"
+                            *ngIf="formGroup.get('ddEobEraType').value=='EOB' && isValidPaymentSource && eobEraSourceName!=undefined && isValidEobEraId">
+                            <label class="width-100" for="txtEobEraPageNo">Page Number:</label>
+                            <input type="number" min="1" class="form-control required" id="txtEobEraPageNo"
+                              [ngClass]="{'is-invalid' : formGroup.get('txtEobEraPageNo').errors}"
+                              formControlName="txtEobEraPageNo">
+                          </div>
+
+
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="form-row form-dashboard  pb-1 mb-1">
+
+                      <div class="px6-py3 flex-grow-1 overflow-auto" *ngIf="isEobEraLoading">
+                        <div class="div-loader"></div>
+                      </div>
+
+                      <div class="col" *ngIf="isValidEobEraId && !isEobEraLoading ">
+                        <div class="pl-1 pr-1">
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal width-115">Payment Source:</div>
+                              <div class="value">{{eobEraSourceName}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal width-115"> <span *ngIf="paymentSource!='Credit Card' ">Check
+                                  Number:</span>
+                                <span *ngIf="paymentSource=='Credit Card' ">Trans. ID:</span>
+                              </div>
+                              <div class="value">{{checkNo}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal width-115"> <span *ngIf="paymentSource!='Credit Card' ">Check
+                                  Date:</span>
+                                <span *ngIf="paymentSource=='Credit Card' ">Trans. Date:</span>
+                              </div>
+                              <div class="value">{{checkDate}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal width-115">Check Amount:</div>
+                              <div class="value">{{eobEraCheckAmount |
+                                currency:'USD':'symbol-narrow'}}</div>
+                            </div>
+                          </div>
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal width-115">Posted Amount:</div>
+                              <div class="value">{{eobEraPostedAmount |
+                                currency:'USD':'symbol-narrow'}}</div>
+                            </div>
+                          </div>
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal width-115">Pending For Posting:</div>
+                              <div class="alert py-0 m-0 px-1 font-weight-500" [ngClass]="{'alert-success': (eobEraPendingForPostingAmount>0),
+                                'alert-danger': (eobEraPendingForPostingAmount<=0)}">{{eobEraPendingForPostingAmount |
+                                currency:'USD':'symbol-narrow'}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-flex pb-1 flex-grow-1" *ngIf="!isValidPaymentSource ">
+                            <div class="p-2 fz-12 text-danger">
+                              <i class="fas fa-exclamation-triangle text-danger mr-2"></i>Payment Source Mismatched.
+                            </div>
+                          </div>
+
+
+                          <!--
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtPayerName">Payment Source:</label>
+                            <input type="text" class="form-control " id="txtPayerName" value="{{eobEraSourceName}}"
+                              disabled>
+                          </div>
+
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtCheckNumber">
+
+                              <span *ngIf="paymentSource!='Credit Card' ">Check Number:</span>
+                              <span *ngIf="paymentSource=='Credit Card' ">Trans. ID:</span>
+                            </label>
+                            <input type="text" class="form-control" id="txtCheckNumber" value="{{checkNo}}" disabled>
+                          </div>
+
+
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtCheckDate">
+                              <span *ngIf="paymentSource!='Credit Card' ">Check Date:</span>
+                              <span *ngIf="paymentSource=='Credit Card' ">Trans. Date:</span>
+
+                            </label>
+                            <input type="text" class="form-control " id="txtCheckDate" value="{{checkDate}}" disabled>
+                          </div>
+
+                        
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <div class="col-md-12 col-6">
+                              <span class="form-flex">
+                                <label class="width-100" for="txtPayerName">Check Amount:</label>
+                                <input type="text" class="form-control " id="txtPayerName" value="{{eobEraCheckAmount |
+                                currency:'USD':'symbol-narrow'}}" disabled>
+                              </span>
+
+                            </div>
+
+                            <div class="col-md-12 col-6">
+                              <span class="form-flex">
+                                <label class="width-100" for="txtPayerName">Posted Amount:</label>
+                                <input type="text" class="form-control " id="txtPayerName" value="{{eobEraPostedAmount |
+                                  currency:'USD':'symbol-narrow'}}" disabled>
+                              </span>
+                            </div>
+
+
+
+                          </div>
+                        -->
+
+
+                        </div>
+                      </div>
+
+                      <div class="col" *ngIf="!isValidEobEraId && !isEobEraLoading">
+                        <div class="no-content p-2">
+                          <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Please enter a valid
+                          {{eobEraType}} Id.
+                        </div>
+                      </div>
+
+
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-8 col-sm-6 col-12 d-flex flex-column">
+                <div class="border p-1 rounded flex-grow-1">
+
+                  <div class="px-2 py-1">
+
+                    <div class="form-row form-dashboard  border-bottom  pb-1 mb-1">
+
+                      <div class="col-12">
+
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex flex-grow-1">
+                            <label class="width-100" for="ddProcCode">Procedure Code:</label>
+
+
+                            <select class="form-control required" id="ddProcCode" formControlName="ddProcCode"
+                              #ddProcCode placeholder="Select Procedure"
+                              (change)="ddProcCodeChanged($event.target.selectedIndex)">
+                              <option [ngClass]="{'select-option-disabled': proc.cpt_balance <= 0,
+                                'text-success':proc.cpt_balance == 0,
+                                'text-danger':proc.cpt_balance < 0
+                              }" *ngFor="let proc of lstClaimProcedures" [value]="proc.claim_procedures_id">
+
+                                {{proc.proc_code}}
+                                &nbsp;&nbsp;&nbsp;&nbsp; Charges: {{proc.total_charges |
+                                currency:'USD':'symbol-narrow'}}&nbsp;&nbsp;&nbsp;&nbsp; Balance: {{proc.cpt_balance
+                                |
+                                currency:'USD':'symbol-narrow'}}
+                              </option>
+                            </select>
+
+                          </div>
+
+                        </div>
+
+
+                      </div>
+                    </div>
+
+
+                    <div class="form-row form-dashboard  border-bottom  pb-1 mb-1">
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtAllowedAmount">
+                              Allowed Amount:</label>
+                            <div class="form-group w-100">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" placeholder="0.00" class="form-control required text-right "
+                                  autocomplete="off" id="txtAllowedAmount" formControlName="txtAllowedAmount"
+                                  (blur)="formateCurrencyInputs($event.target)">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtPaidAmount">Paid Amount:</label>
+                            <div class="form-group w-100">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" placeholder="0.00" class="form-control required text-right"
+                                  autocomplete="off" id="txtPaidAmount" formControlName="txtPaidAmount"
+                                  (blur)="formateCurrencyInputs($event.target)">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="form-row form-dashboard  border-bottom  pb-1 mb-1">
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtCoPaymentAmount">
+                              Co-Payment:</label>
+                            <div class="form-group w-100">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" placeholder="0.00" class="form-control required text-right"
+                                  autocomplete="off" id="txtCoPaymentAmount" formControlName="txtCoPaymentAmount"
+                                  (blur)="formateCurrencyInputs($event.target)">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtDeductableAmount">Deductable:</label>
+                            <div class="form-group w-100">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" placeholder="0.00" class="form-control required text-right"
+                                  autocomplete="off" id="txtDeductableAmount" formControlName="txtDeductableAmount"
+                                  (blur)="formateCurrencyInputs($event.target)">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtCoInsuranceAmount">Co-Insurance:</label>
+                            <div class="form-group w-100">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" placeholder="0.00" class="form-control required text-right"
+                                  autocomplete="off" id="txtCoInsuranceAmount" formControlName="txtCoInsuranceAmount"
+                                  (blur)="formateCurrencyInputs($event.target)">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+
+                    <div class="form-row form-dashboard  border-bottom  pb-1 mb-1">
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtWriteOffAmount">Write Off:</label>
+                            <div class="form-group w-100">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" placeholder="0.00" class="form-control required  text-right"
+                                  autocomplete="off" id="txtWriteOffAmount" formControlName="txtWriteOffAmount"
+                                  (blur)="formateCurrencyInputs($event.target)">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100" for="txtRiskAmount">Risk Amount:</label>
+                            <div class="form-group w-100">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" placeholder="0.00" class="form-control required text-right"
+                                  autocomplete="off" id="txtRiskAmount" formControlName="txtRiskAmount"
+                                  (blur)="formateCurrencyInputs($event.target)">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="col-md-4 col-12">
+                        <div class="pl-1 pr-1">
+                          <div class="form-flex pb-1 flex-grow-1">
+                            <label class="width-100">
+                              Ajustment:</label>
+                            <div class="form-group w-100">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                                </div>
+                                <div class="input-group-prepend flex-grow-1">
+                                  <span
+                                    class="input-group-text text-right flex-grow-1 d-flex flex-row-reverse">{{selectedPaymentAdjustment
+                                    | number :'.2-2'}}</span>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="col" *ngIf="isValidEobEraId && isValidPaymentSource 
+                        && !isEobEraLoading && selectedPaymentSource != 'Patient' 
+                        && formGroup.get('ddProcCode').value!=undefined">
+                        <div class="pl-1 pr-1">
+
+                          <div class="border p-1 rounded flex-grow-1">
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-flex pb-1 pl-2 pr-2 flex-grow-1 border-bottom">
+                                <label class="width-100" for="txtCheckNumber">
+                                  Ajustments:</label>
+                                <div class="form-group flex-grow-1 ">
+                                  <div class="input-group">
+                                    <select class="form-control flex-grow-1 mr-1" #ddAdjustmentGroupCode>
+                                      <option *ngFor="let code of lookupList.claimAdjustmentGroupCodesList"
+                                        [value]="code.code">{{code.code}}</option>
+                                    </select>
+                                    <select class="form-control flex-grow-1 mr-1" #ddAdjustmentReasonCode>
+                                      <option *ngFor="let reason of lookupList.claimAdjustmentReasonCodesList"
+                                        [value]="reason.code">{{reason.code}}</option>
+                                    </select>
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" placeholder="0.00" class="form-control text-right mr-1"
+                                      autocomplete="off" #txtAdjustAmount (blur)="formateCurrencyInputs($event.target)"
+                                      (keydown.enter)="addProcedureAdjustments(ddAdjustmentGroupCode.value,ddAdjustmentReasonCode.value,txtAdjustAmount.value)">
+                                    <div class="input-group-append" id="button-addon4">
+                                      <button class="btn btn-sm fz-12 pt-0 pb-0 btn-outline-primary" type="button"
+                                        (click)="addProcedureAdjustments(ddAdjustmentGroupCode.value,ddAdjustmentReasonCode.value,txtAdjustAmount.value)">Add</button>
+                                    </div>
+
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+
+                            <div class="overflow-auto row mt-8 pl-4 pr-4">
+
+                              <div class="col-md-4 col-12" *ngFor="let adj of lstPaymentSingleEntryAdjustments">
+                                <div class="pl-1 pr-1 pb-1 fz-12">
+                                  <span class="pr-2">{{adj.adjust_code}} : {{adj.adjust_amount |
+                                    currency:'USD':'symbol-narrow'}} </span><a class="cursor-default btn-delete"
+                                    (click)="removeAdjustment(adj.adjustment_id)"><i
+                                      class="far fa-times-circle fa-md"></i></a>
+                                </div>
+                              </div>
+
+                            </div>
+
+
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="row pt-2">
+                      <div class="col-12 d-flex justify-content-between">
+
+                        <div class="alert alert-primary rounded-3 fz-12 py-1 px-2 m-0" role="alert" [ngClass]="{'alert-success': runningCptBalance==0,
+                          'alert-danger' : runningCptBalance<0
+                        }">
+                          Procedure Running Balance : {{runningCptBalance | currency:'USD':'symbol-narrow'}}
+                        </div>
+
+                        <button type="button" class="btn btn-outline-success btn-sm fz-12"
+                          [ngClass]="{'cursor-not-allowed' : (!formGroup.valid || !isValidEobEraId || !isValidPaymentSource || isEobEraLoading)}"
+                          [disabled]="!formGroup.valid || !isValidEobEraId || !isValidPaymentSource || isEobEraLoading"
+                          (click)="addPaymentToSaveList_Clicked(formGroup.value)">Add
+                          to Save List</button>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="d-flex flex-column flex-grow-1 my-1" *ngIf="entryMode">
+        <div class="info-box-stipes rounded d-flex flex-column flex-grow-1">
+
+          <div class="title-bar pl-2">
+            <div class="d-flex flex-grow-1 justify-content-between">
+              <div class="pt-1">Save List</div>
+              <ul class="nav color-buttons align-items-center h-25">
+                <a class="nav-link green px-2 py-0 cursor-pointer" (click)="savePayment()">Save</a>
+                <a class="nav-link bg-dark px-2 py-0 cursor-pointer top-right-radius"
+                  (click)="cancelClicked()">Cancel</a>
+              </ul>
+            </div>
+          </div>
+
+          <div class="overflow-auto max-height-100 flex-grow-1">
+            <table class="table sm layout-fixed light-striped-border">
+              <thead>
+                <tr>
+                  <th class="width-30"></th>
+                  <th class="width-80">CPT</th>
+                  <th class="width-70 text-right">Allowed</th>
+                  <th class="width-70 text-right">Paid</th>
+                  <th class="width-80 text-right">Adjustment</th>
+                  <th class="width-70 text-right">Write Off</th>
+                  <th class="width-95 text-center">Reference #</th>
+                  <th class="width-55 text-center">Page#</th>
+                  <th class="width-70 text-right">Copay</th>
+                  <th class="width-80 text-right">Deductable</th>
+                  <th class="width-70 text-right">Co-Ins</th>
+                  <th class="width-120">Check Number</th>
+                  <th class="width-80">Check Date</th>
+                  <th class="width-75 text-right">Risk Amt.</th>
+                  <th class="width-100">Policy Number</th>
+                  <th class="width-120">Entry Type</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let paymentDetail of lstClaimPayment | listFilterWithNumericCondition:'claim_payments_id':'<':0 ">
+                  <td class="width-30">
+                    <a class="p-0 btn-delete"><i class="far fa-trash-alt fa-md"
+                        (click)="removePaymentFromSaveList(paymentDetail.claim_payments_id)"></i></a>
+                  </td>
+                  <td class="width-80" title="{{paymentDetail.source_description}}">
+                    {{paymentDetail.charged_procedure_with_modifier}}
+                  </td>
+                  <td class="text-right width-70">{{paymentDetail.allowed_amount |
+                    currency:'USD':'symbol-narrow'}}</td>
+                  <td class="text-right width-70">{{paymentDetail.paid_amount |
+                    currency:'USD':'symbol-narrow'}}</td>
+                  <td class="text-right width-80 text-info" data-html="true" data-toggle="tooltip" data-placement="top"
+                    title="{{paymentDetail.adjustment_details}}">{{paymentDetail.adjusted_amount |
+                    currency:'USD':'symbol-narrow'}}
+                  </td>
+                  <td class="text-right width-70">{{paymentDetail.writeoff_amount |
+                    currency:'USD':'symbol-narrow'}}</td>
+                  <td class="width-95">{{paymentDetail.eob_era_id}}</td>
+                  <td class="text-center width-55">{{paymentDetail.eob_page_no}}</td>
+                  <td class="text-right width-70">{{paymentDetail.copay_amount |
+                    currency:'USD':'symbol-narrow'}}</td>
+                  <td class="text-right width-80">{{paymentDetail.deductable_amount |
+                    currency:'USD':'symbol-narrow'}}</td>
+                  <td class="text-right width-70">{{paymentDetail.coinsurance_amount |
+                    currency:'USD':'symbol-narrow'}}</td>
+                  <td class="width-120">{{paymentDetail.check_number}}</td>
+                  <td class="width-80">{{paymentDetail.check_date}}</td>
+                  <td class="text-right width-75">{{paymentDetail.risk_amount |
+                    currency:'USD':'symbol-narrow'}}</td>
+                  <td class="width-100">{{paymentDetail.policy_number }}</td>
+                  <td class="width-120">{{paymentDetail.entry_type}}</td>
+
+
+                </tr>
+
+              </tbody>
+
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="d-flex flex-column flex-grow-1">
+        <div class="info-box-stipes rounded d-flex flex-column flex-grow-1">
+          <div class="title-bar px-2">
+            <div class="d-flex flex-grow-1 justify-content-between">
+              <div>Payment Details</div>
+              <div class="text-right" *ngIf="!entryMode">
+                <a class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                  (click)="showClaimPaymentEobEraInfo()">EOB/ERA
+                  Details</a>
+                <a class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                  (click)="showAdjustmentCodesGlossary()">Adjustment Codes Glossary</a>
+
+
+                <a class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 "
+                  (click)="loadPaymentDetails()">
+                  <i class="fas fa-redo"></i>
+                </a>
+
+                <!--
+                <a class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="loadPaymentDetails()">
+                  <img alt="" class="img-h-24" src="./assets/images/icons/ico_refresh_green.svg">
+                </a>
+                -->
+              </div>
+            </div>
+          </div>
+
+          <div class="overflow-auto max-height-100 flex-grow-1">
+
+            <table class="table sm layout-fixed light-striped-border">
+              <thead>
+                <tr>
+                  <th class="width-100">CPT</th>
+                  <th class="width-70 text-right ">Charges</th>
+                  <th class="width-70 text-right">Balance</th>
+                  <th class="width-70 text-right">Allowed</th>
+                  <th class="width-70 text-right">Paid</th>
+                  <th class="width-80 text-right">Adjustment</th>
+                  <th class="width-70 text-right">Write Off</th>
+                  <th class="width-95 text-center">Reference #</th>
+                  <th class="width-55 text-center">Page#</th>
+                  <th class="width-70 text-right">Copay</th>
+                  <th class="width-80 text-right">Deductable</th>
+                  <th class="width-70 text-right">Co-Ins</th>
+                  <th class="width-120">Check Number</th>
+                  <th class="width-80">Check Date</th>
+                  <th class="width-75 text-right">Risk Amt.</th>
+                  <th class="width-100">Policy Number</th>
+                  <th class="width-120">Entry Type</th>
+                  <th class="width-135">Entry Date</th>
+                  <th class="width-140">&nbsp;</th>
+                </tr>
+
+              </thead>
+
+              <ng-container *ngFor="let group of lstClaimPaymentProcedureGroup">
+
+                <thead>
+                  <tr data-toggle="collapse" attr.data-target="#claimPayment{{group.claim_procedures_id}}"
+                    class="accordion-toggle table-group-row  ">
+
+                    <th class="accordian-link">
+                      {{group.charged_procedure_with_modifier}}
+                    </th>
+
+                    <th class="text-right ">{{group.total_charges |
+                      currency:'USD':'symbol-narrow'}}</th>
+                    <th class="text-right " [ngClass]="{'text-brown': group.cpt_balance<0,
+                    'text-success': group.cpt_balance==0}">{{group.cpt_balance | currency:'USD':'symbol-narrow'}}</th>
+                    <th class="text-right ">&nbsp;</th>
+                    <th class="text-right ">{{group.paid_amount | currency:'USD':'symbol-narrow'}}</th>
+                    <th class="text-right ">{{group.adjusted_amount |
+                      currency:'USD':'symbol-narrow'}}</th>
+                    <th class="text-right">{{group.writeoff_amount |
+                      currency:'USD':'symbol-narrow'}}</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th class="text-right ">{{group.copay_amount | currency:'USD':'symbol-narrow'}}</th>
+                    <th class="text-right ">{{group.deductable_amount |
+                      currency:'USD':'symbol-narrow'}}</th>
+                    <th class="text-right ">{{group.coinsurance_amount |
+                      currency:'USD':'symbol-narrow'}}</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th class="text-right">{{group.risk_amount | currency:'USD':'symbol-narrow'}}</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+
+                <tbody class="accordian-body collapse p-0 m-0" id="claimPayment{{group.claim_procedures_id}}">
+                  <tr
+                    *ngFor="let paymentDetail of lstClaimPayment | listFilter : 'claim_procedures_id' : group.claim_procedures_id"
+                    [ngClass]="{'text-primary': paymentDetail.claim_payments_id <= 0 }">
+
+                    <td colspan="3" class="td-payment-source pl-4" title="{{paymentDetail.source_description}}">
+                      {{paymentDetail.source_description}}
+                    </td>
+                    <td class="text-right ">{{paymentDetail.allowed_amount |
+                      currency:'USD':'symbol-narrow'}}</td>
+                    <td class="text-right ">{{paymentDetail.paid_amount |
+                      currency:'USD':'symbol-narrow'}}</td>
+                    <td class="text-right  text-info" data-html="true" data-toggle="tooltip" data-placement="top"
+                      title="{{paymentDetail.adjustment_details}}">{{paymentDetail.adjusted_amount
+                      |
+                      currency:'USD':'symbol-narrow'}}
+                    </td>
+                    <td class="text-right ">{{paymentDetail.writeoff_amount |
+                      currency:'USD':'symbol-narrow'}}</td>
+
+                    <td>
+                      <span
+                        *ngIf="lookupList.logedInUser.userType.toString().toUpperCase()!='BILLING' || paymentDetail.payment_source=='Patient'">{{paymentDetail.eob_era_id}}</span>
+                      <button type="button" class="link-btn pl-2" (click)="openEOB_ERA(paymentDetail)"
+                        *ngIf="lookupList.logedInUser.userType.toString().toUpperCase()=='BILLING' &&  paymentDetail.payment_source!='Patient'">{{paymentDetail.eob_era_id}}</button>
+                    </td>
+
+                    <td class="text-center ">{{paymentDetail.eob_page_no}}</td>
+                    <td class="text-right ">{{paymentDetail.copay_amount |
+                      currency:'USD':'symbol-narrow'}}</td>
+                    <td class="text-right ">{{paymentDetail.deductable_amount |
+                      currency:'USD':'symbol-narrow'}}</td>
+                    <td class="text-right">{{paymentDetail.coinsurance_amount |
+                      currency:'USD':'symbol-narrow'}}</td>
+                    <td>{{paymentDetail.check_number}}</td>
+                    <td>{{paymentDetail.check_date}}</td>
+                    <td class="text-right">{{paymentDetail.risk_amount |
+                      currency:'USD':'symbol-narrow'}}</td>
+                    <td>{{paymentDetail.policy_number }}</td>
+                    <td>{{paymentDetail.entry_type}}</td>
+                    <td>{{paymentDetail.client_date_created}}</td>
+                    <td>
+
+
+                      <button type="button" class="btn btn-outline-primary px-2 py-0 fz-12 mr-1"
+                        [ngClass]="{'cursor-not-allowed' : entryMode }" [disabled]="entryMode"
+                        *ngIf="lookupList.UserRights.payment_add && !this.openedClaimInfo.deleted"
+                        (click)="rectifyPayment_Clicked(paymentDetail.claim_payments_id,paymentDetail.eob_era_id_type)">Rectify</button>
+
+                      <button type="button" class="btn btn-outline-primary px-2 py-0 fz-12"
+                        [ngClass]="{'cursor-not-allowed' : entryMode }"
+                        *ngIf="paymentDetail.payment_source=='Patient' && paymentDetail.paid_amount > 0  && lookupList.UserRights.payment_add  && !this.openedClaimInfo.deleted"
+                        [disabled]="entryMode" (click)="transferPatientPayment(paymentDetail)">Transfer</button>
+
+                    </td>
+                  </tr>
+                </tbody>
+
+
+              </ng-container>
+
+              <!--
+              <tbody>
+                <tr *ngFor="let group of lstClaimPaymentProcedureGroup">
+
+                  <table class="table sm layout-fixed light-striped-border">
+                    <thead>
+                      <tr data-toggle="collapse" attr.data-target="#claimPayment{{group.claim_procedures_id}}"
+                        class="accordion-toggle table-group-row  ">
+
+                        <th class="width-100 accordian-link">
+                          {{group.charged_procedure_with_modifier}}
+                        </th>
+
+                        <th class="text-right width-70">{{group.total_charges |
+                          currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right width-70" [ngClass]="{'text-brown': group.cpt_balance<0,
+                        'text-success': group.cpt_balance==0}">{{group.cpt_balance | currency:'USD':'symbol-narrow'}}
+                        </th>
+                        <th class="text-right width-70">&nbsp;</th>
+                        <th class="text-right width-70">{{group.paid_amount | currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right width-80">{{group.adjusted_amount |
+                          currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right width-70">{{group.writeoff_amount |
+                          currency:'USD':'symbol-narrow'}}</th>
+                        <th class="width-95">&nbsp;</th>
+                        <th class="width-55">&nbsp;</th>
+                        <th class="text-right width-70">{{group.copay_amount | currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right width-80">{{group.deductable_amount |
+                          currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right width-70">{{group.coinsurance_amount |
+                          currency:'USD':'symbol-narrow'}}</th>
+                        <th class="width-100">&nbsp;</th>
+                        <th class="width-80">&nbsp;</th>
+                        <th class="text-right width-75">{{group.risk_amount | currency:'USD':'symbol-narrow'}}</th>
+                        <th class="width-100">&nbsp;</th>
+                        <th class="width-120">&nbsp;</th>
+                        <th class="width-135">&nbsp;</th>
+                        <th class="width-140">&nbsp;</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr style="height: unset; ">
+                        <td colspan="21" class="hiddenRow p-0">
+                          <div class="accordian-body collapse p-0 m-0" id="claimPayment{{group.claim_procedures_id}}">
+                            <table class="table sm layout-fixed light-striped-border">
+                              <tr
+                                *ngFor="let paymentDetail of lstClaimPayment | listFilter : 'claim_procedures_id' : group.claim_procedures_id"
+                                [ngClass]="{'text-primary': paymentDetail.claim_payments_id <= 0 }">
+
+                                <td colspan="3" class="width-240 td-payment-source pl-4"
+                                  title="{{paymentDetail.source_description}}">{{paymentDetail.source_description}}
+                                </td>
+                                <td class="text-right width-70">{{paymentDetail.allowed_amount |
+                                  currency:'USD':'symbol-narrow'}}</td>
+                                <td class="text-right width-70">{{paymentDetail.paid_amount |
+                                  currency:'USD':'symbol-narrow'}}</td>
+                                <td class="text-right width-80 text-info" data-html="true" data-toggle="tooltip"
+                                  data-placement="top" title="{{paymentDetail.adjustment_details}}">{{paymentDetail.adjusted_amount
+                                  |
+                                  currency:'USD':'symbol-narrow'}}
+                                </td>
+                                <td class="text-right width-70">{{paymentDetail.writeoff_amount |
+                                  currency:'USD':'symbol-narrow'}}</td>
+
+                                <td class="width-95">
+                                  <span
+                                    *ngIf="lookupList.logedInUser.userType.toString().toUpperCase()!='BILLING' || paymentDetail.payment_source=='Patient'">{{paymentDetail.eob_era_id}}</span>
+                                  <button type="button" class="link-btn" (click)="openEOB_ERA(paymentDetail)"
+                                    *ngIf="lookupList.logedInUser.userType.toString().toUpperCase()=='BILLING' &&  paymentDetail.payment_source!='Patient'">{{paymentDetail.eob_era_id}}</button>
+                                </td>
+
+                                <td class="text-center width-55">{{paymentDetail.eob_page_no}}</td>
+                                <td class="text-right width-70">{{paymentDetail.copay_amount |
+                                  currency:'USD':'symbol-narrow'}}</td>
+                                <td class="text-right width-80">{{paymentDetail.deductable_amount |
+                                  currency:'USD':'symbol-narrow'}}</td>
+                                <td class="text-right width-70">{{paymentDetail.coinsurance_amount |
+                                  currency:'USD':'symbol-narrow'}}</td>
+                                <td class="width-120">{{paymentDetail.check_number}}</td>
+                                <td class="width-80">{{paymentDetail.check_date}}</td>
+                                <td class="text-right width-75">{{paymentDetail.risk_amount |
+                                  currency:'USD':'symbol-narrow'}}</td>
+                                <td class="width-100">{{paymentDetail.policy_number }}</td>
+                                <td class="width-120">{{paymentDetail.entry_type}}</td>
+                                <td class="width-135">{{paymentDetail.client_date_created}}</td>
+                                <td class="width-140">
+
+
+                                  <button type="button" class="btn btn-outline-primary px-2 py-0 fz-12 mr-1"
+                                    [ngClass]="{'cursor-not-allowed' : entryMode }" [disabled]="entryMode"
+                                    *ngIf="lookupList.UserRights.payment_add && !this.openedClaimInfo.deleted"
+                                    (click)="rectifyPayment_Clicked(paymentDetail.claim_payments_id,paymentDetail.eob_era_id_type)">Rectify</button>
+
+                                  <button type="button" class="btn btn-outline-primary px-2 py-0 fz-12"
+                                    [ngClass]="{'cursor-not-allowed' : entryMode }"
+                                    *ngIf="paymentDetail.payment_source=='Patient' && paymentDetail.paid_amount > 0  && lookupList.UserRights.payment_add  && !this.openedClaimInfo.deleted"
+                                    [disabled]="entryMode"
+                                    (click)="transferPatientPayment(paymentDetail)">Transfer</button>
+
+                                </td>
+                              </tr>
+
+                            </table>
+
+                          </div>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+
+                </tr>
+              </tbody>
+              -->
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-shrink-0">
+      <table class="table sm layout-fixed light-striped-border summary">
+        <thead>
+          <tr>
+            <th>Claim Total</th>
+            <th>Primary Paid</th>
+            <th>Secondary Paid</th>
+            <th>Tertiary Paid</th>
+            <th>Patient Paid</th>
+            <th>Adjusted</th>
+            <th>Write Off</th>
+            <th>Risk</th>
+            <th>Claim Balance</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>{{claimTotalCharges | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{claimTotalPriPaid | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{claimTotalSecPaid | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{claimTotalOthPaid | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{claimTotalPatientPaid | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{claimTotalAdjustedAmount | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{claimTotalWriteOffAmount | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{claimTotalRiskAmount | currency:'USD':'symbol-narrow'}}</td>
+            <td class="summary">
+              {{claimBalance | currency:'USD':'symbol-narrow'}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+  </form>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isSaving">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Saving Claim
+    </div>
+  </div>
+</div>
+
+
+<div class="d-flex flex-column flex-grow-1" *ngIf="showEra">
+
+
+  <div class="light-title-bar h-25 pl-1 pr-2 d-flex align-items-center flex-shrink-0">
+    <button type="button" class="btn btn-link title-bar-blue-btn px-1 mr-1 py-0 fz-12" (click)="callBack()">
+      <i class="fas fa-lg fa-arrow-circle-left mr-1"></i> Back to Payment
+    </button>
+    <div class="d-flex flex-grow-1 align-content-between">
+
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400 d-flex ">
+        <span class=" text-ihc-dark-blue">ERA</span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.claimId!=undefined " class="title-other-info">
+          ERA ID: {{eraIdToView}}
+        </span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.claimId!=undefined " class="title-other-info">
+          Claim ID: {{openedClaimInfo.claimId}}
+        </span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.dos!=undefined " class="title-other-info">
+          DOS: {{openedClaimInfo.dos}}
+        </span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.providerName!=undefined " class="title-other-info">
+          Billing Physician: {{openedClaimInfo.providerName}}
+        </span>
+
+      </h4>
+    </div>
+  </div>
+
+
+  <era class="d-flex flex-column flex-grow-1" [eraIdSearch]="eraIdToView" callingFrom="claim_payment"
+    [claimIdSearch]="openedClaimInfo.claimId">
+  </era>
+
+</div>
+
+<div class="d-flex flex-column flex-grow-1" *ngIf="showEob">
+
+
+  <div class="light-title-bar h-25 pl-1 pr-2 d-flex align-items-center flex-shrink-0">
+    <button type="button" class="btn btn-link title-bar-blue-btn px-1 mr-1 py-0 fz-12" (click)="callBack()">
+      <i class="fas fa-lg fa-arrow-circle-left mr-1"></i> Back to Payment
+    </button>
+    <div class="d-flex flex-grow-1 align-content-between">
+
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400 d-flex">
+        <span class=" text-ihc-dark-blue">EOB</span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.claimId!=undefined " class="title-other-info">
+          EOB ID: {{eraIdToView}}
+        </span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.claimId!=undefined " class="title-other-info">
+          Claim ID: {{openedClaimInfo.claimId}}
+        </span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.dos!=undefined " class="title-other-info">
+          DOS: {{openedClaimInfo.dos}}
+        </span>
+        <span class="v-separtor"></span>
+        <span *ngIf="openedClaimInfo.providerName!=undefined " class="title-other-info">
+          Billing Physician: {{openedClaimInfo.providerName}}
+        </span>
+
+      </h4>
+    </div>
+  </div>
+
+
+  <eob class="d-flex flex-column flex-grow-1" [eobIdSearch]="eraIdToView" callingFrom="claim_payment">
+  </eob>
+
+</div>

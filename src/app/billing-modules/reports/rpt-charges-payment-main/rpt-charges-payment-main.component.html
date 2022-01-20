@@ -1,0 +1,33 @@
+<ngb-tabset [destroyOnHide]="false"
+  class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden">
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Daily Charges Payment</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-daily-charges-payment-summary class="d-flex flex-column flex-grow-1 "></rpt-daily-charges-payment-summary>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Monthly Charges Payment</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-month-wise-charges-payment class="d-flex flex-column flex-grow-1"></rpt-month-wise-charges-payment>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Provider Charges Payment</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-provider-wise-collection class="d-flex flex-column flex-grow-1">
+      </rpt-provider-wise-collection>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Daily Payment</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-daily-payment-summary class="d-flex flex-column flex-grow-1 "></rpt-daily-payment-summary>
+    </ng-template>
+  </ngb-tab>
+
+
+</ngb-tabset>

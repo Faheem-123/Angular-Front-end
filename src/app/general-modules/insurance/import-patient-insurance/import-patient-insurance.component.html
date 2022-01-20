@@ -1,0 +1,58 @@
+<div class="modal-header custom" (keydown.esc)="activeModal.dismiss('Cross click')">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Patient Insurances [ {{status.toUpperCase()}} ]</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom position-relative p-0" (keydown.esc)="activeModal.dismiss('Cross click')">
+
+  <div class="no-content p-2" *ngIf="!isLoading && (lstPatientInsurance==undefined || lstPatientInsurance.length==0 )">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+  </div>
+
+  <div class="overflow-auto">
+    <table class="table sm layout-fixed light-striped-border"
+      *ngIf="(lstPatientInsurance!=undefined && lstPatientInsurance.length > 0 )">
+      <thead>
+        <tr>
+          <th class="width-200">Name</th>
+          <th class="width-250">Address</th>
+          <th class="width-80">Type</th>
+          <th class="width-80">Policy No</th>
+          <th class="width-80">Start Date</th>
+          <th class="width-80">End Date</th>
+          <th class="width-120">Guarantor</th>
+          <th class="width-150">Worker Comp Name</th>
+          <th class="width-150">Worker Comp Address</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let ins of lstPatientInsurance">
+          <td title="{{ins.name}}">
+            <button type="button" class="link-btn" (click)="onImportInactiveInsurance(ins)">{{ins.name}}</button>
+          </td>
+          <td title="{{ins.address}}">{{ins.address}}</td>
+          <td title="{{ins.insurace_type}}">{{ins.insurace_type}}</td>
+          <td title="{{ins.policy_number}}">{{ins.policy_number}}</td>
+          <td title="{{ins.issue_date}}">{{ins.issue_date}}</td>
+          <td title="{{ins.end_date}}">{{ins.end_date}}</td>
+          <td title="{{ins.guarantor_name}}">{{ins.guarantor_name}}</td>
+          <td title="{{ins.workercomp_name}}">{{ins.workercomp_name}}</td>
+          <td title="{{ins.workercomp_address}}">{{ins.workercomp_address}}</td>
+        </tr>
+      </tbody>
+
+
+    </table>
+  </div>
+
+</div>
+
+
+<div class="modal-footer custom">
+
+  <button style="width: 80px;" class="btn btn-secondary btn-sm" type="button"
+    (click)="activeModal.dismiss('Cross click')">Close</button>
+</div>

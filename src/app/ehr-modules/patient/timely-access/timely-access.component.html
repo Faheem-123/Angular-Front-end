@@ -1,0 +1,70 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Timely Access [ {{patientName}} ]</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body modal-width-800 p-0" style="height: 550px">
+
+  <patient-api-users class="d-flex flex-column flex-grow-1 h-100 p-8" [callingFrom]="callingFrom" [patientId]="patientId" >
+  </patient-api-users>
+
+
+</div>
+
+<div id="report" class="report" *ngIf="canPrint">
+  <div class="report">
+    <div class="text-center">
+
+      <h4 class="report-print-heading-01">{{lookupList.practiceInfo.practiceName}}</h4>
+      <h6 class="report-print-heading-03">3727 W WISCONSIN AVE</h6>
+      <h6 class="report-print-heading-04">53208 MILWAUKEE WI</h6>
+
+    </div>
+
+    <div class="content">
+      <div class="border-bottom py-2 ">
+        <h3 class="report-print-label">Patient Name: <span class="report-print-value">{{patient_name }}</span></h3>
+        <h3 class="report-print-label pt-1">DOB: <span class="report-print-value">{{patient_dob }}</span></h3>
+      </div>
+
+      <div class="py-2">
+        <p class="report-print-details">
+          Instant Health Care Patient Electronic Access contains detail from your medical record, managed by
+          theclinic named below. Access to this portal is being provided to you in accordance with criteria defined
+          in 45 CFR Part170 Subpart C of the Final Rule for Health Information Technology, as published in the
+          Federal Register on July 28,2010.<br><br>It is your exclusive responsibility to keep the information on
+          this form safe. You may access your health record at anytime from an internet enabled computer. Do not
+          share this information with anyone. If you lose this information, or if you believe your access codes
+          have been compromised, call your clinic immediately and ask for a Patient Access reset.<br><br>Receipt
+          and acceptance of this form represents your acceptance and agreement to the Terms and Conditions of
+          use,set forth by your clinic and Instant Health Care.<br><br>Use following Link, username and password
+          provided by the clinic staff to access your health record.
+        </p>
+      </div>
+
+      <div class="d-flex border-top pt-2">
+        <div class="flex-grow-1 pr-3">
+          <h3 class="report-print-label">Date: <span
+              class="report-print-value">{{this.dateTimeUtil.getCurrentDateTimeString()}}</span></h3>
+          <h3 class="report-print-label pt-1">Patient Portal: <span
+              class="report-print-value">https://instanthealthcare.net/phr/app/</span></h3>
+          <h3 class="report-print-label pt-1">User Name: <span class="report-print-value">Demo</span></h3>
+
+          <p class="report-print-footer-details pt-2">We are committed to providing quality health care and respecting
+            the privacy and confidentiality of your medical information. Our policies and procedures regarding access to
+            and release of medical
+            records confirm to state and federal laws and are designed to safeguard your privacy.</p>
+        </div>
+
+        <div>
+          <img src="./assets/images/logoAboutUs.png" alt="" style="width:70px;">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

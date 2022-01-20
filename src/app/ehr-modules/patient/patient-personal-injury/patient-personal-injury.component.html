@@ -1,0 +1,214 @@
+<div class="dashboard-container d-flex flex-column mb-0 mt-8-px">
+    <div class="dashboard">
+        <div class="dashboard-title justify-content-between">
+            <div class="title">Personal Injury</div>
+            <!-- <div class="p-0">
+              <button class="btn btn-success btn-sm mr-2" (click)="addNewInjury()" *ngIf="!dashboardAddEdit">Add New</button>
+              <button class="btn btn-link p-0" type="button" ><i class="fas fa-sync-alt"></i></button>
+          </div> -->
+            <div class="flex-grow-1"></div>
+            <div class="d-flex">
+                <div class="d-flex" *ngIf="!dashboardAddEdit">
+                    <button class="btn btn-success btn-sm mr-2" (click)="addNewInjury()"><i class="fas fa-plus"></i>Add
+                        New</button>
+                </div>
+                <ul class="nav color-buttons align-items-center">
+                    <a class="nav-link bg-dark px-2 py-0 mr-1" href="#" (click)="cancelPersonalInjury()"
+                        *ngIf="dashboardAddEdit">Cancel</a>
+                    <a class="nav-link bg-success px-2 py-0" href="#"
+                        (click)="savePersonalInjury(patPersonalInjury.value)" *ngIf="dashboardAddEdit">Save</a>
+                </ul>
+            </div>
+
+        </div>
+
+      
+
+        <div class="dashboard-content border-top-0 light-gray-bg mt-0 d-flex flex-column">
+            <div class="border rounded bg-white p-6 m-8" *ngIf="dashboardAddEdit">
+
+                <form [formGroup]="patPersonalInjury">
+                    <div class="p-6 pt-0">
+                        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Attorney Information</h4>
+                        <div class="form-row form-dashboard">
+                            <div class="form-group col-md-8 col-sm-6 col-12">
+                                <label for="input1">Firm Name</label>
+
+                                <input id="txtfirmname" class="form-control search-highlight flex-grow-3" type="text"
+                                    placeholder="Search Firm Name" (keydown)="onFirmSearchKeydown($event)" #txtfirmname
+                                    autocomplete="off">
+
+                                <inline-firm-search *ngIf="showFirmSearch" searchValue="{{txtfirmname.value}}"
+                                    (onFirmSelect)="addFirm($event)" (onClose)="closeFirmSearch($event)">
+                                </inline-firm-search>
+                                <!-- <input formControlName="txtfirmname" class="form-control flex-grow-3" 
+                          type="text" placeholder="Firm Name"> -->
+                            </div>
+                            <div class="form-group col-md-4 col-sm-6 col-12">
+                                <label for="input2">Attorney Name</label>
+                                <input type="text" class="form-control" id="txtattorney" placeholder="Attorney Name"
+                                    formControlName="txtattorneyname">
+                            </div>
+                        </div>
+
+                        <div class="form-row form-dashboard">
+
+
+                            <div class="form-group col-md-8 col-sm-12 col-12">
+                                <label for="input4">Firm Address</label>
+                                <input type="text" class="form-control" id="txtfrmaddress" placeholder="Firm Address"
+                                    formControlName="txtfirmaddress">
+                            </div>
+                            <div class="form-group col-md-2 col-sm-12 col-12">
+                                <label for="input4">Phone No</label>
+                                <input type="text" class="form-control" id="txtphoneno" placeholder="Phone No"
+                                    formControlName="txtphone">
+                            </div>
+                            <div class="form-group col-md-2 col-sm-12 col-12">
+                                <label for="input4">Fax No</label>
+                                <input type="text" class="form-control" id="txtfaxno" placeholder="Fax No"
+                                    formControlName="txtfaxno">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 pt-0">
+                        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Insurance Information</h4>
+                        <div class="form-row form-dashboard">
+                            <div class="form-group col-md-8 col-sm-6 col-12">
+                                <label for="input1">Insurance Name</label>
+                                <div class="input-icon d-flex flex-grow-3">
+
+                                    <input id="txtInsuranceName" class="form-control search-highlight flex-grow-3"
+                                        type="text" placeholder="Search Insurance"
+                                        (keydown)="onInsuranceSearchKeydown($event)" #txtInsuranceName
+                                        autocomplete="off">
+
+                                    <inline-insurance-search *ngIf="showInsuranceSearch"
+                                        searchValue="{{txtInsuranceName.value}}" (onSelect)="addInsurance($event)"
+                                        (onClose)="closeInsuranceSearch($event)"></inline-insurance-search>
+
+
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2 col-sm-6 col-12">
+                                <label for="input2">Start Date</label>
+                                <div class="input-group">
+                                    <input id="txtstartdate" formControlName="txtstartdate" class="form-control"
+                                        placeholder="mm/dd/yyyy" name="txtstartdate" ngbDatepicker
+                                        #txtstartdate="ngbDatepicker">
+
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-outline-primary" (click)="txtstartdate.toggle()"
+                                            type="button">
+                                            <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2 col-sm-6 col-12">
+                                <label for="input2">End Date</label>
+                                <div class="input-group">
+                                    <input id="txtenddate" formControlName="txtenddate" class="form-control"
+                                        placeholder="mm/dd/yyyy" name="txtenddate" ngbDatepicker
+                                        #txtenddate="ngbDatepicker">
+
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-outline-primary" (click)="txtenddate.toggle()"
+                                            type="button">
+                                            <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-dashboard">
+
+
+                            <div class="form-group col-md-4 col-sm-12 col-12">
+                                <label for="input4">Adjuster Name </label>
+                                <input type="text" class="form-control" id="input9" placeholder="Adjuster Name"
+                                    formControlName="txtadjustername">
+                            </div>
+                            <div class="form-group col-md-2 col-sm-12 col-12">
+                                <label for="input4">Adjuster Phone </label>
+                                <input type="text" class="form-control" id="input10" placeholder="Adjuster Phone"
+                                    formControlName="txtadjusterphone">
+                            </div>
+                            <div class="form-group col-md-2 col-sm-12 col-12">
+                                <label for="input4">Adjuster Fax</label>
+                                <input type="text" class="form-control" id="input11" placeholder="Adjuster Fax"
+                                    formControlName="txtadjusterfax">
+                            </div>
+
+                            <div class="form-group col-md-2 col-sm-12 col-12">
+                                <label for="input4">Claim#</label>
+                                <input type="text" class="form-control" id="input12" placeholder="Claim #"
+                                    formControlName="txtclaimno">
+                            </div>
+                            <div class="form-group col-md-2 col-sm-12 col-12">
+                                <label for="input4">Account Date</label>
+                                <div class="input-group">
+                                    <input id="txtaccountdate" formControlName="txtaccountdate" class="form-control"
+                                        placeholder="mm/dd/yyyy" name="txtaccountdate" ngbDatepicker
+                                        #txtaccountdate="ngbDatepicker">
+
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-outline-primary" (click)="txtaccountdate.toggle()"
+                                            type="button">
+                                            <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="overflow-auto bg-white flex-grow-1">
+                <table class="table light-striped-border" [ngClass]="{'disabled': dashboardAddEdit}">
+                    <thead>
+                        <tr>
+                            <th>Firm Name</th>
+                            <th>Attorney Name</th>
+                            <th>Insurance</th>
+                            <th>Adjuster Name</th>
+                            <th>Adj Phone</th>
+                            <th>Adj Fax</th>
+                            <th>Acc Date</th>
+                            <th>Claim No</th>
+                            <th width="60px">&nbsp;</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr st-select-row="row" *ngFor="let inj of listInjuryResult" (click)="selectionChange(inj)"
+                            [ngClass]="{'active' : (inj.injury_id === isSelectedRowID)}">
+                            <td>{{inj.firm_name}}</td>
+                            <td>{{inj.attorney_name}}</td>
+                            <td>{{inj.ins_name}}</td>
+                            <td>{{inj.adj_name}}</td>
+                            <td>{{inj.adj_phone}}</td>
+                            <td>{{inj.adj_fax}}</td>
+                            <td>{{inj.acc_date}}</td>
+                            <td>{{inj.claim_no}}</td>
+                            <td class="text-right">
+                                <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                                    (click)="editRecord(inj)">
+                                    <i class="far fa-edit" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-link btn-sm text-danger line-height-1 p-0"
+                                    (click)="deleteRecord(inj)">
+                                    <i class="far fa-trash-alt" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

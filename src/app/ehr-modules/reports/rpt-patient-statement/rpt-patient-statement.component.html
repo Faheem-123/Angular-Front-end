@@ -1,0 +1,242 @@
+<div class="d-flex flex-column flex-grow-1 mt-0 position-relative">
+  <div
+    class="bg-green-ihc h-25 px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0"
+    [ngClass]="{'light-title-bar': callingFrom=='billing_reports'}">
+    <div class="fz-15 font-weight-400" [ngClass]="{'text-white': callingFrom=='reports'}">Patient Statement<span class="badge badge-pill"></span></div>
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+    <form [formGroup]="searchForm">
+      <div class="rounded bg-white flex-shrink-0">
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Search Criteria</h4>
+          <button type="button" class="btn btn-link fz-14 px-2 py-0 line-height-normal"
+            (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="searchCriteria"><i
+              class="fas fa-chevron-circle-down"></i></button>
+        </div>
+        <div class="m-2 mt-0 pt-1 border-top" id="searchCriteria" [ngbCollapse]="isCollapsed">
+          <div class="form-row form-dashboard">
+
+            <div class="form-group horizental row zero col-2">
+                <label class="col-form-label col-3" >Date:</label>
+              <select class="form-control col-9" formControlName="drpDateRange">
+                <option>DOS</option>
+                <option>Entered</option>
+              </select>
+            </div>
+
+            <div class="form-group horizental row zero col-2">
+              <label class="col-form-label col-3" for="dpfromDate">From:</label>
+              <div class="input-group col-9">
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpfromDate"
+                   ngbDatepicker #dpfromDate="ngbDatepicker" formControlName="dpfromDate">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group horizental row zero col-2">
+              <label class="col-form-label col-3" for="dptoDate">To:</label>
+              <div class="input-group col-9">
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dptoDate"
+                  ngbDatepicker #dptoDate="ngbDatepicker" formControlName="dptoDate">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dptoDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="form-group horizental row zero col-6">
+                <label for="input2" class="col-form-label col-1">Patient:</label>
+                <div class="form-group col-11">
+                  <div class="input-icon d-flex flex-grow-3">
+                    <input labelForId="txtPatientSearch" class="form-control flex-grow-3 required" type="text" #txtPatientSearch
+                      placeholder="Search Patient" (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                      (blur)="onPatientSearchBlur()"
+                      formControlName="txtPatientSearch" >
+                    
+                    <div class="icon">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </div>
+                    <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                      (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                    </inline-patient-search>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group horizental row zero col-2">
+                  <label class="col-form-label col-3" >Status</label>
+                  <select class="form-control col-9" formControlName="drpStatus">
+                    <option value="all" >All</option>
+                    <option value="sent">Sent</option>
+                    <option value="unsent">Unsent</option>
+                  </select>
+              </div>
+              <div class="form-group horizental row zero col-2">
+                <label class="col-form-label col-3 mr-1">Balance</label>
+                <select class="form-control col-4"  formControlName="drpAmtCond">
+                  <option *ngFor="let a of lstBalance" [value]="a">{{a}}</option>
+                </select>
+                <input class="col-form-label col-4" type="text" formControlName="txtAmount">
+              </div>
+              <div class="form-group horizental row zero col-2">
+                <label class="col-form-label col-4">Sent Days</label>
+                <select class="form-control col-4"  formControlName="drpSentDaysCond">
+                  <option *ngFor="let a of lstBalance" [value]="a">{{a}}</option>
+                </select>
+                <input class="col-form-label col-4" type="text" formControlName="txtSentDays">
+              </div>
+              <div class="form-group horizental row zero col-1">
+                <div class="custom-control custom-checkbox green-checkbox col-11 pl-1">
+                  <input type="checkbox" class="custom-control-input" id="chkStatementSelf"
+                    formControlName="chkSelf">
+                  <label class="custom-control-label" for="chkStatementSelf">Self Pay</label>
+                </div>
+              </div>
+              <div class="form-group horizental row zero col-2">
+                <div class="custom-control custom-checkbox green-checkbox col-11 pl-1">
+                  <input type="checkbox" class="custom-control-input" id="chkStatementPatientBilled"
+                    formControlName="chkPatientBilled">
+                  <label class="custom-control-label" for="chkStatementPatientBilled">Patient Billed</label>
+                </div>
+              </div>
+              <div class="form-group horizental row zero col-3 justify-content-end">
+                <button type="button" ng-disabled="btnHide" class="btn btn-success" [disabled]="isLoading"
+                (click)="onSearch(searchForm.value)">Search</button>
+              </div>
+                       
+            <!-- <div class="form-group horizental row zero col-12">
+              <div class="form-group col-1 d-flex justify-content-end align-items-end">
+                <button type="button" ng-disabled="btnHide" class="btn btn-success" [disabled]="isLoading"
+                  (click)="onSearch(searchForm.value)">Search</button>
+              </div>
+            </div> -->
+          </div>
+        </div>
+
+      </div>
+    </form>
+    <!-- ************************************************************** -->
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 max-height-100">
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details
+          <span *ngIf="lstClaimDetails!=undefined" class="fz-12">({{lstClaimDetails.length}})</span> </h4>
+        <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+          <!-- <button type="button" class="btn btn-link fz-13 px-2 py-0 mr-1"
+            (click)="showDetailView()">{{btnDetailView}}</button> -->
+            
+            <button *ngIf="showDownload" type="button" class="btn btn-link fz-13 px-2 py-0 mr-1 text-success" (click)="onDownload()">Download</button>
+            <button type="button" class="btn btn-link fz-13 px-2 py-0 mr-1" (click)="onGenerateStatement()">Generate</button>
+            <button type="button" class="btn btn-link fz-13 px-2 py-0 mr-1" (click)="onGeneratePDF()">Generate PDF</button>
+            <button type="button" class="btn btn-link fz-13 px-2 py-0 mr-1" (click)="onSaveNotes()">Save Notes</button>
+            <button type="button" class="btn btn-link fz-13 px-2 py-0 mr-1" (click)="onRecoverNotes()">Recover Notes</button>
+          <!-- <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="exportAsXLSX()">
+            <i class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export
+          </button> -->
+        </div>
+      </div>
+
+      <div class="overflow-auto flex-grow-1  overflow-height">
+        <table class="table light-striped-border table-sticky-header">
+          <thead>
+            <tr>
+              <th class="width-30">
+                <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                    <input type="checkbox" class="custom-control-input"
+                        id="rpt-statement-select-all_{{controlUniqueId}}"
+                        (change)="IsSelectAll($event.currentTarget.checked)">
+                    <label class="custom-control-label"
+                        for="rpt-statement-select-all_{{controlUniqueId}}"></label>
+                </div>
+            </th>
+              <th scope="col" sortable="pat_name" type="alpha" (sort)="onSort($event)">Name</th>
+              <th scope="col" sortable="dos" type="datetime" formate="MM/DD/YYYY" (sort)="onSort($event)">DOS</th>
+
+              <th scope="col" sortable="claim_total" type="numeric" (sort)="onSort($event)">Charges</th>
+              <!-- <th scope="col" sortable="patient_paid" type="numeric"   (sort)="onSort($event)">Pat.Paid</th> -->
+
+              <th scope="col" sortable="amt_due" type="numeric" (sort)="onSort($event)">Amt.Due</th>
+              <!-- <th scope="col" sortable="adv_paid" type="numeric" (sort)="onSort($event)">Adv.Paid</th> -->
+
+              <th scope="col" sortable="deductable_amt" type="numeric" (sort)="onSort($event)" title="Deductable Amount">Ded.Amt</th>
+              <th scope="col" sortable="coinsurance_amt" type="numeric" (sort)="onSort($event)" title="CoInsurance Amount">Coi.Amt</th>
+              
+              <th scope="col" sortable="copay_amt" type="numeric" (sort)="onSort($event)" title="Copay Amount">Cop.Amt</th>
+              <th scope="col" sortable="pos_name" type="alpha" (sort)="onSort($event)">Claim Message</th>
+
+              <th scope="col" sortable="statement_message" type="alpha" (sort)="onSort($event)">Statement Message</th>
+              <th scope="col" sortable="statement_date" type="datetime" formate="MM/DD/YYYY" (sort)="onSort($event)">Sent Date</th>
+
+              <th class="width-150" scope="col" sortable="statement_count" type="alpha" (sort)="onSort($event)">Sent Count</th>
+              <th scope="col" sortable="patient_statement_days" type="alpha" (sort)="onSort($event)">Sent Days</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let eleg of lstClaimDetails; let i=index" (click)="onSelectionChange(i)"
+            [ngClass]="{'active': i==selectedRow}">
+                <td>
+                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                        <input type="checkbox" class="custom-control-input"
+                            id="{{controlUniqueId+'_'+eleg.claim_id}}"
+                            (change)="IsSelect($event.currentTarget.checked,eleg)"
+                            value={{eleg.chk}} [checked]="eleg.chk">
+                        <label class="custom-control-label"
+                            for="{{controlUniqueId+'_'+eleg.claim_id}}"></label>
+                    </div>
+                </td>
+              <td >
+                <button type="button" class="link-btn" (click)="openPatient(eleg)"
+                [ngClass]="{'text-danger': (eleg.pat_address=='' || eleg.pat_address==undefined || eleg.pat_address==null),
+                            'text-danger': eleg.pat_statement==true 
+                            }"
+                >{{eleg.pat_name}}</button>
+              </td>       
+              <td>
+                <button type="button" class="link-btn" (click)="openClaim(eleg)"
+                [ngClass]="{'text-danger': (eleg.pat_address=='' || eleg.pat_address==undefined || eleg.pat_address==null)  }"
+                >{{eleg.dos}}</button>
+              </td>
+              <td>{{eleg.claim_total}}</td>
+
+              <!-- <td>{{eleg.patient_paid}}</td> -->
+              <td >{{eleg.amt_due}}</td>
+              
+              <!-- <td>{{eleg.adv_paid}}</td> -->
+              <td>{{eleg.deductable_amt}}</td>
+              <td>{{eleg.coinsurance_amt}}</td>
+              <td>{{eleg.copay_amt}}</td>
+              <!-- <td>{{eleg.pos_name}}</td> -->
+              <td>
+                  <input type="text" class="form-control flex-grow-3 required width-150" 
+                  id="txt-claim-message_{{eleg.claim_id}}" value={{eleg.pos_name}}
+                  (focusout)="onClaimMessageChange($event.currentTarget.value,i)" title="{{eleg.pos_name}}">
+              </td>
+              
+              <td class="width-150">
+                <!-- {{eleg.statement_message}} -->
+                <input type="text" class="form-control flex-grow-3 required width-150" 
+                id="txt-statement-message_{{eleg.claim_id}}" value={{eleg.statement_message}}
+                (focusout)="onStatementMessageChange($event.currentTarget.value,i)" title="{{eleg.statement_message}}">
+              </td>
+              <td>{{eleg.statement_date}}</td>
+              <td>{{eleg.statement_count}}</td>
+              <td>{{eleg.patient_statement_days}}</td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+
+</div>

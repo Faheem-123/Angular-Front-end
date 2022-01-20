@@ -1,0 +1,89 @@
+<form [formGroup]="addFaxToDocFormGroup">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Add Fax to Patient Document</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom">
+
+    <div class="d-flex flex-column flex-grow-1 border-content-box light-sky-blue rounded-3 p-3">
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group horizental row zero col-12">
+          <label for="txtPatientSearch" class="col-form-label width-60">Patient:</label>
+
+          <div class="input-icon d-flex flex-grow-3">
+
+            <input labelForId="txtPatientSearch" formControlName="txtPatientSearch" class="form-control flex-grow-3"
+              type="text" #txtPatientSearch placeholder="Enter criteria and press Enter to search"
+              (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+              (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+
+            <input type="text" formControlName="txtPatientIdHidden" hidden>
+            <div class="icon">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+
+            <inline-patient-search #inlineAddFaxToDocPatSearch id="inlineAddFaxToDocPatSearch" *ngIf="showPatientSearch"
+              [searchValue]="txtPatientSearch.value" (onPatientSelect)="onPatientSelect($event)"
+              (onClose)="closePatientSearch()">
+            </inline-patient-search>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group horizental row zero col-12">
+          <label for="txtDocCategorySearch" class="col-form-label required width-60">Category:</label>
+
+          <div class="input-group d-flex col">
+
+            <label class="form-control pt-1 bg-disabled">{{docCatName}}</label>
+
+            <input type="text" class="form-control" id="txtDocCategoryIdHidden" hidden placeholder="Document"
+              formControlName="txtDocCategoryIdHidden">
+            <span class="input-group-btn">
+              <button class="btn btn-sm btn-outline-primary fz-12 width-80" (click)="openCateogrySearch()"
+                type="button">Category</button>
+            </span>
+
+            <inline-doc-category-search *ngIf="showDocCategorySearch" (onCategorySelect)="onDocCategorySelect($event)"
+              (onClose)="closeDocCategorySearch()">
+
+            </inline-doc-category-search>
+          </div>
+
+
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group horizental row zero col-12">
+          <label class="col-form-label width-60" for="txtDocName">Name:</label>
+          <input class="form-control col" id="txtDocName" formControlName="txtDocName" labelForId="txtDocName"
+            type="text">
+        </div>
+
+      </div>
+      <div class="form-row form-dashboard">
+        <div class="form-group horizental row zero col-12">
+          <label for="txtNotes" class="col-form-label width-60">Notes:</label>
+          <textarea class="form-control col" id="txtNotes" formControlName="txtNotes" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer custom">
+
+    <button type="button" class="btn btn-dark btn-sm width-110" (click)="onCancel()">Cancel</button>
+    <button type="button" class="btn btn-success btn-sm width-110" type="button"
+      (click)="onSave(addFaxToDocFormGroup.value)">Add to Document</button>
+
+  </div>
+</form>

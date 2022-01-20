@@ -1,0 +1,93 @@
+<div class="d-flex flex-column flex-grow-1  mt-0">  
+  <div>
+    <form [formGroup]="searchForm">
+      <div class="border rounded bg-white flex-shrink-0">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+        <div class="pl-2 pr-2 pb-1 pt-0">
+
+          
+
+          <div class="form-row form-dashboard">
+            <div class="form-group col-2">
+              <label class="col-form-label" for="dpfromDate">From:</label>
+              <div class="input-group">
+                <input class="form-control" placeholder="mm/dd/yyyy" name="txtDateFrom" formControlName="txtDateFrom"
+                  ngbDatepicker #txtDateFrom="ngbDatepicker">
+                <span class="input-group-btn">
+                  <button class="btn btn-outline-primary" (click)="txtDateFrom.toggle()" type="button">
+                    <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="form-group col-2">
+              <label class="col-form-label" for="dptoDate">To:</label>
+              <div class="input-group">
+                <input class="form-control" placeholder="mm/dd/yyyy" name="txtDateTo" formControlName="txtDateTo"
+                  ngbDatepicker #txtDateTo="ngbDatepicker">
+                <span class="input-group-btn">
+                  <button class="btn btn-outline-primary" (click)="txtDateTo.toggle()" type="button">
+                    <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="form-group col-2 ">
+              <button type="button" class="btn btn-success mt-3" (click)="onSearch(searchForm.value)">Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="border rounded bg-white flex-4 d-flex flex-column">
+    <div class="overflow-auto flex-grow-1 max-height-100">
+      <table class="table layout-fixed sm light-striped-border" style="overflow-y:visible">
+        <thead>
+          <tr>
+            <th class="width-150">Month/Payment Type</th>
+            <th class="width-150">Amount Received</th>
+            <th class="width-150">Posted From Received</th>
+            <th class="width-150">Total Posted</th>
+            <th class="width-150">&nbsp;</th>
+            <th class="width-150">&nbsp;</th>
+
+          </tr>
+        </thead>
+
+        <ng-container *ngFor="let group of acCollectionSummary">
+
+          <thead>
+            <tr data-toggle="collapse" attr.data-target="#rptSourceWiseCollection{{group.s_no}}"
+              class="accordion-toggle table-group-row ">
+              <th class="accordian-link">
+                {{group.month_name}}
+              </th>
+              <th >{{group.received_amount  | currency:'USD':'symbol-narrow'}}</th>
+              <th >{{group.posted_from_received | currency:'USD':'symbol-narrow'}}</th>
+              <th >{{group.total_posted | currency:'USD':'symbol-narrow'}}</th>
+              <th >&nbsp;</th>
+              <th >&nbsp;</th>
+
+            </tr>
+          </thead>
+
+          <tbody class="accordian-body collapse p-0 m-0" id="rptSourceWiseCollection{{group.s_no}}">
+            <tr *ngFor="let detail of acCollectionDetail | listFilter : 'month_name' : group.month_name">
+              <td class="td-payment-source pl-4 width-170" title="{{detail.payment_type}}">
+                {{detail.payment_type}}
+              </td>
+              <td >{{detail.received_amount | currency:'USD':'symbol-narrow'}}</td>
+              <td >{{detail.posted_from_received | currency:'USD':'symbol-narrow' }}</td>
+              <td>{{detail.total_posted | currency:'USD':'symbol-narrow'}}</td>
+
+              <td>&nbsp;</td>
+              <td >&nbsp;</td>
+
+            </tr>
+          </tbody>
+        </ng-container>
+      </table>
+    </div>
+  </div>

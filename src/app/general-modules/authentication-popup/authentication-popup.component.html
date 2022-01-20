@@ -1,0 +1,67 @@
+<form [formGroup]="authenticateForm" (ngSubmit)="onSubmit(authenticateForm.value)">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Authentication Required <span *ngIf="headerTitle!=undefined && headerTitle!=''"> |
+        {{headerTitle}}</span></h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom">
+
+
+    <div class="login-form flex-shrink-0 px-4">
+
+      <div class="input-group flex-nowrap mt-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text bg-white" id="addon-wrapping"><i class="fas fa-user px-1"></i></span>
+        </div>
+        <span class="form-control bg-light bg-disabled pt-1"
+          *ngIf="!allowUserSelection">{{lookupList.logedInUser.user_name}}</span>
+
+        <input type="text" list="dlUsers" name="txtUser" class="form-control bg-light" formControlName="txtUser"
+          autocomplete="off" *ngIf="allowUserSelection">
+
+      </div>
+      <datalist id="dlUsers" *ngIf="allowUserSelection">
+        <option *ngFor="let user of lookupList.practiceUsersList">{{user.user_name}}</option>
+      </datalist>
+
+      <div class="input-group flex-nowrap mt-3 ">
+        <div class="input-group-prepend">
+          <span class="input-group-text bg-white" id="addon-wrapping"><i class="fas fa-key px-1"></i></span>
+        </div>
+        <input type="password" formControlName="txtPassword" class="form-control bg-light" placeholder="Password">
+      </div>
+
+
+      <div class="form-group flex-nowrap mt-3 border-top" *ngIf="notesRequired">
+        <label for="txtTempSource" class="col-form-label required">{{notesTitle}}</label>
+        <textarea type="text" formControlName="txtNotes" class="form-control required" rows="3"></textarea>
+      </div>
+
+
+
+      <div *ngIf="isVerifying || msg!='' " class="fz-12" [ngClass]="{  
+            'text-primary' : isVerifying ,
+            'text-danger' : (!isVerifying && msg!='')
+           }">
+        <p>
+          <i class="fas fa-spinner fa-spin mr-1"
+            *ngIf="loginStatus=='verify_login' || loginStatus=='loading_data'"></i>{{msg}}
+        </p>
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <div class="modal-footer custom">
+    <button class="btn btn-success btn-sm width-100" type="submit"
+      [disabled]="!authenticateForm.valid">Authenticate</button>
+    <button class="btn btn-dark btn-sm width-100" type="button"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+  </div>
+
+</form>

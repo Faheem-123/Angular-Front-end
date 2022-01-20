@@ -1,0 +1,63 @@
+<div class="modal-header custom" (keydown.esc)="activeModal.dismiss('Cross click')">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Cash Register Payment Posting Details</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom position-relative" (keydown.esc)="activeModal.dismiss('Cross click')">
+
+  <div class="flex-grow-1 overflow-auto" *ngIf="!isLoading">
+    <div class="info-box-stipes flex-grow-1 h-200">
+
+      <div class="no-content p-2" *ngIf="!isLoading && (lstPostingDetails==undefined || lstPostingDetails.length==0 )">
+        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+      </div>
+
+      <table class="table sm layout-fixed light-striped-border"
+        *ngIf="(lstPostingDetails!=undefined && lstPostingDetails.length > 0 )">
+        <thead>
+          <tr>
+            <th class="width-110">Claim ID</th>
+            <th class="width-80">DOS</th>
+            <th class="width-60">CPT</th>
+            <th class="width-80 text-right">Charges</th>
+            <th class="width-80 text-right">Paid</th>
+            <th class="width-80 text-right">Write Off</th>
+            <th class="width-80 text-right">Adjustment</th>
+            <th>Entry Type</th>
+          </tr>
+        </thead>
+
+
+        <tbody>
+          <tr *ngFor="let detail of lstPostingDetails"
+            [ngClass]="{'text-primary': detail.entry_type=='Patient Refund'}">
+            <td>{{detail.claim_id}}</td>
+            <td>{{detail.dos}}</td>
+            <td>{{detail.proc_code}}</td>
+            <td class="text-right">{{detail.total_charges | currency:'USD':'symbol-narrow'}}</td>
+            <td class="text-right">{{detail.paid_amount | currency:'USD':'symbol-narrow'}}</td>
+            <td class="text-right">{{detail.writeoff_amount | currency:'USD':'symbol-narrow'}}</td>
+            <td class="text-right">{{detail.adjusted_amount | currency:'USD':'symbol-narrow'}}</td>
+            <td>{{detail.entry_type}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>
+
+
+<div class="modal-footer custom">
+  <button style="width: 80px;" class="btn btn-secondary btn-sm" type="button"
+    (click)="activeModal.dismiss('Cross click')">Close</button>
+</div>

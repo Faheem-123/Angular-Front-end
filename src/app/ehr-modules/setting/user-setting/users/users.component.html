@@ -1,0 +1,567 @@
+<div class="d-flex flex-column flex-grow-1">
+
+
+  <div class="d-flex flex-grow-1 overflow-height">
+    <div class="w-30 d-flex flex-column ">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 max-height-100">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          Users
+        </div>
+
+        <div class="d-flex flex-grow-1 overflow-auto ">
+          <table class="table sm layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of lstUsers;let i = index" (click)="onuserSelectionChange(user.user_id)"
+                [ngClass]="{'active': selectedUserId==user.user_id}">
+                <td>{{user.user_name}}</td>
+                <td>{{user.role_name}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="w-70 d-flex flex-column">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 ml-6 max-height-100">
+
+
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0">
+          User Details
+
+          <div class="d-flex align-items-center">
+            <button *ngIf="!addEditView" type="button"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onAdd()"><i
+                class="fas fa-plus"></i>
+              Add</button>
+            <button *ngIf="!addEditView && selectedUserId!=undefined" type="button"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onEdit()"><i
+                class="far fa-edit"></i> Edit</button>
+            <button *ngIf="!addEditView && selectedUserId!=undefined" type="button"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onDelete()"><i
+                class="far fa-trash-alt"></i> Delete</button>
+            <button *ngIf="addEditView" class="btn rounded-0 btn-sm bg-green-ihc text-white h-20" type="button"
+              (click)="onSave(userFormGroup.value)">Save</button>
+            <button *ngIf="addEditView" class="btn btn-sm btn-dark top-right-radius h-20" type="button"
+              (click)="onCancel()">Cancel</button>
+          </div>
+        </div>
+
+
+        <div class="d-flex flex-column flex-grow-1 overflow-auto ">
+
+          <div class="border rounded-3 bg-white m-2">
+
+            <div class="d-flex flex-row flex-grow-1" *ngIf="selectedUserDetail==undefined && !addEditView">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="text-muted font-italic">
+                    <div class="value text-muted"><strong>N/A</strong></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="p-8 py-6" *ngIf="selectedUserDetail !=undefined || addEditView">
+
+              <form [formGroup]="userFormGroup">
+                <div class="form-row form-dashboard">
+
+                  <div class="col-6 px-2">
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditOperation=='add'}"
+                          for="txtuserName">User
+                          Name:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView || addEditOperation=='edit'">{{selectedUserDetail.user_name}}</label>
+
+                        <div class="input-group " *ngIf="addEditView && addEditOperation=='add'">
+                          <input type="text" class="form-control" formControlName="txtuserName">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">{{lookupList.practiceInfo.domain}}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="form-row form-dashboard" *ngIf="addEditView">
+                      <div class="form-group col-12">
+                        <label for="txtpassword">Password</label>
+
+                        <div class="input-group">
+
+                          <div class="input-group-prepend" *ngIf="addEditOperation=='edit'">
+                            <div class="input-group-text bg-white">
+                              <input type="checkbox" id="chkChangePwd" (change)="onChkChangePwdChange($event)">
+                              <label class="form-check-label pl-1" for="chkChangePwd">Change</label>
+                            </div>
+                          </div>
+
+                          <input type="password" class="form-control" formControlName="txtpassword">
+
+                        </div>
+
+                        <!--
+                        <input class="form-control form-control-with-button" type="password"
+                          formControlName="txtpassword" />
+                          -->
+                      </div>
+                    </div>
+
+
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-8 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="txtfirstName">First Name:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.first_name}}</label>
+
+                        <input type="text" class="form-control col" formControlName="txtfirstName" *ngIf="addEditView">
+
+                      </div>
+
+
+                      <div class="form-group col-4 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="txtmiddleName">Middle Name:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.mname}}</label>
+
+                        <input type="text" class="form-control col" formControlName="txtmiddleName" *ngIf="addEditView">
+
+                      </div>
+                    </div>
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="txtlastName">Last Name:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.last_name}}</label>
+
+                        <input type="text" class="form-control col" formControlName="txtlastName" *ngIf="addEditView">
+
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+
+
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddProvider">Is User Provider:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.is_provider ? selectedUserDetail.provider_name : 'No'}}</label>
+
+
+                        <div class="input-group" *ngIf="addEditView">
+
+                          <div class="input-group-prepend">
+                            <div class="input-group-text bg-white">
+
+                              <input type="checkbox" id="chkIsProvider" (change)="onChkIsProviderChange($event)"
+                                formControlName="chkIsProvider">
+                              <label class="form-check-label pl-1" for="chkIsProvider">Is Provider</label>
+
+                            </div>
+                          </div>
+
+                          <select class="form-control" labelForlabelForId="ddProvider" formControlName="ddProvider"
+                            *ngIf="addEditView">
+                            <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                          </select>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="ddRole">Default Role:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.role_name}}</label>
+
+                        <select class="form-control" labelForId="ddRole" formControlName="ddRole" *ngIf="addEditView">
+                          <option *ngFor="let loc of lookupList.roleList" [value]="loc.role_id">{{loc.role_name}}
+                          </option>
+
+                        </select>
+
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddPrescriptionRole">Prescription Role:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.default_prescription_role}}</label>
+
+                        <select class="form-control" labelForId="ddPrescriptionRole"
+                          formControlName="ddPrescriptionRole" *ngIf="addEditView">
+                          <option *ngFor="let loc of arrPrescriptionList" [value]="loc">{{loc}}</option>
+                        </select>
+
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard" *ngIf="this.lookupList.practiceInfo.practiceId==524">
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddlUserType">User Type:</label>
+                        <label class="form-control pt-1 bg-disabled" *ngIf="!addEditView">{{selectedUserDetail.user_type}}</label>
+                        <select class="form-control" labelForId="ddlUserType" formControlName="ddlUserType"
+                          *ngIf="addEditView">
+                          <option *ngFor="let utype of arrUserTypeList" [value]="utype">{{utype}}</option>
+                        </select>
+                      </div>
+                    </div>
+
+
+                  </div>
+
+                  <div class="col-6 px-2">
+
+
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="ddLocation">Location:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.loc_name}}</label>
+
+                        <select class="form-control col" labelForId="ddLocation" formControlName="ddLocation"
+                          *ngIf="addEditView">
+                          <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                        </select>
+
+                      </div>
+                    </div>
+
+                    <!--
+                    <div class="form-row form-dashboard">
+                      
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="drpProvider">Default Physician:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.def_phy_name}}</label>
+
+                        <select class="form-control col" labelForId="drpProvider" formControlName="drpProvider"
+                          *ngIf="addEditView && addEditOperation=='add'">
+                          <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    -->
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddBilingProvider">Billing Physician:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.billing_phy_name}}</label>
+
+                        <select class="form-control col" labelForId="ddBilingProvider"
+                          formControlName="ddBilingProvider" *ngIf="addEditView">
+                          <option *ngFor="let pro of lookupList.billingProviderList" [value]="pro.id">{{pro.name}}
+                          </option>
+                        </select>
+
+
+
+                      </div>
+                    </div>
+
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label"
+                          [ngClass]="{'module-view-headding': !addEditView,'required': addEditView}"
+                          for="ddChartSetting">Default Chart Setting:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.chart_setting_name}}</label>
+
+
+                        <select class="form-control" labelForId="ddChartSetting" formControlName="ddChartSetting"
+                          *ngIf="addEditView">
+                          <option *ngFor="let loc of lstChartSettings" [value]="loc.setting_id">{{loc.setting_name}}
+                          </option>
+                        </select>
+
+
+
+
+                      </div>
+                    </div>
+
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="ddSuperBill">Default Super Bill:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.default_bill_name}}</label>
+
+
+                        <select class="form-control" labelForId="ddSuperBill" formControlName="ddSuperBill"
+                          *ngIf="addEditView">
+                          <option *ngFor="let bill of lstSuperBills" [value]="bill.id">{{bill.name}}</option>
+                        </select>
+
+
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-6 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="drplocation">Lab Assigned To:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.lab_assigned ? 'Yes' : 'No'}}</label>
+
+                        <div class="form-control form-check form-check-inline m-0 pt-0 col px-2" *ngIf="addEditView">
+                          <input class="form-check-input " id="rbLabAssignedToYes" type="radio" name="rbLabAssignedTo"
+                            formControlName="rbLabAssignedTo" [value]="true">
+                          <label class="form-check-label" for="rbLabAssignedToYes">Yes</label>
+                          <input class="form-check-input ml-3" id="rbLabAssignedToNo" type="radio"
+                            name="rbLabAssignedTo" formControlName="rbLabAssignedTo" [value]="false">
+                          <label class="form-check-label" for="rbLabAssignedToNo">No</label>
+
+                        </div>
+
+                      </div>
+
+                      <div class="form-group col-6 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="drplocation">Is Lab User:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.is_lab_user ? 'Yes' : 'No'}}</label>
+
+                        <div class="form-control form-check form-check-inline m-0 pt-0 col px-2" *ngIf="addEditView">
+                          <input class="form-check-input" id="rbIsLabUserYes" type="radio" name="rbIsLabUser"
+                            formControlName="rbIsLabUser" [value]="true">
+                          <label class="form-check-label" for="rbIsLabUserYes">Yes</label>
+                          <input class="form-check-input ml-3" id="rbIsLabUserNo" type="radio" name="rbIsLabUser"
+                            formControlName="rbIsLabUser" [value]="false">
+                          <label class="form-check-label" for="rbIsLabUserNo">No</label>
+
+                        </div>
+
+                      </div>
+
+
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-12 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="drplocation">Allow Patient API/PHR Access:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.phr_access_allowed ? 'Yes' : 'No'}}</label>
+
+                        <div class="form-control form-check form-check-inline m-0 pt-0 col px-2" *ngIf="addEditView">
+                          <input class="form-check-input" id="rbAPIAccessYes" type="radio" name="rbAPIAccess"
+                            formControlName="rbAPIAccess" [value]="true">
+                          <label class="form-check-label" for="rbAPIAccessYes">Yes</label>
+                          <input class="form-check-input ml-3" id="rbAPIAccessNo" type="radio" name="rbAPIAccess"
+                            formControlName="rbAPIAccess" [value]="false">
+                          <label class="form-check-label" for="rbAPIAccessNo">No</label>
+                        </div>
+
+                      </div>
+                    </div>
+
+
+                    <div class="form-row form-dashboard">
+                      
+                       
+                      <div class="form-group col-6 pb-1 ">
+                        <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+                          for="drplocation">Status:</label>
+
+                        <label class="form-control pt-1 bg-disabled"
+                          *ngIf="!addEditView">{{selectedUserDetail.is_blocked ? 'Inactive' : 'Active'}}</label>
+
+                        <div class="form-control form-check form-check-inline m-0 pt-0 col px-2" *ngIf="addEditView">
+                          <input class="form-check-input" id="rbIsBlockedNo" type="radio" name="rbIsBlocked"
+                            formControlName="rbIsBlocked" [value]="false">
+                          <label class="form-check-label" for="rbIsBlockedNo">Active</label>
+                          <input class="form-check-input ml-3" id="rbIsBlockedYes" type="radio" name="rbIsBlocked"
+                            formControlName="rbIsBlocked" [value]="true">
+                          <label class="form-check-label" for="rbIsBlockedYes">Inactive</label>
+                        </div>
+
+                      </div>
+
+
+<div class="form-group col-6 pb-1 ">
+  <label class="col-form-label" [ngClass]="{'module-view-headding': !addEditView}"
+    for="drplocation">Outside Access:</label>
+
+  <label class="form-control pt-1 bg-disabled"
+    *ngIf="!addEditView">{{selectedUserDetail.allowed_ip ? 'Yes' : 'No'}}</label>
+
+  <div class="form-control form-check form-check-inline m-0 pt-0 col px-2" *ngIf="addEditView">
+    <input class="form-check-input" id="rbOutsideAccessYes" type="radio" name="rbOutsideAccess"
+      formControlName="rbOutsideAccess" [value]="true">
+    <label class="form-check-label" for="rbOutsideAccessYes">Yes</label>
+    <input class="form-check-input ml-3" id="rbOutsideAccessNo" type="radio" name="rbOutsideAccess"
+      formControlName="rbOutsideAccess" [value]="false">
+    <label class="form-check-label" for="rbOutsideAccessNo">No</label>
+
+  </div>
+
+</div>
+
+                    </div>
+
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+
+
+          <!--  -->
+          <div class="border rounded-3 bg-white d-flex flex-column flex-grow-1 m-2 mt-0 overflow-height">
+
+
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 ">Assigned Providers</h4>
+              </div>
+            </div>
+
+
+            <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100 d-flex flex-row">
+
+
+
+
+              <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100"
+                [ngClass]="{'col-6 p-0': addEditView}">
+
+                <div *ngIf="noAssignedProvider && !addEditView" class="no-content">
+                  <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Assigned Provider
+                </div>
+
+                <table class="table sm layout-fixed light-striped-border " *ngIf="!noAssignedProvider">
+                  <tbody>
+                    <tr *ngFor="let u of lstUserProviders;let i = index"
+                      [ngClass]="{'bg-success-alert txt-success-alert': u.is_default}">
+                      <td class="align-middle"> {{u.provider_name}}</td>
+                      <td class="text-right width-150 align-middle">
+                        <span class="font-weight-500" *ngIf="u.is_default">Default
+                          Provider</span>
+                        <button class="btn btn-link btn-sm p-0" (click)="onSetProviderAsDefault(i)"
+                          title="Set Default Provider" *ngIf="!u.is_default && addEditView">
+                          Set as Default
+                        </button>
+                      </td>
+                      <td class="text-right width-40 align-middle">
+                        <button class="btn btn-link btn-delete btn-md p-0" (click)="onAssignedProviderDelete(u,i)"
+                          *ngIf="addEditView">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+
+              <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100 col-6 p-0 border-left"
+                *ngIf="addEditView">
+
+                <table class="table sm layout-fixed light-striped-border">
+                  <tbody>
+                    <tr *ngFor="let upro of lstAllProviders;let i = index;">
+                      <!--
+                    <td class="align-middle width-40">
+                      <input class="table-td-checkbox" type="checkbox"
+                        (click)="IsAssignedProviderSelect($event.currentTarget.checked,u)" value={{u.chk}}
+                        [checked]="u.chk">
+                    </td>
+                    -->
+                      <td class="text-right width-50 align-middle">
+                        <button class="btn btn-link btn-sm p-0" type="button" (click)="addProviderToUserList(upro,i)">
+                          Add
+                        </button>
+                      </td>
+                      <td>{{upro.name}}</td>
+
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+
+
+            </div>
+
+          </div>
+          <!--  -->
+         
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+</div>

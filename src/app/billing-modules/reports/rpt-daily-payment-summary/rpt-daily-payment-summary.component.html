@@ -1,0 +1,155 @@
+<div
+  class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+
+  <div class="d-flex flex-column flex-shrink-0">
+
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchDailyPaymentSummaryReport" aria-expanded="true" class="accordian-link">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+
+      <div id="SearchDailyPaymentSummaryReport" class="show">
+        <div class="accordian-body bg-transparent">
+
+          <form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+
+                <div class="form-group  col-2">
+                  <label for="dpCheckFrom" class="col-form-label">Month Year</label>
+
+                  <ngb-datepicker formControlName="dpMonthYear" [showWeekdays]="false" (navigate)="dateNavigate($event)"
+                    class="form-control datepicker-month-year-select"></ngb-datepicker>
+
+                </div>
+
+                <div class="form-group col-1 d-flex justify-content-end align-items-end">
+                  <button type="button" class="btn btn-success w-100" (click)="onSearch()">Search</button>
+                </div>
+
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+  <div class="d-flex flex-grow-1 overflow-height overflow-auto">
+
+    <div class="d-flex flex-column  flex-10 border bg-white overflow-auto border-right-0 border-bottom-0">
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+
+        <div class="d-flex flex-grow-1 justify-content-between">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 ">
+            Detail
+
+            <span class="v-separtor"></span>
+            <span *ngIf="yearMonthDisplay!=''" class="title-other-info">
+              {{yearMonthDisplay}}
+            </span>
+          </h4>
+
+
+          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="exportToExcel()"><i
+              class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export</button>
+        </div>
+
+      </div>
+
+      <div class="overflow-auto h-100">
+        <table class="table sm table-sticky-header light-striped-border">
+          <thead>
+            <tr>
+              <th class="width-120"></th>
+              <th class="width-70 text-center border-right border-left" colspan="4">Patient</th>
+              <th class="width-70 text-center border-right border-left" colspan="3">Insurance</th>
+              <th class="width-70 text-right">Total</th>
+            </tr>
+            <tr>
+              <th class="width-120 text-center">Date</th>
+              <th class="width-70 text-right">Patient Cash</th>
+              <th class="width-70 text-right">Patient Check</th>
+              <th class="width-70 text-right">Credit Card</th>
+              <th class="width-70 text-right">Patient Sub Total</th>
+              <th class="width-70 text-right">ERA</th>
+              <th class="width-70 text-right">EOB</th>
+              <th class="width-70 text-right">Insurance Sub Total</th>
+              <th class="width-70 text-right">Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let rpt of lstReport  | listFilter : 'is_aggregate' : 'false'  ; let i = index">
+              <td class="td-payment-source text-center" title="{{rpt.summary_date}}">
+                {{rpt.summary_date}}</td>
+              <td class="text-right">
+                {{rpt.patient_cash | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.patient_check | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.patient_cc | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right td-sub-total">
+                {{rpt.sub_total_patient | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.era_payment | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.eob_payment | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right td-sub-total">
+                {{rpt.sub_total_insurance | currency:'USD':'symbol-narrow'}}</td>
+              <td class="td-aggregate text-right">
+                {{rpt.total | currency:'USD':'symbol-narrow'}}</td>
+            </tr>
+
+
+            <tr *ngFor="let rpt of lstReport  | listFilter : 'is_aggregate' : 'true'  ; let i = index"
+              class="tr-aggregate">
+              <td class="text-center" title="{{rpt.summary_date}}">
+                {{rpt.summary_date}}</td>
+              <td class="text-right">
+                {{rpt.patient_cash | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.patient_check | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.patient_cc | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.sub_total_patient | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.era_payment | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.eob_payment | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.sub_total_insurance | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">
+                {{rpt.total | currency:'USD':'symbol-narrow'}}</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+</div>

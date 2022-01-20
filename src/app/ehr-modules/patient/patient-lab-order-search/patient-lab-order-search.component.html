@@ -1,0 +1,291 @@
+<div class="encounter-module d-flex flex-column flex-grow-1 position-relative" *ngIf="!loadmodule">
+  <div class="header flex-shrink-0 d-flex justify-content-between">
+    <div class="title">Lab Order Search</div>
+  </div>
+
+
+  <div class="encounter-body rounded-bottom p-8 flex-grow-1 d-flex flex-column light-gray-bg">
+
+    <div class="border-content-box light-gray-bg p-1 rounded-bottom d-flex flex-column flex-shrink-0 mb-2">
+
+      <div class="d-flex flex-grow-1 light-gray-bg">
+        <div class="w-50 d-flex flex-column">
+          <div class="px-0 py-0">
+            <form [formGroup]="frmSearch">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero  col-6 ">
+                  <label for="input2" class="col-sm-4 col-form-label ">Test Category:</label>
+                  <select class="form-control col-sm-8" formControlName="drptestcategory">
+                    <option *ngFor="let s of lstLabCatehory" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group horizental row zero col-6 ">
+                  <label for="input2" class="col-sm-3 col-form-label ">Test Code:</label>
+                  <input class="form-control col-sm-9" formControlName="txttestcode">
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero  col-6">
+                  <label for="input2" class="col-sm-4 col-form-label">Provider:</label>
+                  <select class="form-control col-sm-8" labelForId="input1" formControlName="drpProvider">
+                    <option value="All">All</option>
+                    <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group horizental row zero  col-6">
+                  <label for="input2" class="col-sm-3 col-form-label ">Location:</label>
+                  <select class="form-control  col-sm-9" labelForId="input2" formControlName="drpLocation">
+                    <option value="All">All</option>
+                    <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero col-sm-6  col-12">
+                  <label for="input2" class="col-sm-4 col-form-label">Patient:</label>
+                  <div class="form-group has-search col-sm-8 mb-0">
+                    <span class="fa fa-search form-control-feedback"></span>
+
+                    <input formControlName="cntrlpatientSearch" class="form-control search-highlight" type="text"
+                      placeholder="Search Patient" #txtPatientSearch (keydown)="onKeydown($event)">
+                    <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                      (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                    </inline-patient-search>
+
+                  </div>
+                </div>
+                <div class="form-group horizental row zero  col-sm-6 col-12">
+                  <label for="input2" class="col-sm-3 col-form-label">Lab:</label>
+                  <select class="form-control col-sm-9" formControlName="drpLab">
+                    <option *ngFor="let s of lookupList.lstPracticeLab" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+              
+                <div class="form-group horizental row zero  col-sm-6 col-12">
+                  <label for="input2" class="col-sm-4 col-form-label ">Assigned To:</label>
+                  <select class="form-control col-sm-8" formControlName="drpAssigned">
+                    <option *ngFor="let s of lookupList.listpracticeUserName" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group horizental row zero  col-sm-6 col-12">
+                  <label for="input2" class="col-sm-3 col-form-label">Status:</label>
+                  <select class="form-control col-sm-9" formControlName="drpStatus">
+                    <option *ngFor="let s of lookupList.arrLabStatus" [value]="s.value">{{s.value}}</option>
+                  </select>
+                </div>
+              </div>
+             
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero  col-sm-6 col-12">
+                  <label for="input2" class="col-sm-4 col-form-label ">Status From:</label>
+                  <div class="input-group col-sm-8">
+                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtStatusFromDate"
+                      name="txtStatusFromDate" ngbDatepicker #txtStatusFromDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" type="button" (click)="txtStatusFromDate.toggle()">
+
+                      </button>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group horizental row zero  col-sm-6 col-12">
+                  <label for="input2" class="col-sm-3 col-form-label ">Status To:</label>
+                  <div class="input-group col-sm-9">
+                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtStatusToDate"
+                      name="txtStatusToDate" ngbDatepicker #txtStatusToDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" type="button" (click)="txtStatusToDate.toggle()">
+
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero  col-sm-6 col-12">
+                  <label for="input2" class="col-sm-4 col-form-label">Date From:</label>
+                  <div class="input-group col-sm-8">
+                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtDateFrom"
+                      name="txtDateFrom" ngbDatepicker #txtDateFrom="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" type="button" (click)="txtDateFrom.toggle()">
+
+                      </button>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group horizental row zero  col-sm-6 col-12">
+                  <label for="input2" class="col-sm-3 col-form-label ">Date To:</label>
+                  <div class="input-group col-sm-9">
+                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtDateTo" name="txtDateTo"
+                      ngbDatepicker #txtDateTo="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" type="button" (click)="txtDateTo.toggle()">
+
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+            <div class="d-flex justify-content-end h-25">
+              <button class="btn btn-sm btn-success mr-1 width-80" (click)="onSearch(frmSearch.value)">Search</button>
+              <button class="btn btn-sm btn-dark pl-2 width-80" (click)="onFormClear()">Clear</button>
+            </div>
+          </div>
+        </div>
+        <div class="ml-1" style="border-left: 1px solid;border-color: #ddeaf5;"></div>
+        <div class="w-50 d-flex flex-column ml-1">
+          <div class="border rounded bg-white px-2 py-1">
+            <form [formGroup]="frmComment">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero  col-6 ">
+                  <label for="input2" class="col-sm-4 col-form-label ">Status Date:</label>
+                  <div class="input-group col-sm-8">
+                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtStatusDate"
+                      name="txtStatusDate" ngbDatepicker #txtStatusDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" type="button" (click)="txtStatusDate.toggle()">
+                      </button>
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group horizental row zero col-6 ">
+                  <label for="input2" class="col-sm-4 col-form-label ">Status:</label>
+                  <select class="form-control col-sm-8" formControlName="drpCommentStatus">
+                    <option *ngFor="let s of lookupList.arrLabStatus" [value]="s.value">{{s.value}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero  col-12">
+                  <label for="input2" class="col-sm-2 col-form-label ">Comments:</label>
+                  <div class="form-group has-search col-sm-10">
+                    <input formControlName="txtComment" class="form-control required" type="text" #txtComment>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row form-dashboard mb-1 justify-content-end">
+                <button *ngIf="this.lookupList.UserRights.lab_order_add_modify" [disabled]="!frmComment.valid"
+                  class="btn btn-sm btn-link pr-0 mr-1" (click)="onSave()">Save</button>
+                <button type="button" type="button" class="btn btn-sm btn-link pr-0 mr-1 ">Cancel</button>
+              </div>
+              <div class="form-row form-dashboard overflow-auto overflow-height" style="min-height: 85px">
+                <table class="table  light-striped-border">
+                  <thead>
+                    <tr>
+                      <th>Previous Comments</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let l of arrOrderComment">
+                      <td>{{l.comment}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-grow-1 light-gray-bg overflow-height">
+      <div class="w-75 d-flex flex-column">
+        <div class="border rounded bg-white max-height-100 overflow-auto flex-grow-1">
+          <table class="table layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <th class="width-50">PID</th>
+                <th class="width-110">Patient</th>
+                <th class="width-70">Order Date</th>
+                <th class="width-100">Provider</th>
+                <th class="width-100">Location</th>
+                <!-- <th>Insurance</th> -->
+                <th class="width-80">Lab</th>
+                <th class="width-100">Status</th>
+                <th class="width-45"></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let l of lstSearchresult" (click)="OnSelectionChanged(l)"
+                [ngClass]="{'active' : (l.order_id === rowId)}">
+                <td class="w-5">{{l.pid}}</td>
+                <td>
+                  <button [disabled]="!this.lookupList.UserRights.patient_view" type="button" class="link-btn"
+                    (click)="openPatientSummary(l)">{{l.patient_name}}</button>
+                </td>
+                <td>
+                  <button [disabled]="!this.lookupList.UserRights.lab_order_view" type="button" class="link-btn"
+                    (click)="openResult('order',l)">{{l.order_date}}</button>
+                </td>
+                <td>{{l.provider_name}}</td>
+                <td>{{l.name}}</td>
+                <!-- <td>{{l.insname}}</td> -->
+                <td>{{l.lab_name}}</td>
+                <td>{{l.status}}</td>
+                <td class="text-right">
+                  <button [disabled]="!this.lookupList.UserRights.lab_result_view" type="button"
+                    (click)="openResult('Result',l)" class="link-btn"><img alt="" class="img-h-15"
+                      src="./assets/images/icons/ico_report.svg"></button>
+                  <button [disabled]="!this.lookupList.UserRights.lab_attachment_view" type="button"
+                    (click)="openResult('Attachment',l)" class="link-btn text-info pl-1"><i
+                      class="fas fa-lg fa-paperclip"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="w-25 d-flex flex-column">
+        <div class="border rounded bg-white max-height-100 overflow-auto flex-grow-1 ml-8">
+          <table class="table layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <th width="8%">&nbsp;</th>
+                <th>Test Detail</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let l of lstSearchtest">
+                <td><img src="./assets/images/icons/test-tube.svg" alt="" style="height: 15px;"></td>
+                <td [ngClass]="{  
+                      'fw-500 text-success' : ( (l.result_id !='' && l.result_id !=null) || (l.attachment_id !='' && l.attachment_id !=null) )
+                     }">{{l.proc_description}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>
+
+
+<div class="d-flex flex-column flex-grow-1" *ngIf="loadmodule">
+  <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+    <button class="left-back-btn" (click)="navigateBackToSSummary()">
+      <i class="fas fa-arrow-left mr-2"></i>Lab Order Search
+    </button>
+  </div>
+  <lab-order *ngIf="module_name=='order'" class="d-flex flex-column flex-grow-1" [isNewOrder]="false"
+    [order_Id]="order_id" [objencounterToOpen]="objencounterToOpen"></lab-order>
+  <lab-result class="d-flex flex-column flex-grow-1" *ngIf="module_name=='Result'" [order_Id]=order_id
+    [patient_Id]=patient_id></lab-result>
+  <lab-attachment class="d-flex flex-column flex-grow-1" *ngIf="module_name=='Attachment'" [order_Id]=order_id
+    [patient_Id]=patient_id></lab-attachment>
+</div>

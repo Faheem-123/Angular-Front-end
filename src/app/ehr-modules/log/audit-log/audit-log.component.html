@@ -1,0 +1,332 @@
+<div class="p-0 d-flex flex-column flex-grow-1 rounded-3 border-content-box light-sky-blue position-relative" [ngClass]="{'border-top-0': (callingFrom=='log'),
+  'border-0': (callingFrom=='patient')}">
+
+
+  <div class="light-title-bar  h-25 pl-2 pr-2 d-flex align-items-center justify-content-between flex-shrink-0"
+    *ngIf="!enableSearch && callingFrom!='encounter' && callingFrom!='scheduler'" [ngClass]="{'rounded-0': callingFrom=='patient'}">
+    <div class="fz-15 font-weight-400 h-25">{{logMainTitle}}
+
+      <span class="v-separtor" *ngIf="PID!=undefined"></span>
+      <span *ngIf="PID!=undefined" class="title-other-info">
+        PID: {{PID}}
+      </span>
+      <span class="v-separtor" *ngIf="patientName!=undefined"></span>
+      <span *ngIf="patientName!=undefined" class="title-other-info">
+        Patient: {{patientName}}
+      </span>
+      <span *ngIf="datetimeFrom!=undefined && datetimeFrom!='' && datetimeTo!=undefined && datetimeTo!=''"
+        class="v-separtor"></span>
+      <span *ngIf="datetimeFrom!=undefined && datetimeFrom!='' && datetimeTo!=undefined && datetimeTo!=''"
+        class="title-other-info">
+        Date Range: {{datetimeFrom}} - {{datetimeTo}}
+      </span>
+      <span *ngIf="userName!=undefined && userName!=''" class="v-separtor"></span>
+      <span *ngIf="userName!=undefined && userName!=''" class="title-other-info">
+        User: {{userName}}
+      </span>
+
+    </div>
+  </div>
+
+
+  <!--
+  <div class="alert alert-primary rounded-3-top border-top-0 border-left-0 border-right-0 p-1 mb-0 flex-shrink-0"
+    role="alert" *ngIf="!enableSearch">
+
+    <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400 d-flex d-flex flex-grow-1  pt-2-px">
+      Claim ( Professional )
+      <span class="v-separtor"></span>
+      <span *ngIf="claimId!=undefined" class="title-other-info">
+        Claim ID: {{claimId}}
+      </span>
+      <span *ngIf="claimId==undefined" class="title-other-info">
+        [ New Claim ]
+      </span>
+    </h4>
+
+
+
+  </div>
+  -->
+
+
+  <div class="encounter-data-accordian accordian-data rounded-0 border-bottom border-top-0" *ngIf="enableSearch">
+    <div class="accordian-header" role="tab" id="headingOne">
+      <h5 class="mb-0">
+        <a data-toggle="collapse" href="#SearchCriteriaAuditLog" aria-expanded="false" class="accordian-link">
+          <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+        </a>
+      </h5>
+    </div>
+
+    <div id="SearchCriteriaAuditLog" class="collapse">
+      <div class="accordian-body bg-transparent">
+
+        <form form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+          <div class="p-6 pt-0">
+
+
+            <div class="form-row form-dashboard pb-1">
+
+
+              <div class="form-group col-3">
+
+                <label class="col-form-label module-view-headding" for="dpDateFrom">Date Time From:</label>
+                <div class="d-flex flex-row">
+                  <div class="input-group mr-1">
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpDateFrom" ngbDatepicker
+                      #dpDateFrom="ngbDatepicker" formControlName="dpDateFrom">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="dpDateFrom.toggle()" type="button">
+                      </button>
+                    </span>
+
+                  </div>
+
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                    </div>
+                    <ngb-timepicker id="tpTimeFrom" class="form-control form-control-ngb-timepicker"
+                      formControlName="tpTimeFrom" meridian="ON">
+                    </ngb-timepicker>
+                  </div>
+                </div>
+
+
+
+              </div>
+
+              <div class="form-group col-3">
+
+                <label class="col-form-label module-view-headding" for="dpDateTo">Date Time To:</label>
+                <div class="d-flex flex-row">
+                  <div class="input-group mr-1">
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpDateTo" ngbDatepicker
+                      #dpDateTo="ngbDatepicker" formControlName="dpDateTo">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="dpDateTo.toggle()" type="button">
+                      </button>
+                    </span>
+
+                  </div>
+
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                    </div>
+                    <ngb-timepicker id="tpTimeTo" class="form-control form-control-ngb-timepicker"
+                      formControlName="tpTimeTo" meridian="ON">
+                    </ngb-timepicker>
+                  </div>
+                </div>
+
+
+
+              </div>
+
+              <div class="form-group col-3">
+                <label class="col-form-label module-view-headding" for="ddUsers">User:</label>
+                <select id="ddUsers" class="form-control" formControlName="ddUsers">
+                  <option value='all'>All</option>
+                  <option *ngFor="let user of lookupList.practiceUsersList" [value]="user.user_name">
+                    {{user.display_name}}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group col-3 d-flex flex-row mt-3">
+                <button type="button" class="btn btn-success w-100 mx-1 mt-1 h-25"
+                  (click)="searchLog(searchFormGroup.value)">Search</button>
+                <button type="button" class="btn btn-dark w-100 mx-1 mt-1 h-25"
+                  (click)="clearSearchFeilds()">Clear</button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="d-flex flex-grow-1 overflow-height">
+
+
+    <div class="border-content-box rounded-0 border-right-only bg-white d-flex flex-column flex-1 mr-1"
+      *ngIf="showLefNavigationSection">
+
+      <div class="custom-select-box rounded-0 border-0 flex-grow-1 overflow-auto overflow-height">
+        <table class="table table table-hover">
+
+          <tbody>
+
+            <tr *ngFor="let log of lstLog" [ngClass]="{'active-blue' : (log.query_id === selectedQueryId)}">
+              <td (click)="getLogData(log)">
+                {{log.display_name}}
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!--
+    <div class="border-content-box rounded-3 w-20 flex-grow-1 d-flex flex-column bg-white overflow-auto mr-1"
+      *ngIf="showLefNavigationSection">
+
+      <div class="left-toggle-menu">
+        <ul class="reports-sidebar-menu">
+          <li class="active treeview">
+            <ul class="reports-treeview-menu">
+              <li class="rpt-pointer" [ngClass]="{active: log.query_id==selectedQueryId}" *ngFor="let log of lstLog">
+                <a [id]="log.query_id" (click)="getLogData(log)">{{log.display_name}}</a>
+              </li>
+              
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    -->
+
+    <div class="border flex-grow-1 d-flex flex-column bg-white rounded-0  border-left-only overflow-auto flex-4 "
+      [ngClass]="{'border-0': !showLefNavigationSection}">
+      <div class="rounded-box-title-bar flex-shrink-0" [ngClass]="{'pl-0': isChildLog}">
+        <button class="btn btn-sm btn-link" (click)="navigateBackFromChildLog()" *ngIf="isChildLog">
+          <i class="fas fa-arrow-left mr-2"></i>Back
+        </button>
+        <span class="pr-1" *ngIf="logDisplayName!=undefined && logDisplayName!='' ">{{logDisplayName}}</span>
+        <span class="px-1" *ngIf="childLogDisplayName!=undefined && childLogDisplayName!='' ">|
+          {{childLogDisplayName}}</span>
+      </div>
+
+
+
+      <div class="overflow-auto flex-grow-1 max-height-100">
+
+        <table class="table sm light-striped-border" style="overflow: auto !important" *ngIf="!isChildLog">
+          <thead>
+            <tr>
+              <th class="width-30" *ngIf="lstChildLogs!=undefined && lstChildLogs.length>0"></th>
+
+              <ng-container *ngFor="let header of lstHeaders; let i = index">
+                <!--<th [attr.sortable]="header.data_field" [attr.type]="header.data_type" scope="col"
+                  (sort)="onSort($event)">-->
+
+                <th *ngIf="!header.sortable">
+                  {{header.display}}
+                </th>
+
+                <th *ngIf="header.sortable" scope="col'" sortable="{{header.sortable ? i : '' }}"
+                  [attr.sortable]="header.sortable ? i : '' " type="{{header.sortable ?  header.data_type : ''}}"
+                  [attr.type]="header.sortable ?  header.data_type : '' " (sort)="onSort($event)">
+                  {{header.display}}
+                </th>
+
+                <!--
+                <th scope="col" sortable="{{i}}" type="{{header.data_type}}" [attr.sortable]="i"
+                  [attr.type]="header.data_type" (sort)="onSort($event)">
+                  {{header.display}}
+                  
+                </th>
+                -->
+              </ng-container>
+
+              <!--<ng-template id="1" *ngFor="let header of lstHeaders; let i = index">
+
+              </ng-template>
+            -->
+
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of lstLogData">
+              <td *ngIf="lstChildLogs!=undefined && lstChildLogs.length>0" class="overflow-visible">
+                <div class="dropdown">
+                  <button class="table-link-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right schedular-card" aria-labelledby="dropdownMenuButton">
+                    <button class="dropdown-item" *ngFor="let childLog of lstChildLogs"
+                      (click)="getChildAuditLog(log,childLog.module_name,childLog.display_name)">
+                      <i class="fa fa-history text-info" aria-hidden="true"></i> {{childLog.display_name}}
+                    </button>
+                  </div>
+                </div>
+              </td>
+              <td *ngFor="let header of lstHeaders; let i = index">
+                <span *ngIf="header.data_type=='datetime'">{{log[i] | date : 'yyyy-MM-dd hh:mm:ss a'}}</span>
+                <span *ngIf="header.data_type=='date'">{{log[i] | date : 'yyyy-MM-dd'}}</span>
+                <span *ngIf="header.data_type!='datetime' && header.data_type!='date'">{{log[i]}}</span>
+              </td>
+              <!--
+              <td *ngFor="let col of log">
+                {{col}}
+              </td>
+              -->
+            </tr>
+
+
+          </tbody>
+
+        </table>
+
+        <table class="table sm light-striped-border" style="overflow: auto !important" *ngIf="isChildLog">
+          <thead>
+            <tr>
+              <th *ngFor="let header of lstChildLogHeaders" scope="col" [sortable]="header.data_field"
+                [type]="header.data_type" (sort)="onSortChildLog($event)">
+                <!--<th *ngFor="let header of lstChildLogHeaders" [style.width.px]="200" >-->
+                {{header.display}}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of lstChildLogData">
+
+              <td *ngFor="let header of lstChildLogHeaders; let i = index">
+                <span *ngIf="header.data_type=='datetime'">{{log[i] | date : 'yyyy-MM-dd hh:mm:ss a'}}</span>
+                <span *ngIf="header.data_type=='date'">{{log[i] | date : 'yyyy-MM-dd'}}</span>
+                <span *ngIf="header.data_type!='datetime' && header.data_type!='date'">{{log[i]}}</span>
+              </td>
+              <!--
+              <td *ngFor="let col of log">
+                {{col}}
+              </td>
+              -->
+            </tr>
+
+
+          </tbody>
+
+        </table>
+
+
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+
+</div>

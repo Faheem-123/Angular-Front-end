@@ -1,0 +1,93 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Calls Log | Appointment Date: {{appDate}} </h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close(isRecordSaved)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body custom p-1">
+  <div class="dashboard-content" *ngIf="!printView">
+    <div class="patient-summary patient-summary-green mb-1 ">
+      <div class="summary-info">
+
+        <img src="{{patPicURL}}" alt="pic" class="patient-pic rounded-circle" (error)="patPicErrorHandler($event)">
+
+        <div class="info-box">
+          <h3>{{patientName }}</h3>
+          <p>{{patAge}} | {{patGender}}</p>
+        </div>
+
+        <div class="info-box">
+          <p>PID: {{patPID}}</p>
+          <p>DOB: {{patDOB}}</p>
+        </div>
+
+        <div class="info-box">
+          <p>
+            <i class="fa fa-map-marker" aria-hidden="true"></i>{{patAddress}}</p>
+          <p class="pl-3">{{patCity}} {{patState}}, {{patZip}}</p>
+        </div>
+        <div class="info-box">
+          <p>
+            <i class="fa fa-phone" aria-hidden="true"></i>{{patContactNo | phonePipe}}</p>
+          <p>
+            <i class="fa fa-umbrella" aria-hidden="true"></i> {{patInsurance}}</p>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="border-content-box light-sky-blue rounded-3-bottom border-top-0 d-flex flex-column flex-grow-1 h-500-px">
+    <ngb-tabset
+      class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden"
+      id="callLogsTabs" style="height: 500px">
+      <ngb-tab id="tab-follow-up-calls">
+        <ng-template ngbTabTitle><span>Appointment Calls</span></ng-template>
+        <ng-template ngbTabContent>
+          <appointment-calls-log class="d-flex flex-column flex-grow-1 overflow-height p-1" [appOperationData]="appOperationData"
+          (callBack)="callBack($event)">
+          </appointment-calls-log>
+        </ng-template>
+      </ngb-tab>
+
+      <ngb-tab id="tab-acu-calls">
+        <ng-template ngbTabTitle><span>ACU Calls</span></ng-template>
+        <ng-template ngbTabContent>
+          <acu-calls-log class="d-flex flex-column flex-grow-1 overflow-height p-1"  [appOperationData]="appOperationData"></acu-calls-log>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+
+  <!--
+<div class="border-content-box light-sky-blue border-top-0 rounded-custom d-flex flex-column flex-grow-1">
+  <ngb-tabset  [destroyOnHide]="false"
+    class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden rounded-custom">
+    <ngb-tab id="imm_reg_update_message">
+      <ng-template ngbTabTitle><span>Immunization Update Messages (VXU)</span></ng-template>
+      <ng-template ngbTabContent>
+        <immunization-registry-update-messages class="d-flex flex-column flex-grow-1 overflow-height">
+        </immunization-registry-update-messages>
+      </ng-template>
+    </ngb-tab>
+
+    <ngb-tab id="imm_reg_history_forecast_message">
+      <ng-template ngbTabTitle><span>Evaluated Immunization History and Immunization Forecast (QBP)</span></ng-template>
+      <ng-template ngbTabContent>
+        <immunization-registry-history-forecast-messages class="d-flex flex-column flex-grow-1 overflow-height">
+        </immunization-registry-history-forecast-messages>
+      </ng-template>
+    </ngb-tab>
+
+  </ngb-tabset>
+  
+</div>
+-->
+
+
+</div>

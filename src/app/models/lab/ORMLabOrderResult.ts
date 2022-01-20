@@ -1,0 +1,37 @@
+export class ORMLabOrderResult
+{
+        result_id:String;
+		patient_id:String;
+		test_id:String;
+		order_id:String;
+		practice_id:String;
+		observation_datetime:String;
+		result_code:String;
+		result_description:String;
+		result_value:String;
+		result_value_unit:String;
+		recomended_value:String;
+		result_status:String;
+		result_status_code:String;
+		abnormal_range:String;
+		abnormal_range_code:String;
+		physician_comments:String;
+		followup_notes:String;
+		assigned_to:String;
+		reviewed_by:String;
+		reviewed_date:String;
+		external_result_id:String;
+		external_result_id_type:String;
+		deleted:Boolean;
+		created_user:String;
+		client_date_created:String;
+		modified_user:String;
+		client_date_modified:String;
+		date_created:String;
+		date_modified:String;
+		change_med:Boolean;
+		follow_up_action:String;
+		education_provided:Boolean;
+		system_ip:String;
+        phy_comments_date:String;
+}

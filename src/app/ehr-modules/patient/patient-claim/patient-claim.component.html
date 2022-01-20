@@ -1,0 +1,407 @@
+
+<div *ngIf="!addEditView" class="dashboard-container d-flex flex-column mb-0 position-relative">
+    <div class="dashboard mx-1">
+        <div class="dashboard-title h-30">
+            <div class="title">Claim Summary</div>
+
+            <div class="custom-control custom-checkbox green-checkbox"
+                *ngIf="this.lookupList.logedInUser.userType.toUpperCase() == 'BILLING'">
+                <form [formGroup]="frmShowDeletedClaim">
+                    <input type="checkbox" class="custom-control-input" id="chkShowDeleted_{{patientId}}"
+                        formControlName="chkShowDeletedClaim" (change)="onchkShowDeleted($event.currentTarget.checked)">
+                    <label class="custom-control-label" for="chkShowDeleted_{{patientId}}">Show Deleted Claim</label>
+                </form>
+            </div>
+
+            <div>
+                <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="onStatementLog()"
+                    *ngIf="this.lookupList.UserRights.patient_statement_view">
+                    Statement Log</button>
+
+                <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                    *ngIf="this.lookupList.UserRights.patient_statement_view" (click)="onStatement()">Patient Statement/
+                    Attorney</button>
+
+                <button *ngIf="selectedClaim!=undefined"
+                    class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+                    (click)="printPatientReceipt()">Print Patient Receipt</button>
+
+                <button *ngIf="this.lookupList.UserRights.claim_edit"
+                    class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="onAddNewClaim()">New
+                    Claim</button>
+
+
+                <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 "
+                    (click)="btnRefreshClicked()">
+                    <i class="fas fa-redo"></i>
+                </button>
+
+            </div>
+
+
+
+
+
+        </div>
+
+        <div class="dashboard-sub-nav encounter" state="">
+            <div class="color-box bg-purple"></div>
+            <p> Draft</p>
+            <div class="color-box bg-dark"></div>
+            <p> Ready to Submit</p>
+            <div class="color-box bg-primary"></div>
+            <p> Submitted</p>
+            <div class="color-box bg-danger"></div>
+            <p> Billed to Patient</p>
+            <div class="color-box bg-teal"></div>
+            <p> Partial Paid</p>
+            <div class="color-box bg-success"></div>
+            <p> Completed</p>
+            <div class="color-box bg-pink"></div>
+            <p> HCFA Printed</p>
+            <div class="color-box bg-brown"></div>
+            <p> Over Paid</p>
+        </div>
+
+        <div class="dashboard-content">
+
+            <!--<div class="div-loader" *ngIf="isLoading"></div>-->
+
+            <div class="no-content p-8" *ngIf="(lstClaim==undefined || lstClaim.length==0) && !isLoading">
+                <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+            </div>
+
+            <table class="table sm layout-fixed light-striped-border table-sticky-header"
+                *ngIf="lstClaim != undefined && lstClaim.length >0">
+                <thead>
+                    <tr>
+                        <th class="width-20">
+                        </th>
+                        <!--
+                        <th class="width-100" scope="col" sortable="claim_id" type="numeric" (sort)="onSort($event)">
+                            Claim ID</th>
+                            -->
+                        <th class="width-75 pr-0" scope="col" sortable="dos" type="datetime" formate="MM/DD/YYYY"
+                            (sort)="onSort($event)">DOS </th>
+                        <th title="Billing Physician  pr-0" scope="col" sortable="billing_physician" type="alpha"
+                            (sort)="onSort($event)">Billing
+                            Physician</th>
+                        <th title="Attending Physician  pr-0" scope="col" sortable="attending_physician" type="alpha"
+                            (sort)="onSort($event)">Attending
+                            Physician</th>
+                        <th class="text-right width-70  pr-0" scope="col" sortable="claim_total" type="numeric"
+                            (sort)="onSort($event)">Total</th>
+                        <th class="text-right width-70  pr-0" scope="col" sortable="pri_paid" type="numeric"
+                            (sort)="onSort($event)">
+                            Pri. Paid</th>
+                        <th class="text-right width-70  pr-0" scope="col" sortable="sec_paid" type="numeric"
+                            (sort)="onSort($event)">
+                            Sec. Paid</th>
+                        <th class="text-right width-70  pr-0" scope="col" sortable="oth_paid" type="numeric"
+                            (sort)="onSort($event)">
+                            Oth. Paid</th>
+                        <th class="text-right width-70  pr-0" scope="col" sortable="patient_paid" type="numeric"
+                            (sort)="onSort($event)">Pat. Paid</th>
+                        <th class="text-right width-70  pr-0" scope="col" sortable="total_adjustments" type="numeric"
+                            (sort)="onSort($event)">Adj.</th>
+                        <th class="text-right width-70  pr-0" scope="col" sortable="amt_due" type="numeric"
+                            (sort)="onSort($event)">Amt. Due</th>
+                        <th class="border width-25 px-0" scope="col" sortable="pri_status" type="alpha"
+                            (sort)="onSort($event)">Pri</th>
+                        <th class="border width-25 px-0" scope="col" sortable="sec_status" type="alpha"
+                            (sort)="onSort($event)">Sec</th>
+                        <th class="border width-25 px-0" scope="col" sortable="oth_status" type="alpha"
+                            (sort)="onSort($event)">Oth</th>
+                        <th class="border width-25 px-0 " scope="col" sortable="pat_status" type="alpha"
+                            (sort)="onSort($event)">Pat</th>
+                        <th class="border width-100 pr-0" scope="col" sortable="created_user" type="alpha"
+                            (sort)="onSort($event)">Created By</th>
+                        <th class="border width-80 px-1" scope="col" sortable="created_Date" type="alpha"
+                            (sort)="onSort($event)">Date Created</th>
+                        <th class="width-90">&nbsp;</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let clm of lstClaim; let i = index" (click)="claimSelectionChanged(clm)" [ngClass]="{'text-purple' : clm.draft,
+                    'text-danger' : clm.pat_status=='B',
+                    'text-teal' : (clm.pri_status=='PP' || clm.sec_status=='PP' || clm.oth_status=='PP' ),
+                    'text-pink' : (clm.hcfa_printed && clm.amt_due>0),                    
+                    'text-primary' : (clm.pri_status=='B' || clm.sec_status=='B' || clm.oth_status=='B' ),
+                    'text-success' : (!clm.draft &&  clm.amt_due==0 ),
+                    'text-brown' : (!clm.draft &&  clm.amt_due < 0 ),
+                    'active': clm.claim_id==selectedClaimId                    
+                }" (dblclick)="onOpenClaim(clm)">
+
+
+                        <td class="pl-1 pr-0">
+                            <a class="p-0 text-info" [ngbPopover]="popContent" [ngClass]="{'text-danger': clm.deleted}"
+                                popoverTitle="Diagnosis/Procedures [{{clm.claim_id}}]" triggers="mouseenter:mouseleave"
+                                container="body" placement="right" popoverClass="ihc-popover width-300">
+                                <i class="fas fa-info-circle fa-md"></i>
+                                <ng-template #popContent>
+                                    <strong>Diagnosis: </strong>
+                                    <ul class="pl-4 pr-2">
+                                        <li *ngFor="let icd of getTooltipIcdsCptsAsList(clm.icd)">
+                                            {{icd}}
+                                        </li>
+                                    </ul>
+
+                                    <strong>Procedures: </strong>
+                                    <ul class="pl-4 pr-2">
+                                        <li *ngFor="let cpt of getTooltipIcdsCptsAsList(clm.cpt)">
+                                            {{cpt}}
+                                        </li>
+                                    </ul>
+
+                                </ng-template>
+                            </a>
+
+                        </td>
+
+
+                        <!--
+                        <td title="{{clm.claim_id}}">
+                            {{clm.claim_id}}
+                        </td>
+                        -->
+                        <td title="{{clm.dos}}" class="px-1">
+                            <a class="p-0 text-primary cursor-default" (click)="onOpenClaim(clm)">{{clm.dos}}</a>
+                        </td>
+                        <td title="{{clm.billing_physician}}">{{clm.billing_physician}}</td>
+                        <td title="{{clm.attending_physician}}">{{clm.attending_physician}}</td>
+                        <td title="{{clm.claim_total | currency:'USD':'symbol-narrow'}}" class="text-right">
+                            {{clm.claim_total | currency:'USD':'symbol-narrow'}}</td>
+                        <td title="{{clm.pri_paid | currency:'USD':'symbol-narrow'}}" class="text-right">
+                            {{clm.pri_paid | currency:'USD':'symbol-narrow'}}</td>
+                        <td title="{{clm.sec_paid | currency:'USD':'symbol-narrow'}}" class="text-right">
+                            {{clm.sec_paid | currency:'USD':'symbol-narrow'}}</td>
+                        <td title="{{clm.oth_paid | currency:'USD':'symbol-narrow'}}" class="text-right">
+                            {{clm.oth_paid | currency:'USD':'symbol-narrow'}}</td>
+                        <td title="{{clm.patient_paid | currency:'USD':'symbol-narrow'}}" class="text-right">
+                            {{clm.patient_paid | currency:'USD':'symbol-narrow'}}</td>
+                        <td title="{{clm.total_adjustments | currency:'USD':'symbol-narrow'}}" class="text-right">
+                            {{clm.total_adjustments | currency:'USD':'symbol-narrow'}}</td>
+                        <td title="{{clm.amt_due | currency:'USD':'symbol-narrow'}}" class="text-right">
+                            {{clm.amt_due | currency:'USD':'symbol-narrow'}}
+                        </td>
+                        <!--<td>{{pat.created_user}}</td>
+                      <td>{{pat.created_Date}}</td>
+                      -->
+
+                        <td class="border font-weight-bold text-dark px-1" [ngClass]="{'bg-success' : clm.pri_status=='P',
+                      'bg-info' : clm.pri_status=='PP',
+                      'bg-warning' : clm.pri_status=='B'}">{{clm.pri_status}}</td>
+                        <td class="border font-weight-bold text-dark  px-1" [ngClass]="{'bg-success' : clm.sec_status=='P',
+                      'bg-info' : clm.sec_status=='PP',
+                      'bg-warning' : clm.sec_status=='B'}">{{clm.sec_status}}</td>
+                        <td class="border font-weight-bold text-dark  px-1" [ngClass]="{'bg-success' : clm.oth_status=='P',
+                      'bg-info' : clm.oth_status=='PP',
+                      'bg-warning' : clm.oth_status=='B'}">{{clm.oth_status}}</td>
+                        <td class="border font-weight-bold text-dark  px-1" [ngClass]="{'bg-success' : clm.pat_status=='P',
+                      'bg-info' : clm.pat_status=='PP',
+                      'bg-warning' : clm.pat_status=='B'}">{{clm.pat_status}}</td>
+
+                        <td title="{{clm.created_user}}">{{clm.created_user}}</td>
+                        <td title="{{clm.created_Date}}">{{clm.created_Date}}</td>
+                        <td class="px-1">
+                            <a *ngIf="lookupList.UserRights.claim_view" class="p-0 text-primary mr-2"
+                                (click)="onOpenClaim(clm,'tb-professional-claim')"><i
+                                    class="far fa-folder-open fa-md"></i></a>
+                            <a *ngIf="lookupList.UserRights.claim_view" class="p-0 text-secondary mr-2"
+                                (click)="onOpenClaim(clm,'tb-claim-notes')"><i class="ihc-notes fa-md"></i></a>
+                            <!--<a class="p-0 text-secondary mr-2" (click)="openClaimNotesPopUp(clm)"><i
+                                        class="ihc-notes fa-md"></i></a>
+                            -->
+                            <a *ngIf="lookupList.UserRights.payment_view" class="p-0 text-success mr-2"
+                                (click)="onOpenClaim(clm,'tb-claim-payment')"><i
+                                    class="fas fa-dollar-sign fa-md"></i></a>
+                            <a *ngIf="this.lookupList.UserRights.claim_delete && !clm.deleted"
+                                class="p-0 text-danger mr-2" (click)="onDeleteClaim(clm)"><i
+                                    class="far fa-trash-alt fa-md"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+        <div class="dashboard-sub-nav footer pt-1 h-20 d-flex justify-content-between">
+
+
+
+            <div *ngIf="selectedClaim!=undefined">
+
+                <span>
+                    Claim ID: <strong>{{selectedClaimId}}</strong>
+                </span>
+                <span class="v-separtor"></span>
+                <span>
+                    All Claims Total Due: <strong>{{totalAllClaimsDue | currency:'USD':'symbol-narrow'}}</strong>
+                </span>
+                <span class="v-separtor"></span>
+                <span>
+                    All Claims Patient Due: <strong>{{totalPatientDue | currency:'USD':'symbol-narrow'}}</strong>
+                </span>
+
+            </div>
+
+
+
+            <div *ngIf="selectedClaim!=undefined">
+                <!--<a class="p-0 text-primary mr-2 cursor-default" (click)="showPaymentPlan">Edit Claim Status</a>
+                <a class="p-0 text-primary mr-2 cursor-default" (click)="showPaymentPlan">Payment Plan</a>
+                -->
+
+                <button class="btn fz-12 btn-link title-bar-blue-btn font-weight-400 py-0" (click)="addToTask()">Add to
+                    Task</button>
+
+                <button class="btn fz-12 btn-link title-bar-blue-btn font-weight-400 py-0"
+                    (click)="openModifyClaimStatusPopUp()" *ngIf="lookupList.UserRights.claim_status_edit">Edit Claim
+                    Status</button>
+
+                <button class="btn fz-12 btn-link title-bar-blue-btn font-weight-400 py-0"
+                    (click)="showPaymentPlan()">Payment Plan</button>
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+    </div>
+</div>
+
+
+<!--
+<div *ngIf="addEditView" class="encounter-detail-top-bar rounded-top flex-shrink-0 mt-1">
+    <button class="left-back-btn" (click)="onBackToSummary()">
+        <i class="fas fa-arrow-left mr-2"></i>Back to Claim Summary
+    </button>
+
+    <div class="d-flex flex-row flex-grow-1 justify-content-between align-items-center ml-12">
+        <span *ngIf="selectedClaimId!=undefined">
+            <p class="m-0 text-white font-weight-light"><strong>Claim ID:</strong> {{selectedClaimId}}</p>
+        </span>
+        <span *ngIf="selectedClaimId==undefined">
+            <p class="m-0 text-white font-weight-light"><strong>[ New Claim ]</strong></p>
+        </span>
+
+    </div>
+</div>
+-->
+
+<!--<div *ngIf="addEditView" class="border-content-box light-sky-blue border-top-0 rounded-bottom d-flex flex-row flex-grow-1">-->
+
+<div *ngIf="addEditView" class="dashboard-container d-flex flex-column mb-0">
+    <div class="dashboard mx-1">
+
+        <!--<div *ngIf="addEditView"
+    class="border-content-box light-sky-blue border-top-0 rounded-bottom d-flex flex-column flex-grow-1">-->
+        <ngb-tabset
+            class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden mt-1"
+            (tabChange)="onTabChange($event)" [activeId]="selectedTab" [destroyOnHide]=false>
+
+            <ngb-tab id="claim-summary" [disabled]="showImportIcdCpt"
+                *ngIf="this.patientToOpen.callingFrom!='billing_summary'">
+                <ng-template ngbTabTitle>
+                    <span class="back-button">
+                        <i class="fas fa-arrow-alt-circle-left fa-lg mr-1"></i>Claim Summary</span>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab id="tb-professional-claim" *ngIf="lookupList.UserRights.claim_view">
+                <ng-template ngbTabTitle><span>Claim (Professional)</span></ng-template>
+                <ng-template ngbTabContent>
+                    <claim-professional class="d-flex flex-column flex-grow-1 single-col" #claimProfersional
+                        [openedClaimInfo]="openedClaimInfo" (onClaimSaved)="onClaimSaved($event)"
+                        (showImportIcdCptModule)="showImportIcdCptModule($event)">
+                    </claim-professional>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab id="tb-claim-payment" [disabled]="showImportIcdCpt"
+                *ngIf="selectedClaimId!=undefined && lookupList.UserRights.payment_view ">
+                <ng-template ngbTabTitle><span>Payment</span></ng-template>
+                <ng-template ngbTabContent>
+                    <claim-payment class="d-flex flex-column flex-grow-1 single-col"
+                        [openedClaimInfo]="openedClaimInfo">
+                    </claim-payment>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab id="tb-claim-notes" [disabled]="showImportIcdCpt"
+                *ngIf="selectedClaimId!=undefined && lookupList.UserRights.claim_view ">
+                <ng-template ngbTabTitle><span>Notes</span></ng-template>
+                <ng-template ngbTabContent>
+                    <claim-notes [openedClaimInfo]="openedClaimInfo" class="d-flex flex-column flex-grow-1">
+                    </claim-notes>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab id="tb-edi-claim-status" [disabled]="showImportIcdCpt"
+                *ngIf="selectedClaimId!=undefined && lookupList.UserRights.claim_view ">
+                <ng-template ngbTabTitle><span>EDI Claim Status</span></ng-template>
+                <ng-template ngbTabContent>
+                    <edi-claim-status-detail *ngIf="loadEdiClaimStatus" callingFrom="patient_claim"
+                        [claimId]="selectedClaimId" [openedClaimInfo]="openedClaimInfo"
+                        class="d-flex flex-column flex-grow-1">
+                    </edi-claim-status-detail>
+
+                </ng-template>
+            </ngb-tab>
+            <!--
+        <ngb-tab *ngIf="selectedClaimId!=undefined">
+            <ng-template ngbTabTitle><span>Reminders</span></ng-template>
+            <ng-template ngbTabContent>
+                <claim-reminder class="d-flex flex-column flex-grow-1"></claim-reminder>
+            </ng-template>
+        </ngb-tab>
+-->
+
+
+
+
+            <ngb-tab id="tb-claim-denial" [disabled]="showImportIcdCpt"
+                *ngIf="selectedClaimId!=undefined && lookupList.logedInUser.userType.toUpperCase() == 'BILLING'">
+                <ng-template ngbTabTitle><span>Denials</span></ng-template>
+                <ng-template ngbTabContent>
+                    <rpt-denial [openedClaimInfo]="openedClaimInfo" callingFrom="patient_claim"
+                        class="d-flex flex-column flex-grow-1"></rpt-denial>
+                </ng-template>
+
+            </ngb-tab>
+
+
+
+        </ngb-tabset>
+
+    </div>
+</div>
+
+<!--
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1"
+    *ngIf="showImportICDCPT">
+    <import-icd-cpt class="d-flex flex-column flex-grow-1 single-col" [patientId]="claimPatientId"
+        [providerId]=" claimProviderId" [locationId]="claimLocationId" [dos]="claimDOS"
+        [patientClaimRuleInfo]="claimRuleInfo" (onImport)="onImportIcdCptCodes($event)"
+        (onCancelImportIcdCpt)="onCancelImport()"></import-icd-cpt>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1"
+    *ngIf="showSuperBill">
+    <claim-super-bill class="d-flex flex-column flex-grow-1 single-col" [claimDiagCount]="claimIcdCount"
+        [dos]="claimDOS" (onImport)="onImportIcdCptCodes($event)" (onCancel)="onCancelImport()">
+    </claim-super-bill>
+</div>
+
+-->

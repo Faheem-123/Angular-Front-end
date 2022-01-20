@@ -1,0 +1,458 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc h-30 px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">Daily Deposit</div>
+    <!-- <span class="badge badge-pill">{{recordCount}}</span> -->
+
+    <ul class="nav color-buttons align-items-center">
+      <button class="btn btn-sm bg-green-ihc text-white mr-2" (click)="addDepositReport()">
+        <i class="far fa-edit pr-1"></i>Add Deposit</button>
+
+      <button class="btn btn-sm bg-green-ihc text-white mr-2" (click)="depositReport()">
+        <i class="far fa-file pr-1"></i>Deposit Report</button>
+    </ul>
+
+
+    <!-- <button>
+        <i aria-hidden="true" class="fa fa-save"></i> Add Deposit
+      </button> -->
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+
+    <!-- ************************************************************** *ngIf="cmbReportSelection=='encounter missing encounter claim'" -->
+    <div *ngIf="isDeposit == 'search-report'">
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaDailyDepostiRpt" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+
+        <div id="SearchCriteriaDailyDepostiRpt" class="show">
+          <div class="accordian-body bg-transparent">
+
+            <form [formGroup]="dailydepositReportForm" (ngSubmit)="onSubmit(dailydepositReportForm.value)">
+
+
+              <div class="p-2 pt-0">
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-2">
+                    <label class="col-form-label required" for="dateFrom">Date From:</label>
+                    <div class="input-group">
+                      <input class="form-control" placeholder="mm/dd/yyyy" name="dateFrom" formControlName="dateFrom"
+                        ngbDatepicker #dateFrom="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn btn-outline-primary" (click)="dateFrom.toggle()" type="button">
+                          <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                        </button>
+                      </span>
+
+                    </div>
+                  </div>
+
+                  <div class="form-group col-2">
+                    <label class="col-form-label required" for="dateTo">Date To:</label>
+                    <div class="input-group">
+                      <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo"
+                        ngbDatepicker #dateTo="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn btn-outline-primary" (click)="dateTo.toggle()" type="button">
+                          <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                  <div class="form-group col-2">
+                    <label class="col-form-label required" for="ddldatetype">Date Type:</label>
+                    <div class="input-group">
+                      <select class="form-control" formControlName="ddldatetype">
+                        <option selected [value]=""></option>
+                        <option [value]="0">Check Date</option>
+                        <option [value]="1">Received Date</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-2">
+                    <label class="col-form-label required" for="txt_checkno">Check#:</label>
+                    <div class="input-group">
+                      <input class="form-control" placeholder="check number" name="txt_checkno"
+                        formControlName="txt_checkno">
+                    </div>
+                  </div>
+
+
+                  <div class="form-group col-2">
+                    <label for="txt_ins_name" class="col-form-label">Insurance Name:</label>
+                    <div class="input-group">
+                      <input class="form-control" placeholder="Insurance Name" name="txt_ins_name"
+                        formControlName="txt_ins_name">
+                    </div>
+                  </div>
+
+                  <div class="form-group col-2">
+                    <label for="ddltype" class="col-form-label">Type:</label>
+                    <div class="input-group">
+                      <select class="form-control" formControlName="ddltype">
+                        <option selected [value]=""></option>
+                        <option [value]="all">All</option>
+                        <option [value]="mapped">Mapped</option>
+                        <option [value]="unmapped">Un Mapped</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-12 d-flex align-items-end justify-content-end mt-8">
+                    <button type="button" class="btn btn-dark mr-1" (click)="clearSearch()">Clear</button>
+                    <button type="button" class="btn btn-success"
+                      (click)="searchReport(dailydepositReportForm.value)">Search</button>
+                  </div>
+
+
+                </div>
+              </div>
+
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ****************************** -->
+    <div *ngIf="isDeposit == 'add-report'">
+      <form [formGroup]="addDailyDeposit" (ngSubmit)="onSubmit(addDailyDeposit.value)">
+
+        <div class="border rounded bg-white flex-shrink-0">
+          <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Add Deposit</h4>
+
+          <div class="p-2 pt-0">
+            <div class="form-row form-dashboard">
+
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="txt_checknumber">Check Number:</label>
+                <div class="input-group">
+                  <input class="form-control" name="txt_checknumber" formControlName="txt_checknumber">
+                </div>
+              </div>
+
+
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="dpCheckDate">Check Date:</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="mm/dd/yyyy" name="dateCheckDate"
+                    formControlName="dateCheckDate" ngbDatepicker #dpCheckDate="ngbDatepicker">
+                  <span class="input-group-btn">
+                    <button class="btn btn-outline-primary" (click)="dpCheckDate.toggle()" type="button">
+                      <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="dpCheckReceivedDate">Received Date:</label>
+                <div class="input-group">
+                  <input class="form-control" placeholder="mm/dd/yyyy" name="dateReceivedDate"
+                    formControlName="dateReceivedDate" ngbDatepicker #dpCheckReceivedDate="ngbDatepicker">
+                  <span class="input-group-btn">
+                    <button class="btn btn-outline-primary" (click)="dpCheckReceivedDate.toggle()" type="button">
+                      <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+
+
+              <div class="form-group col-5">
+                <label class="col-form-label required" for="dpCheckReceivedDate">Attach File:</label>
+                <div class="input-group">
+                  <input type="file" class="form-control" aria-label="Select File" aria-describedby="file-addon"
+                    formControlName="txtFile" (change)="onFileChange($event)">
+                </div>
+              </div>
+
+
+              <div class="form-group col-1 d-flex justify-content-end align-items-end">
+                <button type="button" class="btn btn-danger" (click)="removeAttachedFile()">Remove</button>
+              </div>
+
+
+              <div class="form-group col-2">
+                <label for="txt_check_amnt" class="col-form-label">Check Amount:</label>
+                <div class="input-group">
+                  <input class="form-control" name="txt_check_amnt" formControlName="txt_check_amnt">
+                </div>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="ddlInsName" class="col-form-label">Insurance Name:</label>
+                <div class="input-group">
+                  <select class="form-control" formControlName="ddlInsName" lookupList>
+                    <option *ngFor="let arins of lookupList.arrInsuranceName" [value]="arins.value">{{arins.value}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group col-4">
+                <label for="txt_comments" class="col-form-label">Comments:</label>
+                <div class="input-group">
+                  <input class="form-control" name="txt_comments" formControlName="txt_comments">
+                </div>
+              </div>
+
+              <div class="form-group col-2 d-flex justify-content-end align-items-end">
+                <button type="button" class="btn btn-dark mr-1" (click)="cancelDeposit()">Cancel</button>
+                <button type="button" class="btn btn-success" (click)="saveDeposit(addDailyDeposit.value)">Save</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+    <!-- ****************************** -->
+
+    <!-- ****************************** -->
+    <div *ngIf="isDeposit == 'deposit-report'">
+      <form [formGroup]="dailyDepositMonthYear" (ngSubmit)="onSubmit(dailyDepositMonthYear.value)">
+
+        <div class="border flex-shrink-0">
+          <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Add Deposit</h4>
+
+          <div class="p-2 pt-0">
+            <div class="form-row form-dashboard">
+
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="txt_checknumber">Month:</label>
+                <div class="input-group">
+                  <select class="form-control" id="cmbMonthsdaywise" formControlName="cmbMonthsdaywise">
+                    <option [value]="0" [selected]="true">select month</option>
+                    <option *ngFor="let month of lookupList.lstMonths" [value]="month.month_no">{{month.month_name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group col-2">
+                <label class="col-form-label required" for="dpCheckDate">Year:</label>
+                <div class="input-group">
+                  <input class="form-control" name="txtYeardaywise" formControlName="txtYeardaywise" placeholder="YYYY">
+                </div>
+              </div>
+
+              <div class="form-group col-8 d-flex align-items-end justify-content-end">
+                <button type="button" class="btn btn-dark mr-1" (click)="cancelDeposit()">Cancel</button>
+                <button type="button" class="btn btn-success"
+                  (click)="searchByMonthYear(dailyDepositMonthYear.value)">Search</button>
+              </div>
+
+            </div>
+          </div>
+
+
+        </div>
+      </form>
+    </div>
+    <!-- ****************************** -->
+
+    <!-- ************************************************************** -->
+
+    <div *ngIf="isDeposit == 'search-report'" class="border   d-flex flex-column flex-grow-1 ">
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details</h4>
+        <div class="dashboard-sub-nav encounter bg-white float-right h-25">
+          <div class="color-box bg-info"></div>
+          <p>Mapped</p>
+          <div class="color-box bg-dark"></div>
+          <p>Un Mapped</p>
+        </div>
+      </div>
+
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th>Check Number</th>
+              <th>Check Date</th>
+              <th>Received Date</th>
+              <th>Check Amount</th>
+              <th>Insurance Name</th>
+              <th>Comments</th>
+              <th>Attachment</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let dpst of lstDailyDeposit">
+              <td>{{dpst.check_number}}</td>
+              <td>{{dpst.check_date}}</td>
+              <td>{{dpst.check_received_date}}</td>
+              <td>{{dpst.check_amount}}</td>
+              <td>{{dpst.insurance_name}}</td>
+              <td>{{dpst.comments}}</td>
+              <td>{{dpst.original_file_name}}</td>
+              <td class="text-right">
+                <button type="button" class="btn btn-link btn-md  line-height-1 p-0 mr-2" (click)="editSelected(dpst)">
+                  <i class="far fa-edit"></i>
+                </button>
+
+                <button type="button" class="btn btn-link  btn-md btn-delete  line-height-1 p-0"
+                  (click)="deleteSelected(dpst)">
+                  <i class="far fa-trash-alt"></i>
+                </button>
+              </td>
+
+              <!-- <td><i class="far fa-trash-alt fa-lg" (click)="deleteSelected(dpst)"></i>&nbsp;&nbsp;
+                <i (click)="editSelected(dpst)" class="far fa-edit fa-lg"></i>
+              </td> -->
+            </tr>
+            <tr st-select-row="row" *ngFor="let totalr of totalRow">
+              <td class="font-weight-bold">{{totalr.check_number}}</td>
+              <td></td>
+              <td></td>
+              <td class="font-weight-bold">{{totalr.check_amount}}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+          </tbody>
+        </table>
+
+
+      </div>
+
+    </div>
+    <!--****************************************************************-->
+
+    <div *ngIf="isDeposit == 'deposit-report'" class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2">
+      <h4 class="form-edit-sub-heading border-bottom-0 flex-shrink-0 m-1 mb-0 pl-1">Details</h4>
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th style="width: 15%;">Insurances</th>
+              <th>01</th>
+              <th>02</th>
+              <th>03</th>
+              <th>04</th>
+              <th>05</th>
+              <th>06</th>
+              <th>07</th>
+              <th>08</th>
+              <th>09</th>
+              <th>10</th>
+              <th>11</th>
+              <th>12</th>
+              <th>13</th>
+              <th>14</th>
+              <th>15</th>
+              <th>16</th>
+              <th>17</th>
+              <th>18</th>
+              <th>19</th>
+              <th>20</th>
+              <th>21</th>
+              <th>22</th>
+              <th>23</th>
+              <th>24</th>
+              <th>25</th>
+              <th>26</th>
+              <th>27</th>
+              <th>28</th>
+              <th *ngIf="colday29" id="colH_day29">29</th>
+              <th *ngIf="colday30" id="colH_day30">30</th>
+              <th *ngIf="colday31" id="colH_day31">31</th>
+              <th class="font-weight-bold">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let day of lstdayWise">
+              <td class="font-weight-bold" style="width: 15%;">{{day.insurance_name}}</td>
+              <td>{{day.day_01}}</td>
+              <td>{{day.day_02}}</td>
+              <td>{{day.day_03}}</td>
+              <td>{{day.day_04}}</td>
+              <td>{{day.day_05}}</td>
+              <td>{{day.day_06}}</td>
+              <td>{{day.day_07}}</td>
+              <td>{{day.day_08}}</td>
+              <td>{{day.day_09}}</td>
+              <td>{{day.day_10}}</td>
+              <td>{{day.day_11}}</td>
+              <td>{{day.day_12}}</td>
+              <td>{{day.day_13}}</td>
+              <td>{{day.day_14}}</td>
+              <td>{{day.day_15}}</td>
+              <td>{{day.day_16}}</td>
+              <td>{{day.day_17}}</td>
+              <td>{{day.day_18}}</td>
+              <td>{{day.day_19}}</td>
+              <td>{{day.day_20}}</td>
+              <td>{{day.day_21}}</td>
+              <td>{{day.day_22}}</td>
+              <td>{{day.day_23}}</td>
+              <td>{{day.day_24}}</td>
+              <td>{{day.day_25}}</td>
+              <td>{{day.day_26}}</td>
+              <td>{{day.day_27}}</td>
+              <td>{{day.day_28}}</td>
+              <td *ngIf="colday29" id="col_day29">{{day.day_29}}</td>
+              <td *ngIf="colday30" id="col_day30">{{day.day_30}}</td>
+              <td *ngIf="colday31" id="colday31">{{day.day_31}}</td>
+              <td class="font-weight-bold">{{day.total}}</td>
+            </tr>
+
+
+            <tr st-select-row="row" *ngFor="let totalr of totalValues">
+              <td class="font-weight-bold">TOTAL: </td>
+              <td class="font-weight-bold">{{totalr.day_01}}</td>
+              <td class="font-weight-bold">{{totalr.day_02}}</td>
+              <td class="font-weight-bold">{{totalr.day_03}}</td>
+              <td class="font-weight-bold">{{totalr.day_04}}</td>
+              <td class="font-weight-bold">{{totalr.day_05}}</td>
+              <td class="font-weight-bold">{{totalr.day_06}}</td>
+              <td class="font-weight-bold">{{totalr.day_07}}</td>
+              <td class="font-weight-bold">{{totalr.day_08}}</td>
+              <td class="font-weight-bold">{{totalr.day_09}}</td>
+              <td class="font-weight-bold">{{totalr.day_10}}</td>
+              <td class="font-weight-bold">{{totalr.day_11}}</td>
+              <td class="font-weight-bold">{{totalr.day_12}}</td>
+              <td class="font-weight-bold">{{totalr.day_13}}</td>
+              <td class="font-weight-bold">{{totalr.day_14}}</td>
+              <td class="font-weight-bold">{{totalr.day_15}}</td>
+              <td class="font-weight-bold">{{totalr.day_16}}</td>
+              <td class="font-weight-bold">{{totalr.day_17}}</td>
+              <td class="font-weight-bold">{{totalr.day_18}}</td>
+              <td class="font-weight-bold">{{totalr.day_19}}</td>
+              <td class="font-weight-bold">{{totalr.day_20}}</td>
+              <td class="font-weight-bold">{{totalr.day_21}}</td>
+              <td class="font-weight-bold">{{totalr.day_22}}</td>
+              <td class="font-weight-bold">{{totalr.day_23}}</td>
+              <td class="font-weight-bold">{{totalr.day_24}}</td>
+              <td class="font-weight-bold">{{totalr.day_25}}</td>
+              <td class="font-weight-bold">{{totalr.day_26}}</td>
+              <td class="font-weight-bold">{{totalr.day_27}}</td>
+              <td class="font-weight-bold">{{totalr.day_28}}</td>
+              <td class="font-weight-bold" *ngIf="colday29">{{totalr.day_29}}</td>
+              <td class="font-weight-bold" *ngIf="colday30">{{totalr.day_30}}</td>
+              <td class="font-weight-bold" *ngIf="colday31">{{totalr.day_31}}</td>
+              <td class="font-weight-bold">{{totalr.total}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!--*****************************************-->
+
+  </div>

@@ -1,0 +1,133 @@
+<my-tabs class="nav sub-nav" [hidden]="addEditPatientFlag || showMergePatientFlag || showFlexApp || showAuditLog">
+    <my-tab [tabTitle]="'Find Patient'" class="patient-search">
+
+        <patient-search (performAction)="performAction($event)" class="search-patient-content">
+        </patient-search>
+        <!--
+        <patient-search 
+            (openPatient)="openPatientClick($event)" 
+            (addPatient)="onAddPatient($event)"
+            (editPatient)="onEditPatient($event)"
+            (mergePatient)="onMergePatient($event)"
+            (showFlexApp)="onShowFlexApp($event)"
+            class="search-patient-content">
+        </patient-search>
+        -->
+    </my-tab>
+
+    <ng-template let-patient="patient" #patientContent>
+        <patient-content class="position-relative" [patientToOpen]="patient"></patient-content>
+    </ng-template>
+</my-tabs>
+
+
+
+<div *ngIf="addEditPatientFlag" class="dashboard rounded-top m-2">
+
+    <div class="top-bar-green rounded-top flex-shrink-0">
+        <button class="left-back-btn" (click)="onAddEditPatientCancelled()">
+            <i class="fas fa-arrow-left mr-2"></i><span>Back to Patient Search</span>
+        </button>
+    </div>
+
+    <patient-info class="main-app d-flex flex-column p-0" [addEditOperation]="addEditOperation"
+        callingFrom="patient_search" (onSave)="onAddEditPatientSaved($event)" [patientId]="patientId"
+        (onCancel)="onAddEditPatientCancelled($event)"></patient-info>
+
+</div>
+
+
+
+<div *ngIf="showMergePatientFlag" class="dashboard rounded-top m-2">
+
+    <div class="top-bar-green rounded-top flex-shrink-0">
+        <button class="left-back-btn" (click)="mergePatientCallBack(false)">
+            <i class="fas fa-arrow-left mr-2"></i><span>Back to Patient Search</span>
+        </button>
+    </div>
+
+    <merge-patient class="patient-all-comp d-flex flex-grow-1" (onCallBack)="mergePatientCallBack($event)"
+        callingFrom="patient_search">
+    </merge-patient>
+    <!--
+        <patient-info class="main-app d-flex flex-column p-0" [addEditOperation]="addEditOperation"
+            callingFrom="patient_search" (onSave)="onAddEditPatientSaved($event)" [patientId]="patientId"
+            (onCancel)="onAddEditPatientCancelled($event)"></patient-info>
+            -->
+
+</div>
+
+<div *ngIf="showFlexApp" class="dashboard rounded-top m-2">
+
+    <div class="top-bar-green rounded-top flex-shrink-0">
+        <button class="left-back-btn" (click)="FlexAppCallBack()">
+            <i class="fas fa-arrow-left mr-2"></i><span>Back to Patient Search</span>
+        </button>
+    </div>
+
+    <iframe frameborder="0" [src]="flax_app_url" scrolling="yes" style="width: 100%" height="550px" id="irxIFrame"
+        name="irxIFrame"></iframe>
+
+</div>
+
+
+<div *ngIf="showAuditLog" class="dashboard rounded-top m-2">
+
+
+    <div class="top-bar-green rounded-top flex-shrink-0">
+        <button class="left-back-btn" (click)="navigateBackToSearch()">
+            <i class="fas fa-arrow-left mr-2"></i><span>Back to Patient Search</span>
+        </button>
+
+        <div class="fz-15 font-weight-400 h-25 pl-2 align-self-center">Patient Log
+
+            <span class="v-separtor" *ngIf="PID!=undefined"></span>
+            <span *ngIf="PID!=undefined" class="title-other-info text-dark">
+                PID: {{PID}}
+            </span>
+            <span class="v-separtor" *ngIf="patientName!=undefined"></span>
+            <span *ngIf="patientName!=undefined" class="title-other-info text-dark">
+                Patient: {{patientName}}
+            </span>
+
+
+        </div>
+
+        <!--
+        <span class="fz-15 font-weight-400 pl-2 align-self-center">Patient Log</span>
+
+        <span class="v-separtor" *ngIf="PID!=undefined"></span>
+        <span *ngIf="PID!=undefined" class="title-other-info">
+            PID: {{PID}}
+        </span>
+
+        <span class="v-separtor" *ngIf="patientName!=undefined"></span>
+        <span *ngIf="patientName!=undefined" class="title-other-info">
+            Patient: {{patientName}}
+        </span>
+-->
+
+        <!--
+        <span class="fz-15 px-1 align-self-center">|</span>
+        <span class="fz-11 font-weight-500 align-self-center">PID: {{PID}}</span>
+        <span class="fz-15 px-1 align-self-center">|</span>
+        <span class="fz-11 font-weight-500 align-self-center">{{patientName}}</span>
+        -->
+    </div>
+
+    <!--
+    <div class="light-title-bar rounded-top h-25 pr-2 d-flex align-items-center flex-shrink-0">
+        <button class="left-back-btn h-100" (click)="navigateBackToSearch()">
+            <i class="fas fa-arrow-left mr-2"></i><span>Back to Patient Search</span>
+        </button>
+        <span class="fz-15 font-weight-400 pl-2">Patient Log</span>
+        <span class="px-1">|</span>
+        <span class="fz-11 font-weight-500">PID: {{PID}}</span>
+        <span class="px-1">|</span>
+        <span class="fz-11 font-weight-500">{{patientName}}</span>
+    </div>
+
+    -->
+    <audit-log class="main-app d-flex flex-column p-0" [param]="logParameters" >
+    </audit-log>
+</div>

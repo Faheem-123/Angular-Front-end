@@ -1,0 +1,119 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Fax Contact</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom">
+
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading" class="dashboard-content mt-0">
+
+
+      <div class="info-box-stipes rounded-custom flex-grow-1">
+
+        <div class="px-1 pt-1 pb-2">
+
+          <div class="form-row form-dashboard">
+            <div class="col-12 p-0">
+              <div class="pl-2 pr-2">
+                <div class="form-group">
+                  <label for="txtOrgName" class="col-form-label required">Organization Name</label>
+                  <input type="text" class="form-control required" id="txtOrgName" formControlName="txtOrgName">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row form-dashboard">
+            <div class="col-12 p-0">
+              <div class="pl-2 pr-2">
+                <div class="form-group">
+                  <label for="txtContactPerson" class="col-form-label required">Contact Person</label>
+                  <input type="text" class="form-control required" id="txtContactPerson" formControlName="txtContactPerson">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="col-md-6 p-0">
+              <div class="pl-2 pr-2">
+                <div class="form-group">
+                  <label for="txtFax" class="col-form-label required">Fax Number</label>
+                  <input type="text" class="form-control required" id="txtFax" formControlName="txtFax">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 p-0">
+              <div class="pl-2 pr-2">
+                <div class="form-group">
+                  <label for="txtPhone" class="col-form-label">Phone Number</label>
+                  <input type="text" class="form-control" id="txtPhone" formControlName="txtPhone">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="col-md-12 p-0">
+              <div class="pl-2 pr-2">
+                <div class="form-group col p-0">
+                  <label for="txtAddress" class="col-form-label">Address</label>
+                  <textarea type="text" rows="2" class="form-control" id="txtAddress" formControlName="txtAddress"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="col-6 p-0">
+              <div class="pl-2 pr-2">
+                <div class="form-row form-dashboard ">
+                  <div class="form-group col-8">
+                    <label for="txtZipCode" class="col-form-label">Zip</label>
+                    <input type="text" class="form-control" id="txtZipCode"
+                      (focusout)="zipFocusOut($event.target.value)" (change)="zipChanged()"
+                      formControlName="txtZipCode">
+                  </div>
+                  <div class="form-group  col-4">
+                    <label for="txtStateDisplay" class="col-form-label">State</label>
+                    <input type="text" class="form-control" id="txtStateDisplay" disabled value="{{state}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 p-0">
+              <div class="pl-2 pr-2">
+                <div class="form-group col p-0">
+                  <label for="ddCity" class="col-form-label">City</label>
+                  <select class="form-control" id="ddCity" formControlName="ddCity">
+                    <option *ngFor="let obj of lstZipCityState">
+                      {{obj.city}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="modal-footer custom" *ngIf="!isLoading">
+    <button style="width: 80px;" class="btn btn-success btn-sm" [disabled]="!formGroup.valid"
+      type="submit">Save</button>
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+  </div>
+</form>

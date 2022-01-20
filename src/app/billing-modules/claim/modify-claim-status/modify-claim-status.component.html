@@ -1,0 +1,156 @@
+<form [formGroup]="claimStatusFormGroup" (ngSubmit)="onSubmit(claimStatusFormGroup.value)"
+(keydown.esc)="activeModal.dismiss('Cross click')"
+  class="d-flex flex-column flex-grow-1">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Modify Claim Status</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom p-0 d-flex flex-column" style="max-height: 400px !important">
+
+    <div class="inner-tool-tab h-20  px-2">
+      <span *ngIf="openedClaimInfo.claimId!=undefined" class="title-other-info">
+        Claim ID: {{openedClaimInfo.claimId}}
+      </span>
+      <span class="v-separtor h-20"></span>
+      <span *ngIf="openedClaimInfo.dos!=undefined" class="title-other-info">
+        DOS: {{openedClaimInfo.dos}}
+      </span>
+    </div>
+
+    <div class="form-row form-dashboard mx-1 border-bottom border rounded-3 m-2">
+
+      <div class=" col-6 ">
+        <div class="form-row form-dashboard p-2">
+
+          <div class="form-group horizental row zero col-12">
+            <label class="col-form-label width-100" for="ddPrimaryStatus">Primary Status:</label>
+            <select class="form-control col" id="ddPrimaryStatus" formControlName="ddPrimaryStatus">
+              <option *ngFor="let status of lstStatus" [value]="status.status">
+                <span *ngIf="status.status!=undefined && status.status!=''"> {{status.display}} ({{status.status}})
+                </span>
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group horizental row zero col-12">
+            <label class="col-form-label width-100" for="ddSecondaryStatus">Secondary Status:</label>
+            <select class="form-control col" id="ddSecondaryStatus" formControlName="ddSecondaryStatus">
+              <option *ngFor="let status of lstStatus" [value]="status.status">
+                <span *ngIf="status.status!=undefined && status.status!=''"> {{status.display}} ({{status.status}})
+                </span>
+              </option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <div class=" col-6 ">
+        <div class="form-row form-dashboard p-2">
+
+
+          <div class="form-group horizental row zero col-12">
+            <label class="col-form-label width-100" for="ddOtherStatus">Other Status:</label>
+            <select class="form-control col" id="ddOtherStatus" formControlName="ddOtherStatus">
+              <option *ngFor="let status of lstStatus" [value]="status.status">
+                <span *ngIf="status.status!=undefined && status.status!=''"> {{status.display}} ({{status.status}})
+                </span>
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group horizental row zero col-12">
+            <label class="col-form-label width-100" for="ddPatientStatus">Patient Status:</label>
+            <select class="form-control col" id="ddPatientStatus" formControlName="ddPatientStatus">
+              <option *ngFor="let status of lstStatus" [value]="status.status">
+                <span *ngIf="status.status!=undefined && status.status!=''"> {{status.display}} ({{status.status}})
+                </span>
+              </option>
+            </select>
+          </div>
+
+
+
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <div class="inner-tool-tab justify-content-end pr-0 flex-shrink-0 h-25 border-top "
+      *ngIf="!isLoading && showLastNote">
+      <button class="btn btn-sm btn-link" (click)="onAddEditClaimNote(undefined)">Add New Note</button>
+    </div>
+    <div class="overflow-auto flex-grow-1 max-height-100" *ngIf="!isLoading && showLastNote">
+
+      <table class="table sm layout-fixed light-striped-border">
+        <tbody>
+
+          <tr *ngFor="let note of lstClaimNotes">
+
+            <td class="width-150 border-right">
+
+              <div class="form-view fz-10 d-flex flex-column">
+                <div class="text-muted font-italic mt-0">
+                  {{note.date_modified}}
+                </div>
+                <div class="text-muted font-italic mt-0">
+                  {{note.modified_user}}
+                </div>
+
+              </div>
+            </td>
+
+            <td>
+              <div class="form-view">
+                <div class="value">
+                  <pre>{{note.notes}}</pre>
+                </div>
+              </div>
+            </td>
+
+            <td class="width-80 text-right border-left">
+              <button class="btn btn-sm btn-link p-0" type="button" (click)="onAddEditClaimNote(note)">Edit</button>
+
+
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <div class="form-row form-dashboard mx-1 mb-1 border-top" *ngIf="!isLoading && !showLastNote">
+      <div class="form-group horizental row zero col-12">
+        <label class="col-form-label required" for="txtNotes">Claim Notes:</label>
+        <textarea class="form-control required" id="txtNotes" formControlName="txtNotes" rows="5"
+          maxlength="500"></textarea>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="div-loader-message-box" *ngIf="isLoading">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+
+
+  </div>
+
+
+  <div class="modal-footer custom">
+    <button class="btn btn-success btn-sm width-80" [disabled]="!claimStatusFormGroup.valid" 
+    *ngIf="!showLastNote"
+    type="submit">Save</button>
+    <button type="button" class="btn btn-dark btn-sm width-80" 
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+  </div>
+</form>

@@ -1,0 +1,49 @@
+<div class="dashboard">
+  <div class="dashboard-title">
+      <div class="icon light-gray">
+          <!-- <i class="ihc-letter"></i> -->
+          <img class="img-h-24" src="./assets/images/icons/Dashboard_fax.svg" alt="">
+      </div>
+      <div class="title">
+          Unread Faxes <span class="text-danger ml-2"> ({{unreadfaxcount}}) </span>
+      </div>
+      <div class="title-btn p-0">
+          <a class="line-height-1" (click)="refreshFax()"><img class="img-h-25" src="./assets/images/icons/ico_refresh_green.svg" alt=""></a>
+      </div>
+  </div>
+  <div class="dashboard-content position-relative">
+      <table class="table light-striped-border wide">
+          <thead>
+              <tr>       
+                  <th style="width: 10px !important;">Fax</th>
+                  <th style="width: 10px !important;">Comments</th>
+                  <th style="width: 10px !important;">Sender</th>
+                  <th style="width: 10px !important;">Received</th>
+                  <th></th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr st-select-row="row" *ngFor="let fax of listUnreadfaxResult;let i=index">
+                <td>
+                    <button type="button" class="link-btn" (click)="onFaxView(fax)">
+                            <img class="img-h-16" src="./assets/images/icons/view_ico.svg" alt="">
+                            {{fax.fax_name}}</button>
+                </td>
+                  <td>{{fax.comments}}</td>
+                  <td>{{fax.sender}}</td>
+                  <td>{{fax.recived_date}}</td>
+                  <td class="text-right">
+                    <button type="button" class="link-btn" (click)="onRead(fax,i)">Mark As Read</button>
+                    <!-- <button type="button" class="link-btn">Download</button> -->
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+
+      <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+    </div>
+  </div>
+</div>

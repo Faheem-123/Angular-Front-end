@@ -1,0 +1,284 @@
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1">
+  <div class="rounded-top encounter-header-highlight">
+      <ul class="nav color-buttons align-items-center">
+          <button [disabled]="!canSign" *ngIf="!addEditView " 
+          class="nav-link green px-2 py-0" (click)="onSign();">
+              <i class="fas fa-pen-nib fa-sm pr-1"></i>Sign
+        </button>
+        <button type="button" class=" nav-link blue px-2 py-0" (click)="printLabResult()">
+            <i class="fas fa-print pr-1"></i>Print
+        </button>
+      </ul>
+
+    <ul class="nav color-buttons align-items-center">
+      <button [disabled]="!canAddEdit" *ngIf="!addEditView" class="nav-link green px-2 py-0" (click)="onNew()">
+        <i class="far fa-plus-square pr-1"></i>New
+      </button>
+      <button  [disabled]="!canAddEdit" *ngIf="!addEditView" class="nav-link blue px-2 py-0" (click)="onEdit()">
+        <i class="far fa-edit pr-1"></i>Edit
+      </button>     
+     
+      <button *ngIf="addEditView" class="nav-link btn btn-success rounded-0 px-2 py-0" (click)="onSaveClick()">
+        <i class="far fa-save pr-1"></i>Save
+      </button>
+      <button *ngIf="addEditView" class="nav-link btn encounter-btn-cancel rounded-0 px-2 py-0" (click)="onCancel();">
+        <i class="fas fa-times pr-1"></i>Cancel
+      </button>
+    </ul>
+  </div>
+
+  <div class="p-6 d-flex flex-column flex-grow-1">
+    <div class="d-flex flex-1">
+      <div class="flex-1 d-flex flex-column">
+        <div class="info-box-stipes rounded d-flex flex-column flex-grow-1">
+          <div class="form-edit-sub-heading line-height-normal border-bottom-0 m-1 mb-0 pl-1">Test Description</div>
+
+          <div class="flex-grow-1 overflow-auto overflow-height">
+            <table class="table sm layout-fixed light-striped-border">
+              <tbody>
+                <tr *ngFor="let tst of lstOrderTest;let i=index" (click)="onTestClick(tst)" [ngClass]="{'active' : (tst.test_id === SelectedTestObj.test_id)}">
+                  <td [ngClass]="{'text-success' : (tst.result_id != null || tst.attachment_id != null)
+                    }">{{tst.proc_code}}({{tst.proc_description}})</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-2 d-flex flex-column ml-6">
+        <form [formGroup]="inputForm">
+          <div class="info-box-stipes rounded">
+            <div class="form-edit-sub-heading line-height-normal m-1 pl-1">Result Details</div>
+
+            <div class="p-8 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label">Observation Date:</label>
+                  <!-- <input type="date" class="form-control" formControlName="txtDate"> -->
+                  <div class="input-group col-8">
+                    <input class="form-control" placeholder="mm/dd/yyyy" name="txtDate" formControlName="txtDate"
+                      ngbDatepicker #txtDate="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn btn-outline-primary" (click)="txtDate.toggle()" type="button">
+                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label">Assigned To:</label>
+                  <select class="form-control col-8" formControlName="drpAssigned">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let s of lookupList.listpracticeUserName" [value]="s.id">{{s.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label" for="input03">Follow Up:</label>
+                  <select class="form-control col-8" formControlName="drpFollowUp" (change)="onFollowUpChange($event)">
+                    <option *ngFor="let s of lookupList.arrFollowNote">{{s}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental col-12 col-md-3">
+                  <select class="form-control" formControlName="drpFollowUpaction">
+                    <option *ngFor="let s of lookupList.arrFollowAction">{{s}}</option>
+                  </select>
+                </div>
+
+                <div class=" horizental d-flex align-items-center col-12 col-md-3">
+                  <div class="custom-control custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkChangeMed" formControlName="chkChangeMed">
+                    <label class="custom-control-label" for="chkChangeMed">Change Meds</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-8 border-top">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero col-12 col-md-12">
+                  <label class="col-sm-2 col-form-label">Description:</label>
+                  <div class="form-row p3 col-sm-10">
+                    <div class="form-group has-search col-4">
+                      <!-- <input type="text" class="form-control" formControlName="txtResultCode"> -->
+                      <span class="fa fa-search form-control-feedback"></span>
+                      <input class="form-control" placeholder="ICDs Search" type="text" id="txtResultCode"
+                        #txtResultCode formControlName="txtResultCode" placeholder="Search Loinc" (input)="onLoincSearchKeydown(txtResultCode.value)"
+                        autocomplete="off">
+                      <inline-loinc-search *ngIf="showloincSearch" [searchValue]="loincSearchCriteria" (onLionicSelect)="onLoincSelect($event)"
+                        (onClose)="closeloincSearch()"></inline-loinc-search>
+
+                    </div>
+
+                    <div class="form-group has-search col-8">
+                      <!-- <input type="text" class="form-control" formControlName="txtResultDescription"> -->
+                      <span class="fa fa-search form-control-feedback"></span>
+                      <input class="form-control" placeholder="ICDs Search" type="text" id="txtResultDescription"
+                        #txtResultDescription formControlName="txtResultDescription" placeholder="Search Loinc" (input)="onLoincSearchKeydown(txtResultDescription.value)"
+                        autocomplete="off">
+                      <!-- <inline-loinc-search *ngIf="showloincSearch" [searchValue]="loincSearchCriteria"
+                        (onLionicSelect)="onLoincSelect($event)" (onClose)="closeloincSearch()"></inline-loinc-search> -->
+
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-4">
+                  <label class="col-sm-5 col-form-label">Result Value:</label>
+                  <input type="text" class="form-control col-sm-7" formControlName="txtResultValue">
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-4">
+                  <label class="col-sm-5 col-form-label">Unit:</label>
+                  <select class="form-control col-sm-7" formControlName="drpResultUnit">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let s of lstUnits" [value]="s.result_value_unit">{{s.result_value_unit}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-4">
+                  <label class="col-sm-5 col-form-label">Recommended:</label>
+                  <input type="text" class="form-control col-sm-7" formControlName="txtRecomended">
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-4">
+                  <label class="col-sm-5 col-form-label">Result Status:</label>
+                  <select class="form-control col-sm-7" formControlName="drpResultStatus">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let s of lstStatus" [value]="s.result_status_code">{{s.result_status_description}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-4">
+                  <label class="col-sm-5 col-form-label">Abnormal Flag:</label>
+                  <select class="form-control col-sm-7" formControlName="drpAbnormalFlag">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let s of lstRange" [value]="s.range_code">{{s.range_name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-4">
+                  <label class="col-sm-5 col-form-label">Collection Date:</label>
+                  <input type="text" class="form-control col-sm-7" formControlName="txtCollectionDate">
+                </div>
+              </div>
+            </div>
+
+            <div class="p-8 border-top">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label">Lab Notes:</label>
+                  <input type="text" class="form-control col-sm-8" formControlName="txtLabNotes">
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label">Physician Notes:</label>
+                  <input type="text" class="form-control col-sm-8" formControlName="txtPhysicionNotes">
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-8">
+                  <label class="col-sm-3 col-form-label">Staff Notes:</label>
+                  <input type="text" class="form-control col-sm-9" formControlName="txtStaffNotes">
+                </div>
+
+                <div class="horizental d-flex align-items-center col-12 col-md-2">
+                  <div class="custom-control custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkAlert" formControlName="chkAlert">
+                    <label class="custom-control-label" for="chkAlert">Alert</label>
+                  </div>
+                </div>
+
+                <div class="form-group horizental text-right col-12 col-md-2" *ngIf="operation!='New'">
+                  <button class="btn btn-sm btn-link pr-0" (click)="onNotesNew()" *ngIf="notesOperation==''">New</button>
+                  <button class="btn btn-sm btn-link pr-0" (click)="onNotesSave()" *ngIf="notesOperation!=''">Save</button>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="title-bar border-top">Previous Staff Notes</div>
+
+            <div class="p-8 pt-0">
+              <div class="form-row form-dashboard">
+
+                <div class="form-group col-12">
+
+                  <table class="table sm light-striped-border">
+                    <!-- <thead>
+                      <tr>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                      </tr>
+                    </thead> -->
+                    <tbody>
+                      <tr *ngFor="let tst of lstStaffNotes;let i=index">
+                        <td>{{tst.notes}}</td>
+                        
+                      </tr>
+                      
+                    </tbody>
+                  </table>
+                  <!-- <textarea rows="2" class="form-control" id="input28"></textarea> -->
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>            
+
+      <div class="flex-1 d-flex flex-column mt-6">
+        <div class="info-box-stipes rounded d-flex flex-column flex-grow-1">
+          <div class="title-bar">Results</div>
+
+          <div class="flex-grow-1 overflow-auto overflow-height">
+            <table class="table sm layout-fixed light-striped-border">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Result Code</th>
+                  <th>Description</th>
+                  <th>Value</th>
+                  <th>Unit</th>
+                  <th>Recom. Range</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let tst of lstTestResult;let i=index" (click)="assignValues(tst)" 
+                [ngClass]="{
+                  'active tr-danger' : (tst.result_id === SelectedResultObj.result_id && (tst.abnormal_range_code!='' && tst.abnormal_range_code!='N')) ,
+                  'active' : (tst.result_id === SelectedResultObj.result_id && (tst.abnormal_range_code=='' && tst.abnormal_range_code=='N')) 
+                }">
+                  <td>{{tst.observation_date}}</td>
+                  <td>{{tst.result_code}}</td>
+                  <td>{{tst.result_description}}</td>
+                  <td>{{tst.result_value}}</td>
+                  <td>{{tst.result_value_unit}}</td>
+                  <td>{{tst.recomended_value}}</td>
+                  <td>{{tst.result_status}}</td>
+                  <td class="text-right">
+                    <button type="button" [disabled]="!canDelete" class="btn btn-link btn-sm text-danger line-height-1 p-0" (click)="onDelete(tst)">
+                      <i class="far fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    
+  </div>
+</div>

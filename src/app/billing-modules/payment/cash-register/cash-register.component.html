@@ -1,0 +1,628 @@
+<div class="modal-header custom" (keydown.esc)="activeModal.dismiss('Cross click')">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Cash Register</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close(isRecordSaved)">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="dashboard-content" *ngIf="!printView" (keydown.esc)="activeModal.dismiss('Cross click')">
+  <div class="patient-summary patient-summary-green mb-1 ">
+    <div class="summary-info">
+      <!--<img src="./assets/images/pic.jpg" alt="image" class="patient-pic rounded-circle">-->
+
+      <img src="{{patPicURL}}" alt="pic" class="patient-pic rounded-circle" (error)="patPicErrorHandler($event)">
+
+      <div class="info-box">
+        <h3>{{patientName }}</h3>
+        <p>{{patAge}} | {{patGender}}</p>
+      </div>
+
+      <div class="info-box">
+        <p>PID: {{patPID}}</p>
+        <p>DOB: {{patDOB}}</p>
+      </div>
+
+      <div class="info-box">
+        <p>
+          <i class="fa fa-map-marker" aria-hidden="true"></i>{{patAddress}}</p>
+        <p class="pl-3">{{patCity}} {{patState}}, {{patZip}}</p>
+      </div>
+      <div class="info-box">
+        <p>
+          <i class="fa fa-phone" aria-hidden="true"></i>{{patContactNo | phonePipe}}</p>
+        <p>
+          <i class="fa fa-umbrella" aria-hidden="true"></i> {{patInsurance}}</p>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+<ngb-tabset [destroyOnHide]="false" class="inner-sub-horizental-tab" id="cashRegisterTabs"
+  (tabChange)="onTabChange($event)" *ngIf="!NotPaidReasonRequired && !printView">
+  <ngb-tab id="tab-cashregister-newentry">
+    <ng-template ngbTabTitle><span>New Entry</span></ng-template>
+    <ng-template ngbTabContent>
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)"
+        (keydown.esc)="activeModal.dismiss('Cross click')">
+        <div class="modal-body custom  pb-0">
+
+          <div class="dashboard-content">
+            <div class="form-row form-dashboard" *ngIf="patientAdvance>0">
+              <div class="form-group col-12">
+                <div class="alert alert-success rounded-3 text-right mb-1" role="alert">
+                  <b>Patient Advance : ${{patientAdvance}}</b>
+                </div>
+              </div>
+            </div>
+            <div class="form-row form-dashboard">
+
+              <div class="form-group col-4">
+                <label class="col-form-label " [ngClass]="{ required: !appointmentId}"
+                  for="cmbLocation">Location</label>
+                <input *ngIf="appointmentId" disabled type="text" class="form-control" value="{{locationName}}">
+
+                <select *ngIf="!appointmentId" class="form-control" labelForId="cmbLocation"
+                  formControlName="cmbLocation" (change)="locationChanged($event.currentTarget.value)">
+                  <!--<option>Select Location</option>-->
+                  <option *ngFor="let loc of lstLocations" [value]="loc.id">{{loc.name}}</option>
+                </select>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="cmbProvider" class="col-form-label" [ngClass]="{ required: !appointmentId}">Provider</label>
+                <input *ngIf="appointmentId" disabled type="text" class="form-control" value="{{providerName}}">
+                <select *ngIf="!appointmentId" class="form-control" id="cmbProvider" formControlName="cmbProvider"
+                  (change)="providerChanged($event.currentTarget.value)">
+                  <!--  <option>Select Provider</option>-->
+                  <!--
+                  <option *ngFor="let pro of lstFileredProviders" [value]="pro.provider_id">{{pro.provider_name}}
+                  </option>
+                  -->
+
+                  <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}
+                  </option>
+
+                </select>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="dpDOS" class="col-form-label" [ngClass]="{ required: !appointmentId}">DOS</label>
+                <input *ngIf="appointmentId" disabled type="text" class="form-control" value="{{dos}}">
+                <div class="input-group" *ngIf="!appointmentId">
+                  <input id="dpDOS" formControlName="dpDOS" class="form-control date-control" placeholder="mm/dd/yyyy"
+                    name="dpDOS" [navigation]="navigation" ngbDatepicker #dpDOS="ngbDatepicker"
+                    (blur)="onDateFocusOut($event.currentTarget.value,'dpDOS')" [ngClass]="{ required : (formGroup.controls.dpDOS.errors?.required),
+                      'is-invalid': (formGroup.controls.dpDOS.errors?.invalidDate)}">
+
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dpDOS.toggle()" type="button">
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard">
+              <div class="form-group col-4">
+                <label class="col-form-label required" for="cmbPaymentMethod">Payment Method</label>
+
+
+                <select class="form-control" id="cmbPaymentMethod" formControlName="cmbPaymentMethod"
+                  (change)="paymentMethodChanged($event.currentTarget.value)">
+                  <option *ngFor="let pm of lstPaymentMethod" [value]="pm">{{pm}}</option>
+                </select>
+
+
+              </div>
+              <!--
+              <div class="form-group col-4" *ngIf="formGroup.value['cmbPaymentMethod']=='CREDIT CARD'">
+
+                <button class="btn btn-outline-primary form-button" type="button">
+                  <i class="fa fa-credit-card" aria-hidden="true"></i> Credit Card Payment
+                </button>
+              </div>
+              -->
+
+              <div class="form-group col-4" *ngIf="formGroup.value['cmbPaymentMethod']=='CHECK' ">
+                <label class="col-form-label required" for="txtCheckNo">Check Number</label>
+                <input type="text" class="form-control" id="txtCheckNo" formControlName="txtCheckNo"
+                  [ngClass]="{required : (formGroup.controls.txtCheckNo.errors?.requiredWhen)}" />
+              </div>
+              <div class="form-group col-4" *ngIf="formGroup.value['cmbPaymentMethod']=='CHECK' ">
+                <label for="dpDOS" class="col-form-label required">Check Date</label>
+                <div class="input-group">
+                  <input id="dpCheckDate" formControlName="dpCheckDate" class="form-control date-control required"
+                    placeholder="mm/dd/yyyy" name="dpCheckDate" ngbDatepicker #dpCheckDate="ngbDatepicker" [ngClass]="{ required : (formGroup.controls.dpCheckDate.errors?.requiredWhen),
+                    'is-invalid': (formGroup.controls.dpCheckDate.errors?.invalidDate)}"
+                    (blur)="onDateFocusOut($event.currentTarget.value,'dpCheckDate')">
+
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dpCheckDate.toggle()" type="button">
+                    </button>
+                  </span>
+
+                </div>
+
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard mt-2 mb-2" *ngIf="!NotPaidReasonRequired">
+
+              <div class="form-group col-9">
+                <div class="form-row form-dashboard">
+                  <div class="custom-select-box ml-1">
+                    <div class="dashboard-sub-nav encounter justify-content-between d-flex flex-row">
+                      <p>Payment Details</p>
+                    </div>
+                    <div class="dashboard-content  m-1">
+                      <table class="table light-striped-row-column-border ">
+                        <thead>
+                          <tr>
+                            <th>Payment Detail</th>
+                            <th class="text-center width-110">Amount Due</th>
+                            <th class="text-center width-110" *ngIf="formGroup.value['cmbPaymentMethod']=='CASH' 
+                                  || formGroup.value['cmbPaymentMethod']=='CHECK' 
+                                  || formGroup.value['cmbPaymentMethod']=='CREDIT CARD'
+                                  || formGroup.value['cmbPaymentMethod']=='MONEY ORDER'">
+                              Today's Payment
+                            </th>
+                            <th class="text-center width-115"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='WRITE OFF' && patientAdvance>0">Advance
+                              Adjusted</th>
+                            <th class="text-center width-110"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='ADVANCE ADJUSTMENT'">Write Off</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="align-middle">Co Payment</td>
+                            <td class="align-middle text-right fz-14">$
+                              <input class="table-td-input text-right fz-14 width-80" type="text"
+                                value="{{copay | number:'.2-2'}}" formControlName="txtCopayDue" id="txtCopayDue"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{ 'is-invalid' : (formGroup.controls.txtCopayDue.errors?.pattern.requiredPattern)}">
+                            </td>
+                            <td class="align-middle text-right" *ngIf="formGroup.value['cmbPaymentMethod']=='CASH' 
+                                  || formGroup.value['cmbPaymentMethod']=='CHECK' 
+                                  || formGroup.value['cmbPaymentMethod']=='CREDIT CARD'
+                                  || formGroup.value['cmbPaymentMethod']=='MONEY ORDER'">
+                              $
+                              <input class="table-td-input  text-right fz-14 width-80" type="text" id="txtCopayPaid"
+                                formControlName="txtCopayPaid"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{  required : (formGroup.errors?.groupName=='todayPayment'  && formGroup.errors?.requiredWhen),
+                                                    'is-invalid' : (formGroup.controls.txtCopayPaid.errors?.pattern.requiredPattern)}">
+                            </td>
+                            <td class="align-middle text-right"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='WRITE OFF' && patientAdvance>0  ">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text"
+                                formControlName="txtCopayAdvanceAdjusted" id="txtCopayAdvanceAdjusted"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{  required : (formGroup.errors?.groupName=='advanceAdjusted'  && formGroup.errors?.requiredWhen),
+                                                    'is-invalid' : (formGroup.controls.txtCopayAdvanceAdjusted.errors?.pattern.requiredPattern)}">
+                            </td>
+                            <td class="align-middle text-right"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='ADVANCE ADJUSTMENT'">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text"
+                                formControlName="txtCopayWriteOff" id="txtCopayWriteOff"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{  required : (formGroup.errors?.groupName=='writeOff'  && formGroup.errors?.requiredWhen),
+                                                    'is-invalid' : (formGroup.controls.txtCopayWriteOff.errors?.pattern.requiredPattern)}">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="align-middle">Self Pay</td>
+                            <td class="text-right align-middle fz-14">{{selfpayDue | currency:'USD':'symbol-narrow'}}
+                            </td>
+                            <td class="text-right align-middle fz-14 " *ngIf="formGroup.value['cmbPaymentMethod']=='CASH' 
+                                  || formGroup.value['cmbPaymentMethod']=='CHECK' 
+                                  || formGroup.value['cmbPaymentMethod']=='CREDIT CARD'
+                                  || formGroup.value['cmbPaymentMethod']=='MONEY ORDER'">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text" id="txtSelfpayPaid"
+                                formControlName="txtSelfpayPaid"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{required : (formGroup.errors?.groupName=='todayPayment'  && formGroup.errors?.requiredWhen) ,
+                                      'is-invalid' : (formGroup.controls.txtSelfpayPaid.errors?.pattern.requiredPattern)}">
+                            </td>
+                            <td class="text-right align-middle"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='WRITE OFF' && patientAdvance>0 ">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text"
+                                formControlName="txtSelfpayAdvanceAdjusted" id="txtSelfpayAdvanceAdjusted"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{  required : (formGroup.errors?.groupName=='advanceAdjusted'  && formGroup.errors?.requiredWhen),
+                                                    'is-invalid' : (formGroup.controls.txtSelfpayAdvanceAdjusted.errors?.pattern.requiredPattern)}">
+                            </td>
+                            <td class="text-right align-middle"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='ADVANCE ADJUSTMENT'">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text"
+                                formControlName="txtSelfpayWriteOff" id="txtSelfpayWriteOff"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{  required : (formGroup.errors?.groupName=='writeOff'  && formGroup.errors?.requiredWhen),
+                                                    'is-invalid' : (formGroup.controls.txtSelfpayWriteOff.errors?.pattern.requiredPattern)}">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="align-middle">Previous Balance</td>
+                            <td class="text-right align-middle  fz-14" [ngClass]="{'text-danger' :  patientBalance > 0,
+                                     'font-weight-bold' :  patientBalance > 0}">
+                              {{patientBalance | currency:'USD':'symbol-narrow'}}</td>
+                            <td class="text-right align-middle fz-14" *ngIf="formGroup.value['cmbPaymentMethod']=='CASH' 
+                                  || formGroup.value['cmbPaymentMethod']=='CHECK' 
+                                  || formGroup.value['cmbPaymentMethod']=='CREDIT CARD'
+                                  || formGroup.value['cmbPaymentMethod']=='MONEY ORDER'">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text" id="txtPrevBalPaid"
+                                formControlName="txtPrevBalPaid"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{required : (formGroup.errors?.groupName=='todayPayment'  && formGroup.errors?.requiredWhen),
+                                      'is-invalid' : (formGroup.controls.txtPrevBalPaid.errors?.pattern.requiredPattern) }">
+                            </td>
+                            <td class="text-right align-middle"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='WRITE OFF' && patientAdvance>0 ">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text"
+                                formControlName="txtPrevBalAdvanceAdjusted" id="txtPrevBalAdvanceAdjusted"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{  required : (formGroup.errors?.groupName=='advanceAdjusted'  && formGroup.errors?.requiredWhen),
+                                                    'is-invalid' : (formGroup.controls.txtPrevBalAdvanceAdjusted.errors?.pattern.requiredPattern)}">
+                            </td>
+                            <td class="text-right align-middle"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='ADVANCE ADJUSTMENT'">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text"
+                                formControlName="txtPrevBalWriteOff" id="txtPrevBalWriteOff"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{  required : (formGroup.errors?.groupName=='writeOff'  && formGroup.errors?.requiredWhen),
+                                                    'is-invalid' : (formGroup.controls.txtPrevBalWriteOff.errors?.pattern.requiredPattern)}">
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="align-middle">Other Payment</td>
+                            <td class="text-right align-middle fz-14"></td>
+                            <td class="text-right align-middle fz-14" *ngIf="formGroup.value['cmbPaymentMethod']=='CASH' 
+                                  || formGroup.value['cmbPaymentMethod']=='CHECK' 
+                                  || formGroup.value['cmbPaymentMethod']=='CREDIT CARD'
+                                  || formGroup.value['cmbPaymentMethod']=='MONEY ORDER'">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text" id="txtOtherPaid"
+                                formControlName="txtOtherPaid"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{required : (formGroup.errors?.groupName=='todayPayment'  && formGroup.errors?.requiredWhen),
+                                      'is-invalid' : (formGroup.controls.txtOtherPaid.errors?.pattern.requiredPattern)  }">
+                            </td>
+                            <td class="text-right align-middle"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='WRITE OFF' && patientAdvance>0 ">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text"
+                                formControlName="txtOtherAdvanceAdjusted" id="txtOtherAdvanceAdjusted"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{  required : (formGroup.errors?.groupName=='advanceAdjusted'  && formGroup.errors?.requiredWhen),
+                                                    'is-invalid' : (formGroup.controls.txtOtherAdvanceAdjusted.errors?.pattern.requiredPattern)}">
+                            </td>
+                            <td class="text-right align-middle"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='ADVANCE ADJUSTMENT'"></td>
+                          </tr>
+                          <tr>
+                            <td class="align-middle">Advance Payment</td>
+                            <td class="text-right align-middle fz-14"></td>
+                            <td class="text-right align-middle fz-14" *ngIf="formGroup.value['cmbPaymentMethod']=='CASH' 
+                                  || formGroup.value['cmbPaymentMethod']=='CHECK' 
+                                  || formGroup.value['cmbPaymentMethod']=='CREDIT CARD'
+                                  || formGroup.value['cmbPaymentMethod']=='MONEY ORDER'">$
+                              <input class="table-td-input  text-right fz-14 width-80" type="text" id="txtAdvancePaid"
+                                formControlName="txtAdvancePaid"
+                                (blur)="formateCurrencyInputs($event.currentTarget.value,$event.currentTarget.id)"
+                                [ngClass]="{required : (formGroup.errors?.groupName=='todayPayment'  && formGroup.errors?.requiredWhen),
+                                      'is-invalid' : (formGroup.controls.txtAdvancePaid.errors?.pattern.requiredPattern)  }">
+                            </td>
+                            <td class="text-right align-middle"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='WRITE OFF' && patientAdvance>0 "></td>
+                            <td class="text-right align-middle"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='ADVANCE ADJUSTMENT'"></td>
+                          </tr>
+
+                        </tbody>
+                        <thead>
+                          <tr>
+                            <th>Total</th>
+                            <th class="text-right fz-14">{{totalDue | currency:'USD':'symbol-narrow'}}</th>
+                            <th class="text-right fz-14" *ngIf="formGroup.value['cmbPaymentMethod']=='CASH' 
+                                  || formGroup.value['cmbPaymentMethod']=='CHECK' 
+                                  || formGroup.value['cmbPaymentMethod']=='CREDIT CARD'
+                                  || formGroup.value['cmbPaymentMethod']=='MONEY ORDER'">
+                              {{totalPaidToday | currency:'USD':'symbol-narrow'}}</th>
+                            <th class="text-right fz-14"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='WRITE OFF' && patientAdvance>0 ">
+                              {{totalAdvanceAdjusted | currency:'USD':'symbol-narrow'}}</th>
+                            <th class="text-right fz-14"
+                              *ngIf="formGroup.value['cmbPaymentMethod']!='ADVANCE ADJUSTMENT'">
+                              {{totalWriteOff | currency:'USD':'symbol-narrow'}}</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+                <div class="form-row form-dashboard mt-2 mb-2">
+                  <div class="form-group col-8">
+                    <label class="col-form-label required" for="txtComments">Comments</label>
+                    <textarea class="form-control" id="txtComments" rows="3" formControlName="txtComments"
+                      [ngClass]="{required : formGroup.controls.txtComments.errors?.required }"></textarea>
+                  </div>
+                  <div class="form-group col-4">
+                    <label class="col-form-label" for="cmbWriteOff">Write Off Code</label>
+                    <select class="form-control" id="cmbWriteOff" formControlName="cmbWriteOff"
+                      [ngClass]="{ required :  (formGroup.errors?.groupName=='writeOff'  && formGroup.errors?.requiredWhen)}">
+                      <option></option>
+                      <option *ngFor="let wo of lookupList.lstPracticeWriteOffCodes" [value]="wo.code">{{wo.code}} -
+                        {{wo.description}}</option>
+                    </select>
+                  </div>
+
+                </div>
+
+
+
+              </div>
+
+              <div class="form-group col-3" *ngIf="paymentPlanId">
+                <div class="dashboard-content d-flex flex-row mt-0">
+                  <div class="alert alert-warning payment-plan rounded-custom" role="alert">
+                    <h6 class="alert-heading fz-14 mb-0">Payment Plan</h6>
+                    <hr>
+                    <p>{{paymentPlan}}</p>
+                    <hr>
+                    <small id="emailHelp" class="form-text text-muted"> By {{paymentPlanModifidUser}} at
+                      {{paymentPlanDateModified}}</small>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard" *ngIf="lstErrors!=undefined && lstErrors.length>0">
+          <div class="form-group col-12">
+            <div class="alert alert-danger rounded-0 m-0" role="alert">
+              <ul>
+                <li *ngFor="let error of lstErrors">{{error}}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer custom">
+          <button style="width: 100px;" class="btn btn-success btn-sm" type="submit" [disabled]="isSaving">Save</button>
+
+
+          <button type="button" style="width: 100px;" class="btn btn-dark btn-sm"
+            (click)="activeModal.close(isRecordSaved)">Cancel</button>
+
+        </div>
+      </form>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="tab-cashregister-currentDOSEntries">
+    <ng-template ngbTabTitle><span>Current DOS Entries</span></ng-template>
+    <ng-template ngbTabContent>
+      <div class="dashboard" style="height: 457px;">
+        <div class="dashboard-sub-nav encounter justify-content-between d-flex flex-row">
+          <p>Current DOS Entries</p>
+        </div>
+        <div class="dashboard-content m-0 p-0 ">
+          <table class="table light-striped-border">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Entry Date</th>
+                <th>Location</th>
+                <th>Provider</th>
+                <th>Copay Paid</th>
+                <th>Copay From Advance</th>
+                <th>Copay W/O</th>
+                <th>Selfpay Paid</th>
+                <th>Selfpay From Advance</th>
+                <th>Selfpay W/O</th>
+                <th>Prev. Bal. Paid</th>
+                <th>Prev. Bal. From Advance</th>
+                <th>Prev. Bal. W/O</th>
+                <th>Other Paid</th>
+                <th>Other From Advance</th>
+                <th>Advance Paid</th>
+                <th>Payment Mehotd</th>
+                <th>Check #</th>
+                <th>Check Date</th>
+                <th>Transaction ID</th>
+                <th>Transaction Date</th>
+                <th>Aut. No</th>
+                <th>CC Amount</th>
+                <th>CC Message</th>
+
+                <th>Comments</th>
+                <th>W/O Code</th>
+
+                <th>Entered By</th>
+                <th>Modified By</th>
+                <th>Date Modified</th>
+                <th>Modification Notes</th>
+
+
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let record of lstCurrentDOSEntries; let i=index;">
+                <td>
+                  <button type="button" class="link-btn text-ihc-blue">
+                    <i class="fa fa-print fa-md" aria-hidden="true" title="Print"
+                      (click)="printCashRegister(record)"></i>
+                  </button>
+                </td>
+                <td>{{record.date_created}}</td>
+                <td>{{record.location_name}}</td>
+                <td>{{record.provider_name}}</td>
+                <td>{{record.copay_paid}}</td>
+                <td>{{record.copay_advance_adjusted}}</td>
+                <td>{{record.copay_write_off}}</td>
+                <td>{{record.selfpay_paid}}</td>
+                <td>{{record.selfpay_advance_adjusted}}</td>
+                <td>{{record.selfpay_write_off}}</td>
+                <td>{{record.previous_balance_paid}}</td>
+                <td>{{record.prev_balance_advance_adjusted}}</td>
+                <td>{{record.prev_balance_write_off}}</td>
+                <td>{{record.other_paid}}</td>
+                <td>{{record.other_advance_adjusted}}</td>
+                <td>{{record.advance_paid}}</td>
+                <td>{{record.payment_method}}</td>
+                <td>{{record.check_no}}</td>
+                <td>{{record.check_date}}</td>
+                <td>{{record.transaction_id}}</td>
+                <td>{{record.transaction_datetime}}</td>
+                <td>{{record.authcode}}</td>
+                <td>{{record.cc_charges}}</td>
+                <td>{{record.api_message}}</td>
+                <td>{{record.comments}}</td>
+                <td>{{record.write_off_code}}</td>
+                <td>{{record.created_user}}</td>
+                <td>{{record.client_date_modified}}</td>
+                <td>{{record.modified_user}}</td>
+                <td>{{record.modification_comments}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>
+
+
+
+
+
+<ng-template id="NotPaidResonSection" [ngIf]="NotPaidReasonRequired">
+  <form [formGroup]="formNotPaidReason" (ngSubmit)="notPaidReasonSave(formNotPaidReason.value)">
+    <div class="modal-body custom">
+      <div class="form-row form-dashboard">
+        <div class="form-group col-12">
+          <div class="alert alert-danger rounded-custom mb-2" role="alert">
+            Payment is not entered in one of the follwing due amount feilds.
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-row  m-0">
+        <div class="d-flex col-12 p-0 m-0 pb-2">
+          <div class="div-column  mr-0 p-0 col-6">
+            <div class="custom-select-box pb-1">
+
+              <div class="form-row form-dashboard m-1 ">
+                <table class="table sm light-striped-row-column-border col-12 ">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Due</th>
+                      <th>Posting Amount</th>
+                      <th>Write Off</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr [ngClass]="{ 'text-danger' : ( copay > 0 &&  copayPaid <=0 ) }">
+                      <th class="align-middle">Copay</th>
+                      <td class="align-middle text-right">{{copay | currency:'USD':'symbol-narrow' }}</td>
+
+                      <td class="align-middle text-right">{{copayPaid | currency:'USD':'symbol-narrow'}}</td>
+                      <td class="align-middle text-right">{{copayWriteOff | currency:'USD':'symbol-narrow'}}</td>
+
+                    </tr>
+                    <tr [ngClass]="{ 'text-danger' : ( selfpay_due > 0 &&  selfpayPaid <=0 ) }">
+                      <th class="align-middle ">Selfpay</th>
+                      <td class="align-middle text-right">{{selfpayDue | currency:'USD':'symbol-narrow' }}</td>
+
+                      <td class="align-middle text-right">{{ selfpayPaid | currency:'USD':'symbol-narrow'}}</td>
+                      <td class="align-middle text-right">{{selfpayWriteOff | currency:'USD':'symbol-narrow'}}</td>
+
+                    </tr>
+                    <tr [ngClass]="{ 'text-danger' : ( patientBalance > 0 &&  prevBalPaid <=0 ) }">
+                      <th class="align-middle">Previous Balance</th>
+                      <td class="align-middle text-right">{{patientBalance | currency:'USD':'symbol-narrow' }}</td>
+
+                      <td class="align-middle text-right">{{prevBalPaid | currency:'USD':'symbol-narrow'}}</td>
+                      <td class="align-middle text-right">{{prevBalWriteOff | currency:'USD':'symbol-narrow'}}</td>
+
+                    </tr>
+
+                  </tbody>
+
+                </table>
+              </div>
+
+
+            </div>
+
+          </div>
+          <div class="div-column  mr-0 pr-0 pt-0 pb-0 col-6">
+
+            <div class="custom-select-box pb-1">
+
+              <div class="form-row form-dashboard m-1">
+                <div class="form-group col-12">
+                  <label class="col-form-label required" for="txtNotPaidReason">Not Paid Reason</label>
+                  <textarea class="form-control" id="txtNotPaidReason" rows="4" formControlName="txtNotPaidReason"
+                    [ngClass]="{required : formNotPaidReason.controls.txtNotPaidReason.errors?.required }"></textarea>
+                </div>
+                <div class="form-group col-8"
+                  *ngIf="lookupList.authorizationUsers.lstAuthorizationUsers!=undefined && lookupList.authorizationUsers.lstAuthorizationUsers.length>0">
+                  <label class="col-form-label" for="cmbAuthorizedBy">Authorized By</label>
+                  <select class="form-control" id="cmbAuthorizedBy" formControlName="cmbAuthorizedBy">
+                    <option></option>
+                    <option *ngFor="let user of lookupList.authorizationUsers.lstAuthorizationUsers"
+                      [value]="user.name">{{user.name}}
+                    </option>
+                  </select>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer custom">
+      <button style="width: 100px;" class="btn btn-success btn-sm" type="submit"
+        [disabled]="!formNotPaidReason.valid || isSaving">Save</button>
+      <button style="width: 100px;" class="btn btn-dark btn-sm" type="button"
+        (click)="notPaidReasonCancel()">Cancel</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template id="printView" [ngIf]="printView">
+  <div class="dashboard-content p-0" style="height: 500px;">
+    <cash-register-print [cashRegisterData]="cashRegisterPrintData" [patientId]="patientId"
+      class="d-flex flex-column flex-grow-1 h-100" [primaryInsurance]="patInsurance" (close)="closePrintView()">
+    </cash-register-print>
+  </div>
+
+</ng-template>
+
+<div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+  <div class="div-ui-blocker-message-box ">
+    <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+  </div>
+</div>
+
+<div class="div-ui-blocker" id="uiBlocker" *ngIf="isSaving">
+  <div class="div-ui-blocker-message-box ">
+    <i class="fas fa-spinner fa-spin mr-1"></i>Saving...
+  </div>
+</div>

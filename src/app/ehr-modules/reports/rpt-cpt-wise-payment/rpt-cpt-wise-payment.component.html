@@ -1,0 +1,293 @@
+<div class="dashboard-container d-flex flex-column mb-0">
+  <div class="dashboard m-0 rounded-0 no-shadow">
+
+    <ngb-tabset class="inner-sub-horizental-tab tab-set-with-tab-headings" [destroyOnHide]="false"
+      #tabMainPaymentCollection>
+
+      <!--
+<ngb-tabset [destroyOnHide]="false"
+  class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden"
+  #tabMainPaymentCollection>
+  -->
+      <ngb-tab>
+        <ng-template ngbTabTitle><span>CPT Wise Payment Report</span></ng-template>
+        <ng-template ngbTabContent>
+          <div class="d-flex flex-column flex-grow-1 mt-0 position-relative">
+
+            <div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+
+              <div
+                class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+                <div class="accordian-header" role="tab" id="headingOne">
+                  <h5 class="mb-0">
+                    <a data-toggle="collapse" href="#SearchCriteriaCptWisePaymentRpt" aria-expanded="true"
+                      class="accordian-link rounded-0">
+                      <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+                    </a>
+                  </h5>
+                </div>
+                <div id="SearchCriteriaCptWisePaymentRpt" class="show">
+
+                  <div class="accordian-body bg-transparent">
+
+
+                    <form [formGroup]="searchForm">
+
+                      <div class="p-6  py-0">
+
+                        <div class="form-row form-dashboard">
+                          <div class="form-group col-4">
+                            <div class="btn-group radio-btn-tabs ">
+
+                              <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'Payment Date')}">
+                                <input type="radio" name="dateType" autocomplete="off" checked
+                                  formControlName="dateType" value="Payment Date"
+                                  (ngModelChange)="onDateTypeChange($event)"> Payment Date
+                              </label>
+                              <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'Claim DOS')}">
+                                <input type="radio" name="dateType" autocomplete="off" formControlName="dateType"
+                                  value="Claim DOS" (ngModelChange)="onDateTypeChange($event)"> Claim DOS
+                              </label>
+
+
+                            </div>
+
+                            <div class="d-flex flex-grow-3">
+
+                              <div class="input-group mr-1">
+
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">From</span>
+                                </div>
+
+                                <input id="dpfromDate" formControlName="dpfromDate" class="form-control date-control "
+                                  placeholder="mm/dd/yyyy" name="dateFrom" ngbDatepicker #dpfromDate="ngbDatepicker">
+
+                                <span class="input-group-btn">
+                                  <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button"
+                                    focusable="false" tabindex="-1">
+                                  </button>
+                                </span>
+
+                              </div>
+
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">To</span>
+                                </div>
+
+                                <input id="dptoDate" formControlName="dptoDate" class="form-control date-control "
+                                  placeholder="mm/dd/yyyy" name="dptoDate" ngbDatepicker #dptoDate="ngbDatepicker">
+
+                                <span class="input-group-btn">
+                                  <button class="btn date-control-btn" (click)="dptoDate.toggle()" type="button"
+                                    focusable="false" tabindex="-1">
+                                  </button>
+                                </span>
+
+                              </div>
+
+
+                            </div>
+                          </div>
+
+
+
+
+                          <div class="form-group col-3">
+                            <label class="col-form-label" for="txtpayerSearch">Payer</label>
+                            <div class="input-icon d-flex flex-grow-3">
+                              <input id="txtpayerSearch" class="form-control flex-grow-3" type="text"
+                                placeholder="Search Payer" (keydown)="onPayerSearchKeydown($event)"
+                                (blur)="onPayerSearchBlur()" autocomplete="off" #txtpayerSearch
+                                formControlName="txtpayerSearch">
+                              <div class="icon">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              </div>
+                              <inline-payer-search *ngIf="showPayerSearch" [searchValue]="txtpayerSearch.value"
+                                (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()">
+                              </inline-payer-search>
+                            </div>
+                          </div>
+
+                          <div class="form-group col-3">
+                            <label class="col-form-label" for="txtInsuranceName">Insurance</label>
+                            <div class="input-icon d-flex flex-grow-3">
+                              <input id="txtInsuranceName" class="form-control flex-grow-3" type="text"
+                                placeholder="Search Insurance" (keydown)="onInsuranceSearchKeydown($event)"
+                                (blur)="onPayerSearchBlur()" autocomplete="off" #txtInsuranceName
+                                formControlName="txtInsuranceName">
+                              <div class="icon">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              </div>
+                              <inline-insurance-search *ngIf="showInsuranceSearch" class="position-absolute"
+                                style="top:25px;" searchValue="{{searchForm.get('txtInsuranceName').value}}"
+                                (onSelect)="addInsurance($event)" (onClose)="closeInsuranceSearch($event)">
+                              </inline-insurance-search>
+                            </div>
+                          </div>
+
+
+                          <div class="form-group col-2">
+                            <label class="col-form-label" for="drpPayerType">Ins./Payer Type</label>
+
+                            <select class="form-control " formControlName="drpPayerType">
+                              <option value="all">All</option>
+                              <option value="primary">Primary</option>
+                              <option value="secondary">Secondary</option>
+                              <option value="other">Other</option>
+                              <option value="patient">Patient</option>
+                            </select>
+                          </div>
+
+
+                          <div class="form-group col-3">
+                            <label class="col-form-label" for="cmbProvider">Provider</label>
+
+                            <select class="form-control " formControlName="cmbProvider">
+                              <option value=''>All</option>
+                              <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}
+                              </option>
+                            </select>
+                          </div>
+
+
+
+                          <div class="form-group col-2">
+                            <label class="col-form-label" for="txttaxonomy">Taxonomy</label>
+
+                            <input class="form-control" type="text" formControlName="txttaxonomy">
+                          </div>
+                          <div class="form-group col-2">
+                            <label class="col-form-label" for="txtCpt">CPT</label>
+
+                            <input class="form-control" type="text" formControlName="txtCpt">
+                          </div>
+
+
+                          <div class="col-1">
+                            <label class="col-form-label">&nbsp;</label>
+                            <div class="custom-control custom-checkbox green-checkbox pl-1">
+                              <input type="checkbox" class="custom-control-input" id="chkPaidOnly"
+                                formControlName="chkPaidOnly">
+                              <label class="custom-control-label" for="chkPaidOnly">Paid Only</label>
+                            </div>
+                          </div>
+
+                          <div class="col-1">
+                            <label class="col-form-label">&nbsp;</label>
+                            <div class="custom-control custom-checkbox green-checkbox pl-1 ">
+                              <input type="checkbox" class="custom-control-input" id="chkDx" formControlName="chkDx">
+                              <label class="custom-control-label" for="chkDx">Show DX</label>
+                            </div>
+                          </div>
+
+
+
+                          <div class="form-group col d-flex justify-content-end align-items-end">
+                            <button type="button" ng-disabled="btnHide" class="btn btn-success" [disabled]="isLoading"
+                              (click)="onSearch(searchForm.value)">Search</button>
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+              <!-- ************************************************************** -->
+              <div class="border d-flex flex-column flex-grow-1 max-height-100">
+
+                <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+                  <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details
+                    <span *ngIf="lstClaimDetails!=undefined" class="fz-12">({{lstClaimDetails.length}})</span>
+                  </h4>
+                  <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+                    <button type="button" class="btn btn-link fz-13 px-2 py-0 mr-1"></button>
+                  </div>
+                </div>
+
+                <div class="overflow-auto flex-grow-1  overflow-height">
+                  <table class="table light-striped-border">
+                    <thead>
+                      <tr>
+                        <th scope="col" sortable="taxonomy_id" type="alpha" (sort)="onSort($event)">Taxonomy Code</th>
+                        <th scope="col" sortable="attending_provider" type="alpha" (sort)="onSort($event)">Attending
+                          Physician</th>
+                        <th scope="col" sortable="billing_provider" type="alpha" (sort)="onSort($event)">Billing
+                          Physician
+                        </th>
+                        <th scope="col" sortable="alternate_account" type="numeric" (sort)="onSort($event)">PID</th>
+                        <th scope="col" sortable="patient_name" type="alpha" (sort)="onSort($event)">Patient Name</th>
+                        <th scope="col" sortable="dos" type="alpha" (sort)="onSort($event)">DOS</th>
+                        <th scope="col" sortable="proc_code" type="alpha" (sort)="onSort($event)">CPT Code</th>
+                        <th scope="col" sortable="mod1" type="alpha" (sort)="onSort($event)">Modifier</th>
+                        <th scope="col" sortable="dx_pointer1" type="alpha" (sort)="onSort($event)">DX 1</th>
+                        <th scope="col" sortable="dx_pointer2" type="alpha" (sort)="onSort($event)">DX 2</th>
+                        <th scope="col" sortable="dx_pointer3" type="alpha" (sort)="onSort($event)">DX 3</th>
+                        <th scope="col" sortable="dx_pointer4" type="alpha" (sort)="onSort($event)">DX 4</th>
+                        <th scope="col" sortable="payer_number" type="alpha" (sort)="onSort($event)">Payer No</th>
+                        <th scope="col" sortable="insurance_name" type="alpha" (sort)="onSort($event)">Insurance</th>
+                        <th scope="col" sortable="total_charges" type="numeric" (sort)="onSort($event)">Billed Amount
+                        </th>
+                        <th scope="col" sortable="allowed_amount" type="numeric" (sort)="onSort($event)">Allowed Amount
+                        </th>
+                        <th scope="col" sortable="paid_amount" type="numeric" (sort)="onSort($event)">Paid Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr st-select-row="row" *ngFor="let c of lstClaimDetails let i=index"
+                        (click)="onSelectionChange(i)" [ngClass]="{'active': i==selectedRow}">
+                        <td>{{c.taxonomy_id}}</td>
+                        <td>{{c.attending_provider}}</td>
+                        <td>{{c.billing_provider}}</td>
+                        <td>{{c.alternate_account}}</td>
+                        <td>{{c.patient_name}}</td>
+                        <td>{{c.dos}}</td>
+                        <td>{{c.proc_code}}</td>
+                        <td>{{c.mod1}}</td>
+                        <td>{{c.dx_pointer1}}</td>
+                        <td>{{c.dx_pointer2}}</td>
+                        <td>{{c.dx_pointer3}}</td>
+                        <td>{{c.dx_pointer4}}</td>
+                        <td>{{c.payer_number}}</td>
+                        <td>{{c.insurance_name}}</td>
+                        <td>{{c.total_charges | currency:'USD':'symbol-narrow'}}</td>
+                        <td>{{c.allowed_amount | currency:'USD':'symbol-narrow'}}</td>
+                        <td>{{c.paid_amount | currency:'USD':'symbol-narrow'}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+              <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle><span>CPT Wise Summary Report</span></ng-template>
+        <ng-template ngbTabContent>
+          <!-- CPT Wise Summary Report -->
+          <rpt-cpt-wise-summary class="d-flex flex-column flex-grow-1"></rpt-cpt-wise-summary>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle><span>CPT Analysis</span></ng-template>
+        <ng-template ngbTabContent>
+          <!-- CPT Wise Summary Report -->
+          <rpt-procedure-analysis class="d-flex flex-column flex-grow-1"></rpt-procedure-analysis>
+        </ng-template>
+      </ngb-tab>
+
+    </ngb-tabset>
+  </div>
+</div>

@@ -1,0 +1,523 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Session Information</div>
+  <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+    <button [disabled]="!canAddEdit" *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+      (click)="saveSessionInfo(sessionInfoForm.value)">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="cancelAddEdit()">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </button>
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <i class="fas fa-ban mr-2"></i> Access Denied
+  </div>
+  <div class="p-6" *ngIf="canView">
+    <form [formGroup]="sessionInfoForm">
+      <div class="row p3">
+        <div class="col-4 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Time In/Out</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group col-6">
+                <label for="txt_BGfasting" class="col-form-label">Time In:</label>
+                <div class="d-flex flex-row">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                    </div>
+                    <ngb-timepicker id="timein" class="form-control form-control-ngb-timepicker required"
+                      (keydown)="changeTime()" formControlName="timein" meridian="OFF">
+                    </ngb-timepicker>
+                  </div>
+                </div>
+
+                <!-- <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                    </div>
+                    <ngb-timepicker id="tpProblemTime" class="form-control form-control-ngb-timepicker required"
+                      formControlName="tpProblemTime" meridian="ON">
+                    </ngb-timepicker>
+                  </div> -->
+              </div>
+              <div class="form-group col-6">
+                <label for="txt_BGrandom" class="col-form-label">Time Out:</label>
+                <div class="d-flex flex-row">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                    </div>
+                    <ngb-timepicker id="timeout" class="form-control form-control-ngb-timepicker required"
+                      (keydown)="changeTime()" formControlName="timeout" meridian="OFF">
+                    </ngb-timepicker>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Session</h4>
+            <div class="form-row form-dashboard p-2 pt-0">
+              <div class="form-group col-12">
+                <label class="col-form-label">Session #</label>
+                <input type="text" class="form-control" formControlName="txt_sessionNo" (keydown)="changeText()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-3 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Change in Medication(s) reported</h4>
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_no_{{objencounterToOpen.chart_id}}"
+                      (click)="checkBoxgeneralChange()" formControlName="change_medication_no">
+                    <label class="custom-control-label" for="chkbox_no_{{objencounterToOpen.chart_id}}">No</label>
+                  </div>
+
+
+                  <!--
+                <div class="custom-checkbox green-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="chkbox_no" (click)="checkBoxgeneralChange()" 
+                  formControlName="change_medication_no">
+                  <label class="custom-control-label" for="chkbox_no">No</label>
+                </div>
+                -->
+                </div>
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_yes_{{objencounterToOpen.chart_id}}"
+                      (click)="checkBoxgeneralChange()" formControlName="change_medication_yes">
+                    <label class="custom-control-label" for="chkbox_yes_{{objencounterToOpen.chart_id}}">Yes</label>
+                  </div>
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_yes"
+                      (click)="checkBoxgeneralChange()" formControlName="change_medication_yes">
+                    <label class="custom-control-label" for="chkbox_yes">Yes</label>
+                  </div>
+                  -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-3 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Treatment Plan</h4>
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-5">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_unchanged_{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="treatmentplan_unchange">
+                    <label class="custom-control-label"
+                      for="chkbox_unchanged_{{objencounterToOpen.chart_id}}">Unchanged</label>
+                  </div>
+
+
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_unchanged"
+                      (click)="checkBoxgeneralChange()" formControlName="treatmentplan_unchange">
+                    <label class="custom-control-label" for="chkbox_unchanged">Unchanged</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-7">
+                  <div class="custom-checkbox green-checkbox">
+
+                    <div class="custom-control custom-checkbox green-checkbox ">
+                      <input type="checkbox" class="custom-control-input"
+                        id="chkbox_modified_{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                        formControlName="treatmentplan_modified">
+                      <label class="custom-control-label" for="chkbox_modified_{{objencounterToOpen.chart_id}}">Modified
+                        (see note)</label>
+                    </div>
+
+
+                    <!--
+                    <input type="checkbox" class="custom-control-input" id="chkbox_modified"
+                      (click)="checkBoxgeneralChange()" formControlName="treatmentplan_modified">
+                    <label class="custom-control-label" for="chkbox_modified">Modified (see note)</label>
+                    -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="col-12 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Patient Functioning</h4>
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_signifimprov_{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_signifimprov">
+                    <label class="custom-control-label"
+                      for="chkbox_signifimprov_{{objencounterToOpen.chart_id}}">Significant Improvement</label>
+                  </div>
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_significantimprov"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_signifimprov">
+                    <label class="custom-control-label" for="chkbox_significantimprov">Significant Improvement</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_suicide_{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_suicide">
+                    <label class="custom-control-label"
+                      for="chkbox_suicide_{{objencounterToOpen.chart_id}}">Suicide</label>
+                  </div>
+
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_suicide"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_suicide">
+                    <label class="custom-control-label" for="chkbox_suicide">Suicide</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_homicide_{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_homicide">
+                    <label class="custom-control-label"
+                      for="chkbox_homicide_{{objencounterToOpen.chart_id}}">Homicide</label>
+                  </div>
+
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_homicide"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_homicide">
+                    <label class="custom-control-label" for="chkbox_homicide">Homicide</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_violence_{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_violence">
+                    <label class="custom-control-label"
+                      for="chkbox_violence_{{objencounterToOpen.chart_id}}">Violence</label>
+                  </div>
+
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_violence"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_violence">
+                    <label class="custom-control-label" for="chkbox_violence">Violence</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-4">
+                  <select class="form-control col-12" formControlName="ddl_SHV" (change)="generalChange()">
+                    <option value=""></option>
+                    <option value="NO">NO</option>
+                    <option value="YES">YES</option>
+                    <option value="extended assessment">extended assessment</option>
+                  </select>
+                </div>
+              </div>
+
+
+
+
+
+
+              <div class="form-row form-dashboard">
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_moderateimprov{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_moderateimprov">
+                    <label class="custom-control-label"
+                      for="chkbox_moderateimprov{{objencounterToOpen.chart_id}}">Moderate Improvement</label>
+                  </div>
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_moderateimprov"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_moderateimprov">
+                    <label class="custom-control-label" for="chkbox_moderateimprov">Moderate Improvement</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_mentalstatusconcern{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_mentalstatusconcern">
+                    <label class="custom-control-label"
+                      for="chkbox_mentalstatusconcern{{objencounterToOpen.chart_id}}">Mental Status concern</label>
+                  </div>
+
+                  <!--
+
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_mentalstatusconcern"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_mentalstatusconcern">
+                    <label class="custom-control-label" for="chkbox_mentalstatusconcern">Mental Status concern</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-4">
+                  <select class="form-control col-12" formControlName="ddl_MSC" (change)="generalChange()">
+                    <option value=""></option>
+                    <option value="NO">NO</option>
+                    <option value="YES">YES</option>
+                    <option value="extended assessment">extended assessment</option>
+                  </select>
+                </div>
+              </div>
+
+
+
+
+              <div class="form-row form-dashboard">
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_minimalimpro{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_minimalimpro">
+                    <label class="custom-control-label" for="chkbox_minimalimpro{{objencounterToOpen.chart_id}}">Minimal
+                      Improvement</label>
+                  </div>
+
+                  <!--
+
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_minimalimpro"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_minimalimpro">
+                    <label class="custom-control-label" for="chkbox_minimalimpro">Minimal Improvement</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_nochange{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_nochange">
+                    <label class="custom-control-label" for="chkbox_nochange{{objencounterToOpen.chart_id}}">No
+                      Change</label>
+                  </div>
+
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_nochange"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_nochange">
+                    <label class="custom-control-label" for="chkbox_nochange">No Change</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-2">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_deteriorated{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_deteriorated">
+                    <label class="custom-control-label"
+                      for="chkbox_deteriorated{{objencounterToOpen.chart_id}}">Deteriorated</label>
+                  </div>
+
+                  <!--
+
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_deteriorated"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_deteriorated">
+                    <label class="custom-control-label" for="chkbox_deteriorated">Deteriorated</label>
+                  </div>
+                  -->
+                </div>
+              </div>
+
+
+
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="col-4 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Type</h4>
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-6">
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_individual{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_individual">
+                    <label class="custom-control-label"
+                      for="chkbox_individual{{objencounterToOpen.chart_id}}">Individual</label>
+                  </div>
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_individual"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_individual">
+                    <label class="custom-control-label" for="chkbox_individual">Individual</label>
+                  </div>
+                  -->
+                </div>
+                <div class="form-group col-6">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_couplefamily{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_couplefamily">
+                    <label class="custom-control-label"
+                      for="chkbox_couplefamily{{objencounterToOpen.chart_id}}">Couple/Family</label>
+                  </div>
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_couplefamily"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_couplefamily">
+                    <label class="custom-control-label" for="chkbox_couplefamily">Couple/Family</label>
+                  </div>
+                  -->
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-group col-6">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_initialassessment{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_initialassessment">
+                    <label class="custom-control-label"
+                      for="chkbox_initialassessment{{objencounterToOpen.chart_id}}">Initial Assessment</label>
+                  </div>
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_initialassessment"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_initialassessment">
+                    <label class="custom-control-label" for="chkbox_initialassessment">Initial Assessment</label>
+                  </div>-->
+                </div>
+                <div class="form-group col-6">
+
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input"
+                      id="chkbox_collateralconsult{{objencounterToOpen.chart_id}}" (click)="checkBoxgeneralChange()"
+                      formControlName="chkbox_collateralconsult">
+                    <label class="custom-control-label"
+                      for="chkbox_collateralconsult{{objencounterToOpen.chart_id}}">Collateral/Consult</label>
+                  </div>
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_collateralconsult"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_collateralconsult">
+                    <label class="custom-control-label" for="chkbox_collateralconsult">Collateral/Consult</label>
+                  </div>
+                  -->
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_group{{objencounterToOpen.chart_id}}"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_group">
+                    <label class="custom-control-label" for="chkbox_group{{objencounterToOpen.chart_id}}">Group</label>
+                  </div>
+
+                  <!--
+                  <div class="custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_group"
+                      (click)="checkBoxgeneralChange()" formControlName="chkbox_group">
+                    <label class="custom-control-label" for="chkbox_group">Group</label>
+                  </div>
+                  -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-8 d-flex flex-column">
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+            <h4 class="form-edit-sub-heading m-1 p-1">Notes</h4>
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                  <textarea class="form-control required" id="txt_notes" formControlName="txt_notes" rows="4"
+                    (keydown)="changeText()" maxlength="5000"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <div class="encounter-footer-credential rounded-bottom">
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="showHistory()">View Log</button>
+  </div>
+
+
+
+</div>

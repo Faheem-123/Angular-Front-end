@@ -1,0 +1,455 @@
+<div class="mt-8">
+  <div class="rounded-top" [ngClass]="{
+    'encounter-header-highlight': addEditView==true,
+    'encounter-header': addEditView==false}">
+    <div class="title pl-8">Problems</div>
+
+    <div class="flex-grow-1">&nbsp;</div>
+
+
+    <div class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+      <button *ngIf="!addEditView && canView && canAddEdit" (click)="addNew()"
+        class="nav-link green px-2 py-0 top-right-radius">
+        <i class="far fa-plus-square pr-1"></i>Add
+      </button>
+
+      <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+        (click)="saveProblem(problemFormGroup.value)" [disabled]="!problemFormGroup.valid">
+        <i class="far fa-save pr-1"></i>Save
+      </button>
+
+
+      <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius"
+        (click)="cancelAddEdit()">
+        <i class="fas fa-times pr-1"></i>Cancel
+      </button>
+    </div>
+
+  </div>
+
+  <div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+    <div *ngIf="canView && !isLoading &&  !addEditView">
+      <form [formGroup]="radioForm">
+
+        <div class="btn-group radio-btn-tabs px-1">
+          <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'all')}">
+            <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="all"
+              (ngModelChange)="onRadioOptionChange($event)"> All
+          </label>
+          <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'active')}">
+            <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+              value="active" (ngModelChange)="onRadioOptionChange($event)"> Active
+          </label>
+          <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'inactive')}">
+            <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+              value="inactive" (ngModelChange)="onRadioOptionChange($event)"> Inactive
+          </label>
+          <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'resolved')}">
+            <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+              value="resolved" (ngModelChange)="onRadioOptionChange($event)"> Resolved
+          </label>
+          <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'other')}">
+            <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+              value="other" (ngModelChange)="onRadioOptionChange($event)"> Other Sources
+          </label>
+        </div>
+
+      </form>
+
+    </div>
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading && !canView" class="access-denied">
+      <p>
+        <i class="fas fa-ban"></i> Access Denied
+      </p>
+    </div>
+
+    <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content ml-2 p-6">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+
+    <div *ngIf="canView && !noRecordFound && !addEditView" class="encounter-view flex-grow-1 mt-0">
+
+      <div class="encounter-data-accordian accordian-data" *ngFor="let problem of listChartProblems; ">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <!--<input type="checkbox">-->
+          <h5>
+            <a data-toggle="collapse" href="#summaryProblem{{problem.problem_id}}" aria-expanded="false">
+              <span class="accordian-header-date-time">{{problem.prob_date}}</span>
+              <span class="icd-code">{{problem.diag_code}}</span> {{problem.diag_description}}
+            </a>
+          </h5>
+          <button *ngIf="problem.problem_discussed && canAddEdit"
+            class="btn btn-link btn-sm text-success line-height-1 p-0 mr-2" title="Discussed at this visit?"
+            (click)="discussWithPatient(problem)">
+            <i class="far fa-comments" aria-hidden="true" data-toggle="modal" data-target="#bootstrapModel"></i>
+          </button>
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md text-primary"
+            (click)="edit(problem)">
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md btn-delete"
+            (click)="onDelete(problem)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </div>
+
+        <div id="summaryProblem{{problem.problem_id}}" class="collapse" class="collapse">
+          <div class="accordian-body">
+            <div class="row">
+              <div class="col col-9">
+                <p>Problem Date:
+                  <strong class="mr-5">{{problem.prob_date}}</strong>
+                </p>
+                <p>{{problem.code_type}}:
+                  <strong>{{problem.diag_code}}</strong>
+                  <strong>{{problem.diag_description}}</strong>
+                </p>
+
+              </div>
+              <div class="col col-3">
+                <p>Status:
+                  <strong class="mr-1">{{problem.status}}</strong>
+                </p>
+                <p *ngIf="problem.resolved_date">Date Resolved:
+                  <strong class="mr-1">{{problem.resolved_date}}</strong>
+                </p>
+              </div>
+            </div>
+
+            <div class="accordian-footer justify-content-between">
+              <div class="d-flex justify-content-start">
+                Education Provided: <i class="far fa-lg pt-1 pl-2" [ngClass]="{
+                  'fa-check-circle text-success': (problem.education_provided == true),
+                  'fa-times-circle text-danger': (problem.education_provided == false)}" aria-hidden="true"></i>
+              </div>
+
+              <p class="form-text text-muted">Last Modified by {{problem.modified_user}} at {{problem.date_modified}}
+              </p>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+    <div *ngIf="addEditView" class="p-2 pt-1">
+
+      <form [formGroup]="problemFormGroup">
+
+
+        <div class="form-row form-dashboard">
+          <div class="form-group col-8">
+            <div class="d-flex justify-content-between">
+              <div class="btn-group radio-btn-tabs required">
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (codeType === 'ICD-10')}">
+                  <input type="radio" name="codeType" autocomplete="off" checked formControlName="codeType"
+                    value="ICD-10" (ngModelChange)="onCodeTypeChange($event)"> ICD-10
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (codeType === 'SnomedCT')}">
+                  <input type="radio" name="codeType" autocomplete="off" checked formControlName="codeType"
+                    value="SnomedCT" (ngModelChange)="onCodeTypeChange($event)"> SnomedCT
+                </label>
+              </div>
+
+              <div class="form-check-cont d-flex align-item-center mx-1">
+
+                <div class="custom-control custom-radio green-radio">
+                  <input class="custom-control-input" type="radio" id="rbmylist_{{objencounterToOpen.controlUniqueId}}"
+                    formControlName="rbList" name="rbList" value="mylist" (ngModelChange)="onRadioListChange($event)">
+                  <label class="custom-control-label" for="rbmylist_{{objencounterToOpen.controlUniqueId}}">My
+                    List</label>
+                </div>
+
+
+                <div class="custom-control custom-radio green-radio">
+                  <input class="custom-control-input" type="radio" id="rball_{{objencounterToOpen.controlUniqueId}}"
+                    formControlName="rbList" name="rbList" value="all"
+                    (ngModelChange)="onRadioListChange($event)">
+                  
+                  <label class="custom-control-label" for="rball_{{objencounterToOpen.controlUniqueId}}">All</label>
+                </div>
+
+
+              </div>
+
+
+
+            </div>
+
+            <div class="input-icon d-flex flex-grow-3">
+
+              <input id="txtProblemSearch" class="form-control search-highlight flex-grow-3  bl-0" type="text"
+                #txtProblemSearch formControlName="txtProblemSearch" placeholder="Search Problem"
+                (keydown)="onProblemSearchKeydown($event)" autocomplete="off" (blur)="onProblemSearcBlur()">
+
+              <div class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </div>
+
+              <inline-diagnosis-search *ngIf="showDiagSearch" [diagSearchCriteria]="diagSearchCriteria"
+                (onDiagSelect)="onDiagnosisSelect($event)" (onClose)="closeDiagSearch()"></inline-diagnosis-search>
+
+
+            </div>
+          </div>
+
+          <div class="form-group col-4">
+
+            <label class="col-form-label required" for="dpProblemDate">Date Time:</label>
+            <div class="d-flex flex-row">
+              <div class="input-group mr-1">
+                <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpProblemDate"
+                  formControlName="dpProblemDate" ngbDatepicker #dpProblemDate="ngbDatepicker">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dpProblemDate.toggle()" type="button">
+                  </button>
+                </span>
+
+              </div>
+
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                </div>
+                <ngb-timepicker id="tpProblemTime" class="form-control form-control-ngb-timepicker required"
+                  formControlName="tpProblemTime" meridian="ON">
+                </ngb-timepicker>
+              </div>
+            </div>
+
+            <!--
+            <label class="col-form-label required" for="dpProblemDate">Date</label>
+            <div class="input-group">
+              <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpProblemDate"
+                formControlName="dpProblemDate" ngbDatepicker #dpProblemDate="ngbDatepicker">
+
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="dpProblemDate.toggle()" type="button">
+                </button>
+              </span>
+
+            </div>
+            -->
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard">
+
+          <div class="form-group col-8">
+            <label for="txtIcdDescription" class="col-form-label required">Problem (Code | Description)</label>
+            <div class="input-group">
+
+
+              <div class="input-group-prepend">
+
+                <span class="input-group-text width-100 d-flex justify-content-center">
+                  {{diagCode}}
+                </span>
+
+              </div>
+              <input class="form-control form-control-with-button" type="text" formControlName="txtIcdDescription" />
+
+              <span class="input-group-btn" *ngIf="diagCode!=undefined && diagCode!=''">
+                <button class="btn btn-outline-secondary fz-12" type="button" (click)="onRemoveDiagnosis()">
+                  <i class="fas fa-times mr-1"></i>
+                </button>
+              </span>
+
+            </div>
+          </div>
+
+          <div class="form-group col-2">
+            <label for="cmbProbType">Type</label>
+            <select class="form-control" id="cmbProbType" formControlName="cmbProbType">
+              <option></option>
+              <option>All</option>
+              <option>Encounter</option>
+            </select>
+          </div>
+
+
+          <div class="form-group col-2">
+            <label for="cmbStatus">Status</label>
+            <select class="form-control" id="cmbStatus" formControlName="cmbStatus">
+              <option>Active</option>
+              <option>Completed</option>
+              <option>Inactive</option>
+              <option>Resolved</option>
+              <option>Not Resolved</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!--
+        <div class="form-row form-dashboard">
+
+
+          <div class="form-group col-md-2 col-sm-3 col-12">
+            <label for="txtIcdCode">Code <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="txtIcdCode" readonly>
+          </div>
+
+          <div class="form-group col-md-6 col-sm-6 col-12">
+            <label for="txtIcdDescription">Description <span class="text-danger">*</span></label>
+            <input id="txtIcdDescription" class="form-control" type="text" formControlName="txtIcdDescription">
+          </div>
+
+
+        </div>
+        -->
+        <div class="form-row form-dashboard mt-1">
+          <div class="form-group col-4">
+            <label for="tpProblemTime" class="col-form-label ">Condition</label>
+            <div class="input-group form-control">
+              <div class="form-check-inline">
+                <input class="form-check-input" type="radio" name="rbCondition"
+                  id="rbChronic_{{objencounterToOpen.controlUniqueId}}" value="chronic" formControlName="rbCondition">
+                <label class="form-check-label" for="rbChronic_{{objencounterToOpen.controlUniqueId}}">Chronic</label>
+              </div>
+              <div class="form-check-inline">
+                <input class="form-check-input" type="radio" name="rbCondition"
+                  id="rbAccute_{{objencounterToOpen.controlUniqueId}}" value="accute" formControlName="rbCondition">
+                <label class="form-check-label" for="rbAccute_{{objencounterToOpen.controlUniqueId}}">Acute</label>
+              </div>
+              <div class="form-check-inline">
+                <input class="form-check-input" type="radio" name="rbCondition"
+                  id="rbScreening_{{objencounterToOpen.controlUniqueId}}" value="screening"
+                  formControlName="rbCondition">
+                <label class="form-check-label"
+                  for="rbScreening_{{objencounterToOpen.controlUniqueId}}">Screening</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-4">
+            <div class="d-flex justify-content-between">
+              <label for="tpProblemTime" class="col-form-label ">Type</label>
+              <!-- <i class="far fa-sm"  [ngClass]="{
+                  'fa-check-circle text-success': (isEducationProvided == true),
+                  'fa-times-circle text-danger': (isEducationProvided == false)}" 
+                  aria-hidden="true"></i>  -->
+
+              <button *ngIf="diagCode==undefined?false:true" class="btn btn-link p-0 btn-sm m-0 pr-2"
+                (click)="onEducationClick()" [ngClass]="{
+                  'text-success': (isEducationProvided == true),
+                  'text-danger': (isEducationProvided == false)}">[ Patient Education ]</button>
+              <button *ngIf="showAddtoMylistButton" class="btn btn-link btn-sm" (click)="onAddToMyList()">[ Add To My
+                List ]</button>
+            </div>
+            <div class="input-group form-control pb-0 pt-0">
+
+              <span class="border-right mr-2">
+                <div class="form-check-inline mt-1">
+                  <input class="form-check-input" type="checkbox" id="chkPriamry_{{objencounterToOpen.controlUniqueId}}"
+                    name="chkPriamry" formControlName="chkPrimary">
+                  <label class="form-check-label"
+                    for="chkPriamry_{{objencounterToOpen.controlUniqueId}}">Primary</label>
+                </div>
+              </span>
+
+
+              <div class="form-check-inline">
+                <input class="form-check-input" type="radio" name="rbType"
+                  id="rbWorking_{{objencounterToOpen.controlUniqueId}}" value="W" formControlName="rbType">
+                <label class="form-check-label" for="rbWorking_{{objencounterToOpen.controlUniqueId}}">Working</label>
+              </div>
+
+              <div class="form-check-inline">
+                <input class="form-check-input" type="radio" name="rbType"
+                  id="rbFinal_{{objencounterToOpen.controlUniqueId}}" value="F" formControlName="rbType">
+                <label class="form-check-label" for="rbFinal_{{objencounterToOpen.controlUniqueId}}">Final</label>
+              </div>
+            </div>
+
+          </div>
+          <div class="form-group col-2"
+            *ngIf="problemFormGroup.value['cmbStatus']=='Resolved' || problemFormGroup.value['cmbStatus']=='Completed'">
+            <label class="col-form-label" for="dpDateResolved">{{problemFormGroup.value['cmbStatus']}}</label>
+            <div class="input-group">
+              <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDateResolved"
+                formControlName="dpDateResolved" ngbDatepicker #dpDateResolved="ngbDatepicker">
+
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="dpDateResolved.toggle()" type="button">
+                </button>
+              </span>
+
+            </div>
+
+
+
+          </div>
+
+
+          <div class="form-group col-2" *ngIf="problemFormGroup.value['cmbStatus']=='Resolved'">
+            <label for="tpTimeResolved" class="col-form-label">Resolved Time</label>
+
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+              </div>
+              <ngb-timepicker id="tpTimeResolved" class="form-control form-control-ngb-timepicker required"
+                formControlName="tpTimeResolved" meridian="ON">
+              </ngb-timepicker>
+            </div>
+          </div>
+          <!-- <div class="form-group col-2">
+            <label for="cmbProbType">Type</label>
+            <select class="form-control" id="cmbProbType" formControlName="cmbProbType">
+              <option></option>
+              <option>All</option>
+              <option>Encounter</option>
+            </select>
+          </div> -->
+
+          <!-- <div class="form-group col-2">
+            <label for="cmbStatus">Status</label>
+            <select class="form-control" id="cmbStatus" formControlName="cmbStatus">
+              <option>Active</option>
+              <option>Completed</option>
+              <option>Inactive</option>
+              <option>Resolved</option>
+              <option>Not Resolved</option>
+            </select>
+          </div> -->
+
+        </div>
+        <div class="form-row form-dashboard mt-1">
+          <div class="form-group col-12">
+            <label for="txtComments">Comments:</label>
+            <textarea class="form-control" id="txtComments" rows="4" placeholder="Comments"
+              formControlName="txtComments"></textarea>
+          </div>
+
+
+        </div>
+
+      </form>
+    </div>
+
+
+    <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && canView && !addEditView">
+      <button class="btn btn-sm btn-link pr-0" type="button" (click)="showHistory()">View Log</button>
+    </div>
+
+
+  </div>
+
+  <!-- <div *ngIf="addEditView" class="encounter-footer">
+    <button type="button" class="btn btn-success ml-1" [disabled]="!problemFormGroup.valid" (click)="saveProblem(problemFormGroup.value)">Save</button>
+    <button type="button" class="btn btn-dark" (click)="cancelAddEdit()">Cancel</button>
+  </div> -->
+
+</div>

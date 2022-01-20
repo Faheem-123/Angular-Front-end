@@ -1,0 +1,762 @@
+<div class="light-title-bar h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+
+    <div class="fz-14 font-weight-400 flex-grow-1">Referral Request</div>
+
+
+    <button [disabled]="isLoading" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+        (click)="OnNewRecord()" *ngIf="isReadonly">
+        <i class="fas fa-plus"></i>
+        New Request</button>
+
+    <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="getReferral()"
+        [disabled]="isLoading" *ngIf="isReadonly"> <i class="fas fa-redo"></i></button>
+
+
+    <div *ngIf="!isReadonly">
+        <button type="button" (click)="OnSignSave()" class="btn btn-sub-nav rounded-0 btn-warning">Sign and
+            Save</button>
+        <button type="button" (click)="OnSave()" class="btn btn-sub-nav rounded-0 btn-success">Save</button>
+        <button type="button" (click)="OnCancel()" class="btn btn-sub-nav rounded-0 btn-dark">Cancel</button>
+    </div>
+
+
+</div>
+
+
+<div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0"
+    *ngIf="patient == undefined && isReadonly">
+    <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaReferralRequest" aria-expanded="true"
+                class="accordian-link rounded-0">
+                <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+        </h5>
+    </div>
+    <div id="SearchCriteriaReferralRequest" class="show">
+        <div class="accordian-body bg-transparent">
+            <form [formGroup]="searchForm">
+
+
+                <div class="p-2 pt-0">
+                    <div class="form-row form-dashboard">
+
+
+                        <div class="form-group col-6">
+                            <label class="col-form-label required" for="dateFrom">Date Range:</label>
+                            <div class="d-flex flex-grow-3">
+
+                                <div class="input-group mr-1">
+
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">From</span>
+                                    </div>
+
+                                    <input id="dateFrom" formControlName="dateFrom" class="form-control date-control "
+                                        placeholder="mm/dd/yyyy" name="dateFrom" ngbDatepicker
+                                        #dateFrom="ngbDatepicker">
+
+                                    <span class="input-group-btn">
+                                        <button class="btn date-control-btn" (click)="dateFrom.toggle()" type="button"
+                                            focusable="false" tabindex="-1">
+                                        </button>
+                                    </span>
+
+                                </div>
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">To</span>
+                                    </div>
+
+                                    <input id="dateTo" formControlName="dateTo" class="form-control date-control "
+                                        placeholder="mm/dd/yyyy" name="dateTo" ngbDatepicker #dateTo="ngbDatepicker">
+
+                                    <span class="input-group-btn">
+                                        <button class="btn date-control-btn" (click)="dateTo.toggle()" type="button"
+                                            focusable="false" tabindex="-1">
+                                        </button>
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group col-3">
+                            <label for="input2" class="col-form-label">Location:</label>
+
+                            <select class="form-control" labelForId="ddLocationSearch"
+                                formControlName="ddLocationSearch">
+                                <option value="">All</option>
+                                <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}
+                                </option>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group col-3">
+                            <label for="ddProviderSearch" class="col-form-label">Provider:</label>
+                            <select class="form-control" labelForId="ddProviderSearch"
+                                formControlName="ddProviderSearch">
+                                <option value="">All</option>
+                                <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}
+                                </option>
+                            </select>
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group col-4">
+                            <label for="txtPatientSearchFrom" class="col-form-label">Patient:</label>
+
+                            <div class="input-icon d-flex flex-grow-3">
+
+                                <input labelForId="txtPatientSearchFrom" class="form-control flex-grow-3" type="text"
+                                    #txtPatientSearchFrom formControlName="txtPatientSearchFrom"
+                                    placeholder="Search Patient" (keydown)="onPatientSearchFormKeydown($event)"
+                                    autocomplete="off"
+                                    (input)="onPatientSearchFormInputChange(txtPatientSearchFrom.value)"
+                                    (blur)="onPatientSearchFormBlur()">
+                                <input type="text" formControlName="txtPatientIdHiddenSearchFrom" hidden>
+                                <div class="icon">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </div>
+
+                                <inline-patient-search *ngIf="showPatientSearchForm"
+                                    [searchValue]="txtPatientSearchFrom.value"
+                                    (onPatientSelect)="onSelectSearchFormPatient($event)"
+                                    (onClose)="closePatientSearchForm()">
+                                </inline-patient-search>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="form-group col-2">
+                            <label for="ddConsultTypeSearch" class="col-form-label">Consult Type</label>
+                            <select class="form-control" id="ddConsultTypeSearch" formControlName="ddConsultTypeSearch">
+                                <option value=""></option>
+                                <option *ngFor="let s of lstConsultType" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-2">
+                            <label for="ddStatusSearch" class="col-form-label">Status</label>
+                            <select class="form-control" id="ddStatusSearch" formControlName="ddStatusSearch">
+                                <option></option>
+                                <option>Pending</option>
+                                <option>Inprogress</option>
+                                <option>Faxed</option>
+                                <option>Emailed</option>
+                                <option>Completed</option>
+                                <option>Left for clinic</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-2">
+                            <label for="cmbreport" class="col-form-label">&nbsp;</label>
+                            <div class="custom-control custom-checkbox green-checkbox col ">
+                                <input type="checkbox" class="custom-control-input" id="chkHighImpSearch"
+                                    formControlName="chkHighImpSearch">
+                                <label class="custom-control-label" for="chkHighImpSearch">High Importance</label>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-2 d-flex flex-column justify-content-end mb-2">
+                            <button type="button" class="btn btn-success w-100"
+                                (click)="onSearchClick(searchForm.value)">Search</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-content light-gray-bg p-6 d-flex flex-column">
+    <form [formGroup]="inputForm" class="d-flex flex-column flex-grow-1">
+        <div class="border rounded bg-white mb-6 d-flex flex-row flex-shrink-0">
+            <div class="dashboard-add-edit px-1 pb-1 d-flex flex-grow-1 ">
+
+                <div class="col-8 px-2">
+                    <div class="form-row form-dashboard  border-bottom mb-1">
+                        <div class="col-6 px-2">
+
+
+                            <div class="form-row form-dashboard">
+                                <div class="form-group row zero mb-4-px col-12">
+                                    <label for="input2" class="width-80 col-form-label ">Consult Type:</label>
+                                    <select class="form-control col" id="input3" formControlName="drpConsultType"
+                                        (change)="OnConsultChnage()">
+                                        <option *ngFor="let s of lstConsultType" [value]="s.id">{{s.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                                <div class="form-group row zero mb-4-px col-12 ">
+
+                                    <label for="input1" class="col-form-label width-60">Refer To:</label>
+
+                                    <label class="form-control pt-1 bg-disabled col"
+                                        *ngIf="isReadonly">{{refPhyName}}</label>
+
+                                    <div class="col input-icon" *ngIf="!isReadonly">
+                                        <input #refSearch type="text" autocomplete="off" class="form-control"
+                                            id="input4" placeholder="Enter criteria and press Enter to Search"
+                                            formControlName="txtReferTo" (keydown)="OnrefSearch($event,refSearch.value)"
+                                            [readonly]="isReadonly">
+                                        <div class="icon">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </div>
+                                        <div *ngIf="isSearchReferral">
+                                            <div class="inline-search">
+                                                <div class="inline-search-header">
+                                                    <h6 class="title">Consultant Search</h6>
+                                                    <button type="button" class="close" aria-label="Close"
+                                                        (click)="isSearchReferral=false;">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="body m-0">
+                                                    <table class="table sm light-striped-border" *ngIf="!isLoading">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Last Name</th>
+                                                                <th>First Name</th>
+                                                                <th>Phone</th>
+                                                                <th>Fax</th>
+                                                                <th>Address</th>
+                                                                <th>City</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr *ngFor="let pat of lstReferralSearch">
+                                                                <td>
+                                                                    <button type="button" class="link-btn"
+                                                                        (click)="OnselectReferral(pat)">{{pat.last_name}}</button>
+                                                                </td>
+                                                                <td>
+                                                                    <button type="button" class="link-btn"
+                                                                        (click)="OnselectReferral(pat)">{{pat.first_name}}</button>
+                                                                </td>
+                                                                <td>{{pat.phone}}</td>
+                                                                <td>{{pat.fax}}</td>
+                                                                <td>{{pat.address}}</td>
+                                                                <td>{{pat.city}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row form-dashboard">
+                                <div class="form-group row zero mb-4-px col-12 ">
+                                    <label class="col-form-label width-60">Address:</label>
+
+                                    <!--
+                                        <input type="text" class="form-control col-sm-10" id="input4"
+                                            formControlName="txtReferAddress" disabled>
+                                            -->
+                                    <label class="form-control pt-1 bg-disabled  col">{{refPhyAddress}}</label>
+                                </div>
+                            </div>
+                            <div class="form-row form-dashboard">
+                                <div class="form-group row zero col-12">
+                                    <label class="col-form-label width-60  px-0">Phone:</label>
+                                    <label class="form-control pt-1 bg-disabled col">{{refPhyPhone | phonePipe}}</label>
+
+                                    <label class="col-form-label px-2">Fax:</label>
+                                    <label class="form-control pt-1 bg-disabled col">{{refPhyFax | phonePipe}}</label>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-6 px-2">
+                            <div class="form-row form-dashboard">
+                                <div class="form-group row zero mb-4-px col-12">
+                                    <label for="input2" class="col-form-label width-55" [ngClass]="{required: patient == undefined}" >Patient:</label>
+                                    <label class="form-control pt-1 bg-disabled col"
+                                        *ngIf="isReadonly || patient != undefined">{{patientNameRequest}}</label>
+
+
+                                    <!--
+                                        <input type="text" class="form-control col-sm-9" id="input4"
+                                            formControlName="txtPatient" *ngIf="!isReadonly && patient ==undefined">
+                                            -->
+
+                                    <div class="input-icon d-flex flex-grow-3"
+                                        *ngIf="!isReadonly && patient ==undefined">
+
+                                        <input labelForId="txtPatientInput" class="form-control flex-grow-3" type="text"
+                                            #txtPatientInput formControlName="txtPatientInput"
+                                            placeholder="Search Patient" (keydown)="onPatientInputKeydown($event)"
+                                            autocomplete="off" (input)="onPatientInputChange(txtPatientInput.value)"
+                                            (blur)="onPatientInputBlur()">
+                                        <input type="text" formControlName="txtPatientIdHiddenInput" hidden>
+                                        <div class="icon">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </div>
+
+                                        <inline-patient-search *ngIf="showPatientInput"
+                                            [searchValue]="txtPatientInput.value"
+                                            (onPatientSelect)="onSelectInputPatient($event)"
+                                            (onClose)="closePatientInput()">
+                                        </inline-patient-search>
+
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                            <div class="form-row form-dashboard">
+
+                                <div class="form-group row zero mb-4-px col-12 ">
+                                    <label for="drpProvider" class="width-55  col-form-label ">Provider:</label>
+                                    <select class="form-control col" labelForId="drpProvider" formControlName="drpProvider">
+                                        <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row form-dashboard">
+
+                                <div class="form-group row zero col-12 ">
+                                    <label for="drpLocation" class="width-55  col-form-label ">Location:</label>
+                                    <select class="form-control col" labelForId="drpLocation" formControlName="drpLocation">
+                                        <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                                <div class="form-group row zero mb-4-px col-12 ">
+                                    <label for="input2" class="col-form-label width-55 ">Status:</label>
+                                    <label class="form-control pt-1 bg-disabled col">{{status}}</label>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero mb-4-px col-12 ">
+                            <label for="input2" class="col-form-label width-60">Notes:</label>
+                            <label class="col mt-1">{{notes}}</label>
+
+                        </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero mb-4-px col-12">
+                            <label for="input2" class="col-form-label width-60">Signed By:</label>
+                            <label class="col mt-1">{{signed_by_view}}</label>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+
+
+                <div class="col-4 px-2">
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group px col-12">
+                            <div class="d-flex justify-content-between mb-1">
+                                <label for="input22" class="col-form-label">Diagnosis / Comments:
+                                    <button *ngIf="!isReadonly" type="button" class="btn btn-sm btn-link p-0"
+                                        (click)="onImport()">Import Dx</button>
+                                </label>
+
+                                <div class="custom-control custom-checkbox green-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="chkImportance"
+                                        formControlName="chkImportance">
+                                    <label class="custom-control-label" for="chkImportance">High Importance</label>
+                                </div>
+                            </div>
+
+
+
+                            <textarea class="form-control " id="input22" rows="9" formControlName="txtComments"
+                                [readonly]="isReadonly"></textarea>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <!--
+        <div class="border rounded bg-white mb-6 d-flex flex-row flex-shrink-0">
+
+
+
+            <div class="dashboard-add-edit p-8-px flex-grow-2 flex-basis-2">
+
+
+                <div class="form-row form-dashboard">
+                    <div class="form-group row zero mb-4-px col-12">
+                        <label for="input2" class="col-sm-3 col-form-label ">Consult Type:</label>
+                        <select class="form-control col-sm-9" id="input3" formControlName="drpConsultType"
+                            (change)="OnConsultChnage()">
+                            <option *ngFor="let s of lstConsultType" [value]="s.id">{{s.name}}</option>
+                        </select>
+
+                        <div class="form-check-cont">
+                            <div class="form-check form-check-inline pt-1">
+                                <input class="form-check-input" [readonly]="isReadonly" type="checkbox" id="input021"
+                                    formControlName="chkImportance">
+                                <label class="form-check-label" for="input021">High Important</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row zero mb-4-px col-12">
+                        <label for="input22" class="col-sm-3 col-form-label ">Diagnosis / Comments:</label>
+                        <div class="justify-content-between col-sm-9 form-group row zero ">
+                            <textarea class="form-control col" id="input22" rows="8" formControlName="txtComments"
+                                [readonly]="isReadonly"></textarea>
+                            <ul class="nav color-buttons align-items-end">
+                                <button *ngIf="!isReadonly" type="button" class="btn btn-sm btn-link"
+                                    (click)="onImport()">Import Dx</button>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="d-flex flex-column flex-grow-4 flex-basis-4 ml-4-px">
+                <div class="d-flex flex-row">
+                    <div class="dashboard-add-edit p-8-px flex-grow-1 flex-basis-1">
+                        <div class="form-row form-dashboard">
+                            <div class="form-group row zero mb-4-px col-12">
+
+                                <label for="input1" class="col-form-label col-sm-2">Refer To:</label>
+
+                                <label class="form-control pt-1 bg-disabled col"
+                                    *ngIf="isReadonly">{{refPhyName}}</label>
+
+                                <div class="col input-icon" *ngIf="!isReadonly">
+                                    <input #refSearch type="text" autocomplete="off" class="form-control" id="input4"
+                                        placeholder="Enter criteria and press Enter to Search"
+                                        formControlName="txtReferTo" (keydown)="OnrefSearch($event,refSearch.value)"
+                                        [readonly]="isReadonly">
+                                    <div class="icon">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </div>
+                                    <div *ngIf="isSearchReferral">
+                                        <div class="inline-search">
+                                            <div class="inline-search-header">
+                                                <h6 class="title">Consultant Search</h6>
+                                                <button type="button" class="close" aria-label="Close"
+                                                    (click)="isSearchReferral=false;">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="body m-0">
+                                                <table class="table sm light-striped-border" *ngIf="!isLoading">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Last Name</th>
+                                                            <th>First Name</th>
+                                                            <th>Phone</th>
+                                                            <th>Fax</th>
+                                                            <th>Address</th>
+                                                            <th>City</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let pat of lstReferralSearch">
+                                                            <td>
+                                                                <button type="button" class="link-btn"
+                                                                    (click)="OnselectReferral(pat)">{{pat.last_name}}</button>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="link-btn"
+                                                                    (click)="OnselectReferral(pat)">{{pat.first_name}}</button>
+                                                            </td>
+                                                            <td>{{pat.phone}}</td>
+                                                            <td>{{pat.fax}}</td>
+                                                            <td>{{pat.address}}</td>
+                                                            <td>{{pat.city}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row zero mb-4-px col-12">
+                                <label class="col-form-label col-sm-2">Address:</label>
+
+                               
+                                <label class="form-control pt-1 bg-disabled  col">{{refPhyAddress}}</label>
+                            </div>
+
+                            <div class="form-group row zero col-6">
+                                <label class="col-form-label col-sm-4">Phone:</label>
+
+                                <label class="form-control pt-1 bg-disabled col">{{refPhyPhone | phonePipe}}</label>
+
+                            </div>
+
+                            <div class="form-group row zero col-6">
+                                <label class="col-form-label col-sm-3">Fax:</label>
+
+                               
+                                <label class="form-control pt-1 bg-disabled col">{{refPhyFax | phonePipe}}</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-add-edit p-8-px flex-grow-1 flex-basis-1 ml-4-px">
+                        <div class="form-row form-dashboard">
+                            <div class="form-group row zero mb-4-px col-12">
+                                <label for="input2" class="col-form-label col-sm-3">Patient:</label>
+                                <label class="form-control pt-1 bg-disabled col"
+                                    *ngIf="isReadonly || patient != undefined">{{patientNameRequest}}</label>
+
+
+                              
+                                <div class="input-icon d-flex flex-grow-3" *ngIf="!isReadonly && patient ==undefined">
+
+                                    <input labelForId="txtPatientInput" class="form-control flex-grow-3" type="text"
+                                        #txtPatientInput formControlName="txtPatientInput" placeholder="Search Patient"
+                                        (keydown)="onPatientInputKeydown($event)" autocomplete="off"
+                                        (input)="onPatientInputChange(txtPatientInput.value)"
+                                        (blur)="onPatientInputBlur()">
+                                    <input type="text" formControlName="txtPatientIdHiddenInput" hidden>
+                                    <div class="icon">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
+                                    </div>
+
+                                    <inline-patient-search *ngIf="showPatientInput"
+                                        [searchValue]="txtPatientSearchFrom.value"
+                                        (onPatientSelect)="onSelectInputPatient($event)"
+                                        (onClose)="closePatientInput()">
+                                    </inline-patient-search>
+
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="form-group row zero mb-4-px col-12">
+                                <label for="input2" class="col-sm-3 col-form-label ">Provider:</label>
+                                <select class="form-control col-sm-9" labelForId="input1" formControlName="drpProvider">
+                                    <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group row zero col-12">
+                                <label for="input2" class="col-sm-3 col-form-label ">Location:</label>
+                                <select class="form-control col-sm-9" labelForId="input2" formControlName="drpLocation">
+                                    <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-add-edit p-8-px mt-4-px">
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero mb-4-px col-3">
+                            <div class="">
+                                <label class="col-form-label ">Status:&nbsp;</label>
+                            </div>
+
+                            <div class="col-sm-8">
+                                <label class="label-detail">{{status}}</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group row zero mb-4-px col-9">
+                            <div class="">
+                                <label class="col-form-label ">Signed By: &nbsp;</label>
+                            </div>
+
+                            <div class="col-sm-8">
+                                <label class="label-detail">{{signed_by_view}}</label>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="dashboard-add-edit p-8-px mt-4-px">
+                    <div class="form-row form-dashboard">
+                        <div class="form-group row zero mb-4-px col-12">
+                            <div class="">
+                                <label class="col-form-label ">Notes:&nbsp;</label>
+                            </div>
+
+                            <div class="col-sm-10">
+                                <label class="label-detail">{{notes}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    -->
+
+        <div class="border rounded overflow-auto flex-grow-1 overflow-height">
+            <table class="table sm light-striped-border layout-fixed table-hover">
+                <thead>
+                    <tr>
+                        <th class="width-80">Date</th>
+                        <th>Patient</th>
+                        <th>Referred To</th>
+                        <th>Provider</th>
+                        <th>Location</th>
+                        <th>Consult Type</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                        <th>Diagnosis/Comments</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let pat of lstReferralRequest" (click)="OnSelectionChanged(pat)"
+                        [ngClass]="{'active' : (pat.referral_id === rowId)}">
+                        <td>{{pat.date_created_mmddyy}}</td>
+                        <td><button type="button" class="link-btn" title="pat.patient_name"
+                                (click)="openPatient(pat)">{{pat.patient_name}}</button></td>
+                        <td>{{pat.referral_provider_name}}</td>
+                        <td>{{pat.provider_name}}</td>
+                        <td>{{pat.location_name}}</td>
+                        <td>{{pat.consult_type}}</td>
+                        <td>{{pat.referral_status}}</td>
+                        <td>
+                            <p class="mb-0">{{pat.notes}}</p>
+                        </td>
+                        <td>
+                            <p class="mb-0">{{pat.referral_reason}}</p>
+                        </td>
+                        <td class="text-right">
+                            <button type="button" class="btn btn-link btn-sm text-success line-height-1 p-0 mr-2">
+                                <i class="far fa-comment" aria-hidden="true" data-toggle="modal"
+                                    data-target="#reqstatusModel" (click)="openModal(pat)"></i>
+                            </button>
+                            <button type="button" class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2">
+                                <i class="far fa-edit" aria-hidden="true" (click)="OnEdit('Edit',pat)"></i>
+                            </button>
+                            <button type="button" class="btn btn-link btn-sm text-danger line-height-1 p-0">
+                                <i class="far fa-trash-alt" aria-hidden="true" (click)="deleteRequest(pat)"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+    <!-- Modal section -->
+    <div id="reqstatusModel" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <!-- <div class="modal-header ">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Referral Request Status/Notes</h4>
+        </div> -->
+                <div class="modal-header custom">
+                    <h4 class="modal-title">Referral Request Status/Notes</h4>
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <!-- model body section -->
+                <div class="modal-body custom">
+                    <form class="form-row form-dashboard" [formGroup]="statusForm"
+                        (ngSubmit)="onSaveReferralStaffNotes(statusForm.value)">
+                        <div class="form-group horizental row zero col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Status:</label>
+                            <select class="form-control col-sm-10" formControlName="drpStatus">
+                                <option></option>
+                                <option>Pending</option>
+                                <option>Inprogress</option>
+                                <option>Faxed</option>
+                                <option>Emailed</option>
+                                <option>Completed</option>
+                                <option>Left for clinic</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group horizental row zero col-12">
+                            <label for="input22" class="col-sm-2 col-form-label ">Notes:</label>
+                            <div class="col-sm-10 form-group horizental row zero">
+                                <textarea class="form-control" id="input22" rows="5"
+                                    formControlName="txtNotes"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer custom">
+                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                    <button type="button" class="btn btn-sm btn-dark" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-success" data-dismiss="modal"
+                        (click)="onSaveReferralStaffNotes(statusForm.value)">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+</div>
+<div class="div-ui-blocker" id="uiBlocker" *ngIf="isSaving">
+    <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Saving...
+    </div>
+</div>

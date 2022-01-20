@@ -1,0 +1,41 @@
+<ngb-tabset class="inner-vertical-tab white d-flex flex-row max-height-100">
+  <!-- class="inner-horizental-green-tab d-flex flex-column" -->
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Users</span></ng-template>
+    <ng-template ngbTabContent>
+      <users class="d-flex flex-column flex-grow-1 overflow-height pl-1"></users>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>User Roles</span></ng-template>
+    <ng-template ngbTabContent>
+      <user-roles class="d-flex flex-row flex-grow-1 overflow-height pl-1"></user-roles>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Encounter Setting</span></ng-template>
+    <ng-template ngbTabContent>
+      <encounter-setting class="d-flex flex-column flex-grow-1 overflow-height pl-1"></encounter-setting>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>My Dashboard</span></ng-template>
+    <ng-template ngbTabContent>
+      <dashboard-setting class="d-flex flex-column flex-grow-1 overflow-height pl-1"></dashboard-setting>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Patient API Users</span></ng-template>
+    <ng-template ngbTabContent>
+      <patient-api-users class="d-flex flex-column flex-grow-1 overflow-height pl-1" callingFrom="settings"></patient-api-users>
+    </ng-template>
+  </ngb-tab>
+
+
+
+</ngb-tabset>

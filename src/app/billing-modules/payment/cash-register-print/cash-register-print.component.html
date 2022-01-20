@@ -1,0 +1,271 @@
+<div class="dashboard-sub-nav encounter justify-content-between pr-0" (keydown.esc)="cancelPrint()">
+  <p> Cash Register Receipt</p>
+  <div class="flex-grow-1">&nbsp;</div>
+  <button style="width: 60px;" class="btn btn-success fz-12 rounded-0" type="button" (click)="print()">
+    <i class="fa fa-print"></i> Print</button>
+
+  <button class="btn  btn-dark fz-12 rounded-0" type="button" (click)="cancelPrint()">
+    <i class="fas fa-times  pr-1"></i>Close
+  </button>
+
+
+</div>
+<div class="d-flex flex-column flex-grow-1 ">
+  <div class="pageLayoutMain d-flex flex-grow-1 overflow-height">
+    <div class="overflow-auto flex-grow-1 pt-2">
+      <div class="page_A4">
+        <div id="cash_register_report" class="report">
+          <div class="report">
+            <div class="header border-bottom-green">
+              <img class="logo" src="{{lookupList.practiceInfo.logo}}" width="175"
+                (error)="$event.target.style.display = 'none';"
+                *ngIf="lookupList.practiceInfo.logo!=undefined && lookupList.practiceInfo.logo != '' ">
+              <div class="title d-flex flex-column flex-grow-1">
+                <h4 class="maintitle">{{lookupList.practiceInfo.practiceName}}</h4>
+                <h6 class="subtitle font-weight-500">{{printLocationName}}</h6>
+                <h6 class="subtitle">{{printLocationAddress}}, {{printLocationCityStateZip}}</h6>
+                <h6 class="subtitle d-flex justify-content-between">
+                  <span>
+                    Phone:&nbsp; {{printLocationPhone | phonePipe}}&nbsp;&nbsp;|&nbsp;&nbsp;
+                    Fax:&nbsp;{{printLocationFax | phonePipe}}
+                  </span>
+                  <small class="mt-auto text-dark">Print Date: {{printDateTime}}</small>
+                </h6>
+              </div>
+            </div>
+
+
+            <!--
+          <div class="header border-bottom-green">
+            <img class="logo" src="{{lookupList.practiceInfo.logo}}" width="175"
+              (error)="$event.target.style.display = 'none';"
+              *ngIf="lookupList.practiceInfo.logo!=undefined && lookupList.practiceInfo.logo != '' ">
+            <div class="title">
+              <h4 class="maintitle">{{lookupList.practiceInfo.practiceName}}</h4>
+              <h6 class="subtitle">{{printLocationName}}</h6>
+              <h6 class="subtitle">{{printLocationAddress}}</h6>
+              <h6 class="subtitle">Phone: &nbsp; {{printLocationPhone | phonePipe}}&nbsp;&nbsp;&nbsp;&nbsp;
+                Fax:&nbsp;{{printLocationFax | phonePipe}}</h6>
+            </div>
+          </div>
+      -->
+            <div class="content">
+              <div class="content-header border-bottom-green col-12 d-flex justify-content-between">
+                <div class="content-header-title">
+                  <small>
+                    <strong>DOS: </strong>{{printDOS}}</small>
+                </div>
+                <div class="content-header-title d-flex flex-grow-1 justify-content-center">PAYMENT RECEIPT</div>
+                <div class="content-header-title">
+                  <small>
+                    <strong>Receipt No: </strong>{{printReceiptNo}}</small>
+                </div>
+              </div>
+
+
+              <table class="table sm layout-fixed light-blue-striped-row-column-border mt-4 w-100">
+                <tbody>
+                  <tr>
+                    <td class="w-50">
+                      <div class="form-group mb-0">
+                        <label class="report-form-group-title">Patient</label>
+                        <label class="report-form-group-value font-weight-bold">{{patientName | uppercase}}</label>
+                      </div>
+
+                    </td>
+                    <td class="w-14">
+                      <div class="form-group mb-0">
+                        <label class="report-form-group-title">PID</label>
+                        <label class="report-form-group-value">{{patPID}}</label>
+                      </div>
+                    </td>
+                    <td class="w-12">
+                      <div class="form-group mb-0">
+                        <label class="report-form-group-title">Date of Birth</label>
+                        <label class="report-form-group-value">{{patDOB}}</label>
+                      </div>
+                    </td>
+                    <td class="w-10">
+                      <div class="form-group mb-0">
+                        <label class="report-form-group-title">Gender</label>
+                        <label class="report-form-group-value">{{patGender | uppercase}}</label>
+                      </div>
+                    </td>
+
+                    <td class="w-14">
+                      <div class="form-group mb-0">
+                        <label class="report-form-group-title">Contact Number</label>
+                        <label class="report-form-group-value">{{patContactNo | phonePipe }}</label>
+                      </div>
+                    </td>
+
+
+
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="form-group mb-0">
+                        <label class="report-form-group-title">Address</label>
+                        <label class="report-form-group-value">{{ patAddress | uppercase}}</label>
+                      </div>
+
+                    </td>
+                    <td colspan="4">
+                      <div class="form-group mb-0">
+                        <label class="report-form-group-title">Primary Insurance</label>
+                        <label class="report-form-group-value">{{ primaryInsurance | uppercase}}</label>
+                      </div>
+
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+              <div class="form-row form-dashboard mt-4">
+
+                <div class="col-6">
+                  <table class="table sm layout-fixed light-blue-striped-row-column-border">
+                    <thead>
+                      <tr>
+                        <th>Payment Detail</th>
+                        <th class="text-center" style="width: 110px;">Today's Payment</th>
+                        <th class="text-center" style="width: 115px;" *ngIf="printTotalAdvanceAdjusted > 0">Advance
+                          Adjusted
+                        </th>
+                        <th class="text-center" style="width: 85px;" *ngIf="printTotalWriteOff > 0">Write Off</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="align-middle">Co Payment</td>
+                        <td class="align-middle text-right">{{printCopayPaid | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="align-middle text-right" *ngIf="printTotalAdvanceAdjusted > 0">
+                          {{printCopayAdjusted | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="align-middle text-right" *ngIf="printTotalWriteOff > 0">
+                          {{printCopayWriteOff | currency:'USD':'symbol-narrow'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="align-middle">Self Pay</td>
+                        <td class="text-right align-middle">{{printSelfpayPaid | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="printTotalAdvanceAdjusted > 0">
+                          {{printSelfpayAdjusted | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="printTotalWriteOff > 0">
+                          {{printSelfpayWriteOff | currency:'USD':'symbol-narrow'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="align-middle">Previous Balance</td>
+                        <td class="text-right align-middle ">{{printPrevBalPaid | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="printTotalAdvanceAdjusted > 0">
+                          {{printPrevBalAdjusted | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="printTotalWriteOff > 0">
+                          {{printPrevBalWriteOff | currency:'USD':'symbol-narrow'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="align-middle">Other Payment</td>
+                        <td class="text-right align-middle ">{{printOtherPaid | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="printTotalAdvanceAdjusted > 0">
+                          {{printOtherAdjusted | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="printTotalWriteOff > 0"></td>
+                      </tr>
+                      <tr>
+                        <td class="align-middle">Advance Payment</td>
+                        <td class="text-right align-middle">{{printAdvancePaid | currency:'USD':'symbol-narrow'}}</td>
+                        <td class="text-right align-middle" *ngIf="printTotalAdvanceAdjusted > 0"></td>
+                        <td class="text-right align-middle" *ngIf="printTotalWriteOff > 0"></td>
+                      </tr>
+
+                    </tbody>
+                    <thead>
+                      <tr>
+                        <th>Total</th>
+                        <th class="text-right">{{printTotalPaidToday | currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right" *ngIf="printTotalAdvanceAdjusted > 0">
+                          {{printTotalAdvanceAdjusted | currency:'USD':'symbol-narrow'}}</th>
+                        <th class="text-right" *ngIf="printTotalWriteOff > 0">
+                          {{printTotalWriteOff | currency:'USD':'symbol-narrow'}}</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+                <div class="col-6">
+                  <table class="table sm layout-fixed light-blue-striped-row-column-border">
+                    <thead>
+                      <tr>
+                        <th colspan="2">Payment Mode : {{printPaymentMehtod}}</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <ng-template id="ccPaymentPrint" [ngIf]="printPaymentMehtod=='CHECK'">
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Check Number</td>
+                          <td class="align-middle">{{printCheckNo}}</td>
+                        </tr>
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Check Date</td>
+                          <td class="align-middle ">{{printCheckDate}}</td>
+                        </tr>
+                      </ng-template>
+                      <ng-template id="ccPaymentPrint" [ngIf]="printPaymentMehtod=='CREDIT CARD'">
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Card Type</td>
+                          <td class="align-middle">{{printCCType}}</td>
+                        </tr>
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Card No</td>
+                          <td class="align-middle ">{{printCCNo}}</td>
+                        </tr>
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Authorization Code</td>
+                          <td class="align-middle ">{{printCCAuthCode}}</td>
+                        </tr>
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Amount Charged</td>
+                          <td class="align-middle ">{{printCCCharges | currency:'USD':'symbol-narrow'}}</td>
+                        </tr>
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Transaction ID</td>
+                          <td class="align-middle ">{{printCCTranId}}</td>
+                        </tr>
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Transaction DateTime</td>
+                          <td class="align-middle ">{{printCCTransTimeStamp}}</td>
+                        </tr>
+                        <tr>
+                          <td class="align-middle" style="width: 120px;">Status</td>
+                          <td class="align-middle ">{{printCCStatus}}</td>
+                        </tr>
+                      </ng-template>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+
+              <div class="form-row form-dashboard col-12 mt-2 p-0">
+
+                <div class="col-12">
+                  <h4 class="group-header">Comments</h4>
+                  <div class="dashboard-content  m-1 p-1">
+                    <pre>{{printComments}}</pre>
+                  </div>
+                </div>
+
+              </div>
+
+
+              <div class="footer-credential mt-3 pr-2">
+                <p>{{printEnteredBy}} - {{printDateTimeModified}}</p>
+              </div>
+
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

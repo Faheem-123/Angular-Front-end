@@ -1,0 +1,309 @@
+<form [formGroup]="insForm" (ngSubmit)="onSubmit(insForm.value)" (keydown.enter)="$event.preventDefault()"
+  (keydown.esc)="activeModal.dismiss('Cross click')">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Add/Edit Insurance</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading" class="dashboard-content mt-0">
+
+
+      <!--
+      <div class="form-row form-dashboard">
+        <div class="col p-0 m-0">
+          <h4 class="form-edit-sub-heading m-0 p-0 pt-1">Insurance              
+        </div>
+      </div>
+    -->
+
+      <div class="form-row form-dashboard border-bottom pb-2">
+        <div class="col col-12 p-0">
+          <div class="pl-2 pr-2">
+            <div class="form-row form-dashboard">
+              <div class="form-flex col py-0">
+
+
+                <div class="form-group has-search flex-grow-1">
+                  <span class="fa fa-search form-control-feedback"></span>
+                  <input id="txtInsuranceNameSearch" class="form-control search-highlight flex-grow-3" type="text"
+                    autoFocus placeholder="Search Insurance" (focusout)="onInsuranceSearchFocusOut()"
+                    #txtInsuranceNameSearch autocomplete="off" (keydown.enter)="onInsuranceSearchEnter()"
+                    (keyup.arrowdown)="shiftFocusToInsSearch()" (keydown.esc)="closeInsuranceSearch()"
+                    (input)="onInsuranceSearchInput()">
+
+                  <inline-insurance-search id="inlineInsPopUpInsSearch" #inlineInsPopUpInsSearch
+                    *ngIf="showInsuranceSearch" searchValue="{{txtInsuranceNameSearch.value}}"
+                    (onSelect)="addInsurance($event)" (onClose)="closeInsuranceSearch($event)">
+                  </inline-insurance-search>
+
+                </div>
+
+              </div>
+
+
+              <!--
+                  <div class="form-group col pt-2">
+                
+
+                <div class="input-icon d-flex flex-grow-3">
+
+                  <input id="txtInsuranceNameSearch" class="form-control search-highlight flex-grow-3" type="text"
+                    placeholder="Search Insurance" (keydown)="onInsuranceSearchKeydown($event)" (focusout)="onInsuranceSearchFocusOut()"
+                    #txtInsuranceNameSearch autocomplete="off">
+                  <div class="icon">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </div>
+                  <input type="text" class="form-control" id="txtInsuranceID" hidden formControlName="txtInsuranceID">
+                  <inline-insurance-search *ngIf="showInsuranceSearch" searchValue="{{txtInsuranceNameSearch.value}}"
+                    (onSelect)="addInsurance($event)" (onClose)="closeInsuranceSearch($event)"></inline-insurance-search>
+                </div>
+             
+            </div>
+             -->
+            </div>
+            <div class="form-row form-dashboard">
+              <div class="form-view col pt-1 pl-2">
+                <div class="title-normal font-weight-bold">{{insuranceName| uppercase}}</div>
+              </div>
+            </div>
+            <div class="form-row form-dashboard">
+              <div class="form-view col">
+                <div class="value">{{insuranceAddress| uppercase}}</div>
+              </div>
+            </div>
+            <div class="form-row form-dashboard ">
+              <div class="form-view col">
+                <div class="value">{{insurancePhone | phonePipe}}</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-dashboard">
+        <div class="col-6 p-0">
+          <div class="pl-2 pr-2">
+            <div class="form-group">
+              <label for="txtPolicyNo" class="col-form-label">Policy No</label>
+              <input type="text" class="form-control" id="txtPolicyNo" formControlName="txtPolicyNo">
+            </div>
+          </div>
+        </div>
+        <div class="col-6 p-0">
+          <div class="pl-2 pr-2">
+            <div class="form-group">
+              <label for="txtGroupNo" class="col-form-label">Group No</label>
+              <input type="text" class="form-control" id="txtGroupNo" formControlName="txtGroupNo">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-dashboard border-bottom pt-2 pb-2">
+        <div class="col-6 p-0">
+          <div class="pl-2 pr-2">
+            <div class="form-group ">
+              <label for="txtSubscriber" class="col-form-label">Subscriber</label>
+              <div class="input-icon d-flex flex-grow-3">
+
+                <input id="txtSubscriber" class="form-control flex-grow-3" type="text" placeholder="Search Subscriber"
+                  (keydown)="onSubscriberSearchKeydown($event)" (focusout)="onSubscriberFocusOut()"
+                  formControlName="txtSubscriber" autocomplete="off" #txtSubscriber>
+                <div class="icon">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                </div>
+                <inline-guarantor-search *ngIf="showSubscriberSearch" searchValue="{{txtSubscriber.value}}"
+                  (onSelect)="addSubscriber($event)" (onClose)="closeSubscriberSearch($event)">
+                </inline-guarantor-search>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 p-0">
+          <div class="pl-2 pr-2">
+            <div class="form-group">
+              <label for="ddSubscriberRelationship" class="col-form-label">Relationship</label>
+              <select class="form-control" id="ddSubscriberRelationship" formControlName="ddSubscriberRelationship">
+                <option *ngFor="let rel of this.lookupList.lstSubsciberRelationship" [value]="rel">
+                  {{rel}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-row form-dashboard">
+        <div class="col-6 p-0">
+          <div class="pl-2 pr-2">
+            <div class="form-group">
+              <label for="dpStartDate" class="col-form-label">Start Date</label>
+
+              <div class="input-group ">
+                <input id="dpStartDate" class="form-control date-control required" placeholder="mm/dd/yyyy"
+                  name="dpStartDate" [navigation]="navigation" formControlName="dpStartDate" ngbDatepicker
+                  #dpStartDate="ngbDatepicker" (blur)="onDateFocusOut($event.currentTarget.value,'dpStartDate')"
+                  [ngClass]="{'is-invalid': (insForm.controls.dpStartDate.errors?.invalidDate)}">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dpStartDate.toggle()" type="button">
+                  </button>
+                </span>
+
+              </div>
+
+              <!--
+              <div class="input-group">
+                <input id="dpStartDate" class="form-control" placeholder="mm/dd/yyyy" name="dpStartDate" ngbDatepicker
+                  #dpStartDate="ngbDatepicker" formControlName="dpStartDate">
+                <span class="input-group-btn">
+                  <button class="btn btn-outline-primary" (click)="dpStartDate.toggle()" type="button">
+                    <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                  </button>
+                </span>
+              </div>
+              -->
+            </div>
+          </div>
+        </div>
+        <div class="col-6 p-0">
+          <div class="pl-2 pr-2">
+            <div class="form-group">
+              <label for="dpEndDate" class="col-form-label">End
+                Date</label>
+
+              <div class="input-group ">
+                <input id="dpEndDate" class="form-control date-control required" placeholder="mm/dd/yyyy"
+                  name="dpEndDate" [navigation]="navigation" formControlName="dpEndDate" ngbDatepicker
+                  #dpEndDate="ngbDatepicker" (blur)="onDateFocusOut($event.currentTarget.value,'dpEndDate')"
+                  [ngClass]="{'is-invalid': (insForm.controls.dpEndDate.errors?.invalidDate)}">
+
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dpEndDate.toggle()" type="button">
+                  </button>
+                </span>
+
+              </div>
+              <!--
+
+              <div class="input-group">
+
+                <input id="dpEndDate" class="form-control" placeholder="mm/dd/yyyy" name="dpEndDate" ngbDatepicker
+                  #dpEndDate="ngbDatepicker" formControlName="dpEndDate">
+
+                <span class="input-group-btn">
+                  <button class="btn btn-outline-primary" (click)="dpEndDate.toggle()" type="button">
+                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                  </button>
+                </span>
+
+              </div>
+              -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard">
+        <div class="col-6 p-0">
+          <div class="pl-2 pr-2 col-6">
+            <div class="form-group">
+              <label for="txtCopy" class="col-form-label">Copay</label>
+              <!--<input type="text" class="form-control text-right" id="txtCopy" formControlName="txtCopy">-->
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input type="text" class="form-control text-right" id="txtCopy" formControlName="txtCopy"
+                  autocomplete="off" (blur)="formateCurrencyInputs('txtCopy')">
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-6 p-0">
+          <div class="pl-2 pr-2">
+            <div class="form-group">
+              <label for="txtPCP" class="col-form-label">PCP</label>
+              <input type="text" class="form-control" id="txtPCP" formControlName="txtPCP">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard">
+        <div class="col-12 p-0 m-0 pt-2">
+          <h4 class="form-edit-sub-heading m-0 p-0 pt-1">Workers' Compensation</h4>
+        </div>
+
+        <div class="form-row form-dashboard col col-12">
+          <div class="col-6 p-0">
+            <div class="pl-2 pr-2">
+              <div class="form-group col p-0">
+                <label for="txtWorkerCompName" class="col-form-label">Name</label>
+                <input type="text" class="form-control" id="txtWorkerCompName" formControlName="txtWorkerCompName">
+              </div>
+            </div>
+          </div>
+          <div class="col-6 p-0">
+            <div class="pl-2 pr-2">
+              <div class="form-group col p-0">
+                <label for="txtWorkerCompAddress" class="col-form-label">Address</label>
+                <input type="text" class="form-control" id="txtWorkerCompAddress"
+                  formControlName="txtWorkerCompAddress">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard col col-12">
+          <div class="col-6 p-0">
+            <div class="pl-2 pr-2">
+              <div class="form-row form-dashboard ">
+                <div class="form-group col-8">
+                  <label for="txtWCZipCode" class="col-form-label">Zip</label>
+                  <input type="text" class="form-control" id="txtWCZipCode"
+                    (focusout)="WCzipFocusOut($event.target.value)" (change)="WCzipChanged()"
+                    formControlName="txtWCZipCode">
+                </div>
+                <div class="form-group  col-4">
+                  <label for="txtWCStateDisplay" class="col-form-label">State</label>
+                  <input type="text" class="form-control" id="txtWCStateDisplay" disabled value="{{WCstate}}">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 p-0">
+            <div class="pl-2 pr-2">
+              <div class="form-group col p-0">
+                <label for="ddWorkerCompCity" class="col-form-label">City</label>
+                <select class="form-control" id="ddWorkerCompCity" formControlName="ddWorkerCompCity">
+                  <option *ngFor="let obj of lstZipCityState">
+                    {{obj.city}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+  </div>
+  <div class="modal-footer custom">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+    <button style="width: 80px;" class="btn btn-success btn-sm" [disabled]="!insForm.valid" type="submit">Add</button>
+  </div>
+</form>

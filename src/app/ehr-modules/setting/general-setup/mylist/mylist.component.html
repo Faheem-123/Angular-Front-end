@@ -1,0 +1,27 @@
+
+<div class="d-flex flex-column flex-3">
+  <div class="border-content-box light-sky-blue border-0 rounded-custom d-flex flex-column flex-3">
+    <ngb-tabset  [destroyOnHide]="false"
+      class="inner-sub-horizental-tab tab-h30 border border-top-0 tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden rounded-custom">
+      <ngb-tab>
+        <ng-template ngbTabTitle><span>ICD</span></ng-template>
+        <ng-template ngbTabContent>
+          <div class="d-flex flex-column bg-white p-1 flex-grow-1 max-height-100">
+            <mylist-icd class="d-flex flex-column flex-grow-1 overflow-height" ></mylist-icd>
+          </div>
+        </ng-template>
+      </ngb-tab>
+  
+      <ngb-tab>
+        <ng-template ngbTabTitle><span>CPT</span></ng-template>
+        <ng-template ngbTabContent>
+          <div class="d-flex flex-column bg-white p-1 flex-grow-1 max-height-100">
+            <mylist-cpt class="d-flex flex-column flex-grow-1 overflow-height" ></mylist-cpt>
+          </div>
+        </ng-template>
+      </ngb-tab>
+  
+      
+    </ngb-tabset>
+  </div>
+</div>

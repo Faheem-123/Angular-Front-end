@@ -1,0 +1,23 @@
+export class ORMSaveGuarantor{
+        guarantor_id:string;
+		practice_id:string;
+		first_name:string;
+		last_name:string;
+		mname:string;
+		gender:string;
+		dob:string;
+		ssn:string;
+		address:string;
+		zip:string;
+		city:string;
+		state:string;
+		phone:string;
+		email:string;
+		deleted:boolean;
+		created_user:string;
+		modified_user:string;
+		client_date_created:string;
+		client_date_modified:string;
+		date_created:string;
+		date_modified:string;
+}

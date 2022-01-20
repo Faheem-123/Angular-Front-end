@@ -1,0 +1,322 @@
+<div *ngIf="isLoading" class="div-loader"></div>
+
+<div class="pl-1 d-flex flex-column flex-grow-1 " *ngIf="!showInventoryUsage">
+
+  <div class="d-flex flex-shrink-0">
+    <div class="w-100 d-flex flex-column">
+      <div class="border-content-box rounded-3 bg-white overflow-auto flex-grow-1 mb-2">
+        <div class="px6-py3 flex-grow-1">
+
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental row zero flex-grow-1">
+              <label class="col-form-label module-view-headding px-1" for="ddOffice">Clinic (Code | Name)</label>
+              <select class="col form-control px-1 required" id="ddOffice"
+                (change)="clinicChanged($event.currentTarget.value)">
+                <option *ngIf="lookupList.lstImmRegClinics !=undefined && lookupList.lstImmRegClinics>1">Select
+                  Clinic
+                </option>
+                <option *ngFor="let clinic of lookupList.lstImmRegClinics" [value]="clinic.clinic_id">
+                  {{clinic.clinic_code.padEnd(15, '&#160;')}}|&nbsp;&nbsp;{{clinic.clinic_name}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group horizental row zero ">
+              <button type="button" class="btn btn-sm btn-success" (click)="onAddEditInventory(undefined,'add')">
+                <i class="far fa-plus-square pr-1"></i>Add Inventory</button>
+            </div>
+          </div>
+
+
+
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-grow-1 overflow-height">
+    <div class="flex-1 d-flex flex-column ">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          Immunization List
+        </div>
+
+
+
+        <div class="flex-grow-1 overflow-auto max-height-100">
+          <table class="table sm layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <th class="width-40">CVX</th>
+                <th scope="col" sortable="cvx_code" type="alpha" (sort)="onSort($event)">Trade Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="table-filter-row" id="filterRow">
+                <td></td>
+                <td>
+                  <div class="form-group m-0">
+                    <div class="icon-addon addon-sm">
+                      <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="trade_name"
+                        (input)="onFilter($event.target.value,'trade_name')">
+                      <label class="fa fas fa-filter"></label>
+                    </div>
+                  </div>
+                </td>
+
+              </tr>
+
+              <tr *ngFor="let vaccine of lstVaccine" [ngClass]="{'active' : (vaccine.s_no === selectedVaccineId)}"
+                (click)="vaccineSelectionChanged(vaccine)">
+                <td>{{vaccine.cvx_code}}</td>
+                <td>
+                  <ngb-highlight [result]="vaccine.trade_name" [term]="getNGHighlightTerm('trade_name')">
+                  </ngb-highlight>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="flex-3 d-flex flex-column">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 ml-6">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          Inventory Details
+          <div class="flex-grow-1 ml-2 pl-2 border-left">
+            <span *ngIf="selectedTrdeName!=undefined"> {{selectedTrdeName}}</span>
+          </div>
+        </div>
+
+
+
+        <div class="flex-grow-1 overflow-auto max-height-100">
+          <table class="table sm layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <!--
+                  <th>Trade Name</th>
+                  -->
+                <th class="width-100" sortable="lot_number" type="alpha" (sort)="onSortDetail($event)">Lot Number</th>
+                <th class="width-100" sortable="expiry_date" type="datetime" format="MM/DD/YYYY"
+                  (sort)="onSortDetail($event)">Expiry Date</th>
+                <th class="width-80" sortable="inventory" type="numeric" (sort)="onSortDetail($event)">Inv. In Hand
+                </th>
+
+                <th class="width-100" sortable="inventory" type="alpha" (sort)="onSortDetail($event)">NDC</th>
+                <th sortable="manufacturer_name" type="alpha" (sort)="onSortDetail($event)">Manufacturer</th>
+                <th class="width-50">&nbsp;</th>
+                <th class="width-30">&nbsp;</th>
+                <th class="width-30">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let inventory of lstVaccineInventory">
+                <!-- 
+                  <td title="{{inventory.trade_name}}">{{inventory.trade_name}}</td>
+                -->
+                <td title="{{inventory.lot_number}}">{{inventory.lot_number}}</td>
+                <td title="{{inventory.expiry_date}}">{{inventory.expiry_date}}</td>
+                <td class="text-center" title="{{inventory.inventory}}">{{inventory.inventory}}</td>
+                <td title="{{inventory.ndc}}">{{inventory.ndc}}</td>
+                <td title="{{inventory.manufacturer_name}}">{{inventory.manufacturer_name}}</td>
+                <td><button type="button" class="link-btn"
+                    (click)="getImmunizationInventoryUsage(inventory)">Usage</button>
+                  <!--  <a class="p-0 text-primary cursor-default">Usage</a>-->
+                </td>
+                <td><button type="button" class="link-btn" (click)="onAddEditInventory(inventory,'edit')"><i
+                      class="far fa-edit fz-13"></i></button>
+                  <!-- <a class="p-0 text-primary cursor-default"><i class="far fa-edit fa-md"></i></a>-->
+                </td>
+                <td>
+                  <button type="button" class="link-btn btn-delete" (click)="onDelete(inventory)"><i
+                      class="far fa-trash-alt fz-13"></i></button>
+                  <!--   <a class="p-0 btn-delete"><i class="far fa-trash-alt fa-md"></i></a>-->
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+<div class="p-8 d-flex flex-column flex-grow-1 " *ngIf="showInventoryUsage">
+
+  <!--
+<div class="border-content-box light-gray-bg border-top-0 p-6 d-flex flex-column flex-grow-1"
+  *ngIf="showInventoryUsage">
+  -->
+
+
+  <div class="border-content-box rounded-3  bg-white d-flex flex-column flex-1 ">
+    <div class="rounded-box-title-bar light-title-bar flex-shrink-0 p-0">
+      <button class="left-back-btn h-25 mr-2" (click)="navigateBackToInventory()">
+        <i class="fas fa-arrow-left mr-2"></i><span>Back to Inventory</span>
+      </button>
+      Inventory Usage Details
+    </div>
+
+
+
+    <!--
+
+    <div class="light-title-bar rounded-top h-25 pr-2 d-flex align-items-center flex-shrink-0">
+      <button class="left-back-btn h-25" (click)="navigateBackToInventory()">
+        <i class="fas fa-arrow-left mr-2"></i><span>Back to Inventory</span>
+      </button>
+      <div class="fz-13 font-weight-500 pl-2">Inventory Usage Details</div>
+    </div>
+-->
+    <div class="p-8 d-flex flex-column flex-grow-1 light-sky-blue">
+
+
+      <div class="border rounded-3  bg-white flex-shrink-0 p-2 ">
+        <div class="form-row form-dashboard pb-1">
+          <div class="form-group col-4">
+            <label class="col-form-label module-view-headding">Vaccine (CVX Code | Trade Name)</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text width-45">{{selectedInventoryInfo.cvx_code}}</span>
+              </div>
+              <input type="text" class="form-control" disabled title="{{selectedInventoryInfo.trade_name}}"
+                value="{{selectedInventoryInfo.trade_name}}">
+            </div>
+          </div>
+
+          <div class="form-group  col-8">
+            <label class="col-form-label module-view-headding">Trade Description</label>
+            <input type="text" class="form-control" title="{{selectedInventoryInfo.trade_description}}"
+              value="{{selectedInventoryInfo.trade_description}}" disabled>
+
+          </div>
+
+
+
+        </div>
+        <div class="form-row form-dashboard pb-1">
+
+          <div class="form-group col-3">
+            <label class="col-form-label module-view-headding">Manufacturer (MVX Code | Name)</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text width-45">{{selectedInventoryInfo.mvx_code}}</span>
+              </div>
+              <input type="text" class="form-control" disabled title="{{selectedInventoryInfo.manufacturer_name}}"
+                value="{{selectedInventoryInfo.manufacturer_name}}">
+            </div>
+          </div>
+
+          <div class="form-group  col-2">
+
+            <label class="col-form-label module-view-headding" for="txtNDC">NDC Code</label>
+
+
+            <!-- <label class="col-form-label module-view-headding required" for="txtNDC">NDC Code</label> -->
+            <input type="text" name="txtNDC" class="form-control" title="{{selectedInventoryInfo.ndc}}"
+              value="{{selectedInventoryInfo.ndc}}" disabled>
+          </div>
+
+
+          <div class="form-group  col-2">
+            <label class="col-form-label module-view-headding" for="txtlotNumber">Lot Number</label>
+
+
+            <input type="text" class="form-control" disabled title="{{selectedInventoryInfo.lot_number}}"
+              value="{{selectedInventoryInfo.lot_number}}">
+
+          </div>
+
+
+          <div class="form-group  col-2">
+            <label class="col-form-label module-view-headding " for="dpExpiryDate">Expiry Date</label>
+            <input type="text" class="form-control" disabled title="{{selectedInventoryInfo.expiry_date}}"
+              value="{{selectedInventoryInfo.expiry_date}}">
+          </div>
+
+          <div class="form-group  col-2">
+            <label class="col-form-label module-view-headding" for="ddStatus">Status</label>
+            <input type="text" class="form-control" disabled title="{{selectedInventoryInfo.inventory_status}}"
+              value="{{selectedInventoryInfo.inventory_status}}">
+          </div>
+
+          <div class="form-group  col-1">
+            <label class="col-form-label module-view-headding" for="txtInventory">Inventory</label>
+            <input type="text" class="form-control" disabled title="{{selectedInventoryInfo.inventory}}"
+              value="{{selectedInventoryInfo.inventory}}">
+          </div>
+
+
+        </div>
+      </div>
+
+
+      <div class="d-flex flex-grow-1 overflow-height mt-2">
+        <div class="border rounded-3  bg-white d-flex flex-column flex-grow-1 max-height-100">
+          <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+            <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Inventory Usage Detail</h4>
+            <div class="d-flex align-items-center">
+              <div class="px-2 py-0 fz-12">
+                <span class="font-weight-bold">Total Usage:</span>
+                <span *ngIf="lstVaccineInventoryUsage!=undefined && lstVaccineInventoryUsage.length>0">
+                  {{lstVaccineInventoryUsage.length}}</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="no-content p-2"
+            *ngIf="!isLoadingUsage && (lstVaccineInventoryUsage==undefined || lstVaccineInventoryUsage.length==0)">
+            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Vaccine Usage not found.
+          </div>
+
+          <div class="overflow-auto flex-grow-1"
+            *ngIf="!isLoadingUsage && lstVaccineInventoryUsage!=undefined && lstVaccineInventoryUsage.length>0">
+
+
+            <table class="table sm layout-fixed light-striped-border">
+              <thead>
+                <tr>
+                  <th class="width-100">PID</th>
+                  <th class="width-200">Patient Name</th>
+                  <th class="width-100">DOB</th>
+                  <th class="width-100">Vaccine Date</th>
+                  <th>Vaccine Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let usage of lstVaccineInventoryUsage">
+                  <td>{{usage.pid}}</td>
+                  <td>
+                    <button type="button" class="link-btn d-flex align-items-center" (click)="openPatient(usage)">
+                      {{usage.patient_name}}
+                    </button>
+                  </td>
+                  <td>{{usage.dob}}</td>
+                  <td>{{usage.date_administered}}</td>
+                  <td>{{usage.immunization_name}}</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

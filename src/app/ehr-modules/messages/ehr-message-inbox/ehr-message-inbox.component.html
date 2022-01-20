@@ -1,0 +1,98 @@
+<ul class="nav message-bar pl-3 flex-shrink-0 align-items-center justify-content-between">
+  <div class="fz-15 text-dark-blue-ihc font-weight-500">{{message_type}}</div>
+  <div class="d-flex" *ngIf="!isNewMessage">
+    <a *ngIf="this.lookupList.UserRights.message_send" class="nav-link"
+      (click)="replySelectedMessage('reply')">Reply</a>
+    <a *ngIf="this.lookupList.UserRights.message_send" class="nav-link" (click)="replySelectedMessage('replyall')">Reply
+      all</a>
+    <a *ngIf="this.lookupList.UserRights.message_delete" class="nav-link"
+      (click)="deleteSelectedMessage('delete')">Delete</a>
+    <a *ngIf="this.lookupList.UserRights.message_send" class="nav-link"
+      (click)="archiveSelectedMessage()">Archive</a>
+    <a class="nav-link" (click)="getSendReceive()">Send/Receive</a>
+  </div>
+</ul>
+
+<div class="messages-list d-flex flex-grow-1 overflow-height position-relative">
+  <ul class="nav nav-tabs justify-content-start">
+
+
+    <div class="form-group m-0" *ngIf="message_type=='Inbox'">
+      <div class="icon-addon addon-sm">
+        <input type="text" class="form-control table-td-input w-100 search-highlight h-25 rounded-0 border border-bottom-only fz-12"  
+        autocomplete="off" name="organization_name" (input)="onFilter($event.target.value)">
+        <label class="fa fas fa-filter"></label>
+      </div>
+    </div>
+
+
+    <li class="nav-item">
+      <a class="nav-link " *ngFor="let msg of lstMessagelist; let i = index"
+        [ngClass]="{'active' : (msg.message_id === message_id)}" (click)="onMessageClick(msg,i)">
+        <div class="message" [ngClass]="{
+            'new': (msg.readed==false)
+          }">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="title">{{msg.created_user}}</div>
+            <div class="date">{{msg.client_date_modified}}</div>
+          </div>
+          <div class="subject">{{msg.mess_subject}}</div>
+          
+        </div>
+      </a>
+    </li>
+  </ul>
+  <ehr-message-compose *ngIf="isNewMessage" [patient_name]="patient_name" [patient_id]="patient_id" (onCloseNewMessage)="onCloseNewMessage($event)" [objReply]="replyMsg"
+    class="d-flex flex-column flex-grow-1 bg-white"></ehr-message-compose>
+
+  <div class="tab-content bg-white" *ngIf="!isNewMessage">
+    <div class="message-info">
+      <div class="form-view row zero">
+        <div class="title font-weight-400 col-1 text-left">From:</div>
+        <div class="value font-weight-400 col-11 pl-2">{{msg_detail_from}}</div>
+      </div>
+
+      <div class="form-view row zero">
+        <div class="title font-weight-400 col-1 text-left">Sent:</div>
+        <div class="value font-weight-400 col-11 pl-2">{{msg_detail_date}}</div>
+      </div>
+
+      <div class="form-view row zero">
+        <div class="title font-weight-400 col-1 text-left">To:</div>
+        <div class="value font-weight-400 col-11 pl-2">{{msg_detail_to}}</div>
+      </div>
+
+      <div class="form-view row zero">
+        <div class="title font-weight-400 col-1 text-left">Cc:</div>
+        <div class="value font-weight-400 col-11 pl-2">{{msg_detail_cc}}</div>
+      </div>
+
+      <div class="form-view row zero">
+        <div class="title font-weight-400 col-1 text-left">Subject:</div>
+        <div class="value font-weight-400 col-11 pl-2">{{msg_detail_subject}}</div>
+      </div>
+      <div class="form-view row zero justify-content-end" *ngIf="(module_id!='' && module_id!='0')">
+          
+          <button class="btn btn-link p-0 btn-sm m-0 pr-2" (click)="onOpenPatientClick(module_id)">[ Open Patient ]</button>
+      </div>        
+    
+  </div>
+
+    <div class="message-detail flex-grow-1 p-3 overflow-auto">
+      <!-- <p>{{msg_detail_body}}</p> -->
+      <!-- <form [formGroup]="frmMessgeHeader" class="d-flex flex-column flex-grow-1"> -->
+      <quill-editor id="messageRichEditorView" #messageRichEditorView [modules]="{toolbar: false}" [readOnly]="true"
+        [required]="true" [formControl]="messageTextView">
+      </quill-editor>
+      <!-- </form> -->
+    </div>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>

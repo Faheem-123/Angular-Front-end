@@ -1,0 +1,121 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Vaccine Information Statements (VIS)</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Close')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body custom ">
+
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div class="px6-py3 flex-grow-1 overflow-auto" *ngIf="!isLoading">
+
+    <div class="row p8 mb-1">
+      <div class="col p-0">
+        <div class="info-box-stipes rounded-custom flex-grow-1">
+
+          <div class="px-2 py-1">
+
+            <div class="form-row form-dashboard">
+
+              <div class="form-group  col-12">
+                <label class="col-form-label module-view-headding">Vaccine (CVX Code | Vaccine)</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text width-45">{{cvxCode}}</span>
+                  </div>
+                  <input readonly type="text" class="form-control " disabled value="{{selectedImmunizationDisplay}}">
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row p8 mb-1">
+      <div class="col p-0">
+        <div class="border rounded bg-white">
+          <div class="rounded-box-title-bar">
+            VIS
+          </div>
+          <div class="no-content p-2" *ngIf="!isLoading && (lstVISUnique==undefined || lstVISUnique.length==0)">
+            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Vaccine Information Statement(VIS) found for
+            selected CVX.
+          </div>
+
+          <div class="overflow-auto" style="overflow-x:auto;"
+            *ngIf="!isLoading && (lstVISUnique!=undefined && lstVISUnique.length>0)">
+
+
+            <table class="table sm layout-fixed light-striped-border">
+              <tbody>
+                <tr *ngFor="let visGroup of lstVISUnique">
+                  <td class="width-30">
+                    <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                      <input class="custom-control-input" type="checkbox" id="chk_{{visGroup.vis_gdti_code}}"
+                        (change)="visCheckChanged($event)">
+                      <label class="custom-control-label" for="chk_{{visGroup.vis_gdti_code}}"></label>
+                    </div>
+                    <!--<input type="checkbox" (change)="visCheckChanged($event)" id="chk_{{visGroup.vis_gdti_code}}">-->
+                  </td>
+                  <td class="px-1">
+                    <select class="table-td-select pl-0 pr-0 w-100" id="ddVIS_{{visGroup.vis_gdti_code}}"
+                      (change)="visSelecttionchange($event.target.value,visGroup.vis_gdti_code)">
+                      <option *ngFor="let vis of lstVIS | listFilter : 'vis_gdti_code': visGroup.vis_gdti_code"
+                        [value]="vis.vis_encoded_text">
+                        {{vis.vis_name}}&nbsp;&nbsp;(Edition:{{vis.vis_date}})</option>
+                    </select>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row p8 mb-1">
+      <div class="col p-0">
+        <div class="border rounded bg-white">
+          <div class="rounded-box-title-bar">
+            Selected Vaccine Information Statement(VIS)
+          </div>
+          <div class="no-content p-2" *ngIf="!isLoading && (lstSelectedVIS==undefined || lstSelectedVIS.length==0)">
+            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>NO Vaccine Information Statement(VIS) is
+            selected.
+          </div>
+
+          <div class="overflow-auto" style="overflow-x:auto;"
+            *ngIf="!isLoading && (lstSelectedVIS!=undefined && lstSelectedVIS.length>0)">
+            <table class="table sm layout-fixed light-striped-border">
+              <tbody>
+                <tr *ngFor="let vis of lstSelectedVIS">
+                  <td>
+                    {{vis.vis_name}}&nbsp;&nbsp;(Edition:{{vis.vis_date}})
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="modal-footer custom">
+  <button style="width: 100px;" class="btn btn-success btn-sm" type="button" (click)="onSubmit()">
+    Add</button>
+  <button type="button" style="width: 100px;" class="btn btn-dark btn-sm"
+    (click)="activeModal.dismiss('Cancel')">Cancel</button>
+</div>

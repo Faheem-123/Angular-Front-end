@@ -1,0 +1,45 @@
+<div class="dashboard patient-summary-graph">
+  <div class="dashboard-title red-light-title  h-35">
+      <div class="icon light-gray">
+          <!-- <i class="fa fa-thermometer-empty" aria-hidden="true"></i> -->
+          <img class="img-h-24" src="./assets/images/icons/consults-ico.svg" alt="">
+      </div>
+
+      <div class="title">
+          Consults
+      </div>
+
+      <div class="title-btn-link">
+          <button type="button" (click)="  getConsultSummary()">
+            <img class="img-h-25"
+            src="./assets/images/icons/ico_refresh_green.svg" alt="">
+          </button>
+      </div>
+  </div>
+  <div class="dashboard-content">
+
+
+      <div *ngIf="isLoding" class="div-loader"></div>
+
+      <table class="table light-striped-border wide table-sticky-header" *ngIf="!isLoding">
+          <thead>
+              <tr>
+                  <th>Date</th>
+                  <th>Physician Name</th>
+                  <th>Speciality</th>
+                  <th>Clinic</th>
+                  <th>Reason</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let c of lstConsults">
+                  <td width='75' >{{c.consult_date}}</td>
+                  <td width='150'>{{c.consultant_name}}</td>
+                  <td width='150'>{{c.specility}}</td>
+                  <td width='150'>{{c.clinic_name}}</td>
+                  <td><p>{{c.reason}}</p></td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+</div>

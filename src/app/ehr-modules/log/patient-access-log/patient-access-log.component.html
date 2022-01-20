@@ -1,0 +1,264 @@
+<div
+  class="light-title-bar rounded-3-top h-25 pl-3 pr-2 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Patient Access Log</div>
+</div>
+
+<div
+  class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+
+
+  <div class="encounter-data-accordian accordian-data rounded-0 border-top-0">
+    <div class="accordian-header" role="tab" id="headingOne">
+      <h5>
+        <a data-toggle="collapse" href="#SearchCriteriaPatAccessLog" aria-expanded="false" class="accordian-link">
+          <span class="accordian-main-header-title pl-1 pr-1">Search Criteria</span>
+        </a>
+      </h5>
+    </div>
+
+    <div id="SearchCriteriaPatAccessLog" class="collapse show ">
+      <div class="accordian-body bg-transparent">
+
+        <form form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+          <div class="p-6 pt-0">
+
+
+            <div class="form-row form-dashboard pb-1">
+
+
+              <div class="form-group col-4">
+
+                <label class="col-form-label module-view-headding required" for="dpDateFrom">Date Time From:</label>
+                <div class="d-flex flex-row">
+                  <div class="input-group mr-1">
+                    <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDateFrom"
+                      ngbDatepicker #dpDateFrom="ngbDatepicker" formControlName="dpDateFrom">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="dpDateFrom.toggle()" type="button">
+                      </button>
+                    </span>
+
+                  </div>
+
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                    </div>
+                    <ngb-timepicker id="tpTimeFrom" class="form-control form-control-ngb-timepicker required"
+                      formControlName="tpTimeFrom" meridian="ON">
+                    </ngb-timepicker>
+                  </div>
+                </div>
+
+
+
+              </div>
+
+              <div class="form-group col-4">
+
+                <label class="col-form-label module-view-headding required" for="dpDateTo">Date Time To:</label>
+                <div class="d-flex flex-row">
+                  <div class="input-group mr-1">
+                    <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDateTo"
+                      ngbDatepicker #dpDateTo="ngbDatepicker" formControlName="dpDateTo">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="dpDateTo.toggle()" type="button">
+                      </button>
+                    </span>
+
+                  </div>
+
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text ngb-timepicker-input-group-text"><i class="far fa-clock"></i></span>
+                    </div>
+                    <ngb-timepicker id="tpTimeTo" class="form-control form-control-ngb-timepicker required"
+                      formControlName="tpTimeTo" meridian="ON">
+                    </ngb-timepicker>
+                  </div>
+                </div>
+
+
+
+              </div>
+
+              <div class="form-group col-4">
+                <label class="col-form-label module-view-headding" for="ddUsers">User:</label>
+                <select id="ddUsers" class="form-control" formControlName="ddUsers">
+                  <option value='all'>All</option>
+                  <option *ngFor="let user of lookupList.practiceUsersList" [value]="user.user_name">
+                    {{user.display_name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+
+            <div class="form-row form-dashboard pb-1">
+              <div class="form-group col-4">
+                <label for="txtPatientSearch" class="col-form-label module-view-headding">Patient</label>
+
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-12">
+                    <div class="input-icon d-flex flex-grow-3">
+
+                      <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text"
+                        #txtPatientSearch formControlName="txtPatientSearch" placeholder="Search Patient"
+                        (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                        (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+                      <div class="icon">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </div>
+
+                      <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                        (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                      </inline-patient-search>
+
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+
+              <div class="form-group  col-4">
+
+                <div class="form-control form-check form-check-inline pt-0">
+                  <input class="form-check-input" type="checkbox" id="chkEmergencyAccess"
+                    formControlName="chkEmergencyAccess">
+                  <label class="form-check-label" for="chkEmergencyAccess">Emergencey Access</label>
+                </div>
+              </div>
+
+
+              <div class="form-group col-1 d-flex flex-column justify-content-end">
+                <button type="button" class="btn btn-success w-100"
+                  (click)="searchLog(searchFormGroup.value)">Search</button>
+              </div>
+            </div>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-grow-1 overflow-auto overflow-height">
+    <table class="table sm light-striped-border" style="overflow: auto !important">
+      <thead>
+        <tr>
+          <th></th>
+          <!--<th></th>-->
+          <th scope="col" sortable="alternate_account" type="numeric" (sort)="onSort($event)">PID
+          </th>
+          <th scope="col" sortable="event_type" type="alpha" (sort)="onSort($event)">Operation</th>
+          <th scope="col" sortable="access_date" type="datetime" format="YYYY-MM-DD HH:mm:ss.S" (sort)="onSort($event)">
+            Date Time Accessed</th>
+          <th scope="col" sortable="access_by" type="alpha" (sort)="onSort($event)">Accessed By</th>
+          <th scope="col" sortable="modified_user" type="alpha" (sort)="onSort($event)">Modified
+            User
+          </th>
+          <th scope="col" sortable="date_modified" type="datetime" format="YYYY-MM-DD HH:mm:ss.S"
+            (sort)="onSort($event)">Date Time Modified</th>
+          <th scope="col" sortable="first_name" type="alpha" (sort)="onSort($event)">First Name</th>
+          <th scope="col" sortable="last_name" type="alpha" (sort)="onSort($event)">Last Name</th>
+          <th scope="col" sortable="mname" type="alpha" (sort)="onSort($event)">MI</th>
+          <th scope="col" sortable="gender" type="alpha" (sort)="onSort($event)">Gender</th>
+          <th scope="col" sortable="dob" type="datetime" format="YYYY-MM-DD" (sort)="onSort($event)">
+            DOB</th>
+          <th scope="col" sortable="ssn" type="alpha" (sort)="onSort($event)">SSN</th>
+          <th scope="col" sortable="patient_language" type="alpha" (sort)="onSort($event)">Language
+          </th>
+          <th scope="col" sortable="marital_status" type="alpha" (sort)="onSort($event)">Marital
+            Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of lstPatAccessLog" [ngClass]="{'active' : (log.row_id === selectedRowId)}"
+          (click)="accessLogRowSelectionChanged(log.row_id)">
+          <td class="overflow-visible">
+            <div class="dropdown">
+              <button class="table-link-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right schedular-card" aria-labelledby="dropdownMenuButton">
+                <button class="dropdown-item" (click)="onLogMenuClick('patient_log',log)">
+                  <i class="fa fa-history text-info" aria-hidden="true"></i> Patient Log
+                </button>
+                <button class="dropdown-item" (click)="onLogMenuClick('encounter_access_log',log)">
+                  <i class="fa fa-history text-info" aria-hidden="true"></i> Encounter Access Log
+                </button>
+                <button class="dropdown-item" (click)="onLogMenuClick('data_export_log',log)">
+                  <i class="fa fa-history text-info" aria-hidden="true"></i> Date Export Log
+                </button>
+                <button class="dropdown-item" (click)="onLogMenuClick('ccda_log',log)">
+                  <i class="fa fa-history text-info" aria-hidden="true"></i> CCDA Log
+                </button>
+
+                <!--
+                  <div class="dropdown submenu">
+                    <button class="dropdown-item" id="patient-option" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                      <i class="fa fa-history text-info" aria-hidden="true"></i>
+                      <div class="d-flex flex-grow-1 align-items-center justify-content-between pr-2">CCDA Log<span
+                          class="fa fa-caret-right text-info pr-1" aria-hidden="true"></span></div>
+                    </button>
+
+                    <div class="dropdown-menu dropdown-sub-menu schedular-card" aria-labelledby="patient-option">
+                      <button class="dropdown-item" (click)="onLogMenuClick('ccda_import_log',log)">
+                        <i class="fa fa-history text-info" aria-hidden="true"></i> CCDA Import Log
+                      </button>
+                      <button class="dropdown-item" (click)="onLogMenuClick('ccda_export',log)">
+                        <i class="fa fa-history text-info" aria-hidden="true"></i> CCDA Export Log
+                      </button>
+                      <button class="dropdown-item" (click)="onLogMenuClick('ccda_transmit',log)">
+                        <i class="fa fa-history text-info" aria-hidden="true"></i> CCDA Transmit Log
+                      </button>
+                      <button class="dropdown-item" (click)="onLogMenuClick('ccda_download',log)">
+                        <i class="fa fa-history text-info" aria-hidden="true"></i> CCDA Download Log
+                      </button>
+                    </div>
+                  </div>
+
+                  -->
+              </div>
+            </div>
+          </td>
+          <!--<td><button class="btn btn-link btn-sm p-0" >Enounter Access Log</button></td>-->
+          <td>{{log.alternate_account}}</td>
+          <td>{{log.event_type}}</td>
+          <td>{{log.access_date  | date : 'MM/dd/yyyy hh:mm:ss a'}}</td>
+          <td>{{log.access_by}}</td>
+          <td>{{log.modified_user}}</td>
+          <td>{{log.date_modified | date : 'MM/dd/yyyy hh:mm:ss a'}}</td>
+          <td>{{log.first_name}}</td>
+          <td>{{log.last_name}}</td>
+          <td>{{log.mname}}</td>
+          <td>{{log.gender}}</td>
+          <td>{{log.dob | date : 'MM/dd/yyyy' }}</td>
+          <td>{{log.ssn}}</td>
+          <td>{{log.patient_language}}</td>
+          <td>{{log.marital_status}}</td>
+
+        </tr>
+
+      </tbody>
+    </table>
+
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>

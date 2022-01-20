@@ -1,0 +1,50 @@
+<div class="info-box-stipes rounded flex-grow-1" style="height: 250px;">
+  <div class="title-bar px-2">
+    <div class="d-flex flex-grow-1 justify-content-between">
+      <div>{{categoryName}}</div>
+    </div>
+  </div>
+
+  <div class="overflow-auto flex-grow-1 ">
+
+    <table class="table sm layout-fixed light-striped-border">
+
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th *ngIf="code1Exist" class="width-80">{{code1Type}}</th>
+          <th *ngIf="code2Exist" class="width-80">{{code2Type}}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let detail of lstCatDetail">
+          <td title="{{detail.description}}">{{detail.description}}</td>
+          <td *ngIf="code1Exist" class="width-80">
+
+            <div class="custom-control custom-checkbox green-checkbox custom-control-td"
+              *ngIf="detail.code1!=undefined && detail.code1!='' ">
+              <input type="checkbox" class="custom-control-input" id="chkCode1_{{detail.detail_id}}_{{controlUniqueId}}"
+                (change)="itemCanged(detail,'code1',$event.target.checked)">
+              <label class="custom-control-label" for="chkCode1_{{detail.detail_id}}_{{controlUniqueId}}">{{detail.code1}}</label>
+            </div>
+
+
+
+          </td>
+          <td *ngIf="code2Exist" class="width-80">
+
+            <div class="custom-control custom-checkbox green-checkbox custom-control-td"
+              *ngIf="detail.code2!=undefined && detail.code2!='' ">
+              <input type="checkbox" class="custom-control-input" id="chkCode2_{{detail.detail_id}}_{{controlUniqueId}}"
+                (change)="itemCanged(detail,'code2',$event.target.checked)">
+              <label class="custom-control-label" for="chkCode2_{{detail.detail_id}}_{{controlUniqueId}}">{{detail.code2}}</label>
+            </div>
+
+           
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

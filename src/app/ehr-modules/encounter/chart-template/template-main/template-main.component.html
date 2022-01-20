@@ -1,0 +1,28 @@
+<div class="modal-header custom">
+  <h4 class="modal-title">Template Library</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.close('')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom p-1" style="height: 580px;">
+  <ngb-tabset class="inner-horizental-green-tab d-flex flex-column">
+    <ngb-tab>
+      <ng-template ngbTabTitle>Templates</ng-template>
+      <ng-template ngbTabContent>
+
+        <template class="d-flex flex-row flex-grow-1" [objencounterToOpen]="objencounterToOpen" 
+        [objpatientTemplateData]="objpatientTemplateData" 
+        [callingFrom]="callingFrom" [module_txt]="module_txt"></template>
+
+      </ng-template>
+    </ngb-tab>
+
+    <ngb-tab *ngIf="callingFrom == 'All'">
+      <ng-template ngbTabTitle>Problem Based Template</ng-template>
+      <ng-template ngbTabContent>
+        <problem-based-template class="d-flex flex-column flex-grow-1" [objencounterToOpen]="objencounterToOpen" 
+        [callingFrom]="callingFrom"></problem-based-template>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>

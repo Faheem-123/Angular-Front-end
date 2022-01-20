@@ -1,0 +1,82 @@
+<!-- <div style="width:750px !important; height: 600px !important;" class="modal-lg"> -->
+<div class="modal-content custom">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Document Viewer</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!-- <div class="modal-body custom  p-0"> -->
+  <div class="modal-body custom p-0" style="height: calc(100vh - 100px);">
+    <div class="dashboard-sub-nav encounter h-25 justify-content-end" *ngIf="callingModule=='drug'">
+      <div class="title-link  justify-content-end">
+        <button class="btn btn-sm btn-link p-0 mr-3" type="button" (click)="onSend()"
+          *ngIf="(isAlreadySent == ''|| isAlreadySent == null)">Send</button>
+      </div>
+    </div>
+
+
+    <div class="dashboard-sub-nav encounter h-25 justify-content-end" *ngIf="callingModule=='order'">
+      <div class="title-link  justify-content-end">
+        <button *ngIf="callingModule=='order'" class="btn btn-sm btn-link p-0 mr-3" type="button"
+          (click)="onSign()">Sign</button>
+      </div>
+      <div class="title-link justify-content-end">
+        <!-- <button *ngIf="callingModule=='order'" class="btn btn-link" type="button" (click)="onFollowup()">Follow Up</button> -->
+        <div class="dropdown nav color-buttons align-items-center">
+          <button *ngIf="callingModule=='order'" type="button" class="nav-link blue px-2 py-0" data-toggle="dropdown"
+            aria-expanded="false">
+            Follow Up
+            <i class="fas fa-caret-down ml-1"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right mt-1 light-gray-bg" role="menu">
+            <form class="px-2 py-2" [formGroup]="followupForm">
+              <div class="form-group">
+                <label for="exampleDropdownFormEmail1">Follow Up</label>
+                <select class="form-control col-12" formControlName="drpFollowUp" (change)="onFollowUpChange($event)">
+                  <option *ngFor="let s of lookupList.arrFollowNote">{{s}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleDropdownFormPassword1">Action</label>
+                <select class="form-control" formControlName="drpFollowUpaction">
+                  <option *ngFor="let s of lookupList.arrFollowAction">{{s}}</option>
+                </select>
+              </div>
+              <button class="nav-link btn btn-success rounded-0 px-2 py-0" (click)="onSaveFollowUp()">
+                <i class="far fa-save pr-1"></i>Save
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <button type="button" type="button" class="btn btn-success btn-sm" (click)="openPrescription()">Prescription</button> -->
+    <!-- <button type="button" type="button" class="btn btn-success btn-sm" (click)="openPrescription()">Prescription</button> -->
+    <!-- <a href="javascript:loadIrx(XML(),'https://secure.newcropaccounts.com/InterfaceV7/RxEntry.aspx')"></a> -->
+    <!-- <button type="button" type="button" class="btn btn-success btn-sm" (click)="getInnerHtml(docframe.innerHTML)">Prescription</button>  -->
+    <!-- <iframe [src]="getLink()" id="doc_frame" #docframe style="height: 550px !important;" width="100%" height="100%" frameborder="0"> </iframe> -->
+    <iframe [src]="current_url" id="doc_frame" #docframe width="100%" height="100%" frameborder="0"> </iframe>
+
+    <!-- <iframe [src]="prescriptionStaticLink()"  style="width:750px !important; height: 550px !important;" width="100%" height="100%" frameborder="0"> </iframe>  -->
+
+
+    <!-- <iframe [src]="prescriptionStaticLink()" frameborder="0" scrolling="yes" width="550px" height="610px" id="irxIFrame" name="irxIFrame"></iframe>
+        <form   [formGroup]="fileUploadForm" method="post" target="irxIFrame" id='post_form' action="https://secure.newcropaccounts.com/InterfaceV7/RxEntry.aspx"
+        (ngSubmit)="onSubmit(fileUploadForm.value)">
+            <label for="RxInput">RxText Area</label>
+            <input formControlName="RxInput" id="RxInput" rows="0" cols="0">
+            <button type="submitt"  class="btn btn-success btn-sm" >Prescription Get</button>
+        </form> -->
+
+
+    <!-- <div [innerHTML]="html_iframe"></div> -->
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+  </div>
+</div>

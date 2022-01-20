@@ -1,0 +1,55 @@
+ <div class="modal-header custom" >
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Import ICD(s)</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+ 
+<div class="dashboard-title position-relative">
+  <div class="text-right">
+    <button type="button" class="link-btn pr-2 fz-14"
+      (click)="onImportOK()">Add
+    </button>
+  </div>
+</div>
+<div class="modal-body p-0">
+<div class="encounter-module-scrollable " style="height: 250px !important;">
+  <table class="table layout-fixed light-striped-border" >
+      <thead>
+          <tr>
+            <th width="35px">
+                <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                    <input type="checkbox" class="custom-control-input" id="chk_lab_import_all_{{chart_id}}"
+                    (click)="importSelectAll($event.currentTarget.checked)">
+                    <label class="custom-control-label" for="chk_lab_import_all_{{chart_id}}"></label>
+                </div>
+              <!-- <input  (click)="importSelectAll($event.currentTarget.checked)" id="customCheck1" type="checkbox">
+              <label for="lab_import_all">&nbsp;</label></th> -->
+            <th width="100px">Code</th>
+            <th>Description</th>
+          </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of lstChartDiagnosis;let i = index">
+          <td width="35px">
+            <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                 
+                    <input type="checkbox" class="custom-control-input" id="diag_id_{{u.row_id}}_{{chart_id}}"
+                    (click)="importSingleSelect($event.currentTarget.checked,u)" value={{u.chk}} [checked]="u.chk">
+                    <label class="custom-control-label" for="diag_id_{{u.row_id}}_{{chart_id}}"></label>
+                
+
+              <!-- <input  (click)="importSingleSelect($event.currentTarget.checked,u)" id="customCheck1" type="checkbox" value={{u.chk}} [checked]="u.chk"  >
+              <label for={{u.row_id}}>&nbsp;</label> -->
+            </div>
+          </td>
+          <td width="100px">{{u.code}}</td>
+          <td>{{u.description}}</td>
+        </tr> 
+      </tbody>
+  </table>
+</div>
+</div>
+

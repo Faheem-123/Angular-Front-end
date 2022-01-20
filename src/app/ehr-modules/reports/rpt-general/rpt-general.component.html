@@ -1,0 +1,102 @@
+<div class="d-flex flex-column flex-grow-1 mt-0 position-relative">
+   <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+
+    <div class="d-flex">
+        <div class="fz-15 font-weight-400 text-white">General Reports</div>
+    </div>
+
+    <div class="fz-13 text-white" style="opacity: 0.8;">
+      Total Record(s): {{recordCount}}
+    </div>
+  </div>
+  <div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+    <div class="d-flex flex-column flex-shrink-0">
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#rptgeneral" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+
+        <div id="rptgeneral" class="show">
+          <div class="accordian-body bg-transparent">
+            <form [formGroup]="generalReportForm" (keydown.enter)="$event.preventDefault()">
+              <div class="p-6  py-0">
+                <div class="form-row form-dashboard ">
+                  <div class="form-group col-5">
+                    <label class="col-form-label" for="cmbReport">Report:</label>
+                    <div class="input-group">
+                        <select class="form-control" labelForId="cmbReport" formControlName="cmbReport" 
+                        (change)="reportOptionsChange($event.currentTarget.value)">
+                          <option *ngFor="let rpt of reportOptions" [value]="rpt.id">{{rpt.name}}</option>
+                        </select>
+                  </div>
+                  </div>
+
+                  <div class="form-group col-1 mt-3">
+                  <div class="form-group d-flex flex-grow-1 justify-content-end">
+                    <button type="button" class="btn btn-success w-100"
+                    (click)="searchGeneralReport(generalReportForm.value)">Search</button>
+                  </div>
+                  </div>
+                  
+                </div>
+
+
+                <div class="form-row form-dashboard mt-2">
+
+                    <div class="alert d-flex rounded-3-top-right fz-14 p-1 alert-warning w-100 h-30 mt-3 mb-0">
+                      <span class="px-1 d-flex pt-2-px">
+                        <span>{{reasonDescription}}</span>
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ************************************************************** -->
+    <div class="border rounded-0 bg-white d-flex flex-column flex-grow-1 mt-0 max-height-100">
+
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details</h4>
+        <!-- <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+          <button class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 " (click)="exportAsXLSX()"><i
+              class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export to Excel</button>
+        </div> -->
+      </div>
+      <div class="overflow-auto flex-grow-1 overflow-height">
+        <table class="table light-striped-border table-sticky-header">
+          <thead>
+            <tr>
+              <th *ngFor="let head of lstGeneralReportHeadder; let z = index">
+                {{head}}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let genr of lstGeneralReport">
+              <td *ngFor="let header of lstGeneralReportHeadder; let i = index">
+                {{genr[i]}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+</div>

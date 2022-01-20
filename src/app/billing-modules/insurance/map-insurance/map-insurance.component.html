@@ -1,0 +1,108 @@
+<div class="light-title-bar  h-25 pl-3 pr-2 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Map Insurances</div>
+  <div class="d-flex align-items-center">
+    <button class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onRefresh()"><i class="fas fa-sync-alt"></i></button>
+  </div>
+</div>
+
+<div class="p-1 d-flex flex-row flex-grow-1 overflow-height rounded-bottom border-content-box border-top-0 light-sky-blue">
+
+  <div class="border rounded bg-white flex-2 d-flex flex-column mr-1">
+    <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Client Insurances</h4>
+      <!-- <div class="form-group flex-grow-2 m-0 py-3-px">
+        <div class="input-icon d-flex">
+          <input labelForId="txtPatientSearch" class="form-control" type="text">
+          <input type="text" hidden>
+          <div class="icon">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </div>
+          <inline-patient-search style="display: none;"></inline-patient-search>
+        </div>
+      </div> -->
+    </div>
+    <div class="overflow-auto flex-grow-1 max-height-100">
+      <table class="table light-striped-border layout-fixed table-sticky-header">
+        <thead>
+          <tr>
+            <th class="width-30">&nbsp;</th>
+            <th class="width-120">Name</th>
+            <th class="width-120">Address</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let pr of listInsurance; let i = index" (click)="onInsuranceSelectionChange(i,pr)" 
+              [ngClass]="{ 'active': i==selectedInsuranceRow}">
+              <td class="width-30">
+                  <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                      <input type="checkbox" class="custom-control-input" id="chk_{{pr.insurance_id}}"
+                          (change)="onInsuranceSelection($event,i)">
+                      <label class="custom-control-label" for="chk_{{pr.insurance_id}}"></label>
+                  </div>
+              </td>
+              <td class="width-120">{{pr.name}}</td>
+              <td class="width-120">{{pr.address}}</td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="flex-shrink-0 d-flex flex-column align-items-center">
+    <button class="btn btn-link text-green-ihc p-0" (click)="onMapInsurance()">
+      <i class="fas fa-lg fa-arrow-alt-circle-right"></i>
+    </button>
+    <h4 class="fz-14 font-weight-400 text-dark m-0 pt-2" style="writing-mode: tb-rl;">Select Insurance(s) to Map</h4>
+  </div>
+
+  <div class="border rounded bg-white flex-4 d-flex flex-column ml-1">
+    <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom pr-2">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Client Insurances</h4>
+      <!-- <div class="form-group horizental d-flex flex-grow-2 m-0 py-3-px">
+        <label class="col-form-label pr-1">Payer Search:</label>
+        <div class="input-icon d-flex flex-grow-1">
+          <input labelForId="txtPatientSearch" class="form-control" type="text">
+          <input type="text" hidden>
+          <div class="icon">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </div>
+          <inline-patient-search style="display: none;"></inline-patient-search>
+        </div>
+      </div> -->
+    </div>
+    <div class="d-flex flex-row flex-grow-1 ">
+      <div class="overflow-auto flex-1 max-height-100 border-right mr-1">
+        <table class="table light-striped-border layout-fixed table-sticky-header">
+          <thead>
+            <tr>
+              <th class="width-120">Group Name</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr st-select-row="row" *ngFor="let lstdetails of listInsType  let i = index" (click)="onTypeselectionChange(i)"
+            [ngClass]="{'active': i==selectedGroupRow}" >
+              <td class="width-120">{{lstdetails.name}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="overflow-auto flex-2 max-height-100 border-left">
+        <table class="table light-striped-border layout-fixed table-sticky-header">
+          <thead>
+            <tr>
+              <th class="width-120">Payer Name</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr st-select-row="row" *ngFor="let lstdetails of listInspayer  let i = index" (click)="onpayerselectionChange(i)"
+              [ngClass]="{'active': i==selectedPayerRow}" >
+              <td class="width-120">{{lstdetails.name}}</td>             
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

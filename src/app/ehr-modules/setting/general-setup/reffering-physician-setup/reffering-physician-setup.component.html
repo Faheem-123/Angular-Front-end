@@ -1,0 +1,324 @@
+<div class="light-title-bar h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Referring Provider Details</div>
+  <div class="d-flex align-items-center">
+    <button *ngIf="strOperation==''  && lookupList.UserRights.refferring_provider_add" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onAdd()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <button *ngIf="strOperation==''  && lookupList.UserRights.refferring_provider_edit" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"  (click)="onEdit()">
+      <i class="far fa-edit"></i>
+      Edit</button>
+    <button *ngIf="strOperation==''  && lookupList.UserRights.refferring_provider_delete" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onDelete()">
+      <i class="far fa-trash-alt"></i>
+      Delete</button>
+    <button *ngIf="strOperation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" (click)="onSave()">Save</button>
+    <button *ngIf="strOperation!=''" class="btn btn-sm btn-dark top-right-radius h-30" (click)="onCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 rounded-0 border-content-box border-top-0 light-sky-blue overflow-height">
+  <div class="border-bottom bg-white p-2 flex-shrink-0">
+    <form [formGroup]="inputForm">
+      <div class="form-row form-dashboard align-items-start">
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input1" class="col-form-label label-w-80">First Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control flex-grow-1" id="input1" formControlName="txtfirstName">
+        </div>
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input2" class="col-form-label label-w-80">Last Name</label>
+          <input type="text" class="form-control flex-grow-1" id="input2" formControlName="txtlastName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-1 col-sm-6 col-12">
+          <label for="input3" class="col-form-label label-w-30">MN</label>
+          <input type="text" class="form-control flex-grow-1" id="input3" formControlName="txtmiddleName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input4" class="col-form-label label-w-40">SSN</label>
+          <input type="text" class="form-control flex-grow-1" id="input4" formControlName="txtssn">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input5" class="col-form-label label-w-90">License</label>
+          <input type="text" class="form-control flex-grow-1" id="input5" formControlName="txtlicense">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-80">Address</label>
+          <textarea rows="1" class="form-control flex-grow-1" id="input6" formControlName="txtaddress"></textarea>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80">Zip Code</label>
+          <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtzip"  (focusout)="zipFocusOut($event.target.value)">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-40">City</label>
+          <select class="form-control flex-grow-1" id="input6" formControlName="txtcity">
+              <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+                  {{obj.city}}
+                </option>
+          </select>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-90">State</label>
+          <input type="text" class="form-control flex-grow-1" id="input9" formControlName="txtstate">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-80">Phone</label>
+          <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txtphone">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80">Email</label>
+          <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtemail">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-40">Fax</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtfax">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-90">Contact Person</label>
+          <input type="text" class="form-control flex-grow-1" id="input9" formControlName="txtcontactPerson">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-80">Taxonomy Id</label>
+          <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txttaxonomyId">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80">NPI</label>
+          <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtnpi">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-40">UPN</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtupn">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-90">Tax Id</label>
+          <input type="text" class="form-control flex-grow-1" id="input9" formControlName="txttaxid">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-80">Referring Type</label>
+          <select class="form-control flex-grow-1" id="input6" formControlName="txtreferringType">
+            <option *ngFor="let r of arrRefferingType" [value]="r">{{r}}</option>
+          </select>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80">Consult Type</label>
+          <select class="form-control flex-grow-1" id="input6" formControlName="txtconsultType">
+              <option *ngFor="let s of lstConsultType" [value]="s.id">{{s.name}}</option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!-- <form [formGroup]="searchForm">
+  <div class="rounded-box-title-bar h-30 rounded-0 d-flex align-items-center justify-content-between flex-shrink-0">
+   
+      <div class="form-group mb-0 flex-1">
+        <div class="input-icon d-flex flex-grow-3">
+          <input autocomplete="off" class="form-control flex-grow-3" placeholder="Search Referring Provider" type="text" 
+          formControlName="txtSearch" #txtSearch
+          (input)="onFilter(txtSearch.value)">
+          <div class="icon"><i aria-hidden="true" class="fa fa-search"></i></div>
+        </div>
+      </div>
+  
+      <div class="flex-2 d-flex align-items-center justify-content-end">
+        <div class="custom-radio green-radio">
+          <input type="radio" class="custom-control-input" id="customCheck1" value="rbfirstName" formControlName="rbCondition">
+          <label class="custom-control-label" for="customCheck1">First Name</label>
+        </div>
+  
+        <div class="custom-radio green-radio">
+          <input type="radio" class="custom-control-input" id="customCheck2"  value="rblastName" formControlName="rbCondition">
+          <label class="custom-control-label" for="customCheck2">Last Name</label>
+        </div>
+  
+        <div class="custom-radio green-radio">
+          <input type="radio" class="custom-control-input"  id="customCheck3" value="rbSSN" formControlName="rbCondition">
+          <label class="custom-control-label" for="customCheck3">SSN</label>
+        </div>
+  
+        <div class="custom-radio green-radio">
+          <input type="radio" class="custom-control-input"  id="customCheck4" value="rbPhone" formControlName="rbCondition">
+          <label class="custom-control-label" for="customCheck4">Phone</label>
+        </div>
+  
+        <div class="custom-radio green-radio">
+          <input type="radio" class="custom-control-input" id="customCheck5" value="rbAddress" formControlName="rbCondition">
+          <label class="custom-control-label" for="customCheck5">Address</label>
+        </div>
+  
+        <div class="custom-radio green-radio">
+          <input type="radio" class="custom-control-input"  id="customCheck6" value="rbFax" formControlName="rbCondition">
+          <label class="custom-control-label" for="customCheck6">Fax</label>
+        </div>
+  
+        <div class="custom-radio green-radio">
+          <input type="radio" class="custom-control-input"  id="customCheck7" value="rbNPI" formControlName="rbCondition">
+          <label class="custom-control-label" for="customCheck7">NPI</label>
+        </div>
+  
+        <div class="custom-radio green-radio">
+          <input type="radio" class="custom-control-input"  id="customCheck8" value="rbConsultType" formControlName="rbCondition">
+          <label class="custom-control-label" for="customCheck8">Consult Type</label>
+        </div>
+      </div>
+    
+  </div>
+</form> -->
+  <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100">
+    <table class="table light-striped-border" >
+      <thead>
+        <tr>
+          <th scope="col" sortable="consult_type" type="alpha" (sort)="onSort($event)">Consult Type</th>
+          <th scope="col" sortable="first_name" type="alpha" (sort)="onSort($event)">First Name</th>
+          <th scope="col" sortable="last_name" type="alpha" (sort)="onSort($event)">Last Name</th>
+          <th scope="col" sortable="ssn" type="alpha" (sort)="onSort($event)">SSN</th>
+          <th scope="col" sortable="phone" type="alpha" (sort)="onSort($event)">Phone #</th>
+          <th scope="col" sortable="fax" type="alpha" (sort)="onSort($event)">Fax #</th>
+          <th scope="col" sortable="address" type="alpha" (sort)="onSort($event)">Address</th>
+          <th scope="col" sortable="license" type="alpha" (sort)="onSort($event)">License No.</th>
+          <th scope="col" sortable="tax_id" type="alpha" (sort)="onSort($event)">Tax ID</th>
+        </tr>
+      </thead>
+
+      <tbody>
+          <tr class="table-filter-row" id="filterRow">
+            <td>
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="consult_type"
+                    (input)="onFilter($event.target.value,'consult_type')">
+                  <label class="fa fas fa-filter"></label>
+                </div>
+              </div>
+            </td>
+            <td>
+  
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="first_name"
+                    (input)="onFilter($event.target.value,'first_name')">
+                  <label class="fa fas fa-filter"></label>
+                </div>
+              </div>
+  
+  
+            </td>
+            <td>
+  
+  
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100" autocomplete="off"  name="last_name"
+                    (input)="onFilter($event.target.value,'last_name')">
+                  <label class="fa fas fa-filter"></label>
+                </div>
+              </div>
+  
+  
+            </td>
+            <td>
+  
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100" autocomplete="off" name="ssn"
+                    (input)="onFilter($event.target.value,'ssn')">
+                  <label class="fa fas fa-filter"></label>
+                </div>
+              </div>
+  
+  
+  
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+           
+          </tr>
+          <tr *ngFor="let contact of arrphysicianFiltered; let i = index" (click)="onSelectionChange(i,contact)" [ngClass]="{ 'active': i==selectedIndex,
+          'disabled': isDisable
+          }">
+  
+            <td>
+              <ngb-highlight [result]="contact.consult_type" [term]="getNGHighlightTerm('consult_type')">
+              </ngb-highlight>
+            </td>
+            <td>
+              <ngb-highlight [result]="contact.first_name" [term]="getNGHighlightTerm('first_name')"></ngb-highlight>
+            </td>
+            <td>
+              <ngb-highlight [result]="contact.last_name" [term]="getNGHighlightTerm('last_name')">
+              </ngb-highlight>
+            </td>
+            <td>
+              <ngb-highlight [result]="contact.ssn" [term]="getNGHighlightTerm('ssn')"></ngb-highlight>
+            </td>
+            <td>
+              {{contact.phone}}
+            </td>
+            <td>
+              {{contact.fax}}
+            </td>
+            <td>
+              {{contact.address}}
+            </td>
+            <td>
+              {{contact.license}}
+            </td>
+            <td>
+                {{contact.tax_id}}
+              </td>
+          </tr> 
+        </tbody>
+
+      <!-- <tbody>
+          <tr *ngFor="let r of arrphysicianFiltered;let i = index" (click)="onSelectionChange(i,r)" [ngClass]="{ 'active': i==selectedIndex,
+          'disabled': isDisable
+          }">
+          <td>{{r.consult_type}}</td>
+          <td>{{r.first_name}}</td>
+          <td>{{r.last_name}}</td>
+          <td>{{r.ssn}}</td>
+          <td>{{r.phone}}</td>
+          <td>{{r.fax}}</td>
+          <td>{{r.address}}</td>
+          <td>{{r.license}}</td>
+          <td>{{r.tax_id}}</td>
+        </tr>
+      </tbody> -->
+    </table>
+  </div>
+  <div class="d-flex justify-content-between flex-shrink-0 p-2 border-top">
+      <ngb-pagination [collectionSize]="total" [(page)]="page" [pageSize]="pageSize" (pageChange)="pageChange($event)"
+        [maxSize]="10" [rotate]="true" [boundaryLinks]="true" size="sm">
+      </ngb-pagination>
+
+      <div class="form-group mb-0">
+        <select class="form-control pagination-custom-select" name="pageSize" [(ngModel)]="pageSize"
+          (change)="pageOptionChaged()">
+          <option [ngValue]="10">10 items per page</option>
+          <option [ngValue]="20">20 items per page</option>
+          <option [ngValue]="50">50 items per page</option>
+          <option [ngValue]="100">100 items per page</option>
+          <option [ngValue]="200">200 items per page</option>
+          <option [ngValue]="500">500 items per page</option>
+        </select>
+      </div>
+    </div>
+</div>

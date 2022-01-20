@@ -1,0 +1,20 @@
+<div class="modal-header custom">
+  <h4 class="modal-title">Patient Followup Notes</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body p-0">
+<div class="encounter-module-scrollable">
+  <table class="table layout-fixed light-striped-border" >
+      <tbody>
+          <tr *ngFor="let enc of lstData">
+              <td>
+              <p style="white-space: pre-wrap;">{{enc.col2}}</p>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+</div>
+

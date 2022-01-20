@@ -1,0 +1,227 @@
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  <div class="rounded-top encounter-header-highlight justify-content-end">
+    <ul class="nav color-buttons align-items-center">
+      <a  *ngIf="!addEditView" class="nav-link green px-2 py-0" (click)="onNew()">
+        <i class="far fa-plus-square pr-1"></i>New
+      </a>
+      <a  *ngIf="!addEditView" class="nav-link blue px-2 py-0" (click)="onEdit()">
+        <i class="far fa-edit pr-1"></i>Edit
+      </a>
+
+      <a *ngIf="addEditView" class="nav-link btn-success green px-2 py-0" (click)="onSaveClick()">
+          <i class="far fa-save pr-1"></i>Save
+      </a>
+      <a *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="onCancel();">
+          <i class="fas fa-times pr-1"></i>Cancel
+      </a>
+
+    </ul>
+  </div>
+  
+
+  <div class="px6-py3">
+    <div class="row p8">
+
+      <div class="col-12 col-md-4 d-flex">
+        <div class="info-box-stipes rounded">
+          <div class="form-edit-sub-heading line-height-normal m-1 mb-0 pl-1">Test Description</div>
+
+          <div class="p-1">
+            <table class="table sm layout-fixed light-striped-border">
+              <tbody>
+                <tr *ngFor="let tst of lstOrderTest;let i=index" (click)="onTestClick(tst)"
+                [ngClass]="{'active' : (tst.test_id === SelectedTestObj.test_id)}">
+                  <td>{{tst.proc_code}}({{tst.proc_description}})</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-8 d-flex flex-column">
+        <form [formGroup]="inputForm">
+          <div class="info-box-stipes rounded">
+            <div class="form-edit-sub-heading line-height-normal m-1 pl-1">Specimen Details</div>
+
+            <div class="p-8 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label" for="input01">Specimen ID:</label>
+                  <input type="text" class="form-control col-sm-8" formControlName="txtSpecimenid">
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label" for="input02">Specimen Tag:</label>
+                  <input type="text" class="form-control col-sm-8" formControlName="txtSpecimentag">
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label" for="input03">Specimen Source:</label>
+                  <input type="text" class="form-control col-sm-8" formControlName="txtSpecimenSource">
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-4 col-form-label" for="input04">Specimen Type:</label>
+                  <input type="text" class="form-control col-sm-8" formControlName="txtSpecimenType">
+                </div>
+              </div>
+            </div>
+          
+            <div class="title-bar border-top">Collection Information</div>
+
+            <div class="p-8 pt-0">
+              <div class="form-row form-dashboard">
+                <!-- <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-3 col-form-label" for="input01">Start Time:</label>
+                  
+                  <div class="form-row p3 col-sm-9">
+                    <div class="input-group col-6">
+                      <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtSpecimenStartDate"
+                        formControlName="txtSpecimenStartDate" ngbDatepicker #txtSpecimenStartDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtSpecimenStartDate.toggle()" type="button">
+                        </button>
+                      </span>
+                    </div>
+
+                    <div class="form-group col-6">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text ngb-timepicker-input-group-text"><i
+                            class="far fa-clock"></i></span>
+                      </div>
+                      <ngb-timepicker id="txtTime"
+                        class="form-control form-control-ngb-timepicker required" formControlName="txtSpecimenStartTime"
+                        meridian="ON">
+                      </ngb-timepicker>
+                    </div>
+
+                  </div>
+                </div> -->
+
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-3 col-form-label" for="input02">Start Time:</label>
+                  <div class="form-row p3 col-sm-9">
+                    <div class="input-group col-6">
+                        <input class="form-control date-control required" placeholder="mm/dd/yyyy"
+                          name="txtSpecimenStartDate" formControlName="txtSpecimenStartDate" ngbDatepicker
+                          #txtSpecimenStartDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn btn-outline-primary" (click)="txtSpecimenStartDate.toggle()" type="button">
+                          <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                    </div>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text ngb-timepicker-input-group-text"><i
+                            class="far fa-clock"></i></span>
+                      </div>
+                      <ngb-timepicker id="txtSTime"
+                        class="form-control form-control-ngb-timepicker required" formControlName="txtSpecimenStartTime"
+                        meridian="ON">
+                      </ngb-timepicker>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-3 col-form-label" for="input02">End Time:</label>
+                  <div class="form-row p3 col-sm-9">
+                    <div class="input-group col-6">
+                      <!-- <input class="form-control" formControlName="txtSpecimenEndDate" type="date"> -->
+                        <input class="form-control date-control required" placeholder="mm/dd/yyyy"
+                          name="txtSpecimenEndDate" formControlName="txtSpecimenEndDate" ngbDatepicker
+                          #txtSpecimenEndDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn btn-outline-primary" (click)="txtSpecimenEndDate.toggle()" type="button">
+                          <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                    </div>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text ngb-timepicker-input-group-text"><i
+                            class="far fa-clock"></i></span>
+                      </div>
+                      <ngb-timepicker id="txtTime"
+                        class="form-control form-control-ngb-timepicker required" formControlName="txtSpecimenEndTime"
+                        meridian="ON">
+                      </ngb-timepicker>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-3 col-form-label" for="input03">Volume:</label>
+                  <input type="text" class="form-control col-sm-9" formControlName="txtSpecimenVolume">
+                </div>
+
+                <div class="form-group horizental row zero col-12 col-md-6">
+                  <label class="col-sm-3 col-form-label" for="input04">Measure Unit:</label>
+                  <input type="text" class="form-control col-sm-9" formControlName="txtSpecimenUnit">
+                </div>
+              </div>
+            </div>
+          
+            <div class="title-bar border-top">Rejected Reason</div>
+
+            <div class="p-8 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                  <input type="text" class="form-control" formControlName="txtSpecimenRejReason">
+                </div>
+              </div>
+            </div>
+         
+            <div class="title-bar border-top">Condation & Disposition Info</div>
+
+            <div class="p-8 pt-0">
+              <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                  <textarea rows="2" class="form-control" formControlName="txtSpecimencondition"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-12">
+        <div class="info-box-stipes rounded">
+          <div class="title-bar">Other Specimen</div>
+
+          <div class="p-8 pt-0">
+            <table class="table sm layout-fixed light-striped-border">
+              <thead>
+                <tr>
+                  <th >Test Name</th>
+                  <th>Specimen ID</th>
+                  <th>Tag</th>
+                  <th>Source</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tst of lstTestSpecimen;let i=index" (click)="assignValues(tst)"
+                [ngClass]="{'active' : (tst.patient_specimen_id === SelectedSpecimenObj.patient_specimen_id)}">
+                  <td>{{tst.proc_description}}</td>
+                  <td>{{tst.specimen_id}}</td>
+                  <td>{{tst.tag}}</td>
+                  <td>{{tst.source}}</td>
+                  <td class="text-right">
+                    <button type="button" class="btn btn-link btn-sm text-danger line-height-1 p-0" 
+                      (click)="onDelete(tst)">
+                          <i class="far fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

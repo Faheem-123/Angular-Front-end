@@ -1,0 +1,330 @@
+<div class="insurance-summary-box flex-shrink-0 pl-1 pr-0">
+
+  <div class="alert alert-secondary fz-12 py-0 px-1 my-2 rounded-2" style="height: 26px;" [ngClass]="{'alert-primary' : (linkPrimaryIns==='Unable to Verify Insurance'),
+  'alert-success' : (linkPrimaryIns==='Active Insurance'),
+  'alert-danger' : (linkPrimaryIns==='Inactive Insurance')}">
+
+    <!--
+    <button type="button" class="btn btn-link alert-link px-0 text-info" (click)="showEligibility('primary')">
+      <i class="fas fa-info-circle fa-lg"></i>
+    </button>
+
+    <button type="button" class="btn btn-link alert-link px-1 py-0 font-weight-500" title="{{linkPrimaryIns}}"
+      (click)="EligReqProcessing('primary')" [disabled]='primary_insurance_id==undefined'>Primary Insurance:</button>
+
+    <span *ngIf="!primary_insurance_id==undefined">{{primary_insurance}}</span>
+    <span *ngIf="primary_insurance_id==undefined"><strong class="font-weight-500 ">N/A</strong></span>
+
+-->
+    <button type="button" class="btn btn-link alert-link px-0 text-info" *ngIf="primary_insurance_id!=undefined"
+      (click)="showEligibility('primary')">
+      <i class="fas fa-info-circle fa-lg"></i>
+    </button>
+
+
+
+    <button type="button" class="btn btn-link alert-link px-1 py-0 font-weight-500"
+      *ngIf="primary_insurance_id!=undefined" title="{{linkPrimaryIns}}" (click)="EligReqProcessing('primary')">Primary
+      Insurance:</button>
+    {{primary_insurance}}
+    <span *ngIf="primary_insurance_id==undefined" class="text-muted px-1 d-flex align-items-center mt-2-px">Primary
+      Insurance:<strong class="font-weight-500 px-1">N/A</strong></span>
+
+
+  </div>
+
+  <div class="alert alert-secondary fz-12 py-0 px-1 my-2 ml-2 rounded-2" style="height: 26px;" [ngClass]="{'alert-primary' : (linkSecondaryIns==='Unable to Verify Insurance'),
+  'alert-success' : (linkSecondaryIns==='Active Insurance'),
+  'alert-danger' : (linkSecondaryIns==='Inactive Insurance')}">
+
+    <button type="button" class="btn btn-link alert-link px-0 text-info" *ngIf="secondary_insurance_id!=undefined"
+      (click)="showEligibility('secondary')">
+      <i class="fas fa-info-circle fa-lg"></i>
+    </button>
+
+    <button type="button" class="btn btn-link alert-link px-1 py-0 font-weight-500"
+      *ngIf="secondary_insurance_id!=undefined" title="{{linkSecondaryIns}}"
+      (click)="EligReqProcessing('secondary')">Secondary Insurance:</button>
+    {{secondary_insurance}}
+    <span *ngIf="secondary_insurance_id==undefined" class="text-muted px-1 d-flex align-items-center mt-2-px">Secondary
+      Insurance:<strong class="font-weight-500 px-1">N/A</strong></span>
+
+  </div>
+
+  <div class="alert alert-secondary fz-12 py-0 px-1 my-2 ml-2 rounded-2 d-flex" style="height: 26px;" [ngClass]="{
+  'alert-success' :(lstPhrUsers!=undefined && lstPhrUsers.length>0)}" *ngIf="!isPhrUsersloading">
+
+    <button type="button" class="btn btn-link alert-link px-0 text-info" [ngbPopover]="popContent"
+      popoverTitle="PHR Users" container="body" placement="bottom" popoverClass="ihc-popover width-300"
+      triggers="mouseenter:mouseleave">
+      <ng-template #popContent>
+        <span *ngIf="lstPhrUsers==undefined || lstPhrUsers.length==0">No PHR User found.</span>
+        <ul class="pl-4 pr-2" *ngIf="lstPhrUsers!=undefined && lstPhrUsers.length>0">
+          <li *ngFor="let user of lstPhrUsers;">
+            {{user.user_name}} ({{user.user_relationship}})
+          </li>
+        </ul>
+      </ng-template>
+      <i class="fas fa-info-circle fa-lg"></i>
+    </button>
+
+    <button type="button" class="btn btn-link alert-link px-1 py-0 font-weight-500" (click)="onPHRAccessClicked()">PHR</button>
+
+  </div>
+
+
+  <!--
+  <span [ngbPopover]="popContent" popoverTitle="PHR Users" container="body" placement="bottom"
+    popoverClass="ihc-popover width-300" triggers="mouseenter:mouseleave"
+    [ngClass]="{'text-success': (lstPhrUsers!=undefined && lstPhrUsers.length>0)}">
+    PHR
+    <ng-template #popContent>
+      <span *ngIf="lstPhrUsers==undefined || lstPhrUsers.length==0">No PHR User found.</span>
+      <ul class="pl-4 pr-2" *ngIf="lstPhrUsers!=undefined && lstPhrUsers.length>0">
+        <li *ngFor="let user of lstPhrUsers;">
+          {{user.user_name}} ({{user.user_relationship}})
+        </li>
+      </ul>
+    </ng-template>
+  </span>
+  -->
+
+
+  <nav class="nav insurance-summary-nav justify-content-end">
+
+
+
+    <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 mr-1" placement="bottom"
+      ngbPopover="{{checkedinTitle}}" triggers="mouseenter:mouseleave" popoverTitle="CheckedIn Info"
+      popoverClass="ihc-popover" [ngClass]="{'btn-warning' : patCheckedInInfo!=null && patCheckedInInfo.length>0,
+      'btn-link' : patCheckedInInfo==null || patCheckedInInfo.length==0}" (click)="openCheckIn()">
+      <i class="fas fa-user-check mr-1"></i>
+      CheckIn/Out</button>
+    <button type="button"
+      [disabled]="!this.lookupList.UserRights.pat_staffnotes  && !this.lookupList.UserRights.pat_phynotes"
+      class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="openNotes('patient')">
+      <i class="far fa-comment-alt mr-1"></i>
+      Notes</button>
+    <!-- <button type="button" class="btn btn-primary btn-sm mr-2">Modify</button> -->
+    <!-- <a class="nav-link" href="#">
+      <i class="fa fa-lg fa-bars" aria-hidden="true"></i>
+    </a> -->
+    <div class="dropdown btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 px-0">
+      <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button" id="dropdownMenuButton"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+      </button>
+      <div class="dropdown-menu dropdown-menu-left schedular-card" aria-labelledby="dropdownMenuButton">
+
+        <!-- <button class="dropdown-item px-2" (click)="onMenuClick('ccda')">
+          CCDA/CCR
+        </button> -->
+        <button [disabled]="!this.lookupList.UserRights.phr_access" class="dropdown-item px-2"
+          (click)="onMenuClick('timely-access')">
+          Timely Access
+        </button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item px-2" (click)="onMenuClick('payment-plan')">
+          Payment Plan
+        </button>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown submenu">
+          <button class="dropdown-item d-flex align-items-center justify-content-between" id="patient-option"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            View Cards
+            <span class="fa fa-caret-right text-info" aria-hidden="true"></span>
+          </button>
+
+          <div class="dropdown-menu dropdown-sub-menu schedular-card sub-dropdown-left"
+            aria-labelledby="patient-option">
+            <button class="dropdown-item px-2" (click)="onMenuClick('id-card')">
+              Id Card
+            </button>
+            <button class="dropdown-item px-2" (click)="onMenuClick('driving-licence')">
+              Driving License
+            </button>
+            <button class="dropdown-item px-2" (click)="onMenuClick('patient-agreement')">
+              Patient Agreement
+            </button>
+
+            <div class="dropdown-divider"></div>
+
+            <button class="dropdown-item px-2" (click)="onMenuClick('primary-insurnce')">
+              Primary Insurance
+            </button>
+            <button class="dropdown-item px-2" (click)="onMenuClick('secondary-insurnce')">
+              Secondary Insurance
+            </button>
+            <button class="dropdown-item px-2" (click)="onMenuClick('other-insurnce')">
+              Other Insurance
+            </button>
+
+          </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown submenu ">
+          <button class="dropdown-item d-flex align-items-center justify-content-between" id="patient-option"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Print
+            <span class="fa fa-caret-right text-info" aria-hidden="true"></span>
+          </button>
+
+          <div class="dropdown-menu dropdown-sub-menu schedular-card sub-dropdown-left"
+            aria-labelledby="patient-option">
+            <button class="dropdown-item px-2" (click)="onMenuClick('print-demographic')">
+              Print Demographic
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item px-2" (click)="printLabel('PATIENT_CHART_LABEL')">
+              Print Chart Label
+            </button>
+            <button class="dropdown-item px-2" (click)="printLabel('PATIENT_MAILING_LABEL')">
+              Print Mailing Label
+            </button>
+          </div>
+        </div>
+
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item px-2" (click)="onMenuClick('add-to-task')">
+          Add to Task
+        </button>
+      </div>
+    </div>
+  </nav>
+
+
+</div>
+
+<div class="dashboard-container flex-grow-1 max-height-auto overflow-auto pr-8">
+
+  <div class="row m-0 p-0">
+
+    <div class="col-12 col-md-6 p-0">
+      <div class="dashboard patient-summary-graph">
+        <div class="dashboard-title red-light-title  h-35">
+          <div class="icon light-gray">
+            <!-- <i class="fa fa-heartbeat" aria-hidden="true"></i> -->
+            <img class="img-h-24" src="./assets/images/icons/ico_vitals.svg" alt="">
+          </div>
+
+          <div class="title">
+            Blood Pressure
+          </div>
+
+        
+          <div class="title-btn-link">
+            <button type="button" (click)="getVitalGraphData()">
+             <img class="img-h-25"
+                    src="./assets/images/icons/ico_refresh_green.svg" alt="">
+            </button>
+          </div>
+         
+        </div>
+        <div class="dashboard-content overflow-hidden">
+          <div *ngIf="isVitalGraphLoading" class="div-loader"></div>
+          <canvas *ngIf="!isVitalGraphLoading" baseChart [datasets]="bpLineChartData" [labels]="bpLineChartLabels"
+            [options]="bpLineChartOptions" [legend]="bpLineChartLegend" [chartType]="bpLineChartType"
+            [colors]="bpLineChartColors"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 p-0">
+      <div class="dashboard patient-summary-graph">
+        <div class="dashboard-title purple-light-title  h-35">
+          <div class="icon light-gray">
+            <!-- <i class="fas fa-weight" aria-hidden="true"></i> -->
+            <img class="img-h-24" src="./assets/images/icons/weight-ico.svg" alt="">
+          </div>
+
+          <div class="title">
+            Weight
+          </div>
+
+          
+        
+          <div class="title-btn-link">
+            <button type="button" (click)="getVitalGraphData()">
+              <img class="img-h-25"
+                    src="./assets/images/icons/ico_refresh_green.svg" alt="">
+            </button>
+          </div>
+        
+        </div>
+        <div class="dashboard-content overflow-hidden" >
+          <div *ngIf="isVitalGraphLoading" class="div-loader"></div>
+          <canvas *ngIf="!isVitalGraphLoading" baseChart [datasets]="weightLineChartData"
+            [labels]="weightLineChartLabels" [options]="weightLineChartOptions" [legend]="weightLineChartLegend"
+            [chartType]="weightLineChartType" [colors]="weightLineChartColors"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 p-0">
+      <div class="dashboard patient-summary-graph">
+        <div class="dashboard-title deep-purple-light-title  h-35">
+          <div class="icon light-gray">
+            <!-- <i class="fa fa-thermometer-empty" aria-hidden="true"></i> -->
+            <img class="img-h-24" src="./assets/images/icons/thermometer_ico.svg" alt="">
+          </div>
+
+          <div class="title">
+            Temperature
+          </div>
+
+          <div class="title-btn-link">
+            <button type="button" (click)="getVitalGraphData()">
+              <img class="img-h-25"
+              src="./assets/images/icons/ico_refresh_green.svg" alt="">
+            </button>
+          </div>
+        </div>
+        <div class="dashboard-content overflow-hidden">
+          <div *ngIf="isVitalGraphLoading" class="div-loader"></div>
+          <canvas *ngIf="!isVitalGraphLoading" baseChart [datasets]="tempLineChartData" [labels]="tempLineChartLabels"
+            [options]="tempLineChartOptions" [legend]="tempLineChartLegend" [chartType]="tempLineChartType"
+            [colors]="tempLineChartColors"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 p-0">
+      <summary-medication [patientId]="patientId"></summary-medication>
+    </div>
+
+    <div class="col-12 col-md-6 p-0">
+      <summary-allergies [patientId]="patientId"></summary-allergies>
+    </div>
+
+    <div class="col-12 col-md-6 p-0">
+      <summary-problems [patientId]="patientId"></summary-problems>
+    </div>
+
+    <div class="col-12 col-md-6 p-0">
+      <summary-assessments [patientId]="patientId"></summary-assessments>
+    </div>
+
+    <div class="col-12 col-md-6 p-0">
+      <summary-vaccination [patientId]="patientId"></summary-vaccination>
+    </div>
+    <div class="col-12 col-md-6 p-0">
+      <summary-surgeries [patientId]="patientId"></summary-surgeries>
+    </div>
+    <div class="col-12 col-md-6 p-0">
+      <summary-procedures [patientId]="patientId"></summary-procedures>
+    </div>
+    <!-- <div class="col-12 col-md-4" *ngIf="patGender==='FEMALE'">
+      <summary-conception-outcomes [patientId]="patientId"></summary-conception-outcomes>
+    </div> -->
+    <div class="col-12 p-0">
+      <summary-health-maintenance [patientId]="patientId"></summary-health-maintenance>
+    </div>
+    <div class="col-12 p-0">
+      <summary-referrals [patientId]="patientId"></summary-referrals>
+    </div>
+    <div class="col-12 p-0">
+      <summary-consults [patientId]="patientId"></summary-consults>
+    </div>
+    
+  </div>
+</div>

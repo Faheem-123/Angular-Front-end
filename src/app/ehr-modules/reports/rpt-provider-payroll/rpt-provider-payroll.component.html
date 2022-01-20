@@ -1,0 +1,521 @@
+<div class="d-flex flex-column flex-grow-1">
+        <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+          <div class="fz-15 font-weight-400 text-white">Provider Payroll</div>
+        </div>
+      
+      
+        <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+      
+<div class="d-flex flex-column flex-grow-1">
+        <!-- MAIN -->
+        <div class="d-flex flex-column flex-grow-1" *ngIf="showDetails == 'main'">
+          <!-- <div class="light-title-bar rounded-top h-25 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+            <div class="fz-15 font-weight-400">Provider Payroll Report
+            </div>
+        
+            <div class="d-flex">
+                <button class="btn btn-link fz-13 text-decoration-none line-height-1 p-0 mr-2 text-white"
+                    (click)="payRollSettings()"><i class="fas fa-cog pr-1"></i>Setting</button>
+            </div>
+        
+          </div> -->
+        
+          <div class="d-flex flex-column flex-grow-1 rounded-bottom  border-top-1 light-sky-blue position-relative">
+            <form [formGroup]="providerpayrollForm">
+              <div class="rounded bg-white flex-shrink-0">
+                <!-- <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>-->
+
+                <div class="rounded-box-title-bar form-edit-sub-heading m-1 mb-1 pl-1 flex-shrink-0 justify-content-between pr-0">
+                    Search Criteria
+                    <div class="d-flex align-items-center">
+                     <button class="btn btn-link fz-13 text-decoration-none line-height-1 p-0 mr-2"
+                     *ngIf="lookupList.UserRights.payroll_setting"
+                    (click)="payRollSettings()"><i class="fas fa-cog pr-1"></i>Setting</button>
+                    </div>
+                  </div>
+
+                <div class="p-2 pt-0">
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-2">
+                      <label for="cmbProvider" class="col-form-label">Provider:</label>
+                      <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider">
+                        <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                      </select>
+                    </div>
+        
+                    <div class="custom-control custom-checkbox green-checkbox col-1 mt-4 pl-3">
+                        <input type="checkbox" class="custom-control-input" id="chkbox_Enrolled"
+                          formControlName="chkbox_Enrolled">
+                        <label class="custom-control-label" for="chkbox_Enrolled">Enrolled</label>
+                      </div>
+        
+                    <div class="form-group col-2">
+                      <label for="cmbLocation" class="col-form-label">Location:</label>
+                      <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                        <option [value]="null">All</option>
+                        <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                      </select>
+                    </div>
+        
+                    <div class="form-group col-2">
+                      <label for="cmbMonthsdaywise" class="col-form-label">Month:</label>
+                      <div class="form-row form-dashboard">
+                        <div class="form-group col-12">
+                          <select class="form-control" id="cmbMonthsdaywise" formControlName="cmbMonthsdaywise">
+                            <option *ngFor="let month of lookupList.lstMonths" [value]="month.month_no">{{month.month_name}}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group col-2">
+                      <label for="txtYeardaywise" class="col-form-label">Year:</label>
+                      <input class="form-control" name="txtYeardaywise" placeholder="YYYY" formControlName="txtYeardaywise">
+                    </div>
+                    <div class="custom-control custom-checkbox green-checkbox col-2 mt-4 pl-3">
+                        <input type="checkbox" class="custom-control-input" id="chkbox_aca"
+                          formControlName="chkbox_aca">
+                        <label class="custom-control-label" for="chkbox_aca">Include ACA</label>
+                      </div>
+        
+                    <div class="form-group col-1 d-flex justify-content-end align-items-end">
+                      <button type="button" class="btn btn-success w-100"
+                        (click)="searchPayRoll()">Search</button>
+                    </div>
+                  </div>
+                </div>
+        
+              </div>
+            </form>
+        
+            <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2">
+              <h4 class="form-edit-sub-heading border-bottom-0 flex-shrink-0 m-1 mb-0 pl-1">Details</h4>
+              <div class="overflow-auto flex-grow-1">
+                <table class="table light-striped-border">
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>Procedure</th>
+                      <th>Patient</th>
+                      <th>Visits</th>
+                      <th>Procedures</th>
+                      <th>Charges</th>
+                      <th>Payments</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <!-- *ngFor="let eleg of lstEligibiltyVerif" -->
+                      <tr *ngFor="let pay of acPayRoll"
+                      [ngClass]="{'font-weight-bold': (pay.proc_description == 'TOTAL' || pay.proc_description == 'NET TOTAL'),
+                      'border-top': (pay.proc_description == 'TOTAL' || pay.proc_description == 'NET TOTAL'),
+                      'border-bottom': (pay.proc_description == 'TOTAL' || pay.proc_description == 'NET TOTAL'),
+                      'border-secondary': (pay.proc_description == 'TOTAL' || pay.proc_description == 'NET TOTAL'),
+                      'invisible': (pay.proc_description == 'EMPTY')}">
+                        <td [ngClass]="{'font-weight-bold': (pay.category_name != '' || pay.category_name != null)}">
+                        {{pay.category_name}}</td>
+                        <td>{{pay.proc_description}}</td>
+                        <td>{{pay.patient_count}}</td>
+                        <td>{{pay.visit_count}}</td>
+                        <td>{{pay.proc_count}}</td>
+                        <td>{{pay.proc_charges}}</td>
+                        <td>{{pay.proc_payment}}</td>
+                        <td class="text-right">
+                          <button *ngIf="(pay.proc_description != 'TOTAL' && pay.proc_description != 'EMPTY' && pay.proc_description != 'NET TOTAL')" 
+                          type="button" class="link-btn" (click)="onShowDetail(pay)">Details</button>
+                        </td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        
+            <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+              <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+              </div>
+            </div>
+        
+          </div>
+        </div>
+        <!-- MAIN END -->
+        
+        <!-- SETTINGS -->
+        <div class="d-flex flex-column flex-grow-1 m-8 mt-0" *ngIf="showDetails == 'settings'">
+          <div class="light-title-bar rounded-top h-25 d-flex align-items-center justify-content-between flex-shrink-0">
+              <!-- <div class="d-flex">
+                  <button class="btn new-meesage flex-shrink-0 rounded-top" (click)="onBackToPayrollReport()">
+                      <i class="fas fa-arrow-left mr-2"></i>Back to Payroll Report</button>
+              </div>    
+            <div class="fz-15 font-weight-400">Provider Payroll Procedure Categories</div> -->
+            <div class="d-flex">
+                <button class="btn new-meesage flex-shrink-0 rounded-top" (click)="onBackToPayrollReport()">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Payroll Report</button>
+                <div class="fz-15 font-weight-400 text-white ml-2 mt-1">Provider Payroll Procedure Categories</div>
+            </div>
+          </div>
+        
+        
+        
+           <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+                <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+                    <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                        <form [formGroup]="frmCategories" class="d-flex flex-column flex-grow-1">
+                            <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                                <div class="rounded-box-title-bar justify-content-between">
+                                    <span>Payroll Categories</span>
+                                    <div *ngIf="!isAddEditCategories">
+                                        <a class="fz-13 font-weight-400 mr-2" (click)="addNewCategories()" href="#">Add</a>
+                                    </div>
+                                    <ul class="nav color-buttons align-items-center" *ngIf="isAddEditCategories">
+                                        <button class="btn btn-sub-nav rounded-0 btn-success" (click)="saveCategories()">Save</button>
+                                        <button class="btn btn-sub-nav rounded-0 btn-dark" (click)="cancelCategories()">Cancel</button>
+                                    </ul>
+        
+                                </div>
+        
+                                <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+                                    <div class="border-top pt-1 bg-white d-flex flex-column flex-shrink-0">
+                                        <div class="d-flex flex-column flex-grow-1">
+                                            <div class="form-group horizental row zero mb-1">
+                                                <label class="col-sm-2 col-form-label " for="input2">Name:</label>
+                                                <input type="text" class="form-control col-sm-10" formControlName="txt_categoryName"
+                                                    [readonly]="!isAddEditCategories">
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                    <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                        <table class="table layout-fixed sm light-striped-border">
+                                            <tbody>
+                                                <tr st-select-row="row" *ngFor="let cat of lstPayrollCategories" (click)="categorychange(cat)"
+                                                    [ngClass]="{'active' : (cat.category_id === selectedCategoryID)}">
+                                                    <td>{{cat.category_name}}</td>
+                                                    <td class="text-right width-60">
+                                                        <a class="p-0 text-primary mr-2" (click)="editCategory(cat)">
+                                                            <i class="far fa-edit"></i>
+                                                        </a>
+                                                        <a class="text-danger" href="#" (click)="deleteSeletedCategory(cat)">
+                                                            <i class="far fa-trash-alt"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+        
+                    <div class="col-md-6 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                        <form [formGroup]="frmProcedures" class="d-flex flex-column flex-grow-1">
+                            <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                                <div class="rounded-box-title-bar justify-content-between">
+                                    <span>Procedures</span>
+                                    <div *ngIf="!isAddEditProcedures">
+                                        <a class="fz-13 font-weight-400 mr-2" (click)="addNewProcedures()" href="#">Add</a>
+                                    </div>
+                                    <!-- <div *ngIf="isAddEditSection">
+                                        <a class="fz-13 font-weight-400 mr-2" (click)="saveSection()">Save</a>
+                                        <a class="fz-13 font-weight-400" (click)="cancelSection()">Cancel</a>
+                                    </div> -->
+        
+                                    <ul class="nav color-buttons align-items-center" *ngIf="isAddEditProcedures">
+                                        <button class="btn btn-sub-nav rounded-0 btn-success" (click)="saveProcedures()">Save</button>
+                                        <button class="btn btn-sub-nav rounded-0 btn-dark" (click)="cancelProcedures()">Cancel</button>
+                                    </ul>
+        
+                                </div>
+        
+                                <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+                                        <div class="border-top pt-1 bg-white d-flex flex-column flex-shrink-0">
+                                            
+        
+                                            <!-- <div class="form-group col-12">
+                                
+                                                <div class="form-group has-search flex-grow-1">
+                                                    <span class="fa fa-search form-control-feedback"></span>
+                                                    <input type="text" class="form-control" formControlName="txtProcedure" placeholder="Search Procedure" autocomplete="off"
+                                                      #txtProcSearch (input)="onProcedureSearcInputChange($event)" (blur)="onProcedureSearhBlur($event)">
+                                  
+                                                    <inline-procedure-search *ngIf="showProcSearch" [procSearchCriteria]="procedureSearchCriteria"
+                                                      (onSelect)="addProcedureFromSearch($event)" (onClose)="closeProcedureSearch()"></inline-procedure-search>
+                                  
+                                                  </div>
+                      
+                                            </div> -->
+        
+                                            <div class="form-flex col-md-12 col-12 py-0">
+                                                <div class="form-group has-search flex-grow-1">
+                                                  <span class="fa fa-search form-control-feedback" style="right: 17px !important"></span>
+                                                  <input [readonly]="!isAddEditProcedures" type="text" class="form-control search-highlight" placeholder="Search Procedure"
+                                                  formControlName="txt_procedureCode"
+                                                    autocomplete="off" #txtProcSearch (input)="onProcedureSearcInputChange($event)"
+                                                    (blur)="onProcedureSearhBlur($event)" (keyup.arrowdown)="shiftFocusToProcSearch()">
+                                
+                                                  <inline-procedure-search id="inlineClaimProcSearch" name="inlineClaimProcSearch"
+                                                    #inlineClaimProcSearch *ngIf="showProcSearch" [procSearchCriteria]="procedureSearchCriteria"
+                                                    (onSelect)="addProcedureFromSearch($event)" (onClose)="closeProcedureSearch()">
+                                                  </inline-procedure-search>
+                                
+                                                </div>
+                                
+                                              </div>
+                                
+                                                <!-- <div class="form-group has-search flex-grow-1">
+                                                  <span class="fa fa-search form-control-feedback"></span>
+                                                  <input type="text" class="form-control search-highlight" placeholder="Search Procedure"
+                                                    autocomplete="off" #txtProcSearch (input)="onProcedureSearcInputChange($event)"
+                                                    (blur)="onProcedureSearhBlur($event)" (keyup.arrowdown)="shiftFocusToProcSearch()">
+                                
+                                                  <inline-procedure-search id="inlineClaimProcSearch" name="inlineClaimProcSearch"
+                                                    #inlineClaimProcSearch *ngIf="showProcSearch" [procSearchCriteria]="procedureSearchCriteria"
+                                                    (onSelect)="addProcedureFromSearch($event)" (onClose)="closeProcedureSearch()">
+                                                  </inline-procedure-search>
+                                
+                                                </div> -->
+        
+                                
+                                            
+                                    </div>
+        
+                                    <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                        <table class="table layout-fixed sm light-striped-border">
+                                            <tbody>
+                                                <tr st-select-row="row" *ngFor="let paycat of lstCategoryProcedures; let i = index"
+                                                (click)="ProceduresChange(paycat)"
+                                                    [ngClass]="{'active' : (paycat.category_procedure_id === selectedProceduresID)}">
+                                                    <td class="width-90" title="{{paycat.proc_code}}">{{paycat.proc_code}}</td>
+                                                    <td title="{{paycat.proc_description}}">{{paycat.proc_description}}</td>
+                                                    <td class="text-right width-30">
+                                                        <a class="text-danger" href="#" title="Delete Procedure" (click)="deleteSeletedProcedures(paycat, i)">
+                                                            <i class="far fa-trash-alt"></i>
+                                                        </a>
+                                                    </td>
+                                                    <!-- <td class="text-right">
+                                                        <a class="p-0 text-danger" (click)="onDeleteProcedures(paycat, i)"><i class="far fa-trash-alt"></i></a>
+                                                      </td> -->
+                                      </tr>
+                                                <!-- <tr st-select-row="row" *ngFor="let proc of lstCategoryProcedures" (click)="ProceduresChange(proc)"
+                                                    [ngClass]="{'active' : (proc.category_procedure_id === selectedProceduresID)}">
+                                                    <td>{{proc.proc_code}}</td>
+                                                    <td>{{proc.proc_description}}</td>
+                                                    <td class="text-right">
+                                                        <a class="p-0 text-primary mr-2" (click)="editProcedures(proc)">
+                                                            <i class="far fa-edit"></i>
+                                                        </a>
+                                                        <a class="text-danger" href="#" (click)="deleteSeletedProcedures(proc)">
+                                                            <i class="far fa-trash-alt"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr> -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+        
+                    <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                        <!-- <form [formGroup]="frmProviders" class="d-flex flex-column flex-grow-1"> -->
+                            <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                                <div class="rounded-box-title-bar justify-content-between">
+                                    <span>Providers</span>
+                                    <div *ngIf="!isEditProviders">
+                                        <a class="fz-13 font-weight-400 mr-2" (click)="editProviders()" href="#">Edit</a>
+                                    </div>
+                                    <!-- <div *ngIf="isAddEditSubSection">
+                                        <a class="fz-13 font-weight-400 mr-2" (click)="saveSubSection()">Save</a>
+                                        <a class="fz-13 font-weight-400" (click)="cancelSubSection()">Cancel</a>
+                                    </div> -->
+                                    <ul class="nav color-buttons align-items-center" *ngIf="isEditProviders">
+                                        <button class="btn btn-sub-nav rounded-0 btn-success" (click)="saveProviders()">Save</button>
+                                        <button class="btn btn-sub-nav rounded-0 btn-dark" (click)="cancelProviders()">Cancel</button>
+                                    </ul>
+                                </div>
+        
+                                <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+        
+                                    <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                        <table class="table layout-fixed sm light-striped-border">
+                                            <tbody>
+                                                <tr st-select-row="row"
+                                                (click)="providerschange(prov)" 
+                                                [ngClass]="{'active' : (prov.provider_id === selectedProvidersID)}"
+                                                *ngFor="let prov of lstCategoryProviders; let i = index">
+                                                <!-- <td width="15%"><input class="v-align-middle" type="checkbox"
+                                                        (change)="checkChkBoxprovider(prov.sub_section_id,$event.currentTarget.checked)"
+                                                        [checked]="prov.chk"></td> -->
+                                                
+                                                        <td class="width-30">
+                                                            <input class="v-align-middle" [disabled]="!isEditProviders"
+                                                                (change)="checkProviderChkBox(prov.provider_id,$event.currentTarget.checked)"
+                                                                type="checkbox" [checked]="prov.selected"></td>
+                                                        <td>{{prov.provider_name}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        <!-- </form> -->
+        
+                    </div>
+                </div>
+            </div>
+        
+        
+        </div>
+        <!-- SETTINGS END-->
+        
+        
+        <!-- Details -->
+        <div class="d-flex flex-column flex-grow-1 m-8 mt-0" *ngIf="showDetails == 'details'">
+          <div class="light-title-bar rounded-top h-25 d-flex align-items-center justify-content-between flex-shrink-0">
+        
+        
+              <div class="d-flex">
+                  <button class="btn new-meesage flex-shrink-0 rounded-top" (click)="onBackToPayrollReport()">
+                      <i class="fas fa-arrow-left mr-2"></i>Back to Payroll Report</button>
+                  <div class="fz-15 font-weight-400 text-white ml-2 mt-1">{{procedureDetailTitle}}</div>
+              </div>
+          </div>
+        
+        
+        
+           <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+                <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+                    <div class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                            <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                                <div class="rounded-box-title-bar justify-content-between">
+                                    <span>Visit Detail</span>
+                                </div>
+                                <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+                                    <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                        <table class="table layout-fixed sm light-striped-border">
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient</th>
+                                                    <th>DOS</th>
+                                                    <th>DOB</th>
+                                                    <th>Date Created</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- [ngClass]="{'active' : (vis.patient_letter_id === isSelectedLtrID)}" -->
+                                                <tr *ngFor="let vis of acPayRollVisits">
+                                                  <td>
+                                                        <p><button type="button" [disabled]="!this.lookupList.UserRights.patient_view" class="link-btn"
+                                                            (click)="openPatientSummary(vis)">{{vis.patient_name}}</button></p>  
+                                                    </td>
+                                                  <td>
+                                                        <button type="button" class="link-btn" (click)="openClaim(vis)">{{vis.DOS}}</button>  
+                                                  </td>
+                                                  <td>{{vis.dob}}</td>
+                                                  <td>{{vis.date_created}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+        
+                    <div class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                            <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                                <div class="rounded-box-title-bar justify-content-between">
+                                    <span>Charges Detail</span>
+                                </div>
+                                <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+                                    <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                        <table class="table layout-fixed sm light-striped-border">
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient</th>
+                                                    <th>DOS</th>
+                                                    <th>DOB</th>
+                                                    <th>Charges</th>
+                                                    <th>Date Created</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- [ngClass]="{'active' : (vis.patient_letter_id === isSelectedLtrID)}" -->
+                                                <tr *ngFor="let charg of acPayRollCharges">
+                                                  <td>
+                                                        <p><button type="button" [disabled]="!this.lookupList.UserRights.patient_view" class="link-btn"
+                                                            (click)="openPatientSummary(charg)">{{charg.patient_name}}</button></p>  
+                                                    </td>
+                                                  <td>
+                                                        <button type="button" class="link-btn" (click)="openClaim(charg)">{{charg.DOS}}</button>  
+                                                  </td>
+        
+        
+                                                  <td>{{charg.dob}}</td>
+                                                  <td>{{charg.proc_charges}}</td>
+                                                  <td>{{charg.date_created}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+        
+                    <div class="col-md-4 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+                        
+                        <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                            <div class="rounded-box-title-bar justify-content-between">
+                                <span>Payment Detail</span>
+                            </div>
+                            <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+                                <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                                    <table class="table layout-fixed sm light-striped-border">
+                                        <thead>
+                                            <tr>
+                                                <th>Patient</th>
+                                                <th>DOS</th>
+                                                <th>DOB</th>
+                                                <th>Payments</th>
+                                                <th>Date Created</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- [ngClass]="{'active' : (vis.patient_letter_id === isSelectedLtrID)}" -->
+                                            <tr *ngFor="let pay of acPayRollPayment">
+                                              <td>
+                                                    <p><button type="button" [disabled]="!this.lookupList.UserRights.patient_view" class="link-btn"
+                                                        (click)="openPatientSummary(pay)">{{pay.patient_name}}</button></p>  
+                                                </td>
+                                              <td>
+                                                    <button type="button" class="link-btn" (click)="openClaim(pay)">{{pay.DOS}}</button>  
+                                              </td>
+        
+                                              <td>{{pay.dob}}</td>
+                                              <td>{{pay.proc_payment}}</td>
+                                              <td>{{pay.date_created}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        
+        </div>
+        <!-- Details END-->
+        </div>
+      
+          <!-- ############################################################################# -->
+          
+<!-- <div *ngIf="showReport=='providerwisecollection'" class="d-flex flex-column flex-grow-1">
+        <rpt-provider-wise-collection class="d-flex flex-column flex-grow-1">
+            </rpt-provider-wise-collection>
+</div> -->
+          <!-- ################################################################ -->
+       
+      
+        </div>

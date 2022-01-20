@@ -1,0 +1,29 @@
+export class ORMCreditCardPayment {
+    ccpayment_id:number;
+    patient_id:number;
+    cash_register_id:number;
+    card_number:string;
+    card_type:string;
+    authcode:string;
+    holder_first_name:string;
+    holder_last_name:string;
+    address:string;
+    zip:string;
+    city:string;
+    state:string;
+    comments:string;
+    transaction_id:string;
+    transaction_datetime:string;
+    charges:number;
+    api_message:string;
+    practice_id:number;
+    created_user:string;
+    client_date_created:string;
+    modified_user:string;
+    client_date_modified:string;
+    date_created:string;
+    date_modified:string;
+    phone:string;
+    email:string;
+    service_name:string;   
+}

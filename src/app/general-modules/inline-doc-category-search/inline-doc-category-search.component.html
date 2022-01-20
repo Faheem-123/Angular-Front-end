@@ -1,0 +1,43 @@
+<div class="inline-search">
+  <div class="inline-search-header">
+    <h6 class="title">Document Category Search</h6>
+    <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+
+    <div class="form-group d-flex flex-column flex-grow-1">
+      <div class="border rounded p-1 flex-grow-1 overflow-auto overflow-height">
+        <tree-root #tree [nodes]="lookupList.lstCategoriesTreeWithNoLab" [options]="docCategoryOptions" (activate)="OnCategoryChange($event)"
+          (dblclick)="doubleClick()">
+        </tree-root>
+      </div>
+    </div>
+
+    <!--
+
+    <ul>
+      <li *ngFor="let parentCat of lstParentCategory">
+        {{parentCat.category_name}}
+        <ul>
+          <li
+            *ngFor="let subParentCat of lstSubParentCategory | listFilter : 'parent_category' : parentCat.document_categories_id">
+            {{subParentCat.category_name}}
+            <ul>
+              <li
+                *ngFor="let subCat of lstSubCategory | listFilter : 'parent_category' : subParentCat.document_categories_id">
+                {{subCat.category_name}}
+              </li>
+            </ul>
+          </li>
+
+        </ul>
+      </li>
+    </ul>
+    -->
+
+  </div>
+</div>

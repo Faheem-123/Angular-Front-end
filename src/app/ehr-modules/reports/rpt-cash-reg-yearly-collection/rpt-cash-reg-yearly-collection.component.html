@@ -1,0 +1,82 @@
+<!-- ****************************** -->
+<div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+  <div class="accordian-header" role="tab" id="headingOne">
+    <h5 class="mb-0">
+      <a data-toggle="collapse" href="#SearchCriteriaYearlyCollectionRpt" aria-expanded="true"
+        class="accordian-link rounded-0">
+        <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+      </a>
+    </h5>
+  </div>
+  <div id="SearchCriteriaYearlyCollectionRpt" class="show">
+    <div class="accordian-body bg-transparent">
+      <form [formGroup]="yearlyCollectionReportForm">
+
+
+        <div class="p-2 pt-0">
+          <div class="form-row form-dashboard">
+
+
+            <div class="form-group col-2">
+              <label class="col-form-label" for="yearColl">Year:</label>
+              <div class="input-group">
+                <input class="form-control" name="yearColl" formControlName="yearColl">
+              </div>
+            </div>
+
+            <div class="form-group col-2">
+              <button type="button" class="btn btn-success w-100" (click)="searchYearlyCollection()">Search</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="border rounded bg-white flex-grow-1 mt-2">
+  <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+  <div class="overflow-auto">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Location</th>
+          <th>Collection Type</th>
+          <th>January</th>
+          <th>February</th>
+          <th>March</th>
+          <th>April</th>
+          <th>May</th>
+          <th>June</th>
+          <th>July</th>
+          <th>August</th>
+          <th>September</th>
+          <th>October</th>
+          <th>November</th>
+          <th>December</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let year of lstYearlyCollection">
+          <td>{{year.location_name}}</td>
+          <td>{{year.collection_type}}</td>
+          <td>{{year.month_01}}</td>
+          <td>{{year.month_02}}</td>
+          <td>{{year.month_03}}</td>
+          <td>{{year.month_04}}</td>
+          <td>{{year.month_05}}</td>
+          <td>{{year.month_06}}</td>
+          <td>{{year.month_07}}</td>
+          <td>{{year.month_08}}</td>
+          <td>{{year.month_09}}</td>
+          <td>{{year.month_10}}</td>
+          <td>{{year.month_11}}</td>
+          <td>{{year.month_12}}</td>
+          <td>{{year.total}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

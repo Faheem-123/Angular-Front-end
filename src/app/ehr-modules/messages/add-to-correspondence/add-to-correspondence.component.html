@@ -1,0 +1,113 @@
+<form [formGroup]="addtocorrespondenceForm">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Add to Correspondence</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom">
+
+
+
+
+
+    <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+      <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+        <div class="col-md-7 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+          <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+            <div class="justify-content-between">
+              <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                <div class="fz-14 text-white font-weight-400">Add to Correspondence</div>
+              </div>
+            </div>
+            <div class="d-flex flex-column flex-grow-1">
+              <div class="border-top bg-white flex-grow-1 overflow-auto">
+                <div class="messages-list d-flex flex-grow-1">
+                  <div class="tab-content bg-white">
+                    <div class="message-detail flex-grow-1 p-3 overflow-auto">
+
+
+
+
+                      <div class="form-group col-12">
+                        <label for="input2" class="col-form-label">Labeling:</label>
+                        <div class="form-row form-dashboard">
+                          <div class="form-group col-12">
+                            <div class="input-icon d-flex flex-grow-3">
+                              <input id="txtLabeling" class="form-control flex-grow-3" type="text" formControlName="txtLabeling">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+                      <div class="form-group col-12">
+                        <label for="input2" class="col-form-label">Details:</label>
+                        <div class="form-row form-dashboard">
+                          <div class="form-group col-12">
+                            <div class="input-icon d-flex flex-grow-3">
+                              <textarea rows="15" class="form-control col-12" id="details" formControlName="details"></textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer custom">
+                          <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="activeModal.dismiss('Cross click')">Cancel</button>
+                          <button style="width: 80px;" class="btn btn-success btn-sm" type="submit" (click)="SaveToCorrespondence(addtocorrespondenceForm.value)" >Save</button>                  
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+          <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+            <div class="justify-content-between">
+              <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                <div class="fz-14 text-white font-weight-400">Attachments</div>
+              </div>
+            </div>
+            <div class="d-flex flex-column flex-grow-1">
+              <div class="border-top bg-white flex-grow-1 overflow-auto">
+                <div class="messages-list d-flex flex-grow-1">
+                  <table class="table layout-fixed sm light-striped-border">
+                    <tbody>
+                        <tr *ngFor="let atch of attachmentsList">
+                            <td>{{atch.original_file_name}} </td>
+                          </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="justify-content-between">
+              <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                <div class="fz-14 text-white font-weight-400">Links</div>
+              </div>
+            </div>
+            <div class="d-flex flex-column flex-grow-1">
+              <div class="border-top bg-white flex-grow-1 overflow-auto">
+                <div class="messages-list d-flex flex-grow-1">
+                  <table class="table layout-fixed sm light-striped-border">
+                    <tbody>
+                        <tr *ngFor="let links of linksList">
+                            <td> <a href="{{links.link}}" target="_blank">{{links.link}}</a> </td>
+                          </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

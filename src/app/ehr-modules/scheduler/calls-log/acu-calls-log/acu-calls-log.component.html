@@ -1,0 +1,76 @@
+<div class="d-flex flex-column flex-grow-1">
+
+  <div class="d-flex flex-grow-1 overflow-height">
+
+
+    <div class="d-flex flex-column flex-grow-1">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1">
+
+
+        <div class="radio-btns-bar green-sel">
+          <form [formGroup]="radioFormGroup">
+
+            <div class="btn-group btn-group-toggle">
+              <label class="btn rounded-3-top-left" [ngClass]="{'active' : (selectedTab === 'current_appointment')}">
+                <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                  value="current_appointment" (ngModelChange)="onRadioOptionChange ($event)"> Current Appointment Call Log
+              </label>
+              <label class="btn" [ngClass]="{'active' : (selectedTab === 'all')}">
+                <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                  value="all" (ngModelChange)="onRadioOptionChange ($event)"> All Calls Log
+              </label>
+            </div>
+
+
+          </form>
+        </div>
+
+        <div class="rounded-3-bottom bg-white d-flex flex-column flex-grow-1">
+
+          <div *ngIf="!isLoading &&  (lstCallLogs==undefined || lstCallLogs.length==0)" class="no-content">
+            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+          </div>
+
+          <div class="rounded-3-bottom overflow-auto bg-white flex-grow-1 max-height-100"
+            *ngIf="!isLoading && lstCallLogs!=undefined && lstCallLogs.length>0">
+
+            <table class="table sm td-normal-wrap light-striped-border">
+              <thead>
+                <tr>
+                  <td class="width-100">Call Date</td>
+                  <td class="width-100">App. Date</td>
+                  <td class="width-200">Location</td>
+                  <td class="width-200">Provider</td>                  
+                  <td >Status</td>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let log of lstCallLogs">
+                  <td>{{log.call_date}}</td>
+                  <td>{{log.appointment_date}}</td>
+                  <td>{{log.location_name}}</td>
+                  <td>{{log.provider_name}}</td>
+                  <td>{{log.status}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+        </div>
+
+
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="div-loader-message-box" *ngIf="isLoading">
+    <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+  </div>
+
+</div>

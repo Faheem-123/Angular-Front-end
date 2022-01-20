@@ -1,0 +1,75 @@
+<!--
+<div class="modal-header custom">
+    <h4 class="modal-title">{{promptHeading}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom">
+    {{promptMessage}}
+  </div>
+  <div class="modal-footer custom">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="noClick()">No</button>
+  
+    <button type="button" style="width: 80px;" class="btn btn-success btn-sm" (click)="yesClick()">Yes</button>
+  
+  </div>
+-->
+<!-- 
+<div class="alert alert-custom m-0" role="alert" [ngClass]="{
+  'alert-primary' : (alertType === 'primary'),
+  'alert-info' : (alertType === 'info'),
+  'alert-warning' : (alertType === 'warning'),
+  'alert-danger' : (alertType === 'danger')}">
+
+  <h5><img class="logo" src="./assets/images/logo-small.png">{{promptHeading}}</h5>
+  <hr class="mt-0">
+  <div class="row">
+    <div class="col col-2">
+      <i class=" alertIco" [ngClass]="{
+        'text-primary' : (alertType === 'primary'),
+        'text-info' : (alertType === 'info'),
+        'fa fa-exclamation-triangle text-warning' : (alertType === 'warning'),
+        'fas fa-question-circle text-danger' : (alertType === 'danger')}"
+        aria-hidden="true"></i>
+    </div>
+    <div class="col col-10 pl-0 pt-2" [innerHTML]="promptMessage">      
+    </div>
+
+  </div>
+
+</div>
+<div class="modal-footer custom">
+  <button type="button" style="width: 80px;" class="btn btn-success btn-sm" (click)="yesClick()">Yes</button>
+  <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="noClick()">No</button>
+</div> -->
+
+
+
+<!-- [ngClass]="{
+  'alert-primary' : (alertType === 'primary'),
+  'alert-info' : (alertType === 'info'),
+  'alert-warning' : (alertType === 'warning'),
+  'alert-danger' : (alertType === 'danger')}" -->
+<div class="modal-header dialog px-3 py-2 alert alert-warning" style="height: 40px" role="alert">
+
+  <h6><img class="mr-2" src="./assets/images/logo-small.png">{{promptHeading}}</h6>
+</div>
+<div class="dialog mb-2" style="min-height: 50px;padding-left: 15px;">
+  <div class="d-flex align-items-center">
+
+    <!-- [ngClass]="{
+      'text-primary' : (alertType === 'primary'),
+      'fas fa-check-circle text-success' : (alertType === 'info'),
+      'fas fa-exclamation-triangle alert-warning-text' : (alertType === 'warning'),
+      'fas fa-times-circle text-danger' : (alertType === 'danger')}" -->
+    <i class="fa fa-2x mr-3 fas fa-question-circle text-warning"></i>
+    <div class="col col-10 pl-0 fz-14" [innerHTML]="promptMessage">
+
+    </div>
+  </div>
+</div>
+<div class="modal-footer custom">
+  <button type="button" style="width: 80px;" class="btn btn-success btn-sm" (click)="yesClick()">Yes</button>
+  <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="noClick()">No</button>
+</div>

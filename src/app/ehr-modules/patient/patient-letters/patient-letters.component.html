@@ -1,0 +1,206 @@
+<div class="dashboard-container d-flex flex-column mb-8-px " *ngIf="isSummary">
+    <div class="dashboard">
+        <div class="dashboard-title h-30">
+            <div class="title">Letters from patient</div>
+
+            <div class="title-link">
+                <a (click)="onNewLetter()">
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i> New Letter
+                </a>
+
+            </div>
+        </div>
+
+        <div class="dashboard-sub-nav filters">
+
+        </div>
+
+        <div class="dashboard-content">
+
+            <table class="table light-striped-border">
+                <thead>
+                    <tr>
+                        <th>DOS</th>
+                        <th>Letter Name</th>
+                        <th>Patient</th>
+                        <th>DOB</th>
+                        <th>Signed By</th>
+                        <th>Fax Status</th>
+                        <th>Created User</th>
+                        <th>Created Date</th>
+                        <th>Modified User</th>
+                        <th>Modified Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>DOS</td>
+                        <td>Letter Name</td>
+                        <td>Patient</td>
+                        <td>DOB</td>
+                        <td>Signed By</td>
+                        <td>Fax Status</td>
+                        <td>Created User</td>
+                        <td>Created Date</td>
+                        <td>Modified User</td>
+                        <td>Modified Date</td>
+                    </tr>
+
+                    <tr>
+                        <td>DOS</td>
+                        <td>Letter Name</td>
+                        <td>Patient</td>
+                        <td>DOB</td>
+                        <td>Signed By</td>
+                        <td>Fax Status</td>
+                        <td>Created User</td>
+                        <td>Created Date</td>
+                        <td>Modified User</td>
+                        <td>Modified Date</td>
+                    </tr>
+
+                    <tr>
+                        <td>DOS</td>
+                        <td>Letter Name</td>
+                        <td>Patient</td>
+                        <td>DOB</td>
+                        <td>Signed By</td>
+                        <td>Fax Status</td>
+                        <td>Created User</td>
+                        <td>Created Date</td>
+                        <td>Modified User</td>
+                        <td>Modified Date</td>
+                    </tr>
+
+                    <tr>
+                        <td>DOS</td>
+                        <td>Letter Name</td>
+                        <td>Patient</td>
+                        <td>DOB</td>
+                        <td>Signed By</td>
+                        <td>Fax Status</td>
+                        <td>Created User</td>
+                        <td>Created Date</td>
+                        <td>Modified User</td>
+                        <td>Modified Date</td>
+                    </tr>
+
+                    <tr>
+                        <td>DOS</td>
+                        <td>Letter Name</td>
+                        <td>Patient</td>
+                        <td>DOB</td>
+                        <td>Signed By</td>
+                        <td>Fax Status</td>
+                        <td>Created User</td>
+                        <td>Created Date</td>
+                        <td>Modified User</td>
+                        <td>Modified Date</td>
+                    </tr>
+
+                    <tr>
+                        <td>DOS</td>
+                        <td>Letter Name</td>
+                        <td>Patient</td>
+                        <td>DOB</td>
+                        <td>Signed By</td>
+                        <td>Fax Status</td>
+                        <td>Created User</td>
+                        <td>Created Date</td>
+                        <td>Modified User</td>
+                        <td>Modified Date</td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div class="dashboard-container d-flex flex-column mb-8-px mt-8-px" *ngIf="isNewLetter">
+    <div class="dashboard ">
+        <div class="module-box-title rounded-10-top pr-0 overflow-hidden">
+            <button class="left-back-btn rounded-10-top-left"><i class="fas fa-arrow-left mr-2"></i>Back to Home
+            </button>
+            <div class="fz-14 font-weight-500 px-2 py-1">New Letter</div>
+            <div class="flex-grow-1"></div>
+            <div class="d-flex">
+                <a class="font-weight-400 fz-13 px-2 py-1" href="#"><i class="fas fa-eye"></i> Preview</a>
+            </div>
+            <ul class="nav color-buttons align-items-center">
+                <a class="nav-link bg-dark px-2 py-0" href="#">Cancel</a>
+                <a class="nav-link bg-success px-2 py-0" href="#">Save</a>
+            </ul>
+        </div>
+
+        <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+            <div class="border rounded bg-white px-2 py-1">
+                <form>
+                    <div class="form-row form-dashboard">
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label ">Select Patient:</label>
+                            <div class="form-group has-search col-sm-10">
+                                <span class="fa fa-search form-control-feedback"></span>
+                                <input class="form-control" placeholder="Enter Code or Description to Search"
+                                    type="text">
+                            </div>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-1 col-sm-6 col-12">
+                            <a class="text-info line-height-normal" href="" placement="top"
+                                ngbTooltip="Tooltip on top"><i class="fas fa-question-circle"></i></a>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-2 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-3 col-form-label ">DOS:</label>
+                            <div class="input-group col-sm-9">
+                                <input class="form-control" placeholder="mm/dd/yyyy" name="dpProblemDate">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-outline-primary" type="button">
+                                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Letter Templates:</label>
+                            <select class="form-control col-sm-10" labelForId="input1">
+                                <option>s.name</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Header:</label>
+                            <select class="form-control col-sm-10" labelForId="input1">
+                                <option>s.category</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Section:</label>
+                            <select class="form-control col-sm-10" labelForId="input1">
+                                <option>s.category</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group horizental row zero col-md-6 col-sm-6 col-12">
+                            <label for="input2" class="col-sm-2 col-form-label">Optional Section:</label>
+                            <select class="form-control col-sm-10" labelForId="input1">
+                                <option>s.category</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="border rounded bg-white p-6 mt-1 d-flex flex-grow-1 overflow-auto">
+                <textarea class="form-control flex-control" id="" name=""></textarea>
+            </div>
+        </div>
+    </div>
+</div>

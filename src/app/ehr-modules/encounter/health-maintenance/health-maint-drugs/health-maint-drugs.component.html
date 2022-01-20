@@ -1,0 +1,871 @@
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+    <div class="rounded-top encounter-header-highlight justify-content-end">
+      <ul class="nav color-buttons align-items-center">
+  
+        <a class="nav-link green px-2 py-0" (click)="onSave(inputForm.value)"><i class="far fa-save pr-1"></i>Save</a>
+        <a class="nav-link encounter-btn-cancel px-2 py-0" (click)="dataUpdated.emit()"><i class="fas fa-times pr-1"></i>Cancel</a>
+      </ul>
+    </div>
+  
+    <div>
+      <div class="pt-1-px bg-white overflow-auto">
+        <form [formGroup]="inputForm">
+          <table class="table td-height td-vertical-align-middle light-striped-border">
+            <thead>
+              <tr>
+                <th width="10%" class="text-center">&nbsp;</th>
+                <th width="15%" class="text-center">Complete Date</th>
+                <th width="15%" class="text-center">Due Date</th>
+                <th width="9%" class="text-center">Positive</th>
+                <th width="9%" class="text-center">Negative</th>
+                <th width="56%" class="text-center">Comments</th>
+              </tr>
+            </thead>
+  
+            <tbody>
+              <tr>
+                <td class="form-edit-sub-heading">Amphetamines (AMP)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtAmphetaminesComplDate"
+                        formControlName="txtAmphetaminesComplDate" ngbDatepicker
+                        #txtAmphetaminesComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtAmphetaminesComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtAmphetaminesDueDate" formControlName="txtAmphetaminesDueDate"
+                        ngbDatepicker #txtAmphetaminesDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtAmphetaminesDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkAmphetaminesPos" name="chkAmphetaminesPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkAmphetaminesPos" name="chkAmphetaminesPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtAmphetaminesComments">
+                </td>
+              </tr>
+  
+              <tr>
+                <td class="form-edit-sub-heading">Barbiturate (BAR)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtBarbiturateComplDate" formControlName="txtBarbiturateComplDate"
+                        ngbDatepicker #txtBarbiturateComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtBarbiturateComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtBarbiturateDueDate" formControlName="txtBarbiturateDueDate"
+                        ngbDatepicker #txtBarbiturateDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtBarbiturateDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkBarbituratePos" name="chkBarbituratePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkBarbituratePos" name="chkBarbituratePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtBarbiturateComments">
+                </td>
+              </tr>
+  
+              <tr>
+                <td class="form-edit-sub-heading">Benzodiazepine (BZO)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtBenzodiazepineComplDate"
+                        formControlName="txtBenzodiazepineComplDate" ngbDatepicker
+                        #txtBenzodiazepineComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtBenzodiazepineComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtBenzodiazepineDueDate"
+                        formControlName="txtBenzodiazepineDueDate" ngbDatepicker
+                        #txtBenzodiazepineDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtBenzodiazepineDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkBenzodiazepinePos" name="chkBenzodiazepinePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkBenzodiazepinePos" name="chkBenzodiazepinePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtBenzodiazepineComments">
+                </td>
+              </tr>
+  
+              <tr>
+                <td class="form-edit-sub-heading">Cocaine (COC)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtCocaineComplDate" formControlName="txtCocaineComplDate"
+                        ngbDatepicker #txtCocaineComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtCocaineComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtCocaineDueDate" formControlName="txtCocaineDueDate"
+                        ngbDatepicker #txtCocaineDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtCocaineDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkCocainePos" name="chkCocainePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkCocainePos" name="chkCocainePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtCocaineComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Ecstasy (MDMA)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtEcstasyComplDate" formControlName="txtEcstasyComplDate"
+                        ngbDatepicker #txtEcstasyComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtEcstasyComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtEcstasyDueDate" formControlName="txtEcstasyDueDate"
+                        ngbDatepicker #txtEcstasyDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtEcstasyDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkEcstasyPos" name="chkEcstasyPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkEcstasyPos" name="chkEcstasyPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtEcstasyComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Marijuana (THC)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtMarijuanaComplDate" formControlName="txtMarijuanaComplDate"
+                        ngbDatepicker #txtMarijuanaComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtMarijuanaComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtMarijuanaDueDate" formControlName="txtMarijuanaDueDate"
+                        ngbDatepicker #txtMarijuanaDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtMarijuanaDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkMarijuanaPos" name="chkMarijuanaPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkMarijuanaPos" name="chkMarijuanaPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtMarijuanaComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Methadone (MTD)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtMethadoneComplDate" formControlName="txtMethadoneComplDate"
+                        ngbDatepicker #txtMethadoneComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtMethadoneComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtMethadoneDueDate" formControlName="txtMethadoneDueDate"
+                        ngbDatepicker #txtMethadoneDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtMethadoneDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkMethadonePos" name="chkMethadonePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkMethadonePos" name="chkMethadonePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtMethadoneComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Methamphetamine (MET)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtMethamphetamineComplDate"
+                        formControlName="txtMethamphetamineComplDate" ngbDatepicker
+                        #txtMethamphetamineComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtMethamphetamineComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtMethamphetamineDueDate"
+                        formControlName="txtMethamphetamineDueDate" ngbDatepicker
+                        #txtMethamphetamineDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtMethamphetamineDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkMethamphetaminePos" name="chkMethamphetaminePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkMethamphetaminePos" name="chkMethamphetaminePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtMethamphetamineComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Opiates (OPI)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtOpiatesComplDate" formControlName="txtOpiatesComplDate"
+                        ngbDatepicker #txtOpiatesComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtOpiatesComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtOpiatesDueDate" formControlName="txtOpiatesDueDate"
+                        ngbDatepicker #txtOpiatesDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtOpiatesDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkOpiatesPos" name="chkOpiatesPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkOpiatesPos" name="chkOpiatesPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtOpiatesComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Oxycodone (OXY)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtOxycodoneComplDate" formControlName="txtOxycodoneComplDate"
+                        ngbDatepicker #txtOxycodoneComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtOxycodoneComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtOxycodoneDueDate" formControlName="txtOxycodoneDueDate"
+                        ngbDatepicker #txtOxycodoneDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtOxycodoneDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkOxycodonePos" name="chkOxycodonePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkOxycodonePos" name="chkOxycodonePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtOxycodoneComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Phencyclidine (PCP)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtPhencyclidineComplDate"
+                        formControlName="txtPhencyclidineComplDate" ngbDatepicker
+                        #txtPhencyclidineComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtPhencyclidineComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtPhencyclidineDueDate" formControlName="txtPhencyclidineDueDate"
+                        ngbDatepicker #txtPhencyclidineDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtPhencyclidineDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkPhencyclidinePos" name="chkPhencyclidinePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkPhencyclidinePos" name="chkPhencyclidinePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtPhencyclidineComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Propoxyphene (PPX)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtPropoxypheneComplDate"
+                        formControlName="txtPropoxypheneComplDate" ngbDatepicker
+                        #txtPropoxypheneComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtPropoxypheneComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtPropoxypheneDueDate" formControlName="txtPropoxypheneDueDate"
+                        ngbDatepicker #txtPropoxypheneDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtPropoxypheneDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkPropoxyphenePos" name="chkPropoxyphenePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkPropoxyphenePos" name="chkPropoxyphenePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtPropoxypheneComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Tricyclic Antidepressants (TCA)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtTricyclicComplDate" formControlName="txtTricyclicComplDate"
+                        ngbDatepicker #txtTricyclicComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtTricyclicComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtTricyclicDueDate" formControlName="txtTricyclicDueDate"
+                        ngbDatepicker #txtTricyclicDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtTricyclicDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkTricyclicPos" name="chkTricyclicPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkTricyclicPos" name="chkTricyclicPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtTricyclicComments">
+                </td>
+              </tr>
+  
+  
+  
+              <tr>
+                <td class="form-edit-sub-heading">Bup (BUP)</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtBupComplDate" formControlName="txtBupComplDate" ngbDatepicker
+                        #txtBupComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtBupComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtBupDueDate" formControlName="txtBupDueDate" ngbDatepicker
+                        #txtBupDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtBupDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkBupPos" name="chkBupPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkBupPos" name="chkBupPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtBupComments">
+                </td>
+              </tr>
+            <!-- </tbody>
+          </table>
+  
+  
+  
+  
+  
+  
+  
+          <table class="table td-height td-vertical-align-middle light-striped-border">
+            <thead>
+              <tr>
+                <th width="10%" class="text-center">Adulterant Name</th>
+                <th width="15%" class="text-center">Complete Date</th>
+                <th width="15%" class="text-center">Due Date</th>
+                <th width="9%" class="text-center">Normal</th>
+                <th width="9%" class="text-center">Abnormal</th>
+                <th width="56%" class="text-center">Comments</th>
+              </tr>
+            </thead>
+  
+            <tbody> -->
+              <tr>
+                <td class="form-edit-sub-heading">Creatinine</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtCreatinineComplDate" formControlName="txtCreatinineComplDate"
+                        ngbDatepicker #txtCreatinineComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtCreatinineComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtCreatinineDueDate" formControlName="txtCreatinineDueDate"
+                        ngbDatepicker #txtCreatinineDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtCreatinineDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkCreatininePos" name="chkCreatininePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkCreatininePos" name="chkCreatininePos" value="formValue">
+                  </td>
+  
+                <td>
+                  <input class="form-control" type="text" formControlName="txtCreatinineComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Glutaraldehyde</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtGlutaraldehydeComplDate"
+                        formControlName="txtGlutaraldehydeComplDate" ngbDatepicker
+                        #txtGlutaraldehydeComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtGlutaraldehydeComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtGlutaraldehydeDueDate"
+                        formControlName="txtGlutaraldehydeDueDate" ngbDatepicker
+                        #txtGlutaraldehydeDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtGlutaraldehydeDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkGlutaraldehydePos" name="chkGlutaraldehydePos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkGlutaraldehydePos" name="chkGlutaraldehydePos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtGlutaraldehydeComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Nitrites</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtNitritesComplDate" formControlName="txtNitritesComplDate"
+                        ngbDatepicker #txtNitritesComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtNitritesComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtNitritesDueDate" formControlName="txtNitritesDueDate"
+                        ngbDatepicker #txtNitritesDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtNitritesDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkNitritesPos" name="chkNitritesPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkNitritesPos" name="chkNitritesPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtNitritesComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Oxidants</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtOxidantsComplDate" formControlName="txtOxidantsComplDate"
+                        ngbDatepicker #txtOxidantsComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtOxidantsComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtOxidantsDueDate" formControlName="txtOxidantsDueDate"
+                        ngbDatepicker #txtOxidantsDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtOxidantsDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkOxidantsPos" name="chkOxidantsPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkOxidantsPos" name="chkOxidantsPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtOxidantsComments">
+                </td>
+              </tr>
+              <!-- <tr>
+                <td class="form-edit-sub-heading">Oxidants</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtOxidantsComplDate" formControlName="txtOxidantsComplDate"
+                        ngbDatepicker #txtOxidantsComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtOxidantsComplDate.toggle()" type="button">
+                          
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtOxidantsDueDate" formControlName="txtOxidantsDueDate"
+                        ngbDatepicker #txtOxidantsDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtOxidantsDueDate.toggle()" type="button">
+                          
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkOxidantsPosNeg">
+                </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtOxidantsComments">
+                </td>
+              </tr> -->
+              <tr>
+                <td class="form-edit-sub-heading">PH</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtPHComplDate" formControlName="txtPHComplDate" ngbDatepicker
+                        #txtPHComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtPHComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtPHDueDate" formControlName="txtPHDueDate" ngbDatepicker
+                        #txtPHDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtPHDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkPHPos" name="chkPHPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkPHPos" name="chkPHPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtPHComments">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-edit-sub-heading">Specific Gravity</td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtSpecificGravityComplDate"
+                        formControlName="txtSpecificGravityComplDate" ngbDatepicker
+                        #txtSpecificGravityComplDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtSpecificGravityComplDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <div class="input-group">
+                      <input class="form-control" name="txtSpecificGravityDueDate"
+                        formControlName="txtSpecificGravityDueDate" ngbDatepicker
+                        #txtSpecificGravityDueDate="ngbDatepicker">
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtSpecificGravityDueDate.toggle()" type="button">
+                          <!-- <i class="far fa-calendar-alt" aria-hidden="true"></i> -->
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <input type="radio" formControlName="chkSpecificGravityPos" name="chkSpecificGravityPos" value="Positive">
+                </td>
+                <td class="text-center">
+                    <input type="radio" formControlName="chkSpecificGravityPos" name="chkSpecificGravityPos" value="Negative">
+                  </td>
+                <td>
+                  <input class="form-control" type="text" formControlName="txtSpecificGravityComments">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+  
+  
+  
+        </form>
+      </div>
+  
+    </div>
+  </div>

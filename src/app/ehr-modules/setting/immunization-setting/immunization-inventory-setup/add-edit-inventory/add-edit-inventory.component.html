@@ -1,0 +1,186 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Immunization Inventory</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom">
+
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div class="px6-py3 flex-grow-1" *ngIf="!isLoading">
+
+      <div class="row p8 mb-1">
+        <div class="col p-0">
+          <div class="info-box-stipes rounded-custom flex-grow-1">
+            <div class="px-2 py-1">
+              <div class="form-row form-dashboard">
+                <div class="form-group col">
+                  <label class="col-form-label module-view-headding font-weight-500">Clinic</label>
+                  <label class="col-form-label module-view-value pt-0 font-weight-500">
+                    {{clinicName}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row p8 mb-1">
+        <div class="col p-0">
+          <div class="info-box-stipes rounded-custom flex-grow-1">
+
+            <div class="px-1 py-0">
+
+              <div class="form-row form-dashboard border-bottom">
+                <div class="form-group horizental row zero col p-0">
+                  <div class="form-group has-search col ">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input id="txtImmunizaionSearch" class="form-control search-highlight border-0 rounded-top"
+                      placeholder="Search by CVX Code / Trade Name" type="text" #txtImmunizaionSearch
+                      (input)="onImmunizationSearchKeydown(txtImmunizaionSearch.value)" autocomplete="off">
+                    <inline-trade-name-search *ngIf="showImmunizationSearch"
+                      [lstTradeNames]="lstPracticeFilteredImmTrade" (onSelect)="addImmunization($event)"
+                      (onClose)="closeImmunizationSearch($event)">
+                    </inline-trade-name-search>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="px-2 py-1">
+
+
+
+              <div class="form-row form-dashboard pb-1">
+                <div class="form-group col">
+                  <label class="col-form-label module-view-headding">Vaccine (CVX Code | Trade Name)</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text width-45">{{selectedCVXCode}}</span>
+                    </div>
+                    <input type="text" class="form-control" disabled title="{{selectedTradeName}}"
+                      value="{{selectedTradeName}}">
+                  </div>
+                </div>
+
+              </div>
+              <div class="form-row form-dashboard pb-1">
+                <div class="form-group  col">
+                  <label class="col-form-label module-view-headding">Trade Description</label>
+                  <!--<input type="text" class="form-control" disabled title="{{selectedTradeDescription}}"
+                    value="{{selectedTradeDescription}}">
+                    -->
+                  <textarea class="form-control" disabled title="{{selectedTradeDescription}}"
+                    value="{{selectedTradeDescription}}" >  </textarea>
+                </div>
+              </div>
+
+              <div class="form-row form-dashboard pb-1">
+                <div class="form-group col">
+                  <label class="col-form-label module-view-headding">Manufacturer (MVX Code | Manufacturer Name)</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text width-45">{{selectedMVXCode}}</span>
+                    </div>
+                    <input type="text" class="form-control" disabled title="{{selectedManufacturer}}"
+                      value="{{selectedManufacturer}}">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row form-dashboard pb-1">
+
+                <div class="form-group  col-4">
+                  <div class="input-group">
+                    <label class="col-form-label module-view-headding required" for="txtNDC">NDC Code</label>
+                    <label class="col-form-label module-view-headding pl-3">
+                      <small class="form-text text-muted">( 00000-0000-00 )</small>
+                    </label>
+                  </div>
+
+                  <!-- <label class="col-form-label module-view-headding required" for="txtNDC">NDC Code</label> -->
+                  <input type="text" list="dlNDC" name="txtNDC" class="form-control required" formControlName="txtNDC"
+                    autocomplete="off">
+                  <datalist id="dlNDC">
+                    <option *ngFor="let ndc of lstNDC">{{ndc.ndc_code}}</option>
+                  </datalist>
+                </div>
+
+
+                <div class="form-group  col-4">
+                  <div class="input-group">
+                    <label class="col-form-label module-view-headding required" for="txtlotNumber">Lot Number</label>
+                    <label class="col-form-label module-view-headding pl-3">
+                      <small class="form-text text-muted"> Case Sensitive</small>
+                    </label>
+                  </div>
+
+                  <!--
+                  <label class="col-form-label module-view-headding row pl-3 " for="txtlotNumber">Lot Number <small
+                      class="form-text text-muted font-italic"> Case Sensitive</small></label>
+                  -->
+                  <input type="text" class="form-control required" id="txtlotNumber" formControlName="txtlotNumber">
+                </div>
+
+
+                <div class="form-group  col-4">
+                  <label class="col-form-label module-view-headding required" for="dpExpiryDate">Expiry Date</label>
+                  <div class="input-group">
+                    <input id="dpExpiryDate" formControlName="dpExpiryDate" class="form-control date-control required"
+                      placeholder="mm/dd/yyyy" name="dpExpiryDate"  ngbDatepicker #dpExpiryDate="ngbDatepicker"
+                      [ngClass]="{'is-invalid': formGroup.controls.dpExpiryDate.errors?.invalidDate}">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="dpExpiryDate.toggle()" type="button">
+                      </button>
+                    </span>
+
+                  </div>
+                </div>
+
+              </div>
+
+
+              <div class="form-row form-dashboard pb-1">
+
+                <div class="form-group  col-4">
+                  <label class="col-form-label module-view-headding required" for="txtInventory">Inventory</label>
+                  <input type="number" min="0" class="form-control required" formControlName="txtInventory">
+                </div>
+
+
+                <div class="form-group  col-4">
+                  <label class="col-form-label module-view-headding required" for="ddStatus">Status</label>
+                  <select class="form-control required" formControlName="ddStatus" id="ddStatus">
+                    <option *ngFor="let status of lstStatus" [value]="status">
+                      {{status}}</option>
+                  </select>
+                </div>
+
+
+
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="modal-footer custom" *ngIf="!isLoading">
+    <button style="width: 80px;" class="btn btn-success btn-sm" [disabled]="!formGroup.valid"
+      type="submit">Save</button>
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+  </div>
+</form>

@@ -1,0 +1,198 @@
+<div class="dashboard-container d-flex flex-column mb-0 mt-8-px">
+  <div class="dashboard">
+    <div class="dashboard-title justify-content-between">
+      <div class="title">Info Capture</div>
+      <div class="flex-grow-1"></div>
+      <div class="d-flex">
+        <div class="d-flex" *ngIf="!isaddEdit">
+          <div class="d-flex">
+
+            <button class="btn btn-link fz-13 text-decoration-none line-height-1 p-0 mr-2" (click)="showInfoCaptureHistory()"><i
+                class="fas fa-history pr-1"></i>History</button>
+
+            <!-- <button class="btn btn-link fz-13 text-decoration-none line-height-1 p-0 mr-2" (click)="editPatInfoCapture()"><i
+                class="far fa-edit pr-1"></i>Modify</button> -->
+          </div>
+
+          <button class="btn btn-success btn-sm" (click)="addNewInfoCapture()"><i class="fas fa-plus"></i>Add
+            New</button>
+        </div>
+
+        <ul class="nav color-buttons align-items-center" >
+            <button class="btn btn-sub-nav rounded-0 btn-success" *ngIf="isaddEdit"  (click)="saveInfoCapture()">Save</button>
+            <button class="btn btn-sub-nav rounded-0 btn-dark" *ngIf="isaddEdit"  (click)="cancelInfoCapture()">Cancel</button>
+        </ul>
+
+        
+        <!-- <ul class="nav color-buttons align-items-center">
+          <a class="nav-link bg-dark rounded px-2 py-0 mr-1" href="#" *ngIf="isaddEdit" (click)="()">Cancel</a>
+          <a class="nav-link bg-success rounded px-2 py-0" href="#" *ngIf="isaddEdit" (click)="()">Save</a>
+        </ul> -->
+      </div>
+
+    </div>
+
+    <div class="dashboard-content border-top-0 light-gray-bg mt-0 d-flex flex-column">
+      <form class="d-flex flex-column flex-grow-1" [formGroup]="patInfoCaptureForm">
+        <!-- <form [formGroup]="patPersonalInjury">  -->
+        <div class="p-8 d-flex flex-grow-1 light-sky-blue overflow-height">
+
+          <div class="d-flex flex-column flex-3 mr-8">
+            <div class="bg-white d-flex flex-column flex-grow-1" *ngIf="isaddEdit">
+
+                <div class="rounded-top bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                  <div class="fz-14 text-white font-weight-400">Details</div>
+                </div>
+
+
+                <div class="border border-top-0 rounded-bottom bg-white flex-grow-1 p-8 overflow-auto">
+                  <div class="form-row form-dashboard">
+                        <div class="form-group col-8">
+                          <label for="input2" class="col-form-label">Correspondence with:</label>
+                          <div class="input-group">
+                            <select class="form-control" formControlName="ddlCorrespondenceWith">
+                              <option selected></option>
+                              <option>Audit</option>
+                              <option>Government</option>
+                              <option>Insurance</option>
+                              <option>Legal</option>
+                              <option>Patient Request</option>
+                              <option>Patient</option>
+                              <option>Provider</option>
+                              <option>Pending</option>
+                              <option>Physician Request</option>
+                              <option>Referral</option>
+                              <option>Nursing Home</option>
+                              <option>Assisted Living</option>
+                              <option>Homecare</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-4">
+                          <label for="txtDate">Date:</label>
+                          <div class="input-group">
+                            <input id="txtDate" class="form-control" placeholder="mm/dd/yyyy" name="txtDate"
+                              [displayMonths]="displayMonths" [navigation]="navigation" ngbDatepicker #txtDate="ngbDatepicker"
+                              formControlName="txtDate">
+                            <span class="input-group-btn">
+                              <button class="btn btn-outline-primary" (click)="txtDate.toggle()" type="button">
+                                <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="form-group col-12">
+                          <label for="input2" class="col-form-label">Labeling:</label>
+                          <input type="text" class="form-control" formControlName="txtLabeling">
+                        </div>
+
+                        <div class="form-group col-12">
+                          <label for="input2" class="col-form-label">Correspondence Details:</label>
+                          <textarea class="form-control required" rows="6" maxlength="500" formControlName="txtDetails"></textarea>
+                        </div>
+                      </div>
+                </div>
+
+            </div>
+
+            <div class="border rounded overflow-auto bg-white flex-grow-1" *ngIf="!isaddEdit">
+              <table class="table light-striped-border">
+                <thead>
+                  <tr>
+                    <th>Correspondence</th>
+                    <th>Correspondence With</th>
+                    <!-- <th>Name</th>
+                    <th>Comments</th> -->
+                    <th>Created by</th>
+                    <th>Date Created</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr st-select-row="row" *ngFor="let infoCapt of listInfoCapture" (click)="RowDataUpdate(infoCapt)"
+                    [ngClass]="{'active' : (infoCapt.health_info_id === selectedRowID)}">
+                    <td>{{infoCapt.communication}}</td>
+                    <td>{{infoCapt.communicate_with}}</td>
+                    <!-- <td>{{infoCapt.name}}</td>
+                    <td>{{infoCapt.comment}}</td> -->
+                    <td>{{infoCapt.created_user}}</td>
+                    <td>{{infoCapt.communicate_date}}</td>
+                    <td class="text-right encounter-data-accordian accordian-header button">
+                        <button type="button" class="btn btn-link btn-md text-primary  line-height-1 p-0" (click)='editPatInfoCapture(infoCapt)'>
+                          <i class="far fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-md btn-link btn-delete  line-height-1 p-0" (click)="onDelete(infoCapt)">
+                          <i class="far fa-trash-alt"></i>
+                        </button>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="d-flex flex-column flex-1">
+            <div class="bg-white d-flex flex-column flex-grow-1 mb-8">
+
+                <div class="rounded-top bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                  <div class="fz-14 text-white font-weight-400">Attachments</div>
+                  <!-- <a class="fz-13 text-white font-weight-300" >Browse</a> -->
+                  <label class="fz-13 text-white font-weight-300 mb-0">
+                    Browse
+                    <input type="file" style="display: none" file-handler (change)="onFileChange($event)">
+                  </label>
+
+                </div>
+
+                <div class="border border-top-0 rounded-bottom bg-white flex-grow-1 overflow-auto">
+                  <div class="messages-list d-flex flex-grow-1">
+                    <table class="table sm light-striped-border">
+                      <tbody>
+                        <tr *ngFor="let attach of listInfoCaptureAttachments">
+                          <td>{{attach.name}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+            </div>
+
+            <div class="bg-white d-flex flex-column flex-grow-1">
+
+                <div class="rounded-top bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                  <div class="fz-14 text-white font-weight-400">Links</div>
+                </div>
+              
+              <div class="message-info border-right border-left border-bottom-0">
+                <div class="form-group mb-0">
+
+                  <input type="text" class="form-control" formControlName="txtaddLinks" [readonly]="!isaddEdit"
+                    (keydown.enter)="addLink()" placeholder="Enter criteria and press Enter to search">
+
+                </div>
+              </div>
+
+                <div class="border border-top-0 rounded-bottom bg-white flex-grow-1 overflow-auto">
+                  <div class="messages-list d-flex flex-grow-1">
+                    <table class="table layout-fixed sm light-striped-border">
+                      <tbody>
+                        <tr *ngFor="let links of listInfoCaptureLinks">
+                          <td> <a href="{{links.name}}" target="_blank">{{links.name}}</a> </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

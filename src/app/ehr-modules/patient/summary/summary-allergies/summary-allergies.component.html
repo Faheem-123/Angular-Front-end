@@ -1,0 +1,33 @@
+<div class="dashboard patient-summary-graph">
+  <div class="dashboard-title cyan-light-title">
+    <div class="icon light-gray">
+      <!-- <i class="fa fa-thermometer-empty" aria-hidden="true"></i> -->
+      <img class="img-h-24" src="./assets/images/icons/allergies_ico.svg" alt="">
+    </div>
+
+    <div class="title">
+      Allergies
+    </div>
+
+    <div class="title-btn-link">
+      <button type="button" (click)="getAllergiesSummary()">
+        <img class="img-h-25"
+                    src="./assets/images/icons/ico_refresh_green.svg" alt="">
+      </button>
+    </div>
+  </div>
+  <div class="dashboard-content">
+    <div *ngIf="isLoding" class="div-loader"></div>
+    
+    <ul *ngIf="!isLoding">
+      <li *ngFor="let allergy of lstAllergies">
+        <div>
+          <small>
+            <span>{{allergy.description}}</span>
+          </small>
+        </div>
+      </li>
+    </ul>
+  
+  </div>
+</div>

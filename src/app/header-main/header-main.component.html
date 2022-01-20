@@ -1,0 +1,132 @@
+<nav class="navbar navbar-expand-sm navbar-dark">
+    <div class="navbar-brand">
+        <img src="./assets/images/ihc_logo_left_txt.png" alt="">
+        <h6 class="practice">MY DEMO CLINIC</h6>
+        <!-- <h6 class="practice">{{lookupList.practiceInfo.practiceName}}</h6> -->
+    </div>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <div class="form-group col-4 my-0 px-0">
+            <div class="form-row form-dashboard">
+                <div class="form-group col-12 mb-0">
+                    <div class="input-icon d-flex flex-grow-3 ">
+                        <input labelForId="txtPatientSearchMain"
+                            class="form-control main-top-patient-search flex-grow-3" type="text" #txtPatientSearchMain
+                            placeholder="Search Patient" id="txtPatientSearchMain" autocomplete="off"
+                            (paste)="onPaste($event,'txtPatientSearchMain')" (input)="onPatientSearchInputChange()"
+                            (blur)="onPatientSearchBlur()" (keydown.enter)="onPatientSearchEnter()"
+                            (keyup.arrowdown)="shiftFocusToPatSearch()" (keydown.esc)="onClosePatientSearch()"
+                            placement="bottom" triggers="mouseenter:mouseleave" popoverTitle="Patient Search Tip"
+                            popoverClass="ihc-popover" [ngbPopover]="popContent">
+                        <ng-template #popContent>
+                            <strong>1. Patient Name Search:</strong>
+                            <ul class="p-2">
+                                <li>
+                                    Last Name First Name
+                                </li>
+                            </ul>
+                            <strong>2. SSN Search:</strong>
+                            <ul class="p-2">
+                                <li>
+                                    222-22-2222
+                                </li>
+                            </ul>
+                            <strong>3. Patient DOB Search:</strong>
+                            <ul class="pl-2">
+                                <li>
+                                    12/31/1999 or 12/31/99 or 123199 or 12311999 (MMDDYYYY)
+                                </li>
+                            </ul>
+                            <strong>4. Patient ID Search:</strong>
+                            <ul class="p-2">
+                                <li>
+                                    987654
+                                </li>
+                            </ul>
+
+                        </ng-template>
+
+
+
+                        <div class="icon text-ihc-green">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+
+                        <inline-patient-search *ngIf="showPatientSearch" #inlinePatientSearchComponent
+                            [searchValue]="txtPatientSearchMain.value" (onPatientSelect)="openSelectPatient($event)"
+                            (onClose)="closePatientSearch()">
+                        </inline-patient-search>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="navbar-nav" *ngIf="this.lookupList.UserRights.message_view">
+
+            <li class="nav-item">
+                <button class="btn btn-sm" (click)="onMessages()"> <i class="far fa-envelope"></i>
+                    <sup class="btn-orange-height-bag" *ngIf="lookupList.unReadmessageCount>0"></sup>
+                </button>
+
+            </li>
+            <li class="nav-item dropdown ">
+
+                <a class="user-profile-btn dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <img src="./assets/images/pic-holder.jpg" alt="" class="pic">
+                    {{lookupList.logedInUser.userLName}}, {{lookupList.logedInUser.userFName}}
+                </a>
+
+                <div class="dropdown-menu user-profile dropdown-menu-left" aria-labelledby="navbarDropdownMenuLink">
+
+                    <div class="dropdown-item user">
+                        <img src="./assets/images/pic-holder.jpg" alt="" class="pic">
+                        <p class="name"> {{lookupList.logedInUser.userFName}} {{lookupList.logedInUser.userLName}}</p>
+                        <p class="user-id"> {{lookupList.logedInUser.user_name}}</p>
+                    </div>
+
+
+                    <button class="dropdown-item" type="button" (click)="onLock()">
+                        <i class="fa fa-lock text-primary" aria-hidden="true"></i> Lock EHR
+                    </button>
+                    <button type="button" class="dropdown-item" (click)="onResetPassword()">
+                        <i class="fa fa-key text-info" aria-hidden="true"></i> Reset Password
+                    </button>
+
+                    <button type="button" [disabled]="!this.lookupList.UserRights.canViewOverSecurityButton"
+                        class="dropdown-item" (click)="onOverRideSecurity()">
+                        <i class="fas fa-shield-alt text-success" aria-hidden="true"></i> Override Security</button>
+
+
+                    <button class="dropdown-item" type="button" (click)="openAboutUS()">
+                        <i class="fa fa-users text-success" aria-hidden="true"></i> About Us
+                    </button>
+
+                    <div class="dropdown submenu"
+                        *ngIf="this.lookupList.logedInUser.userType.toUpperCase()=='BILLING' && this.lookupList.logedInUser.user_name.toUpperCase().search('@IHC')>-1">
+                        <button class="dropdown-item rounded-0" type="button">
+                            <i class="fas fa-arrow-left text-success text-success" aria-hidden="true"></i> Practice
+                            Selection
+                        </button>
+                        <div class="dropdown-menu dropdown-sub-menu schedular-card dropdown-sub-menu-left"
+                            aria-labelledby="patient-option">
+                            <button class="dropdown-item px-2" *ngFor="let p of  this.lookupList.lstPracticeSelection"
+                                (click)="onPracticeSelection(p)">
+                                {{p.col1+' | '+ p.col2}}
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="dropdown-item" type="button" (click)="onLogout()">
+                        <i class="fa fa-power-off text-danger" aria-hidden="true"></i> Logout
+                    </button>
+
+                </div>
+            </li>
+
+
+        </ul>
+
+    </div>
+</nav>

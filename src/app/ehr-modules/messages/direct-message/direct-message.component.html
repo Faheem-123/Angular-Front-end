@@ -1,0 +1,141 @@
+<div class="dashboard " style="height: 600px !important;">
+  
+  
+  <div class="d-flex flex-row flex-shrink-0 rounded-10-top">
+    <button class="btn new-meesage flex-shrink-0 rounded-10-top-left" (click)="BackToMainMessage.emit($event)">
+      <i class="fas fa-arrow-left mr-2"></i>Back To Message</button>
+    <ul class="nav messages-bar flex-grow-1 justify-content-end">
+      <a class="nav-link" href="#" (click)="onGetDirectMessages()">Send/Receive</a>
+    </ul>
+  </div>
+
+
+  <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+    <div class="row p3 flex-grow-1 flex-wrap-nowrap">
+      <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+        <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+          <div class="d-flex flex-column flex-grow-1">
+            <div class="border-top bg-white flex-grow-1 overflow-auto">
+              <div class="messages-list d-flex flex-grow-1">
+                <ul class="nav nav-tabs justify-content-start" style="width: 308px;">
+                  <li class="nav-item">
+                    <a class="nav-link " *ngFor="let dmsg of directMessageList"
+                      [ngClass]="{'active' : (dmsg.message_id === messageID)}" (click)="onDirectMessageSelect(dmsg)">
+                      <div class="message">
+                        <div class="d-flex align-items-center justify-content-between">
+                          <div class="title">{{dmsg.from_user.substring(0, 12)+"..."}}</div>
+                          <div class="date">{{dmsg.message_date}}</div>
+                        </div>
+                        <div class="subject">{{dmsg.subject.substring(0, 36)+"..."}}</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9 col-sm-6 col-12 d-flex flex-column flex-grow-1">
+
+
+
+        <!-- <div class="border rounded bg-white d-flex flex-column flex-grow-11"> -->
+        <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+          <div class="p-6 pt-0 d-flex flex-column flex-grow-1">
+            <!-- <div class="border-top pt-1 bg-white d-flex flex-column flex-shrink-0" style="height: 260px;"> -->
+            <div class="message-detail flex-grow-1 p-3 overflow-auto form-group mb-0">
+              <div class="d-flex flex-column flex-grow-1">
+
+                <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                  <div class="justify-content-between">
+                    <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                      <div class="fz-14 text-white font-weight-400">Message Detail</div>
+                    </div>
+
+                  </div>
+                  <div class="d-flex flex-column flex-grow-1">
+                    <div class="border-top bg-white flex-grow-1 overflow-auto">
+                      <div class="messages-list d-flex flex-grow-1">
+                        <div class="tab-content bg-white">
+                          <div class="message-info">
+                            <div class="form-view row zero">
+                              <div class="title font-weight-400 col-1 text-right">From:</div>
+                              <div class="value font-weight-400 col-11 pl-2">{{dMsgFrom}}</div>
+                            </div>
+                            <div class="form-view row zero">
+                              <div class="title font-weight-400 col-1 text-right">Sent:</div>
+                              <div class="value font-weight-400 col-11 pl-2">{{dMsgSent}}</div>
+                            </div>
+                            <div class="form-view row zero">
+                              <div class="title font-weight-400 col-1 text-right">To:</div>
+                              <div class="value font-weight-400 col-11 pl-2">{{dMsgTo}}</div>
+                            </div>
+                            <div class="form-view row zero">
+                              <div class="title font-weight-400 col-1 text-right">Subject:</div>
+                              <div class="value font-weight-400 col-11 pl-2">{{dMsgSubject}}</div>
+                            </div>
+                          </div>
+                          <!-- <div class="message-detail flex-grow-1 p-3 overflow-auto" style="height: 270px !important;"> -->
+                          <div class="message-detail flex-grow-1 p-3 overflow-auto form-group mb-0"
+                            style="height: 200px !important;">
+                            <form [formGroup]="directMessageFormView">
+                              <quill-editor id="richEditorView" [required]="true" [modules]="{toolbar: false}"
+                                [formControl]="directMessageView" style="height: 200px !important;"></quill-editor>
+                            </form>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                
+                </div>
+                <div class="border rounded bg-white mt-6 flex-grow-1 overflow-auto">
+                  <!-- <div class="col-md-3 col-sm-6 col-12 d-flex flex-column flex-grow-1"> -->
+                  <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+                    <div class="justify-content-between">
+                      <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between">
+                        <div class="fz-14 text-white font-weight-400">Links</div>
+                      </div>
+                    </div>
+                    <div class="d-flex flex-column flex-grow-1">
+                      <div class="border-top bg-white flex-grow-1 overflow-auto">
+                        <div class="messages-list d-flex flex-grow-1">
+                          <table class="table layout-fixed sm light-striped-border">
+                            <tbody>
+                              <tr>
+                                <td>{{attfiledescription}}</td>
+                                <td class="text-right" *ngIf="attfiledescription">
+                                  <button type="button" class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2"
+                                    (click)="importCCDA()">CCDA</button>
+                                  <button type="button" class="btn btn-link btn-sm text-danger line-height-1 p-0"
+                                    (click)="importCCR()">CCR</button>
+                                </td>
+                              </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+
+           
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+      </div>
+
+    </div>
+  </div>
+</div>

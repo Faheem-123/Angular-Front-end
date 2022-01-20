@@ -1,0 +1,79 @@
+<div class="dashboard">
+    <div class="dashboard-title">
+        <div class="icon light-gray">
+            <!-- <i class="ihc-letter"></i> -->
+            <img class="img-h-24" src="./assets/images/icons/Dashboard_ico_new_mssage.svg" alt="">
+        </div>
+        <div class="title">
+            Unread Messages <span class="text-danger ml-2"> ({{messagecount}}) </span>
+        </div>
+        <div class="title-btn p-0">
+            <a class="line-height-1" (click)="refreshMessages()"><img class="img-h-25" src="./assets/images/icons/ico_refresh_green.svg" alt=""></a>
+        </div>
+    </div>
+    <div class="dashboard-content position-relative">
+        <table class="table light-striped-border wide" *ngIf="!isReadMessage">
+            <thead>
+                <tr>   
+                    <th style="width: 10px !important;">Received Date</th>
+                    <th style="width: 10px !important;">Sender</th>
+                    <th style="width: 10px !important;">Subject</th>
+                    <th style="width: 10px !important;">Details</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr st-select-row="row" *ngFor="let msg of listUnreadMsgResult">
+                    <td>{{msg.client_date_created}}</td>
+                    <td>{{msg.sender}}</td>
+                    <td title="{{msg.mess_subject.substring(0)}}">{{msg.mess_subject.substring(0,20)}}</td>
+                    <td title="{{msg.mess_body_text.substring(0)}}">{{msg.mess_body_text.substring(0,25)}}</td>
+                    <td class="text-right">
+                      <button type="button" style="text-align: right; text-decoration: underline;" 
+                     (click)="onReadClick(msg)" class="link-btn">Read</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="tab-content bg-white" *ngIf="isReadMessage">
+            <!-- <button class="left-back-btn" (click)="navigateBackToSSummary()">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Summary
+            </button> -->
+            <div class="justify-content-end text-right">
+            <button class="btn btn-sm btn-danger" (click)="onCloseReadMessage()">
+                <i class="fas fa-times"></i>
+            </button>
+            </div>
+            <div class="message-info">
+              <div class="form-view row zero">
+                <div class="title font-weight-400 col-1 text-left">From:</div>
+                <div class="value font-weight-400 col-11 pl-2">{{msg_detail_from}}</div>
+              </div>
+        
+              <div class="form-view row zero">
+                <div class="title font-weight-400 col-1 text-left">Sent:</div>
+                <div class="value font-weight-400 col-11 pl-2">{{msg_detail_date}}</div>
+              </div>        
+              <div class="form-view row zero">
+                <div class="title font-weight-400 col-1 text-left">Subject:</div>
+                <div class="value font-weight-400 col-11 pl-2">{{msg_detail_subject}}</div>
+              </div>
+            </div>
+        
+            <div class="message-detail flex-grow-1 p-3 overflow-auto">      
+                <textarea rows="4" class="form-control" id="txtComments" >
+                    {{msg_detail}}
+                </textarea>
+   
+            </div>
+          </div>
+
+          <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+            <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+            </div>
+        </div>
+
+
+    </div>
+</div>

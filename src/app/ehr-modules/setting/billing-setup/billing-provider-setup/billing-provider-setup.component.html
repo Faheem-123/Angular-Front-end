@@ -1,0 +1,450 @@
+<div class="light-title-bar h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Billing Provider Details</div>
+  <div class="d-flex align-items-center">
+    <button *ngIf="providerOperation=='' && lookupList.UserRights.billing_provider_add" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onAddNew()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <button *ngIf="providerOperation=='' && lookupList.UserRights.billing_provider_edit" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onEdit()">
+      <i class="far fa-edit"></i>
+      Edit</button>
+    <button *ngIf="providerOperation=='' && lookupList.UserRights.billing_provider_delete" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onDelete()">
+      <i class="far fa-trash-alt"></i>
+      Delete</button>
+    <button *ngIf="providerOperation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" (click)="onSave()"  
+    [disabled]="!inputForm.valid">Save</button>
+    <button *ngIf="providerOperation!=''" class="btn btn-sm btn-dark top-right-radius h-30" (click)="onCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-row flex-grow-1 rounded-0 border-content-box border-top-0 light-sky-blue p-1">
+  <div class="flex-1 d-flex flex-row max-height-100">
+    <div class="border bg-white d-flex flex-column flex-1">
+      <div class="rounded-box-title-bar border-bottom flex-shrink-0">Providers</div>
+      <div class="flex-grow-1 overflow-auto">
+        <table class="table sm light-striped-border">
+          <!-- <thead>
+            <tr>
+              <th>Name</th>
+             
+            </tr>
+          </thead> -->
+          <tbody>
+            <tr *ngFor="let pr of arrprovider; let i = index" (click)="onSelectionChange(i,pr)" [ngClass]="{ 'active': i==provierSelectedIndex,
+            'disabled': isDisable
+            }">
+               <td>{{pr.last_name}}, {{pr.first_name}}</td>
+               <!-- <td>{{pr.first_name}}</td> -->
+            </tr>
+             
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="border  bg-white d-flex flex-column flex-4 ml-1">
+        <form [formGroup]="inputForm" >
+      <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+        <span>Provider Details</span>
+        <div class="custom-control custom-checkbox green-checkbox">
+          <input type="checkbox" class="custom-control-input" id="deactivate" formControlName="chkDeactivate">
+          <label class="custom-control-label" for="deactivate">Deactivate</label>
+        </div>
+      </div>
+
+      <div class="border-top p-2 d-flex flex-column flex-grow-1 overflow-auto">
+         
+        <div class="d-flex">
+          <div class="d-flex flex-column flex-1 w-50 pr-2">
+            <div class="border  bg-white d-flex flex-column">
+              <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+                <span>Provider Info</span>
+              </div>
+
+              <div class="border-top p-2 flex-grow-1">
+                <!-- <form [formGroup]="inputForm" class="form-row form-dashboard align-items-start" > -->
+                    <div class="form-row form-dashboard align-items-start">
+                  <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                    <label class="col-form-label label-w-90" for="input1">Provider Type <span class="text-danger">*</span></label>
+                    <select class="form-control flex-grow-1" id="input1" formControlName="drpProviderType">
+                      <option value=""></option>
+                      <option value="Individual">Individual</option>
+                      <option value="Group">Group</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                    <label class="col-form-label label-w-70" for="input2">Title</label>
+                    <input class="form-control flex-grow-1" id="input2" type="text" formControlName="txtTitle" maxlength="10">
+                  </div>
+
+                  <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                    <label class="col-form-label label-w-90" for="input3">First Name <span class="text-danger">*</span></label>
+                    <input class="form-control flex-grow-1" id="input3" type="text" formControlName="txtfirstName" maxlength="50">
+                  </div>
+
+                  <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                    <label class="col-form-label label-w-70" for="input4">Last Name<span class="text-danger">*</span></label>
+                    <input class="form-control flex-grow-1" id="input4" type="text" formControlName="txtLastName" maxlength="50">
+                  </div>
+
+                  <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                    <label class="col-form-label label-w-90" for="input5">Middle Name</label>
+                    <input class="form-control flex-grow-1" id="input5" type="text" formControlName="txtMName" maxlength="5">
+                  </div>
+
+                  <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                    <label class="col-form-label label-w-70" for="input6">DOB <span class="text-danger">*</span></label>
+                    <div class="input-group flex-grow-1">
+                      <input id="txtdob" formControlName="txtdob" class="form-control date-control" placeholder="mm/dd/yyyy"
+                        name="txtdob" ngbDatepicker #txtdob="ngbDatepicker"
+                        [ngClass]="{'is-invalid': inputForm.controls.txtdob.errors?.invalidDate}" maxlength="10">
+          
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="txtdob.toggle()" type="button">
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                    <label class="col-form-label label-w-90" for="input7">SSN <span class="text-danger">*</span></label>
+                    <input class="form-control flex-grow-1" id="input7" type="text" formControlName="txtSSN" maxlength="20">
+                  </div>
+
+                  <div class="form-group horizental d-flex col-md-12 col-sm-12 col-12">
+                    <label class="col-form-label label-w-90" for="input8">Org. Name</label>
+                    <input class="form-control flex-grow-1" id="input8" type="text" formControlName="txtOrgName" maxlength="100 ">
+                  </div>
+                <!-- </form> -->
+              </div>
+              </div>
+            </div>
+
+            <div class="border bg-white d-flex flex-column mt-2">
+              <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+                <span>Contact Information</span>
+              </div>
+
+              <div class="border-top p-2 flex-grow-1">
+                <!-- <form class="form-row form-dashboard align-items-start"> -->
+                <div class="form-row form-dashboard align-items-start">
+                  <div class="form-group horizental d-flex col-md-8 col-sm-12 col-12">
+                    <label class="col-form-label label-w-50" for="input2">Phone <span class="text-danger">*</span></label>
+                    <input class="form-control flex-grow-1" id="input2" type="text" formControlName="txtPhone" maxlength="15">
+                  </div>
+                </div>
+                <div class="form-row form-dashboard align-items-start">
+                  <div class="form-group horizental d-flex col-md-8 col-sm-12 col-12">
+                    <label class="col-form-label label-w-40" for="input3">Fax</label>
+                    <input class="form-control flex-grow-1" id="input3" type="text" formControlName="txtFax" maxlength="15">
+                  </div>
+                </div>
+                <div class="form-row form-dashboard align-items-start">
+                  <div class="form-group horizental d-flex col-md-12 col-sm-12 col-12">
+                    <label class="col-form-label label-w-40" for="input4">Email</label>
+                    <input class="form-control flex-grow-1" id="input4" type="text" formControlName="txtEmail" maxlength="50">
+                  </div>
+                </div>
+
+                <!-- </form> -->
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="border bg-white d-flex flex-column flex-1">
+            <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+              <span>Provider IDs</span>
+            </div>
+
+            <div class="border-top p-2 flex-grow-1">
+              <!-- <form class="form-row form-dashboard align-items-start"> -->
+              <div class="form-row form-dashboard align-items-start">
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="input1">Individual NPI</label>
+                  <input class="form-control  flex-grow-1" id="input1" type="text"
+                    formControlName="txtIndividualNPI" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-70" for="input2">Group NPI</label>
+                  <input class="form-control  flex-grow-1" id="input2" type="text"
+                    formControlName="txtGroupNPI" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="input3">Fed. Tax ID</label>
+                  <input class="form-control  flex-grow-1" id="input3" type="text"
+                    formControlName="txtFedTaxId" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-70" for="input4">Type</label>
+                  <select class="form-control  flex-grow-1" id="input4" formControlName="drpFedTaxType">
+                    <option value=""></option>
+                    <option value="EIN">EIN</option>
+                    <option value="SSN">SSN</option>
+                  </select>
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="input5">Taxonomy ID</label>
+                  <input class="form-control  flex-grow-1" id="input5" type="text"
+                    formControlName="txtTaxonomyId" maxlength="20">
+                </div>
+              </div>
+
+              <div class="form-row form-dashboard align-items-start">
+
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="txtSecondaryTaxonomyid">Secondary
+                    Taxonomy</label>
+                  <input class="form-control  flex-grow-1 max-height-24" id="txtSecondaryTaxonomyid"
+                    type="text" formControlName="txtSecondaryTaxonomyid" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-70" for="input6">Group Taxonomy</label>
+                  <input class="form-control  flex-grow-1 max-height-24" id="input6" type="text"
+                    formControlName="txtGroupTaxonomyid" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="input7">DEA No</label>
+                  <input class="form-control  flex-grow-1" id="input7" type="text"
+                    formControlName="txtDEA" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-70" for="input8">Expiry</label>
+                  <div class="input-group flex-grow-1">
+                    <input id="txtDEAExpiry" formControlName="txtDEAExpiry" class="form-control date-control"
+                      placeholder="mm/dd/yyyy" name="txtDEAExpiry" ngbDatepicker #txtDEAExpiry="ngbDatepicker"
+                      [ngClass]="{'is-invalid': inputForm.controls.txtDEAExpiry.errors?.invalidDate}" maxlength="10">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtDEAExpiry.toggle()" type="button">
+                      </button>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="input9">SPI</label>
+                  <input class="form-control  flex-grow-1" id="input9" type="text"
+                    formControlName="txtSPI" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-70" for="input10">TPI</label>
+                  <input class="form-control  flex-grow-1" id="input10" type="text"
+                    formControlName="txtTPI" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="input11">GROUP TPI</label>
+                  <input class="form-control  flex-grow-1" id="input11" type="text"
+                    formControlName="txtGroupTPI" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-80" for="input11">License State</label>
+                  <input class="form-control  flex-grow-1" id="input11" type="text"
+                    formControlName="txtlicenseState" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="input11">License Spec</label>
+                  <input class="form-control  flex-grow-1" id="input11" type="text"
+                    formControlName="txtLicenseSpec" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-70" for="input11">UPN</label>
+                  <input class="form-control  flex-grow-1" id="input11" type="text"
+                    formControlName="txtUPN" maxlength="15">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-90" for="input11">CLIA No</label>
+                  <input class="form-control  flex-grow-1" id="input11" type="text"
+                    formControlName="txtCliaNo" maxlength="15">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
+                  <label class="col-form-label label-w-70" for="input11">CLIA Expiry</label>
+                  <div class="input-group flex-grow-1">
+                    <input id="txtCliaExpiry" formControlName="txtCliaExpiry" class="form-control date-control"
+                      placeholder="mm/dd/yyyy" name="txtCliaExpiry" ngbDatepicker #txtCliaExpiry="ngbDatepicker"
+                      [ngClass]="{'is-invalid': inputForm.controls.txtCliaExpiry.errors?.invalidDate}" maxlength="10">
+
+                    <span class="input-group-btn">
+                      <button class="btn date-control-btn" (click)="txtCliaExpiry.toggle()" type="button">
+                      </button>
+                    </span>
+                  </div>
+                </div>
+                <!-- </form> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex mt-2">
+          <div class="border  bg-white d-flex flex-column flex-1 mr-2">
+            <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+              <span>Individual Provider Address</span>
+              <span class="fz-11 text-secondary">(Physical Street Address)</span>
+            </div>
+
+            <div class="border-top p-2 flex-grow-1">
+              <!-- <form class="form-row form-dashboard align-items-start"> -->
+                  <div class="form-row form-dashboard align-items-start">
+                <div class="form-group horizental d-flex col-md-12 col-sm-12 col-12">
+                  <label class="col-form-label label-w-50" for="input1">Address </label>
+                  <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtIndividualAddress" maxlength="99">
+                </div>
+
+                <div class="form-group horizental d-flex ">
+                  <label class="col-form-label label-w-50" for="input2">Zip </label>
+                  <input class="form-control flex-grow-1 width-90" id="input2" type="text" formControlName="txtIndividualZip" (focusout)="zipFocusOut($event.target.value,'ind')" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-3 col-sm-12 col-12">
+                  <label class="col-form-label label-w-40" for="input3">State </label>
+                  <input class="form-control flex-grow-1" id="input3" type="text" formControlName="txtIndividualState" readonly>
+                </div>
+
+                <div class="form-group horizental d-flex">
+                  <label class="col-form-label label-w-20" for="input4">City </label>
+                  <select class="form-control flex-grow-1" id="input4" formControlName="drpIndividualCity">
+                    <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+                      {{obj.city}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <!-- </form> -->
+            </div>
+          </div>
+
+          <div class="border bg-white d-flex flex-column flex-1">
+            <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+              <span>Individual Pay To Address</span>
+              <span class="fz-11 text-secondary">(If different from provider address)</span>
+            </div>
+
+            <div class="border-top p-2 flex-grow-1">
+              <!-- <form class="form-row form-dashboard align-items-start"> -->
+                  <div class="form-row form-dashboard align-items-start">
+                <div class="form-group horizental d-flex col-md-12 col-sm-12 col-12">
+                  <label class="col-form-label label-w-50" for="input1">Address </label>
+                  <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtIndividualPayToAddress" maxlength="99">
+                </div>
+
+                <div class="form-group horizental d-flex  ">
+                  <label class="col-form-label label-w-50" for="input2">Zip</label>
+                  <input class="form-control flex-grow-1 width-90" id="input2" type="text" formControlName="txtIndividualPayToZip" (focusout)="zipFocusOut($event.target.value,'indPay')" maxlength="20">
+                </div>
+
+                <div class="form-group horizental d-flex col-md-3 col-sm-12 col-12">
+                  <label class="col-form-label label-w-40" for="input3">State</label>
+                  <input class="form-control flex-grow-1" id="input3" type="text" formControlName="txtIndividualPayToState" readonly>
+                </div>
+
+                <div class="form-group horizental d-flex">
+                  <label class="col-form-label label-w-20" for="input4">City </label>
+                  <select class="form-control flex-grow-1" id="input4" formControlName="drpIndividualPayToCity">
+                    <option *ngFor="let obj of lstPayToZipCityState" [value]="obj.city">
+                      {{obj.city}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <!-- </form> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex mt-2">
+            <div class="border bg-white d-flex flex-column flex-1 mr-2">
+              <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+                <span>Group Provider Address</span>
+                <span class="fz-11 text-secondary">(Physical Street Address)</span>
+              </div>
+  
+              <div class="border-top p-2 flex-grow-1">
+                <!-- <form class="form-row form-dashboard align-items-start"> -->
+                    <div class="form-row form-dashboard align-items-start">
+                  <div class="form-group horizental d-flex col-md-12 col-sm-12 col-12">
+                    <label class="col-form-label label-w-50" for="input1">Address </label>
+                    <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtGroupAddress" maxlength="99">
+                  </div>
+  
+                  <div class="form-group horizental d-flex">
+                    <label class="col-form-label label-w-50" for="input2">Zip </label>
+                    <input class="form-control flex-grow-1 width-90" id="input2" type="text" formControlName="txtGroupZip" (focusout)="zipFocusOut($event.target.value,'grp')" maxlength="20">
+                  </div>
+  
+                  <div class="form-group horizental d-flex col-md-3 col-sm-12 col-12">
+                    <label class="col-form-label label-w-40" for="input3">State </label>
+                    <input class="form-control flex-grow-1" id="input3" type="text" formControlName="txtGroupState" readonly>
+                  </div>
+  
+                  <div class="form-group horizental d-flex">
+                    <label class="col-form-label label-w-20" for="input4">City </label>
+                    <select class="form-control flex-grow-1" id="input4" formControlName="drpGroupCity">
+                      <option *ngFor="let obj of lstGrpZipCityState" [value]="obj.city">
+                        {{obj.city}}
+                      </option>
+                    </select>
+                  </div>
+                  </div>
+                <!-- </form> -->
+              </div>
+            </div>
+  
+            <div class="border bg-white d-flex flex-column flex-1">
+              <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+                <span>Group Pay To Address</span>
+                <span class="fz-11 text-secondary">(If different from provider address)</span>
+              </div>
+  
+              <div class="border-top p-2 flex-grow-1">
+                  <div class="form-row form-dashboard align-items-start">
+                <!-- <form class="form-row form-dashboard align-items-start"> -->
+                  <div class="form-group horizental d-flex col-md-12 col-sm-12 col-12">
+                    <label class="col-form-label label-w-50" for="input1">Address </label>
+                    <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtGroupPayToAddress" maxlength="99">
+                  </div>
+  
+                  <div class="form-group horizental d-flex ">
+                    <label class="col-form-label label-w-50" for="input2">Zip </label>
+                    <input class="form-control flex-grow-1 width-90" id="input2" type="text" formControlName="txtGroupPayToZip" (focusout)="zipFocusOut($event.target.value,'grpPay')" maxlength="20">
+                  </div>
+  
+                  <div class="form-group horizental d-flex col-md-3 col-sm-12 col-12">
+                    <label class="col-form-label label-w-40" for="input3">State </label>
+                    <input class="form-control flex-grow-1" id="input3" type="text" formControlName="txtGroupPayToState" readonly>
+                  </div>
+  
+                  <div class="form-group horizental d-flex">
+                    <label class="col-form-label label-w-20" for="input4">City </label>
+                    <select class="form-control flex-grow-1" id="input4" formControlName="drpGroupPayToCity">
+                      <option *ngFor="let obj of lstGrpPayToZipCityState" [value]="obj.city">
+                        {{obj.city}}
+                      </option>
+                    </select>
+                  </div>
+                  </div>
+                <!-- </form> -->
+              </div>
+            </div>
+          </div>
+       
+      </div>
+    </form>
+    </div>
+  </div>
+</div>

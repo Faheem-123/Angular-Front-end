@@ -1,0 +1,21 @@
+<ngb-tabset class="dashboard-container nav pateint-nav" [destroyOnHide]="false">
+  <ngb-tab id="Temp-general">
+    <ng-template ngbTabTitle>Templates</ng-template>
+    <ng-template ngbTabContent>
+      <encounter-template-setup  class="dashboard-container d-flex flex-column mb-0 mt-8-px"></encounter-template-setup>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="Temp-problem">
+    <ng-template ngbTabTitle>Problem Based Template</ng-template>
+    <ng-template ngbTabContent>
+      <problem-based-template-setup class="dashboard-container d-flex flex-column mb-0 mt-1" callingFrom='admin_main'></problem-based-template-setup>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="Temp-extender" *ngIf="this.lookupList.UserRights.extender_template_view">
+    <ng-template ngbTabTitle>Extender Template</ng-template>
+    <ng-template ngbTabContent>
+      <extender-template class="dashboard-container d-flex flex-column mb-0 mt-1"></extender-template>
+    </ng-template>
+  </ngb-tab>
+  
+</ngb-tabset>

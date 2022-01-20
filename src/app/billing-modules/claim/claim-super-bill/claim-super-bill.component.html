@@ -1,0 +1,85 @@
+<div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 max-height-100 min-height-500  m-1 ">
+
+  <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0">
+
+    Super Bill
+    <ul class="nav color-buttons align-items-center">
+
+      <button class="nav-link btn btn-success rounded-0 px-2 py-0" (click)="onImportCodes()" type="button"
+        *ngIf="!isLoadingMain && !isLoadingBill">
+        Import
+      </button>
+
+      <button class="nav-link btn encounter-btn-cancel rounded-0 px-2 py-0" (click)="onCancelClick()" type="button">
+        Cancel
+      </button>
+
+    </ul>
+
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 position-relative">
+
+    <div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-25">
+
+
+      <!--<div class="fz-15 font-weight-400 pl-2">Super Bill</div>-->
+      <div class="form-group horizental row zero col-6 p-0 ml-1">
+        <label class="col-form-label pr-2 pt-1" for="ddSuperBillList">Select Route:</label>
+        <select class="col form-control rounded-0 border-bottom-0 border-top-0 required" id="ddSuperBillList"
+          (change)="onSuperBillSelectionChanged($event.target.value)">
+          <option *ngFor="let bill of lstSuperBillList"
+            [selected]="this.lookupList.logedInUser.defaultSuperBill==bill.id" [value]="bill.id">{{bill.name}}</option>
+        </select>
+      </div>
+
+      <div class="form-flex col-6">
+        <div class="form-check-cont d-flex">
+
+          <div class="custom-control custom-checkbox green-checkbox">            
+            <input type="checkbox" class="custom-control-input" id="chkEAP_{{controlUniqueId}}"                         
+            (change)="chkEAPCheckChanged($event)"  [(ngModel)]="eap"> 
+            <label class="custom-control-label" for="chkEAP_{{controlUniqueId}}">EAP</label>
+          </div>
+
+          <i class="fas fa-info-circle text-ihc-blue mt-1 ml-1"
+            title="(Employee Assistance Program) If Checked then claim will be exluded from e-submission"></i>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="px6-py3 flex-grow-1 overflow-auto overflow-height ">
+
+      <div class="row p8">
+        <div class="col-12 d-flex flex-column p-0">
+
+          <div class="row m-0 p-1" *ngIf="!isLoadingBill">
+            <div class="col-sm-6 col-md-4 col-12 d-flex flex-column p-1" *ngFor="let category of lstSuperBillCatList">
+              <super-bill-item [category]="category"
+                [lstCatDetail]="lstSuperBillDetails | listFilter : 'category_id' : category.category_id"
+                [controlUniqueId]="controlUniqueId"
+                (onItemChange)="onSuperBillItemSelectionChanged($event)">
+              </super-bill-item>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!--</div>-->
+
+    </div>
+
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoadingMain || isLoadingBill">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+
+
+  </div>

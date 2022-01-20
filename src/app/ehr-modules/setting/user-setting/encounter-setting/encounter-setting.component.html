@@ -1,0 +1,17 @@
+<div class="border-content-box light-sky-blue border-0 rounded-custom d-flex flex-column flex-3">
+  <ngb-tabset [destroyOnHide]="false" class="inner-sub-horizental-tab tab-h30 border border-top-0 tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden rounded-custom">
+    <ngb-tab>
+      <ng-template ngbTabTitle><span>Encounter Setting</span></ng-template>
+      <ng-template ngbTabContent>
+        <encounter-user-setting class="d-flex flex-column flex-grow-1 overflow-height"></encounter-user-setting>
+      </ng-template>
+    </ngb-tab>
+
+    <ngb-tab>
+      <ng-template ngbTabTitle><span>Print Setting</span></ng-template>
+      <ng-template ngbTabContent>
+        <!-- <encounter-setting-settings class="d-flex flex-column flex-grow-1"></encounter-setting-settings> -->
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>

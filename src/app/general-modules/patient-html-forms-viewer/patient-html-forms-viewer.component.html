@@ -1,0 +1,43 @@
+<div class="modal-header custom px-3 py-2 ihc-bg-green">
+    <img class="logo mr-1" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">{{modalTitle}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body dialog position-relative">
+        <div class="nav color-buttons align-items-center justify-content-between">
+                <div class="d-flex">
+                    <button class="nav-link orange-dark px-2 py-0" *ngIf="isPreviewBtn" type="button" (click)="printDiv(htmlDiv)">Print</button>
+                    <button class="nav-link cyan-dark px-2 py-0" *ngIf="isPreviewBtn" type="button" (click)="onSignProvider1()" [disabled]="sign1button">Sign Provider 1</button>
+                    <button class="nav-link green px-2 py-0" *ngIf="isPreviewBtn" type="button" (click)="onSignProvider2()" [disabled]="sign2button">Sign Provider 2</button>
+                </div>
+        
+                <div class="d-flex">
+                    <button class="nav-link blue px-2 py-0" type="button" (click)="SavePrint(htmlDiv)" *ngIf="isLetter">Save & Print</button>
+                    <button class="nav-link green px-2 py-0" type="button" (click)="getHTML()" *ngIf="!isLetter"><i class="far fa-save pr-1"></i>Save</button>
+                    <button class="nav-link green px-2 py-0" type="button" (click)="getHTML()" *ngIf="isLetter"><i class="far fa-save pr-1"></i>Send</button>
+                    <button type="button" type="button" class="nav-link encounter-btn-cancel px-2 py-0" (click)="activeModal.close(false)"><i class="fas fa-times pr-1"></i>Cancel</button>
+                </div>
+            </div>
+    <div >
+        <div id="htmlDiv" #htmlDiv class="htmlDivClass dashboard-content" ></div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+          <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+        </div>
+      </div>
+
+</div>
+
+<!-- <div class="modal-content custom" style="width: 920px">
+   
+    
+    <div class="modal-body custom dashboard" style="height: 600px">
+        
+        <div id="htmlDiv" #htmlDiv class="htmlDivClass dashboard-content" style="height: 600px"></div>
+    </div>
+    <div> 
+</div>-->

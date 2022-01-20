@@ -1,0 +1,242 @@
+<div
+    class="border-content-box light-gray-bg border-top-0 rounded-3-bottom d-flex flex-column flex-grow-1 max-height-100 position-relative">
+    <form [formGroup]="tempTimingForm" (keydown.enter)="$event.preventDefault()"
+        class="d-flex flex-column flex-grow-1 max-height-100">
+
+        <div class="inner-tool-tab h-25 justify-content-between pr-0 flex-shrink-0 ">
+
+            <h4
+                class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400 d-flex d-flex flex-grow-1  pt-2-px">
+                Provider Temp Office Timing
+            </h4>
+
+            <button class="btn btn-sub-nav rounded-0 btn-link title-bar-blue-btn" (click)="onAddNew()"
+                *ngIf="!editState"><i class="fa fa-plus mr-1"></i>Add New</button>
+            <div *ngIf="editState">
+                <button type="button" (click)="onSubmit(tempTimingForm.value)"
+                    class="btn btn-sub-nav rounded-0 btn-success" [disabled]="!tempTimingForm.valid">Save</button>
+                <button (click)="cancelAddEdit()" class="btn btn-sub-nav rounded-0 btn-dark">Cancel</button>
+            </div>
+
+        </div>
+
+        <div class="dashboard-content light-gray-bg p-6 d-flex flex-column flex-grow-1 overflow-auto">
+
+            <div class="border rounded bg-white mb-6 d-flex flex-row flex-shrink-0">
+
+                <div class="dashboard-add-edit p-8-px flex-grow-2 flex-basis-2">
+
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group col-md-4 col-sm-6 col-12">
+                            <label for="cmbLocation">Location</label>
+                            <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation"
+                                (change)="locationChanged($event.currentTarget.value)">
+                                <option *ngFor="let loc of lstLocations" [value]="loc.id">{{loc.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4 col-sm-6 col-12">
+                            <label for="cmbProvider">Provider</label>
+                            <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider"
+                                (change)="providerChanged($event.currentTarget.value)">
+                                <option *ngFor="let pro of lstFileredProviders" [value]="pro.provider_id">
+                                    {{pro.provider_name}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="border rounded bg-white mb-6 d-flex flex-row flex-shrink-0" *ngIf="editState">
+
+                <div class="dashboard-add-edit p-8-px flex-grow-2 flex-basis-2">
+                    <div class="form-row form-dashboard">
+                        <div class="col-lg-2 col-md-3 col-sm-4 col-12 m-0">
+                            <div class="form-group">
+                                <label for="dpDateFrom" class="col-form-label required">Date From</label>
+                                <div class="input-group">
+                                    <input id="dpDateFrom" formControlName="dpDateFrom"
+                                        class="form-control date-control" placeholder="mm/dd/yyyy" name="dpDateFrom"
+                                        ngbDatepicker #dpDateFrom="ngbDatepicker">
+
+                                    <span class="input-group-btn ">
+                                        <button class="btn date-control-btn" (click)="dpDateFrom.toggle()"
+                                            type="button">
+                                        </button>
+                                    </span>
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="dpDateTo" class="col-form-label required">Date To</label>
+                                <div class="input-group">
+                                    <input id="dpDateTo" formControlName="dpDateTo" class="form-control date-control"
+                                        placeholder="mm/dd/yyyy" name="dpDateTo" ngbDatepicker
+                                        #dpDateTo="ngbDatepicker">
+
+                                    <span class="input-group-btn">
+                                        <button class="btn date-control-btn" (click)="dpDateTo.toggle()" type="button">
+                                        </button>
+                                    </span>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4  col-md-5 col-sm-10 col-12 m-0">
+                            <div class="form-row form-dashboard col-12">
+
+                                <div class="form-group col-md-6 col-sm-6 col-6">
+
+                                    <div class="form-control form-check form-check-inline pt-0">
+                                        <input class="form-check-input" type="checkbox" id="chkDayOff"
+                                            formControlName="chkDayOff">
+                                        <label class="form-check-label" for="chkDayOff">Day Off</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6 col-sm-6 col-6"
+                                    *ngIf="!tempTimingForm.get('chkDayOff').value">
+                                    <label for="cmbSlotSize" class="col-form-label required">Slot Size</label>
+                                    <select class="form-control" id="cmbSlotSize" formControlName="cmbSlotSize">
+                                        <option *ngFor="let slot of lstSlotSize" [value]="slot">{{slot}}</option>
+                                    </select>
+                                </div>
+
+
+
+                            </div>
+                            <div class="form-row form-dashboard col-12" *ngIf="!tempTimingForm.get('chkDayOff').value">
+                                <div class="form-group col-md-6 col-sm-6 col-6">
+                                    <label for="tpTimeFrom" class="col-form-label required">Time From</label>
+
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text ngb-timepicker-input-group-text"><i
+                                                    class="far fa-clock"></i></span>
+                                        </div>
+                                        <ngb-timepicker id="tpTimeFrom"
+                                            class="form-control form-control-ngb-timepicker required"
+                                            formControlName="tpTimeFrom" meridian="ON">
+                                        </ngb-timepicker>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group col-md-6 col-sm-6 col-6">
+                                    <label for="tpTimeTo" class="col-form-label required">Time To</label>
+
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text ngb-timepicker-input-group-text"><i
+                                                    class="far fa-clock"></i></span>
+                                        </div>
+                                        <ngb-timepicker id="tpTimeTo"
+                                            class="form-control form-control-ngb-timepicker required"
+                                            formControlName="tpTimeTo" meridian="ON">
+                                        </ngb-timepicker>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4  col-md-5 col-sm-10 col-12 m-0"
+                            *ngIf="!tempTimingForm.get('chkDayOff').value">
+                            <div class="form-row form-dashboard">
+                                <div class="form-group col-12">
+
+                                    <div class="form-control form-check form-check-inline pt-0">
+                                        <input class="form-check-input" type="checkbox" id="chkBreakEnabled"
+                                            formControlName="chkBreakEnabled">
+                                        <label class="form-check-label" for="chkBreakEnabled">Enable Break</label>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                            <div class="form-row form-dashboard" *ngIf="tempTimingForm.get('chkBreakEnabled').value">
+                                <div class="form-group col-md-6 col-sm-6 col-6">
+                                    <label for="tpBreakFrom" class="col-form-label required">Break From</label>
+                                    <ngb-timepicker class="form-control form-control-ngb-timepicker required"
+                                        id="tpBreakFrom" formControlName="tpBreakFrom" meridian="ON"></ngb-timepicker>
+                                </div>
+
+                                <div class="form-group col-md-6 col-sm-6 col-6">
+                                    <label for="tpBreakTo" class="col-form-label required">Break To</label>
+                                    <ngb-timepicker class="form-control form-control-ngb-timepicker required"
+                                        id="tpBreakTo" formControlName="tpBreakTo" meridian="ON"></ngb-timepicker>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="border border-top-0  rounded overflow-auto flex-grow-1">
+
+                <table *ngIf="!isLoading" class="table sm light-striped-border">
+
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="width: 200px;">Timing Duration</th>
+                            <th colspan="2" style="width: 200px;">Office Timing</th>
+                            <th colspan="2" style="width: 200px;">Break Timing</th>
+                            <th rowspan="2" style="width: 100px;">Slot Size</th>
+                            <th rowspan="2">&nbsp;</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 80px;">From</th>
+                            <th style="width: 120px;">To</th>
+
+                            <th style="width: 80px;">From</th>
+                            <th style="width: 120px;">To</th>
+
+                            <th style="width: 80px;">From</th>
+                            <th style="width: 120px;">To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let t of lstProviderTempTiming"
+                            [ngClass]="{'active' : (t.temp_timing_id === tempTimingId)}">
+                            <td>{{t.date_from}}</td>
+                            <td>{{t.date_to}}</td>
+                            <td *ngIf="t.off_day" colspan="5">Off Day</td>
+                            <td *ngIf="!t.off_day">{{t.time_from}}</td>
+                            <td *ngIf="!t.off_day">{{t.time_to}}</td>
+                            <td *ngIf="!t.off_day">{{t.break_from}}</td>
+                            <td *ngIf="!t.off_day">{{t.break_to}}</td>
+                            <td *ngIf="!t.off_day">{{t.slot_size}}</td>
+                            <td>
+                                <button *ngIf="!editState" type="button" (click)="onEdit(t)"
+                                    class="link-btn">Edit</button>
+                                <button *ngIf="!editState" type="button" (click)="onDelete(t)"
+                                    class="link-btn ml-3">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="div-loader-message-box" *ngIf="isLoading">
+                    <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+    </div>
+</div>

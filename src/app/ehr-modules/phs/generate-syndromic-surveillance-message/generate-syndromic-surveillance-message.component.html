@@ -1,0 +1,158 @@
+<form [formGroup]="registryFormGroup">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title flex-grow-1">PHS - Syndromic Surveillance Message</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="close('Close')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom rounded-0 border-0 m-0" [ngClass]="{'alert alert-danger': (phsProcessStatus=='ERROR'),
+    'alert alert-success': (phsProcessStatus=='SUCCESS'),
+    'alert alert-info': isPHSFileProcessing}">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div class="px6-py3 flex-grow-1 overflow-auto" *ngIf="!isLoading">
+
+      <ng-template id="section_pre_processing"
+        [ngIf]="!isPHSFileProcessing && (phsProcessStatus==undefined || phsProcessStatus=='') ">
+        <div class="row p8 mb-1">
+          <div class="col p-0">
+            <div class="border rounded bg-white">
+              <div class="no-content p-2"
+                *ngIf="!isLoading && (lstChartProblems==undefined || lstChartProblems.length==0)">
+                <i class="fas fa-exclamation-triangle text-warning mr-2"></i>NO Active Diagnosis found.
+              </div>
+
+              <div class="overflow-auto" style="overflow-x:auto;"
+                *ngIf="lstChartProblems!=undefined && lstChartProblems.length>0">
+                <table class="table sm layout-fixed light-striped-border">
+                  <thead>
+                    <tr>
+                      <th class="width-110">Select Diagnosis</th>
+                      <th>Description</th>
+                      <th class="width-100">Diagnosis Type</th>
+                      <!--<th class="width-80">Code Type</th>-->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let diag of lstChartProblems; let i = index"
+                      [ngClass]="{'active-green': diag.selected}">
+                      <td>
+
+                   
+
+                        <div class="custom-control custom-checkbox green-checkbox">
+                          <input type="checkbox" class="custom-control-input"  id="diag_{{diag.problem_id}}"
+                            (change)="selectionChanged(diag.problem_id,$event.target.checked)">
+                          <label class="custom-control-label text-dark font-weight-400"
+                            for="diag_{{diag.problem_id}}">{{diag.diag_code}}</label>
+                        </div>
+            
+                        
+                       
+                      </td>
+                      <td>
+                        {{diag.diag_description}}
+                      </td>
+                      <td>
+                        <span *ngIf="diag.diag_type=='F'">Final</span>
+                        <span *ngIf="diag.diag_type=='W'">Working</span>
+                      </td>
+
+                      <!--    <td>
+                        {{diag.code_type}}
+                      </td>
+                      -->
+
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard" *ngIf="lstChartProblems!=undefined && lstChartProblems.length>0">
+          <div class="form-group horizental row zero col-6">
+            <label class="col-form-label module-view-headding pr-2" for="ddSurveillanceMessageType">Message
+              Type:</label>
+            <select class="col form-control px-1 required" formControlName="ddSurveillanceMessageType"
+              id="ddSurveillanceMessageType">
+              <option *ngFor="let type of lstSurveillanceMessageType" [value]="type.code">
+                {{type.description}}</option>
+            </select>
+
+          </div>
+        </div>
+      </ng-template>
+
+
+
+      <ng-template id="section_error" [ngIf]="phsProcessStatus=='ERROR'">
+
+        <div class="overflow-auto flex-grow-1 mb-1" style="overflow-x:auto;"
+          *ngIf="phsMessageErrorList!=undefined && phsMessageErrorList.length>0">
+
+          <div class="alert-heading pb-1 fz-14">
+            <strong> File Generation Errors</strong>
+          </div>
+
+          <table class="table sm layout-fixed light-striped-border table-danger">
+            <tbody>
+              <tr *ngFor="let error of phsMessageErrorList; let i = index">
+                <td class="width-20">{{i+1}}</td>
+                <td class="width-150" title="{{error.segment}}">{{error.segment}}</td>
+                <td title="{{error.description}}">{{error.message}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+
+
+      </ng-template>
+
+      <ng-template id="section_success" [ngIf]="phsProcessStatus=='SUCCESS'">
+
+        <p class="m-0"> {{fileGenerationSuccessMsg}}</p>
+
+      </ng-template>
+
+      <ng-template id="section_in_progress" [ngIf]="isPHSFileProcessing">
+
+        <div *ngIf="isPHSFileProcessing" class="p-2 col">
+          <i class="fas fa-cog fa-spin"></i> Processing registry file, please wait...
+        </div>
+
+      </ng-template>
+
+
+    </div>
+  </div>
+  <div class="modal-footer custom">
+
+    <button type="button" class="btn btn-info btn-sm" (click)="generateHL7()"
+      [disabled]="!registryFormGroup.valid || lstChartProblems==undefined || lstChartProblems.length==0" *ngIf="!isPHSFileProcessing && (phsProcessStatus==undefined)
+      && (lstChartProblems!=undefined && lstChartProblems.length>0)">
+      <i class="fas fa-cog mr-1"></i>Generate File</button>
+
+    <button type="button" class="btn btn-info btn-sm" (click)="downlaodGeneratedFile()" *ngIf="!isPHSFileProcessing && phsProcessStatus=='SUCCESS' 
+      && (phsMessageString!=undefined && phsMessageString!='')
+      && (messageLogId!=undefined && messageLogId!='')">
+      <i class="fas fa-download mr-1"></i>Download File</button>
+
+    <button type="button" style="width: 100px;" class="btn btn-dark btn-sm" (click)="close('Cancel')">
+      <span *ngIf="(phsProcessStatus==undefined ) && (lstChartProblems!=undefined && lstChartProblems.length>0)">
+        Cancel</span>
+      <span
+        *ngIf="phsProcessStatus=='ERROR' || phsProcessStatus=='SUCCESS' || lstChartProblems==undefined || lstChartProblems.length==0 ">
+        Close </span>
+    </button>
+
+  </div>
+</form>

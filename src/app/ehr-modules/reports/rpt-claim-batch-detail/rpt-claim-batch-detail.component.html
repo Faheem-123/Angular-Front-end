@@ -1,0 +1,203 @@
+<div class="d-flex flex-column flex-grow-1 mt-0 position-relative">
+  <div class="bg-green-ihc px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0" [ngClass]="{'light-title-bar h-25': callingFrom=='billing_reports',
+    'h-30': callingFrom!='billing_reports'}">
+    <div class="fz-15 font-weight-400" [ngClass]="{'text-white': callingFrom=='reports'}">Claim Batch Report <span
+        class="badge badge-pill"></span></div>
+  </div>
+  <div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+
+    <div class="d-flex flex-column flex-shrink-0">
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaClaimBatchReport" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+        <div id="SearchCriteriaClaimBatchReport" class="show">
+          <div class="accordian-body bg-transparent">
+
+            <form [formGroup]="searchForm">
+              <div class="form-row form-dashboard">
+
+
+                <div class="form-group col-5">
+                  <div class="btn-group radio-btn-tabs ">
+
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'dos')}">
+                      <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                        value="dos" (ngModelChange)="onDateTypeChange($event)"> DOS
+                    </label>
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'batch')}">
+                      <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                        value="batch" (ngModelChange)="onDateTypeChange($event)"> Date Created
+                    </label>
+                  </div>
+
+
+
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dpFrom" formControlName="dpFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker #dpFrom="ngbDatepicker"
+                        (blur)="onDateFocusOut($event.currentTarget.value,'dpFrom')">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpFrom.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dpTo" formControlName="dpTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dpTo" ngbDatepicker #dpTo="ngbDatepicker"
+                        (blur)="onDateFocusOut($event.currentTarget.value,'dpTo')">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpTo.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+
+                <div class="form-group col-3">
+                  <label class="col-form-label" for="cmbLocation">Location</label>
+
+                  <select class="form-control " labelForId="cmbLocation" formControlName="cmbLocation">
+                    <option value=''>All</option>
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+
+                </div>
+
+                <div class="form-group col-3">
+                  <label class="col-form-label" for="cmbProvider">Provider</label>
+
+                  <select class="form-control " formControlName="cmbProvider">
+                    <option value=''>All</option>
+                    <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-group col-1 d-flex justify-content-end align-items-end">
+                  <div class="form-group d-flex flex-grow-1 justify-content-end">
+                    <button type="button" ng-disabled="btnHide" class="btn btn-success" [disabled]="isLoading"
+                      (click)="onSearch(searchForm.value)">Search</button>
+                  </div>
+                </div>
+
+              </div>
+
+
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- ************************************************************** -->
+    <div class="border bg-white d-flex flex-column flex-grow-1 mt-0 max-height-100">
+
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Details
+          <span *ngIf="lstClaimDetails!=undefined" class="fz-12">({{lstClaimDetails.length}})</span>
+        </h4>
+        <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"><i
+              class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export</button>
+        </div>
+      </div>
+
+      <div class="overflow-auto flex-grow-1  overflow-height">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th scope="col" sortable="alternate_account" type="numeric" (sort)="onSort($event)">PID</th>
+              <th scope="col" sortable="pat_name" type="alpha" (sort)="onSort($event)">Patient Name</th>
+              <th scope="col" sortable="dos" type="datetime" formate="MM/DD/YYYY" (sort)="onSort($event)">DOS</th>
+              <th scope="col" sortable="submission_date" type="datetime" formate="MM/DD/YYYY" (sort)="onSort($event)">
+                Sent Date</th>
+              <th scope="col" sortable="claim_total" type="numeric" (sort)="onSort($event)">Claim Total</th>
+              <th scope="col" sortable="pri_paid" type="numeric" (sort)="onSort($event)">Pri.Paid</th>
+              <th scope="col" sortable="sec_paid" type="numeric" (sort)="onSort($event)">Sec.Paid</th>
+              <th scope="col" sortable="pat_paid" type="numeric" (sort)="onSort($event)">Pat.Paid</th>
+              <th scope="col" sortable="amt_due" type="numeric" (sort)="onSort($event)">Amt.Due</th>
+              <th scope="col" sortable="pro_name" type="alpha" (sort)="onSort($event)">Provider</th>
+              <th scope="col" sortable="batch_name" type="alpha" (sort)="onSort($event)">Batch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let c of lstClaimDetails let i=index" (click)="onSelectionChange(i)"
+              [ngClass]="{'active': i==selectedRow}">
+              <td>{{c.alternate_account}}</td>
+              <td>{{c.pat_name}}</td>
+              <td>{{c.dos}}</td>
+              <td>{{c.submission_date}}</td>
+              <td>{{c.claim_total | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{c.pri_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{c.sec_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{c.pat_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{c.amt_due | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{c.pro_name}}</td>
+              <td>{{c.batch_name}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-content-box border-top-0 rounded-bottom flex-shrink-0 overflow-auto bg-white">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Claim Total</th>
+          <th>Primary Paid</th>
+          <th>Secondary Paid</th>
+          <th>Patient Paid</th>
+          <th>Amount Due</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr st-select-row="row">
+          <td>{{totalBalance | currency:'USD':'symbol-narrow'}}</td>
+          <td>{{pri_paid | currency:'USD':'symbol-narrow'}}</td>
+          <td>{{sec_paid | currency:'USD':'symbol-narrow'}}</td>
+          <td>{{pat_paid | currency:'USD':'symbol-narrow'}}</td>
+          <td>{{amt_due | currency:'USD':'symbol-narrow'}}</td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+</div>

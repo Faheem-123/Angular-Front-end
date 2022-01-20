@@ -1,0 +1,79 @@
+<div class="dashboard-container d-flex flex-column mb-0">
+  <div class="dashboard m-0 rounded-0 no-shadow">
+
+    <ngb-tabset class="inner-sub-horizental-tab tab-set-with-tab-headings">
+      <ngb-tab id="tab-pat-payment">
+        <ng-template ngbTabTitle>Aging</ng-template>
+        <ng-template ngbTabContent>
+          <rpt-aging class="d-flex flex-column flex-grow-1" [callingFrom]="callingFrom">
+          </rpt-aging>
+        </ng-template>
+      </ngb-tab>
+
+
+      <ngb-tab id="tab-pat-refunds">
+        <ng-template ngbTabTitle>Aging Summary</ng-template>
+        <ng-template ngbTabContent>
+          <rpt-aging-payer-wise class="d-flex flex-column flex-grow-1" callingFrom="reports">
+          </rpt-aging-payer-wise>
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+
+  </div>
+</div>
+
+
+<!-- <ngb-tabset [destroyOnHide]="false"
+  class="inner-sub-horizental-tab tabpanel-max-h-100 content-flex d-flex flex-column flex-grow-1 overflow-hidden"
+  #tabMainaging>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Billing Aging</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-aging class="d-flex flex-column flex-grow-1" callingFrom="reports">
+      </rpt-aging>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab >
+    <ng-template ngbTabTitle><span>Payer Wise Aging</span></ng-template>
+    <ng-template ngbTabContent>
+      <rpt-aging-payer-wise class="d-flex flex-column flex-grow-1" callingFrom="reports">
+        
+      </rpt-aging-payer-wise>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset> -->
+<!--
+<div class="d-flex flex-column">
+
+  <div class="bg-green-ihc px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0" [ngClass]="{'light-title-bar h-25': callingFrom=='billing_reports',
+    'h-30': callingFrom!='billing_reports'}">
+    <div class="fz-15 font-weight-400" [ngClass]="{'text-white': callingFrom=='reports'}">Billing Aging Report (Track
+      Sheet) <span class="badge badge-pill"></span></div>
+  </div>
+  <div>
+    <form [formGroup]="radioForm">
+      <div class="btn-group radio-btn-tabs px-1">
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'aging')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="Aging"
+            (ngModelChange)="onRadioOptionChange($event)">Aging
+        </label>
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataOption === 'payer')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="payer"
+            (ngModelChange)="onRadioOptionChange($event)">Aging Summary
+        </label>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+  <div *ngIf="showReport=='aging'" class="d-flex flex-column flex-grow-1">
+    <rpt-aging class="d-flex flex-column flex-grow-1" callingFrom=callingFrom>
+    </rpt-aging>
+  </div>
+  <div *ngIf="showReport=='payer'" class="d-flex flex-column flex-grow-1">
+    <rpt-aging-payer-wise class="d-flex flex-column flex-grow-1" callingFrom="reports">
+    </rpt-aging-payer-wise>
+  </div>
+</div>
+-->

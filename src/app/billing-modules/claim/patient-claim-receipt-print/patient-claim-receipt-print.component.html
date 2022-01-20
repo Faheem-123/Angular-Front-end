@@ -1,0 +1,332 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Patient Claim Receipt</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-sub-header d-flex justify-content-end" *ngIf="!isLoading">
+  <button class="btn btn-success btn-sm rounded-0 h-100 width-80" type="button" (click)="print()">Print</button>
+</div>
+
+<div class="modal-body custom p-0 overflow-auto position-relative" style="max-height: 600px; min-height: 200px;">
+
+  <div id="patient_demo_report" class="report" *ngIf="!isLoading">
+    <div class="report">
+      <div class="header border-bottom-green">
+        <img class="logo" src="{{lookupList.practiceInfo.logo}}" width="175"
+          (error)="$event.target.style.display = 'none';"
+          *ngIf="lookupList.practiceInfo.logo!=undefined && lookupList.practiceInfo.logo != '' ">
+        <div class="title d-flex flex-column flex-grow-1">
+          <h4 class="maintitle">{{lookupList.practiceInfo.practiceName}}</h4>
+          <h6 class="subtitle font-weight-500">{{printLocationName}}</h6>
+          <h6 class="subtitle">{{printLocationAddress}}, {{printLocationCityStateZip}}</h6>
+          <h6 class="subtitle d-flex justify-content-between">
+            <span>
+              Phone:&nbsp; {{printLocationPhone | phonePipe}}&nbsp;&nbsp;|&nbsp;&nbsp;
+              Fax:&nbsp;{{printLocationFax | phonePipe}}
+            </span>
+            <small class="mt-auto text-dark">Print Date: {{printDateTime}}</small>
+          </h6>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="content-header border-bottom-green col-12 justify-content-between">
+
+          <div class="content-header-title">PATIENT CLAIM RECEIPT</div>
+
+          <div class="content-header-title">DOS {{receiptDetail.dos}} </div>
+          <!--
+          <div class="content-header-title col-4 text-right">
+            <small>Print Date: {{printDateTime}}</small>
+          </div>
+          -->
+
+        </div>
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border mt-4 w-100">
+          <thead>
+            <tr>
+              <th colspan="3">
+                Provider Information
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td>
+                <div class="form-group mb-1 d-flex">
+                  <label
+                    class="report-form-group-value pt-0 font-weight-500">{{receiptDetail.attending_physician}}</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-title pr-2">Provider License:</label>
+                  <label class="report-form-group-value pt-0">{{receiptDetail.provider_license}}</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-title  pr-2">Billing NPI:</label>
+                  <label class="report-form-group-value pt-0">{{receiptDetail.bill_nip}}</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-title  pr-2">Provider NPI:</label>
+                  <label class="report-form-group-value pt-0">{{receiptDetail.provider_npi}}</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-title">Provider EIN:</label>
+                  <label class="report-form-group-value pt-0">{{receiptDetail.provider_ein}}</label>
+                </div>
+
+
+              </td>
+
+              <td>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-value pt-0 font-weight-500">Place of Service Code:
+                    {{receiptDetail.pos}}</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-value pt-0">{{receiptDetail.loc_address}}</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-value pt-0">{{receiptDetail.loc_city}}, {{receiptDetail.loc_state}}
+                    {{receiptDetail.loc_zip}}</label>
+                </div>
+
+              </td>
+
+              <td>
+
+                <div class="form-group mb-0 d-flex">
+                  <label class="report-form-group-title pr-2">Office Phone:</label>
+                  <label class="report-form-group-value pt-0 ">{{receiptDetail.bill_phone  | phonePipe}}</label>
+                </div>
+
+
+                <div class="form-group mb-0 d-flex">
+                  <label class="report-form-group-title pr-2">Office Fax:</label>
+                  <label class="report-form-group-value pt-0 ">{{receiptDetail.bill_fax  | phonePipe}}</label>
+                </div>
+
+                <div class="form-group mb-0 d-flex">
+                  <label class="report-form-group-title pr-2">Email:</label>
+                  <label class="report-form-group-value pt-0 ">{{receiptDetail.bill_email}}</label>
+                </div>
+
+
+              </td>
+            </tr>
+
+
+
+          </tbody>
+        </table>
+
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border mt-4 w-100">
+          <thead>
+            <tr>
+              <th colspan="3">
+                Patient Information
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td>
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-title pr-2">Patient Name:</label>
+                  <label class="report-form-group-value pt-0">{{receiptDetail.pat_name}}</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-title pr-2">Date of Birth:</label>
+                  <label class="report-form-group-value pt-0">{{receiptDetail.pat_dob}}</label>
+                </div>
+
+              </td>
+
+              <td>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-title pr-2">Patient Address:</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-value pt-0">{{receiptDetail.pat_address}}</label>
+                </div>
+
+                <div class="form-group mb-1 d-flex">
+                  <label class="report-form-group-value pt-0">{{receiptDetail.pat_city}}, {{receiptDetail.pat_state}}
+                    {{receiptDetail.pat_zip}}</label>
+                </div>
+
+              </td>
+
+              <td>
+
+                <div class="form-group mb-0 d-flex">
+                  <label class="report-form-group-title pr-2">Patient Phone:</label>
+                  <label class="report-form-group-value pt-0 ">{{receiptDetail.pat_contact_no | phonePipe}}</label>
+                </div>
+
+
+              </td>
+            </tr>
+
+
+
+          </tbody>
+        </table>
+
+        <table class="table sm light-blue-striped-row-column-border mt-4 w-100">
+          <thead>
+            <tr>
+              <th colspan="3">
+                Diagnosis
+              </th>
+            </tr>
+            <tr>
+              <th class="text-center width-20">
+                S.No
+              </th>
+              <th class="text-center width-50">
+                Date of Service
+              </th>
+              <th>
+                Diagnosis Code
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let diag of lstClaimDiagnosis">
+              <td class="text-center">{{diag.diag_sequence}}</td>
+              <td class="text-center">{{receiptDetail.dos}}</td>
+              <td>{{diag.diag_code}}: {{diag.description}}</td>
+            </tr>
+
+          </tbody>
+        </table>
+
+
+
+        <table class="table sm  light-blue-striped-row-column-border mt-4 w-100">
+          <thead>
+            <tr>
+              <th colspan="8">
+                Treatment
+              </th>
+            </tr>
+            <tr>
+              <th class="text-center width-50">
+                Date of Service
+              </th>
+              <th>
+                Billing Code
+              </th>
+              <th class="text-center">
+                Mods
+              </th>
+              <th class="text-center">
+                Dx Ptrs
+              </th>
+              <th class="text-center">
+                Qty
+              </th>
+              <th class="text-center">
+                Fee
+              </th>
+
+              <th class="text-center">
+                Total
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let proc of lstClaimProcedures">
+              <td class="text-center">{{proc.dos_from | date :'MM/dd/yyyy'}}</td>
+              <td>{{proc.proc_code}}: {{proc.description}}</td>
+              <td class="text-center">
+                <span>{{proc.mod1}}</span>
+                <span *ngIf="proc.mod2">,{{proc.mod2}}</span>
+                <span *ngIf="proc.mod3">,{{proc.mod3}}</span>
+                <span *ngIf="proc.mod4">,{{proc.mod4}}</span>
+              </td>
+              <td class="text-center">
+                <span>{{proc.dx_pointer1}}</span>
+                <span *ngIf="proc.dx_pointer2">:{{proc.dx_pointer2}}</span>
+                <span *ngIf="proc.dx_pointer3">:{{proc.dx_pointer3}}</span>
+                <span *ngIf="proc.dx_pointer4">:{{proc.dx_pointer4}}</span></td>
+              <td class="text-center">{{proc.units}}</td>
+              <td class="text-right">{{proc.charges | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{proc.total_charges | currency:'USD':'symbol-narrow'}}</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border mt-4 w-50">
+          <tbody>
+
+            <tr>
+              <td class="font-weight-500">Total Charges</td>
+              <td class="text-right">{{receiptDetail.claim_total | currency:'USD':'symbol-narrow' }}</td>
+            </tr>
+            <tr>
+              <td class="font-weight-500">Patient Paid:</td>
+              <td class="text-right">{{receiptDetail.patient_paid | currency:'USD':'symbol-narrow' }}</td>
+            </tr>
+            <tr>
+              <td class="font-weight-500">Insurance Paid:</td>
+              <td class="text-right">{{receiptDetail.insurance_paid | currency:'USD':'symbol-narrow' }}</td>
+            </tr>
+            <tr>
+              <td class="font-weight-500">Total Adjustment/Discount:</td>
+              <td class="text-right">{{receiptDetail.adjustment | currency:'USD':'symbol-narrow' }}</td>
+            </tr>
+            <tr>
+              <td class="font-weight-500">Patient Balance Due:</td>
+              <td class="text-right">{{receiptDetail.balance_due | currency:'USD':'symbol-narrow' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
+        <br>
+        <br>
+        <p class="fz-12">I authorize the release of any medical information necessary to process this claim.</p>
+        <br>
+        <p class="fz-12">Date:____________________________________ Patient
+          Signature:____________________________________ </p>
+        <br>
+        <p class="fz-12">Date:____________________________________ Provider
+          Signature:____________________________________ </p>
+
+
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+</div>

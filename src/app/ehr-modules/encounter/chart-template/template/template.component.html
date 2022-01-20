@@ -1,0 +1,193 @@
+<ngb-tabset class="inner-sub-horizental-tab d-flex flex-column flex-2 mr-1">
+  <ngb-tab *ngIf="(callingFrom=='All' || callingFrom=='RFV')">
+    <ng-template ngbTabTitle><span>Reason For Visit</span></ng-template>
+    <ng-template ngbTabContent>
+      <template-module class="d-flex flex-grow-1" moduleName="RFV" [provider_id]="objencounterToOpen.provider_id"
+      [objpatientTemplateData]="objpatientTemplateData"  DisplayName="Reason for Visit" (dataUpdated)="dataAdd($event)">
+      </template-module>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab *ngIf="(callingFrom=='All' || callingFrom=='HPI')">
+    <ng-template ngbTabTitle><span>HPI</span></ng-template>
+    <ng-template ngbTabContent>
+      <template-module class="d-flex flex-grow-1" moduleName="HPI" DisplayName="HPI"
+      [objpatientTemplateData]="objpatientTemplateData"  [provider_id]="objencounterToOpen.provider_id" (dataUpdated)="dataAdd($event)"></template-module>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab *ngIf="(callingFrom=='All' || callingFrom=='PMH')">
+    <ng-template ngbTabTitle><span>PMH</span></ng-template>
+    <ng-template ngbTabContent>
+      <template-module class="d-flex flex-grow-1" moduleName="PMH" DisplayName="PMH"
+      [objpatientTemplateData]="objpatientTemplateData"  [provider_id]="objencounterToOpen.provider_id" (dataUpdated)="dataAdd($event)"></template-module>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab *ngIf="(callingFrom=='All' || callingFrom=='ROS')">
+    <ng-template ngbTabTitle><span>ROS</span></ng-template>
+    <ng-template ngbTabContent>
+      <template-module class="d-flex flex-grow-1" moduleName="ROS" DisplayName="ROS"
+      [objpatientTemplateData]="objpatientTemplateData"  [provider_id]="objencounterToOpen.provider_id" (dataUpdated)="dataAdd($event)"></template-module>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab  *ngIf="(callingFrom=='All' || callingFrom=='PE')">
+    <ng-template ngbTabTitle><span>Physical Exam</span></ng-template>
+    <ng-template ngbTabContent>
+      <template-module class="d-flex flex-grow-1" moduleName="PE" DisplayName="Physical Exam"
+      [objpatientTemplateData]="objpatientTemplateData"  [provider_id]="objencounterToOpen.provider_id" (dataUpdated)="dataAdd($event)"></template-module>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab *ngIf="(callingFrom=='All' || callingFrom=='chart')">
+    <ng-template ngbTabTitle><span>Plan</span></ng-template>
+    <ng-template ngbTabContent>
+      <template-module class="d-flex flex-grow-1" moduleName="chart" DisplayName="Plan"
+      [objpatientTemplateData]="objpatientTemplateData" 
+        [provider_id]="objencounterToOpen.provider_id" (dataUpdated)="dataAdd($event)"></template-module>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab *ngIf="(callingFrom=='extender')">
+    <ng-template ngbTabTitle><span>Extender Notes</span></ng-template>
+    <ng-template ngbTabContent>
+      <template-module class="d-flex flex-grow-1" moduleName="extender" DisplayName="Extender Notes"
+      [objpatientTemplateData]="objpatientTemplateData" 
+        [provider_id]="objencounterToOpen.provider_id" (dataUpdated)="dataAdd($event)"></template-module>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>
+
+<div class="d-flex flex-column flex-1 info-box-stipes bg-white border-top-0">
+
+  <div class="light-title-bar h-30 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-14 font-weight-500">Preview</div>
+    <div class="d-flex align-items-center">
+      <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+        (click)="onApply()">Apply</button>
+      <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+        (click)="onPreviousEncounter()" *ngIf="callingFrom=='All'">Previous
+        Encounter</button>
+    </div>
+  </div>
+
+
+  <div class="form-row form-dashboard p-6 pt-0" style="max-height: 485px;overflow: auto;">
+    <form [formGroup]="inputForm" class="form-row form-dashboard p-6 pt-0 col-12" *ngIf="!openEncounterSummary">
+      <div class="form-group col-12" *ngIf="(callingFrom=='All' || callingFrom=='RFV')">
+        <label for="input05" class="font-weight-500">Reason For Visit:</label>
+        <textarea autosize class="form-control required " formControlName="RFVtxt" #RFVtxt id="RFVtxt"></textarea>
+      </div>
+
+      <div class="form-group col-12" *ngIf="(callingFrom=='All' || callingFrom=='HPI')">
+        <label for="input06" class="font-weight-500">HPI:</label>
+        <textarea autosize class="form-control required " formControlName="HPItxt" #HPItxt id="HPItxt"></textarea>
+      </div>
+
+      <div class="form-group col-12" *ngIf="(callingFrom=='All' || callingFrom=='PMH')">
+        <label for="input07" class="font-weight-500">Past Medical History:</label>
+        <textarea autosize class="form-control required " formControlName="PMHtxt" #PMHtxt id="PMHtxt"></textarea>
+      </div>
+
+      <div class="form-group col-12" *ngIf="(callingFrom=='All' || callingFrom=='ROS')"> 
+        <label for="input08" class="font-weight-500">Review Of System:</label>
+        <textarea autosize class="form-control required " formControlName="ROStxt" #ROStxt id="ROStxt"></textarea>
+      </div>
+
+      <div class="form-group col-12" *ngIf="(callingFrom=='All' || callingFrom=='PE')">
+        <label for="input09" class="font-weight-500">Physical Exam:</label>
+        <textarea autosize class="form-control required " formControlName="PEtxt" #PEtxt id="PEtxt"></textarea>
+      </div>
+
+      <div class="form-group col-12" *ngIf="(callingFrom=='All' || callingFrom=='chart')">
+        <label for="input10" class="font-weight-500">Plan:</label>
+        <textarea autosize class="form-control required " formControlName="plantxt" #plantxt id="plantxt"></textarea>
+        <div class="p-6" hidden>
+          <form [formGroup]="richForm">
+            <quill-editor #richEditorTemp format="text|html" id="richEditorTemp" [required]="true" [formControl]="content" >
+    
+            </quill-editor>
+          </form>
+        </div>
+      </div>
+      <div class="form-group col-12" *ngIf="(callingFrom=='extender')">
+        <label for="input09" class="font-weight-500">Extender Notes:</label>
+        <textarea autosize class="form-control required " formControlName="extendertxt" #extendertxt id="extendertxt"></textarea>
+      </div>
+    </form>
+    <div class="encounter-module-scrollable" style="height: 370px !important;" *ngIf="openEncounterSummary">
+        <div class="d-flex align-items-center">
+            <button type="button" class="left-back-btn"
+              (click)="onBackToPreview()">Back To Preview</button>
+          </div>
+        <table class="table layout-fixed light-striped-border">
+            <thead>
+            <tr>
+              <th>Visit Date</th>
+              <th>Provider</th>
+              <th>Location</th>
+              <th>Visit Reason</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let enc of lstPreviousEncounters">
+                    <td>{{enc.visit_date}}</td>
+                    <td>
+                        <button type="button" class="link-btn" (click)="openChart(enc)">
+                            {{enc.provider_name}}
+                        </button>
+                    </td>
+                    <td>{{enc.location}} </td>
+                    <td title="{{enc.reason_detail}}">{{enc.reason_detail}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  </div>
+
+  <div id="encSummary" class="modal fade" role="dialog" *ngIf="openEncounterSummary">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header custom">
+          <h4 class="modal-title">Previous Encounter Summary</h4>
+          <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- model body section -->
+        <div class="modal-body" style="height: 400px !important;">
+          <button type="submit" class="btn btn-success ml-1" data-dismiss="modal" (click)="testSelected()">OK</button>
+          <div class="encounter-module-scrollable" style="height: 370px !important;">
+            <table class="table layout-fixed light-striped-border">
+              <thead>
+                <tr>
+                  <th>Visit Date</th>
+                  <th>Provider</th>
+                  <th>Location</th>
+                  <th>Visit Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let enc of lstPreviousEncounters">
+                  <td>{{enc.visit_date}}</td>
+                  <td>
+                    <button type="button" class="link-btn" (click)="openChart(enc)">
+                      {{enc.provider_name}}
+                    </button>
+                  </td>
+                  <td>{{enc.location}} </td>
+                  <td title="{{enc.reason_detail}}">{{enc.reason_detail}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

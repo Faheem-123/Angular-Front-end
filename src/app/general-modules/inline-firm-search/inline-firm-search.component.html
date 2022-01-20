@@ -1,0 +1,29 @@
+<div class="inline-search" >
+  <div class="inline-search-header">    
+      <h6 class="title">Firm Search</h6>
+      <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <table class="table light-striped-border" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let frm of lstFirmName">
+          <td>
+            <button type="button" class="link-btn" (click)="onFirmSelect.emit(frm)">{{frm.firm_name}}</button>
+          </td>
+          <td>{{frm.address}}</td>
+          <td>{{frm.phone}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

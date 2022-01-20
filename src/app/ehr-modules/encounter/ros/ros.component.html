@@ -1,0 +1,55 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Review Of System</div>
+  <ul class="nav color-buttons align-items-center">
+    <a *ngIf="noRecordFound  && !addEditView && canAddEdit" class="nav-link green px-2 py-0" (click)="onAddEditClick()">
+      <i class="far fa-edit pr-1"></i>Add</a>
+      <a class="nav-link green px-2 py-0" *ngIf="!noRecordFound  && addEditView && isEditable && canAddEdit" (click)="onAddEditClick()">
+        <i class="far fa-edit pr-1"></i>Edit
+      </a>
+    <a *ngIf="!isEditable && addEditView && canAddEdit" class="nav-link encounter-btn-save px-2 py-0"
+      (click)="onSaveROS(inputForm.value)">
+      <i class="fa fa-save pr-1"></i>Save
+    </a>
+    <a *ngIf="!isEditable && addEditView && canAddEdit" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="onCancelRos()">
+      <i class="fas fa-times  pr-1"></i>Cancel
+  </a>
+    <!-- <a class="nav-link blue px-2 py-0 top-right-radius">
+      <i class="fas fa-history pr-1"></i>History
+    </a> -->
+  </ul>
+ 
+</div>
+
+
+
+<div class="border-content-box border-top-0 rounded-bottom light-sky-blue">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <div *ngIf="!isLoading && !canView" class="access-denied">
+        <p>
+          <i class="fas fa-ban"></i> Access Denied</p>
+      </div>
+      <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content ml-2 p-6">
+        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+      </div>
+  <div *ngIf="addEditView" class="border-content-box border-top-0 rounded-bottom light-sky-blue">
+  <form [formGroup]="inputForm" *ngIf="canView && addEditView">
+      <div class="filter-tab pr-0 justify-content-end" *ngIf="!isEditable">
+          <button class="btn btn-link p-0 btn-sm m-0 pr-2" (click)="onTemplateClick()">[Template]</button>
+          <button class="btn btn-link p-0 btn-sm m-0 pr-2" (click)="onLastROSClick()">[Last ROS]</button>
+      </div>
+    <div class="p-8 pt-1 form-row form-dashboard">
+      <div class="form-group col-12 d-flex flex-row justify-content-between">
+        <textarea rows="15" class="form-control" id="txtComments" placeholder="Enter Patient Review Of System"
+          formControlName="txtComments"  [readonly]="isEditable"></textarea>
+      </div>
+    </div>
+  </form>
+  <div class="encounter-footer-credential rounded-bottom">
+    <p class="form-text text-muted" *ngIf="lastModifiedMsg">Last Modified by {{lastModifiedMsg}}</p>
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLogHistory()">View Log</button>
+  </div>
+</div>
+</div>

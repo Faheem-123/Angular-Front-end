@@ -1,0 +1,276 @@
+<form [formGroup]="appointmentForm">
+    <div class="modal-header custom" *ngIf="show">
+        <img class="logo" src="./assets/images/logo-small.png">
+        <h4 class="modal-title">{{appOperation}} Appointment</h4>
+        <br>
+        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body custom" *ngIf="show">
+
+        <div class="dashboard-content mt-0">
+
+            <div class="btn-group radio-btn-tabs" *ngIf="appOperation==='New'">
+                <label class="btn btn-sm btn-secondary"
+                    [ngClass]="{'active' : (appointmentForm.value['entryOption'] === 'appointment')}">
+                    <input type="radio" name="entryOption" id="appointment" autocomplete="off" checked
+                        formControlName="entryOption" value="appointment" (ngModelChange)="onOptionChange($event)">
+                    Patient Appointment
+                </label>
+                <label class="btn btn-sm btn-secondary"
+                    [ngClass]="{'active' : (appointmentForm.value['entryOption'] === 'block')}">
+                    <input type="radio" name="entryOption" id="block" autocomplete="off" formControlName="entryOption"
+                        value="block" (ngModelChange)="onOptionChange($event)"> Block Time
+                </label>
+            </div>
+
+
+
+            <!--
+
+            <div class="btn-group" ngbRadioGroup name="entryOption" >
+                <label ngbButtonLabel class="btn-primary">
+                    <input ngbButton type="radio" name="entryOption" id="entryOption" [value]="appointment" formControlName="entryOption"> Patient Appointment
+                </label>
+                <label ngbButtonLabel class="btn-primary">
+                    <input ngbButton type="radio" value="middle" name="entryOption" id="entryOption" [value]="block" formControlName="entryOption"> Block Time
+                </label>               
+            </div>
+      
+        -->
+            <!--
+
+            <div class="form-row form-dashboard">
+                <div class="form-group col-4">
+                    <label class="form-check-label">
+                        <input checked class="form-check-input" type="radio" name="entryOption" id="entryOption" value="appointment" formControlName="entryOption"> Patient Appointment
+                    </label>
+                </div>
+                <div class="form-group col-4">
+                    <label class="form-check-label">
+                        <input checked class="form-check-input" type="radio" name="entryOption" id="entryOption" value="block" formControlName="entryOption"> Block Time
+                    </label>
+                </div>
+            </div>
+        -->
+            <div class="patient-summary patient-summary-green " *ngIf="patientId > 0">
+                <div class="summary-info">
+                    <img src="{{patPicURL}}" alt="pic" class="patient-pic rounded-circle"
+                        (error)="patPicErrorHandler($event)">
+
+                    <div class="info-box">
+                        <h3>{{patientName }}</h3>
+                        <p>{{gender}}</p>
+                    </div>
+
+                    <div class="info-box">
+                        <p>PID: {{pid}}</p>
+                        <p>DOB: {{dob}}</p>
+                    </div>
+                    <div class="close-button" *ngIf="appOperation==='New'">
+                        <button type="button" class="close  pr-1" aria-label="Close" (click)="clearPatient()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="form-row form-dashboard" *ngIf="!patientId > 0">
+                <div class="form-group col-12" *ngIf="appointmentForm.value['entryOption']=='appointment'">
+                    <label class="col-form-label required" for="input1">Search Patient </label>
+                    <div class="input-icon d-flex flex-grow-3">
+
+                        <input labelForId="txtPatientSearch" class="form-control search-highlight flex-grow-3"
+                            type="text" #txtPatientSearch formControlName="txtPatientSearch"
+                            placeholder="Search Patient" (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                            (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+                        <input type="text" formControlName="txtPatientIdHidden" hidden>
+                        <div class="icon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </div>
+
+                        <inline-patient-search #inlineAddAppPatSearch id="inlineAddAppPatSearch"
+                            *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                            (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                        </inline-patient-search>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-row form-dashboard">
+
+                <div class="form-group col-6">
+                    <label class="col-form-label required" for="cmbLocation">Location</label>
+                    <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation"
+                        (change)="locationChanged()">
+                        <option *ngFor="let loc of lstLocations" [value]="loc.id">{{loc.name}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-6">
+                    <label for="cmbProvider" class="col-form-label required">Provider</label>
+                    <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider"
+                        (change)="providerChanged()">
+                        <option *ngFor="let pro of lstFileredProviders" [value]="pro.provider_id">{{pro.provider_name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row form-dashboard">
+                <div class="form-group col-md-6" *ngIf="appointmentForm.value['entryOption']=='block'">
+                    <label for="cmbBlockTimingTo">Block Option</label>
+                    <select class="form-control" id="cmbBlockTimingTo" formControlName="cmbBlockOption">
+                        <option value="blocktime">Block time</option>
+                        <option value="blockwholeday">Block whole day</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row form-dashboard">
+
+                <div class="form-group col-3">
+                    <label class="col-form-label required">When</label>
+                    <div class="input-group">
+                        <input class="form-control date-control" placeholder="mm/dd/yyyy" formControlName="dpAppDate"
+                            name="dpAppDate" ngbDatepicker #dpAppDate="ngbDatepicker"
+                            (ngModelChange)="onDateChange( $event )" 
+                            (blur)="onDateFocusOut($event.currentTarget.value)"
+                            [ngClass]="{ required : (appointmentForm.controls.dpAppDate.errors?.required),
+                                'is-invalid': (appointmentForm.controls.dpAppDate.errors?.invalidDate)}">
+                        <span class="input-group-btn">
+                            <button class="btn date-control-btn" (click)="dpAppDate.toggle()" type="button">
+                            </button>
+                        </span>
+
+
+                    </div>
+                </div>
+
+                <!--
+                <div class="form-check col-md-3" *ngIf="appointmentForm.value['entryOption']=='block'">
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Block whole day</span>
+                        </label>
+                </div>
+            -->
+
+
+
+                <div class="form-group col-3"
+                    *ngIf="appointmentForm.value['entryOption']!='block' || appointmentForm.value['cmbBlockOption']=='blocktime'">
+                    <label for="cmbTiming" class="col-form-label required">Start Time</label>
+                    <select class="form-control" id="cmbTiming" formControlName="cmbStartTiming"
+                        (change)="onStartTimingChanged($event.currentTarget.value)">
+                        <option [value]=''></option>
+                        <option *ngFor="let t of lstStartTiming" [value]="t.timing">{{t.timing}}</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group col-md-3"
+                    *ngIf="appointmentForm.value['entryOption']=='block' && appointmentForm.value['cmbBlockOption']=='blocktime'">
+                    <label for="cmbBlockTimingTo" class="col-form-label required">End Time</label>
+                    <select class="form-control" id="cmbBlockTimingTo" formControlName="cmbEndTiming">
+                        <option *ngFor="let t of lstEndTiming" [value]="t.timing">{{t.timing}}</option>
+                    </select>
+                </div>
+
+
+
+                <div class="form-group col-3" *ngIf="appointmentForm.value['entryOption']=='appointment'">
+                    <label for="cmbDuration" class="col-form-label required">Duration</label>
+                    <select class="form-control" id="cmbDuration" formControlName="cmbDuration">
+                        <option *ngFor="let duration of lstDuration" [value]="duration">{{duration}} min</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-3" *ngIf="appointmentForm.value['entryOption']=='appointment'">
+                    <label for="cmbStatus">Status</label>
+                    <select class="form-control" id="cmbStatus" formControlName="cmbStatus">
+                        <option *ngFor="let status of lookupList.appStatusList" [value]="status.id">
+                            {{status.description}}</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-row form-dashboard" *ngIf="appointmentForm.value['entryOption']=='appointment'">
+
+                <div class="form-group col-6">
+                    <label for="cmbType">Appointment Type</label>
+                    <select class="form-control" id="cmbType" formControlName="cmbType"
+                    (change)="onTypeChanged($event.currentTarget.value)">
+                        <option *ngFor="let type of lookupList.appTypesList" [value]="type.id">{{type.description}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group col-6">
+                    <label for="cmbVisitReason">Visit Reason</label>
+                    <select class="form-control" id="cmbVisitReason" formControlName="cmbVisitReason">
+                        <option *ngFor="let reason of lookupList.appReasonsList" [value]="reason.id">
+                            {{reason.description}}</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="form-row form-dashboard">
+                <div class="form-group col-12">
+                    <label for="txtComments">Comments</label>
+                    <textarea class="form-control" id="txtComments" formControlName="txtComments" rows="3"></textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <!--
+        <div class="div-loader-message-box" *ngIf="isLoading">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+        -->
+
+        <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+            <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>{{loadingMsg}}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row form-dashboard" *ngIf="lstErrors!=undefined && lstErrors.length>0">
+        <div class="form-group col-12">
+            <div class="alert alert-danger rounded-0 m-0" role="alert">
+                <ul>
+                    <li *ngFor="let error of lstErrors">{{error}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer custom pl-0" *ngIf="show && !isLoading">
+
+        <div class="alert rounded-bottom-left alert-warning alert-info px-2 py-1 my-0 mx-0 fz-12" role="alert"
+            [ngClass]="{'alert-warning': (isDayOff || isTimingNotAvailable), 'alert-info':isTempTimingApplied}"
+            *ngIf="isTempTimingApplied || isDayOff || isTimingNotAvailable">
+            <i class="fas  mr-1" [ngClass]="{'fa-exclamation-triangle': (isDayOff || isTimingNotAvailable),
+            'fa-info-circle ': isTempTimingApplied}"></i>
+            <span class="fz-12" *ngIf="isDayOff">Provider day is off</span>
+            <span class="fz-12" *ngIf="isTimingNotAvailable">Provider Timing Not Avilable</span>
+            <span class="fz-12" *ngIf="isTempTimingApplied">Temp Timing Applied</span>
+
+        </div>
+
+        <button type="button" class="btn btn-sm btn-link" *ngIf="patientId==undefined"
+            (click)="OnCreatePatient()"><u>Create New Patient</u></button>
+        <div class="flex-grow-1">&nbsp;</div>
+        <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+            (click)="activeModal.dismiss('Cross click')">Cancel</button>
+        <button style="width: 80px;" class="btn btn-success btn-sm" type="button" (click)="onSubmit(appointmentForm.value)">Save</button>
+
+    </div>
+</form>

@@ -1,0 +1,312 @@
+<div class="modal-header custom" (keydown.esc)="dismiss()">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Staff/Physician Notes ({{patientName}})</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom p-0 d-flex flex-column" style="height: 250px" (keydown.esc)="dismiss()">
+  <div class="d-flex justify-content-between px-2">
+
+    <form [formGroup]="radioFormGroup">
+      <div class="btn-group radio-btn-tabs pt-1">
+        <label *ngIf="this.lookupList.UserRights.pat_staffnotes" class="btn btn-sm btn-secondary mb-0"
+          [ngClass]="{'active' : (selectedTab  === 'staff')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="staff"
+            (ngModelChange)="onOptionChange($event)">
+          Current Staff Notes
+        </label>
+        <label *ngIf="this.lookupList.UserRights.pat_phynotes" class="btn btn-sm btn-secondary mb-0"
+          [ngClass]="{'active' : (selectedTab === 'physician')}">
+          <input type="radio" name="radioOption" autocomplete="off" value="physician" formControlName="radioOption"
+            (ngModelChange)="onOptionChange($event)">
+          Physician Note
+        </label>
+        <label class="btn btn-sm btn-secondary mb-0" [ngClass]="{'active' : (selectedTab === 'billing')}">
+          <input type="radio" name="radioOption" autocomplete="off" value="billing" formControlName="radioOption"
+            (ngModelChange)="onOptionChange($event)">
+          Billing Notes
+        </label>
+      </div>
+    </form>
+
+    <!--
+    <form [formGroup]="radioFormGroup">
+      <div class="btn-group btn-group-toggle">
+        <label *ngIf="this.lookupList.UserRights.pat_staffnotes" class="btn "
+          [ngClass]="{'active' : (selectedTab === 'staff')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="staff"
+            (ngModelChange)="onRadioOptionChange ($event)"> Current Staff Notes
+        </label>
+        <label *ngIf="this.lookupList.UserRights.pat_phynotes" class="btn"
+          [ngClass]="{'active' : (selectedTab === 'physician')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+            value="physician" (ngModelChange)="onRadioOptionChange ($event)"> Physician Note
+        </label>
+        <label class="btn" [ngClass]="{'active' : (selectedTab === 'billing')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+            value="billing" (ngModelChange)="onRadioOptionChange ($event)"> Billing Notes
+        </label>
+      </div>
+
+    </form>
+    -->
+
+    <div class="alert alert-danger pb-0 pt-1 m-0 rounded-0 fz-14" *ngIf="callingFrom!='patient'">
+      Alerts Only
+    </div>
+    <div class="justify-content-end" *ngIf="callingFrom=='patient'">
+      <button type="button" class="btn btn-sm btn-primary width-80 rounded-25" (click)="AddNew()"
+        *ngIf="!showHideButtons"> Add New </button>
+      <button type="button" class="btn btn-sm btn-success width-80 rounded-25" (click)="saveRecord()"
+        *ngIf="showHideButtons">Save</button>
+      <button type="button" class="btn btn-sm btn-dark width-80 rounded-25" (click)="dismiss()"
+        *ngIf="showHideButtons">Close</button>
+    </div>
+  </div>
+
+  <!--
+  <div class="dashboard-sub-nav encounter justify-content-end" *ngIf="callingFrom=='patient'">
+    <button type="button" class="btn btn-sm btn-primary width-80 rounded-25" (click)="AddNew()"
+      *ngIf="!showHideButtons"> Add New </button>
+    <button type="button" class="btn btn-sm btn-success width-80 rounded-25" (click)="saveRecord()"
+      *ngIf="showHideButtons">Save</button>
+    <button type="button" class="btn btn-sm btn-dark width-80 rounded-25" (click)="dismiss()"
+      *ngIf="showHideButtons">Close</button>
+  </div>
+  -->
+  <div class="bg-white d-flex flex-column flex-grow-1">
+
+    <div class="d-flex flex-column flex-grow-1 p-1" *ngIf="radioFormGroup.value.radioOption == 'staff'">
+      <form [formGroup]="formStaffNotes">
+        <div class="d-flex  justify-content-end " *ngIf="this.operation!=''">
+          <button type="button" class="btn btn-link text-primary line-height-1 p-0 mr-2" (click)="onVoiceSatrt()"
+            title="Start Microphone to Write">
+            <i class="fas fa-microphone"></i>
+          </button>
+          <button type="button" class="btn btn-link line-height-1 p-0 mr-2 text-danger" (click)="onVoiceStop()"
+            title="Stop Microphone">
+            <i class="fas fa-microphone-slash"></i>
+          </button>
+        </div>
+        <textarea #patient_notes_staff_notes id="patient_notes_staff_notes" rows="4" class="form-control fz-13"
+          formControlName="txtStaffDetials" name=""></textarea>
+
+        <div class="d-flex justify-content-end mt-1">
+
+          <div class="form-group">
+
+            <div class="custom-control custom-checkbox green-checkbox">
+              <input type="checkbox" class="custom-control-input" id="ChkStaffAlert" formControlName="ChkStaffAlert"
+                #ChkStaffAlert>
+              <label class="custom-control-label" for="ChkStaffAlert">Alert</label>
+            </div>
+
+          </div>
+
+
+        </div>
+      </form>
+
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-1">
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Patient Notes</h4>
+
+        </div>
+
+        <div class="overflow-auto p-0 flex-grow-1 h-350">
+          <table class="table light-striped-border layout-fixed sm ">
+            <thead>
+              <tr>
+                <th width="60%">Notes</th>
+                <th>By</th>
+                <th>Date</th>
+                <th *ngIf="callingFrom=='patient'">&nbsp;</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let lstNotes of ArrNotesFilter;let i = index"
+                (click)="onuserSelectionChange(i,lstNotes,'staff')" [ngClass]="{ 'active': i==selecteduserIndex,
+        'disabled': isDisable}">
+
+                <td>{{lstNotes.notes}}</td>
+                <td>{{lstNotes.created_user}}</td>
+                <td>{{lstNotes.client_date_created}}</td>
+                <td class="text-right" *ngIf="callingFrom=='patient'">
+                  <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" type="button"
+                    (click)="updateNotes(lstNotes)">
+                    <i _ngcontent-c119="" class="far fa-edit"></i>
+                  </button>
+                  <button [disabled]="!this.lookupList.UserRights.pat_delnotes"
+                    class="btn btn-link btn-sm text-danger line-height-1 p-0" type="button"
+                    (click)="deleteNotes(lstNotes)">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1 p-2" *ngIf="radioFormGroup.value.radioOption == 'physician'">
+      <form [formGroup]="formPhysicanNotes">
+        <textarea rows="4" class="form-control fz-13" formControlName="txtPhysicanNote" id="" name=""></textarea>
+
+        <!--
+        <div class="d-flex justify-content-end mt-1">
+          <div class="custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="selectAll">
+            <label class="custom-control-label" formControlName="chkPhysicanAlert" for="selectAll">Alert</label>
+          </div>
+        </div>
+        -->
+
+        <div class="d-flex justify-content-end mt-1">
+
+          <div class="form-group">
+
+            <div class="custom-control custom-checkbox green-checkbox">
+              <input type="checkbox" class="custom-control-input" id="chkPhysicanAlert"
+                formControlName="chkPhysicanAlert" #chkPhysicanAlert>
+              <label class="custom-control-label" for="chkPhysicanAlert">Alert</label>
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+      </form>
+
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-1">
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Physician Note</h4>
+
+        </div>
+
+        <div class="overflow-auto p-0 flex-grow-1 h-350">
+          <table class="table light-striped-border layout-fixed sm ">
+            <thead>
+              <tr>
+                <th width="60%">Notes</th>
+                <th>By</th>
+                <th>Date</th>
+                <th *ngIf="callingFrom=='patient'">&nbsp;</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let lstNotes of ArrNotesFilter;let i = index"
+                (click)="onuserSelectionChange(i,lstNotes,'physician')" [ngClass]="{ 'active': i==selecteduserIndex,
+        'disabled': isDisable}">
+                <td>{{lstNotes.notes}}</td>
+                <td>{{lstNotes.created_user}}</td>
+                <td>{{lstNotes.client_date_created}}</td>
+                <td class="text-right" *ngIf="callingFrom=='patient'">
+                  <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" type="button"
+                    (click)="updateNotes(lstNotes)">
+                    <i _ngcontent-c119="" class="far fa-edit"></i>
+                  </button>
+                  <button [disabled]="!this.lookupList.UserRights.pat_delnotes"
+                    class="btn btn-link btn-sm text-danger line-height-1 p-0" type="button"
+                    (click)="deleteNotes(lstNotes.patient_note_id)">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1 p-2" *ngIf="radioFormGroup.value.radioOption == 'billing'">
+      <form [formGroup]="formBillingNotes">
+        <textarea rows="4" class="form-control fz-13" formControlName="txtBillingNote_prev" id=""
+          name="">Billing notes goese here</textarea>
+
+        <h4 _ngcontent-c61="" class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Notes</h4>
+
+        <textarea rows="4" class="form-control fz-13" formControlName="txtBillingNote" id=""
+          name="">Billing notes goese here</textarea>
+
+        <!--
+        <div class="d-flex justify-content-end mt-1">
+          <div class="custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="selectAll">
+            <label class="custom-control-label" formControlName="chkBillingAlert" for="selectAll">Alert</label>
+          </div>
+        </div>
+
+        -->
+
+
+        <div class="d-flex justify-content-end mt-1">
+
+          <div class="form-group">
+
+            <div class="custom-control custom-checkbox green-checkbox">
+              <input type="checkbox" class="custom-control-input" id="chkBillingAlert" formControlName="chkBillingAlert"
+                #chkBillingAlert>
+              <label class="custom-control-label" for="chkBillingAlert">Alert</label>
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+
+      </form>
+
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-1">
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Billing Note</h4>
+
+        </div>
+
+        <div class="overflow-auto p-0 flex-grow-1 h-350">
+          <table class="table light-striped-border layout-fixed sm ">
+            <thead>
+              <tr>
+                <th width="60%">Notes</th>
+                <th>By</th>
+                <th>Date</th>
+                <th *ngIf="callingFrom=='patient'">&nbsp;</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let lstNotes of ArrNotesFilter;let i = index"
+                (click)="onuserSelectionChange(i,lstNotes,'billing')" [ngClass]="{ 'active': i==selecteduserIndex,
+        'disabled': isDisable}">
+                <td title="{{lstNotes.notes}}">{{lstNotes.notes}}</td>
+                <td>{{lstNotes.created_user}}</td>
+                <td>{{lstNotes.client_date_created}}</td>
+                <td class="text-right" *ngIf="callingFrom=='patient'">
+                  <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" type="button"
+                    (click)="updateNotes(lstNotes)">
+                    <i _ngcontent-c119="" class="far fa-edit"></i>
+                  </button>
+                  <button [disabled]="!this.lookupList.UserRights.pat_delnotes"
+                    class="btn btn-link btn-sm text-danger line-height-1 p-0" type="button"
+                    (click)="deleteNotes(lstNotes.patient_note_id)">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

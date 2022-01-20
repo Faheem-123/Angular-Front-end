@@ -1,0 +1,1295 @@
+<div class="mt-8">
+  <div class="rounded-top" [ngClass]="{  
+  'encounter-header-highlight': (addEditView==true || isCumulativeVitals==true),
+  'encounter-header': addEditView==false}">
+    <div class="title pl-8">
+      <span *ngIf="!isCumulativeVitals">Patient Vitals</span>
+      <span *ngIf="isCumulativeVitals">Cumulative Key Vitals</span>
+    </div>
+
+    <!--<span> [{{vitalUnit =='metric' ? 'Metric' : 'US Customary' }}]</span>-->
+
+
+    <div class="nav color-buttons align-items-center">
+
+      <div class="dropdown mr-1">
+        <button class="nav-link blue px-2 py-0 ml-2 rounded-0" type="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          [
+          {{vitalUnit =='metric' ? 'Metric' : 'US Customary' }}
+          <i class="fas fa-caret-down mx-1"></i>
+          ]
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+          <button class="dropdown-item" type="button" (click)="ChangeVitalUnit('us_customary')">
+            US customary</button>
+          <button class="dropdown-item" type="button" (click)="ChangeVitalUnit('metric')">
+            Metric</button>
+
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="flex-grow-1">&nbsp;</div>
+    <div class="nav color-buttons align-items-center">
+
+
+      <!-- <div *ngIf="addEditView" class="title-link ihc-seprator"></div> -->
+
+      <button *ngIf="!addEditView && canViewQuickVital" (click)="showCumulativeView()"
+        class="nav-link btn-info px-2 py-0">
+        Cumulative Key Vitals
+      </button>
+
+      <button *ngIf="!addEditView && canAddEdit && canView && !isCumulativeVitals" (click)="editVitals()"
+        class="nav-link green px-2 py-0 top-right-radius">
+        <i *ngIf="chartVital==undefined" class="far fa-plus-square pr-1"></i>
+        <i *ngIf="chartVital!=undefined" class="far fa-edit pr-1"></i>
+        <span *ngIf="chartVital==undefined">Add</span>
+        <span *ngIf="chartVital!=undefined">Edit</span>
+      </button>
+
+
+      <!--
+      <button *ngIf="!addEditView" (click)="editVitals()" class="nav-link green px-2 py-0 top-right-radius">
+        <i aria-hidden="true" class="far fa-edit pr-1"></i>Edit
+      </button>
+      -->
+      <!--
+      <button (click)="getVitalsHistory();" class="nav-link blue px-2 py-0 top-right-radius" *ngIf="!addEditView">
+        <i aria-hidden="true" class="fas fa-history pr-1"></i> History
+
+      </button>
+      -->
+
+      <button *ngIf="addEditView " [disabled]="!vitalsForm.valid" (click)="saveVitals()" class="nav-link encounter-btn-save px-2 py-0">
+        <i aria-hidden="true" class="far fa-save pr-1"></i> Save
+      </button>
+
+      <button *ngIf="addEditView" (click)="cancelVitals()" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius">
+        <i aria-hidden="true" class="fas fa-times pr-1"></i>Cancel
+      </button>
+
+      <button *ngIf="isCumulativeVitals" (click)="showNormalView()" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius">
+        <i aria-hidden="true" class="fas fa-times pr-1"></i>Close
+      </button>
+
+    </div>
+  </div>
+
+  <!--
+  <div class="rounded-top encounter-header-highlight" *ngIf="isCumulativeVitals">
+    <div class="title pl-8">Quick Vitals</div>
+    <ul class="nav color-buttons align-items-center">
+      <a class="nav-link btn-danger px-2 py-0 top-right-radius" (click)="showNormalView()">
+        <i class="fas fa-times pr-1"></i>Close
+      </a>
+    </ul>
+  </div>
+  -->
+
+
+  <div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+
+    <div *ngIf="!canView" class="access-denied">
+      <i class="fas fa-ban mr-2"></i> Access Denied
+    </div>
+
+
+    <div *ngIf="noRecordFound && !addEditView && canView && !isCumulativeVitals" class="no-content">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+
+
+    <div *ngIf="!noRecordFound && !addEditView && canView && !isCumulativeVitals">
+      <div class="p-6">
+
+
+        <!-- Height & Weight -->
+        <div class="form-row form-dashboard">
+
+          <div class="col-6 p-6 m-0 pt-0">
+            <h5 class="form-edit-sub-heading mt-0 mb-1">Height & Weight</h5>
+
+            <div class="form-row form-dashboard">
+
+              <div class="form-view col-6">
+                <label class="title-normal">Height:</label>
+                <label class="value" *ngIf="vitalUnit=='us_customary'">
+                  <span class="pr-2" *ngIf="height_feet!=''">{{height_feet}} ft</span>
+                  <span *ngIf="height_inc!=''">{{height_inc}} in</span>
+
+                  <span class="pl-2" *ngIf="chartVital.height_cm!=''">
+                    ({{chartVital.height_cm}} cm)
+                  </span>
+                </label>
+
+                <label class="value" *ngIf="vitalUnit=='metric'">
+
+
+                  <span class="pl-2" *ngIf="chartVital.height_cm!=''">
+                    {{chartVital.height_cm}} cm
+                  </span>
+
+
+                  (
+                  <span class="pr-2" *ngIf="height_feet!=''">{{height_feet}} ft</span>
+                  <span *ngIf="height_inc!=''">{{height_inc}} in</span>
+                  )
+
+                </label>
+
+              </div>
+
+              <div class="form-view col-6">
+                <label class="title-normal">Weight:</label>
+                <label class="value" *ngIf="vitalUnit=='us_customary'">
+                  <span class="pr-2" *ngIf="weight_lbs!=''">{{weight_lbs}} lb</span>
+                  <span *ngIf="weight_ozs!=''">{{weight_ozs}} oz</span>
+
+                  <span class="pl-2" *ngIf="chartVital.weight_kg!=''">
+                    ({{chartVital.weight_kg}} Kg)
+                  </span>
+
+                </label>
+                <label class="value" *ngIf="vitalUnit=='metric'">
+                  <span class="pl-2" *ngIf="chartVital.weight_kg!=''">
+                    {{chartVital.weight_kg}} Kg
+                  </span>
+
+                  (
+                  <span class="pr-2" *ngIf="weight_lbs!=''">{{weight_lbs}} lb</span>
+                  <span *ngIf="weight_ozs!=''">{{weight_ozs}} oz</span>
+                  )
+
+                </label>
+              </div>
+
+
+
+              <div class="form-view col-12">
+                <label class="title-normal">BMI:</label>
+                <label class="value">
+                  {{chartVital.bmi}}
+
+                  <span *ngIf="bmi_cateogry_description!=''" class="pl-2 font-weight-bold" title="BMI Categories:
+                  Underweight = Less Then 18.5
+                  Normal weight = 18.5–24.9
+                  Overweight = 25–29.9
+                  Obesity = BMI of 30 or greater" [ngClass]="{
+                    'text-primary' : bmi_cateogry_description == 'Underweight',
+                    'text-success' : bmi_cateogry_description == 'Normal weight',
+                    'text-warning' : bmi_cateogry_description == 'Overweight',
+                    'text-danger' : bmi_cateogry_description == 'Obese'}">
+                    ({{bmi_cateogry_description}})
+                  </span>
+                </label>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-6 p-6 m-0 pt-0 left-separator-border">
+            <h5 class="form-edit-sub-heading mt-0 mb-1">Temperature</h5>
+
+            <div class="form-row form-dashboard">
+
+              <div class="form-view col-6">
+                <label class="title-normal">Temperature:</label>
+                <label class="value" *ngIf="vitalUnit=='us_customary'">
+                  <span *ngIf="chartVital.temperature_fahren!=''">{{chartVital.temperature_fahren}} °F</span>
+                  <span class="pl-2" *ngIf="chartVital.temperature_centi!=''">
+                    ({{chartVital.temperature_centi}} °C)
+                  </span>
+                </label>
+
+                <label class="value" *ngIf="vitalUnit=='metric'">
+
+                  <span class="pl-2" *ngIf="chartVital.temperature_centi!=''">
+                    {{chartVital.temperature_centi}} °C
+                  </span>
+
+                  <span *ngIf="chartVital.temperature_fahren!=''">( {{chartVital.temperature_fahren}} °F )</span>
+                </label>
+              </div>
+
+              <div class="form-view col-6">
+                <label class="title-normal">Source:</label>
+                <label class="value">
+                  <span class="pr-2">{{chartVital.temperature_source}}</span>
+                </label>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Temperature -->
+        <!-- <div class="form-row form-dashboard">
+
+
+        </div>
+        -->
+
+        <!-- Blood Pressure -->
+        <div class="form-row form-dashboard" *ngIf="isBP1Exist() || isBP2Exist()">
+
+          <div class="col-12 p-6 m-0 pt-0">
+
+            <h5 class="form-edit-sub-heading mt-0 mb-1">Blood Pressure</h5>
+
+
+            <div class="form-row form-dashboard">
+              <div class="col-12 p-6 m-0 pt-0" *ngIf="isBP1Exist()">
+                <h6 class="form-edit-sub-heading mt-0">1st Reading:</h6>
+
+                <div class="form-row form-dashboard">
+
+                  <div class="form-view col-2">
+                    <label class="title-normal">BP (mmHg):</label>
+                    <label class="value">
+                      <span>{{chartVital.systolic_bp1}}/{{chartVital.diastolic_bp1}}</span>
+                    </label>
+                  </div>
+
+                  <div class="form-view col-2">
+                    <label class="title-normal">Pulse (bpm):</label>
+                    <label class="value">
+                      <span>{{chartVital.pulse}}</span>
+                    </label>
+                  </div>
+
+                  <div class="form-view col-3">
+                    <label class="title-normal">Monitoring Postition:</label>
+                    <label class="value">
+                      <span>{{chartVital.monitoringposition_bp1}}</span>
+                    </label>
+                  </div>
+
+
+                  <div class="form-view col-2" *ngIf="chartVital.character!=undefined && chartVital.character!=''">
+                    <label class="title-normal">Character:</label>
+                    <label class="value">
+                      <span>{{chartVital.character}}</span>
+                    </label>
+                  </div>
+
+                  <div class="form-view col-2" *ngIf="chartVital.character!=undefined && chartVital.character!=''">
+                    <label class="title-normal">Rhythm:</label>
+                    <label class="value">
+                      <span>{{chartVital.rhythm}}</span>
+                    </label>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+            <div class="form-row form-dashboard">
+
+              <div class="col-12 p-6 m-0 pt-0 left-separator-border" *ngIf="isBP2Exist()">
+                <h6 class="form-edit-sub-heading mt-0">2nd Reading:</h6>
+
+                <div class="form-row form-dashboard">
+
+                  <div class="form-view col-2">
+                    <label class="title-normal">BP (mmHg):</label>
+                    <label class="value">
+                      <span>{{chartVital.systolic_bp2}}/{{chartVital.diastolic_bp2}}</span>
+                    </label>
+                  </div>
+
+                  <div class="form-view col-2">
+                    <label class="title-normal">Pulse (bpm):</label>
+                    <label class="value">
+                      <span>{{chartVital.pulse_bp2}}</span>
+                    </label>
+                  </div>
+
+                  <div class="form-view col-3">
+                    <label class="title-normal">Monitoring Postition:</label>
+                    <label class="value">
+                      <span>{{chartVital.monitoringposition_bp2}}</span>
+                    </label>
+                  </div>
+
+
+                  <div class="form-view col-3"
+                    *ngIf="chartVital.character_bp2!=undefined && chartVital.character_bp2!=''">
+                    <label class="title-normal">Character:</label>
+                    <label class="value">
+                      <span>{{chartVital.character_bp2}}</span>
+                    </label>
+                  </div>
+
+                  <div class="form-view col-2"
+                    *ngIf="chartVital.reading_delay!=undefined && chartVital.reading_delay!=''">
+                    <label class="title-normal">Delay:</label>
+                    <label class="value">
+                      <span>{{chartVital.reading_delay}}</span>
+                    </label>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+          </div>
+        </div>
+
+        <!-- Other -->
+        <div class="form-row form-dashboard" *ngIf="isOtherExist()">
+
+          <div class="col-12 p-6 m-0 pt-0">
+            <h5 class="form-edit-sub-heading mt-0 mb-1">Other</h5>
+
+            <div class="form-row form-dashboard">
+
+              <div class="form-view col-3"
+                *ngIf="chartVital.head_circumference_inch!=undefined && chartVital.head_circumference_inch!=''">
+                <label class="title-normal">Head Circumference:</label>
+                <label class="value" *ngIf="vitalUnit=='us_customary'">
+                  {{chartVital.head_circumference_inch}} in
+                </label>
+                <label class="value" *ngIf="vitalUnit=='metric'">
+                  {{chartVital.head_circumference_cm}} cm
+                </label>
+              </div>
+
+              <div class="form-view col-3" *ngIf="chartVital.respiration!=undefined && chartVital.respiration!=''">
+                <label class="title-normal">Respiratory Rate:</label>
+                <label class="value">
+                  {{chartVital.respiration}}
+                </label>
+              </div>
+
+              <div class="form-view col-3"
+                *ngIf="chartVital.oxygen_saturation!=undefined && chartVital.oxygen_saturation!=''">
+                <label class="title-normal">Oxygen Saturation:</label>
+                <label class="value">
+                  {{chartVital.oxygen_saturation}} %
+                </label>
+              </div>
+
+              <div class="form-view col-3" *ngIf="chartVital.oxygen_flow!=undefined && chartVital.oxygen_flow!=''">
+                <label class="title-normal">Oxygen Flow:</label>
+                <label class="value">
+                  {{chartVital.oxygen_flow}}
+                </label>
+              </div>
+
+              <div class="form-view col-3" *ngIf="chartVital.oxygen_source!=undefined && chartVital.oxygen_source!=''">
+                <label class="title-normal">Oxygen Source:</label>
+                <label class="value">
+                  {{chartVital.oxygen_source}}
+                </label>
+              </div>
+
+              <div class="form-view col-3"
+                *ngIf="chartVital.pulse_oximetry!=undefined && chartVital.pulse_oximetry!=''">
+                <label class="title-normal">Pulse Oximetry:</label>
+                <label class="value">
+                  {{chartVital.pulse_oximetry}} %
+                </label>
+              </div>
+
+
+              <div class="form-view col-3" *ngIf="chartVital.waist_in!=undefined && chartVital.waist_in!=''">
+                <label class="title-normal">Waist:</label>
+                <label class="value" *ngIf="vitalUnit=='us_customary'">
+                  {{chartVital.waist_in}} in
+                </label>
+                <label class="value" *ngIf="vitalUnit=='metric'">
+                  {{chartVital.waist_cm}} cm
+                </label>
+
+
+              </div>
+
+              <div class="form-view col-3" *ngIf="chartVital.pain!=undefined && chartVital.pain!=''">
+                <label class="title-normal">Pain:</label>
+                <label class="value">
+                  {{chartVital.pain}}
+                </label>
+              </div>
+
+              <!--
+              <div class="form-view col-3" *ngIf="chartVital.pr_bpm!=undefined && chartVital.pr_bpm!=''">
+                <label class="title-normal">PR BPM:</label>
+                <label class="value">
+                  {{chartVital.pr_bpm}}
+                </label>
+              </div>
+            -->
+
+
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- Notes -->
+        <div class="form-row form-dashboard" *ngIf="chartVital.comments!=undefined && chartVital.comments!=''">
+
+          <div class="col-12 p-6 m-0 pt-0">
+            <h5 class="form-edit-sub-heading mt-0 mb-1">Notes</h5>
+
+            <div class="form-row form-dashboard">
+
+              <div class="form-view">
+                <label class="value col">
+                  {{chartVital.comments}}
+                </label>
+              </div>
+
+
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
+
+
+      <div class="encounter-footer-credential rounded-bottom">
+        <p class="form-text text-muted" *ngIf="lastModifiedMsg">Last Modified by {{lastModifiedMsg}}</p>
+        <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLogHistory()">View Log</button>
+      </div>
+
+
+    </div>
+
+
+
+    <div *ngIf="addEditView">
+      <form [formGroup]="vitalsForm">
+        <div class="light-gray-bg p-6">
+
+
+          <div class="row p3">
+
+            <div class="col-8 d-flex flex-column">
+              <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+
+                <div class="form-row form-dashboard p-1">
+                  <div class="col-6 right-separator-border  ">
+
+                    <div class="form-row form-dashboard p-1">
+
+                      <h6 class="form-edit-sub-heading m-0 mb-1 col">Height:</h6>
+
+                      <div class="form-row form-dashboard px-1">
+                        <div class="form-group col-8">
+
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">ft</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="txtHeightFt"
+                              (blur)="calculateCM('height')">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">in</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="txtHeightIn"
+                              (blur)="calculateCM('height')">
+                          </div>
+                        </div>
+
+                        <div class="form-group col-4">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">cm</span>
+                            </div>
+                            <input type="text" class="form-control" value="{{height_cm}}" formControlName="txtHeightCm"
+                              (blur)="calculateInc('height')">
+                          </div>
+                        </div>
+
+                      </div>
+
+
+                    </div>
+
+                    <div class="form-row form-dashboard p-1">
+
+                      <h6 class="form-edit-sub-heading m-0 mb-1 col">Weight:</h6>
+
+
+                      <div class="form-row form-dashboard px-1">
+                        <div class="form-group col-6">
+
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">lb</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="txtWeightLb"
+                              (blur)="calculateKgGm('weight')">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">oz</span>
+                            </div>
+                            <input type="text" class="form-control" (blur)="calculateKgGm('weight')"
+                              formControlName="txtWeightOz">
+                          </div>
+                        </div>
+
+
+                        <div class="form-group col-6">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">kg</span>
+                            </div>
+                            <input type="text" class="form-control" value="{{weight_kg}}" formControlName="txtWeightKg"
+                              (blur)="calculateLbOz('weight')">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">g</span>
+                            </div>
+                            <input type="text" class="form-control" value="{{weight_grm}}" formControlName="txtWeightGm"
+                              (blur)="calculateLbOz('weight')">
+
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="col-2 right-separator-border ">
+
+
+                    <ng-template #popContent><b>Underweight : </b> Less Then 18.5<br>
+                      <b>Normal weight : </b> 18.5–24.9<br>
+                      <b>Overweight : </b> 25–29.9<br>
+                      <b>Obesity :</b> 30 or greater</ng-template>
+
+                    <div class="alert alert-primary fz-12 mb-0 h-100 rounded-3" role="alert" [ngClass]="{
+                      'alert-primary' : bmi_cateogry_description == 'Underweight',
+                      'alert-success' : bmi_cateogry_description == 'Normal weight',
+                      'alert-warning' : bmi_cateogry_description == 'Overweight',
+                      'alert-danger' : bmi_cateogry_description == 'Obese'}">
+
+
+                      <h6 class="alert-heading my-0 pt-0 pb-1 border-0 d-flex justify-content-between">BMI
+                        <a class="p-0 text-info" [ngbPopover]="popContent" popoverTitle="BMI Categories"
+                          container="body" placement="right" popoverClass="ihc-popover"
+                          triggers="mouseenter:mouseleave">
+                          <i class="fas fa-info-circle fa-md"></i>
+                        </a>
+
+                      </h6>
+                      <hr class="mb-1 mt-0">
+
+
+                      <p class="my-2 pb-2">{{BMI}}</p>
+                      <hr class="mt-4 mb-1">
+                      <p class="my-1">
+                        {{bmi_cateogry_description}}
+                      </p>
+                    </div>
+
+                    <!--
+                    <div class="form-row form-dashboard p-1">
+
+                      <h6 class="form-edit-sub-heading m-0 mb-1 col-12">BMI:
+
+                        <span title="BMI Categories:
+                                    Underweight = Less Then 18.5
+                                    Normal weight = 18.5–24.9
+                                    Overweight = 25–29.9
+                                    Obesity = BMI of 30 or greater">
+                          <small
+                            [ngClass]="{
+                                                          'text-primary' : bmi_cateogry_description == 'Underweight',
+                                                          'text-success' : bmi_cateogry_description == 'Normal weight',
+                                                          'text-warning' : bmi_cateogry_description == 'Overweight',
+                                                          'text-danger' : bmi_cateogry_description == 'Obese'}"><b>({{bmi_cateogry_description}})</b></small>
+                        </span>
+                      </h6>
+
+                      <div class="form-row form-dashboard px-1">
+                        <div class="form-group">
+                          <label class="form-control bg-color-disable pt-1">{{BMI}}</label>                          
+                        </div>
+                      </div>
+
+
+                    </div>
+                  -->
+
+                  </div>
+
+                  <div class="col-4">
+
+
+                    <div class="form-row form-dashboard p-1">
+
+                      <h6 class="form-edit-sub-heading m-0 mb-1 col">Head Circumference:</h6>
+
+
+                      <div class="form-row form-dashboard px-1">
+                        <div class="form-group col">
+
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">in</span>
+                            </div>
+                            <input type="text" class="form-control" (blur)="calculateCM('head_circumference')"
+                              formControlName="txtHeadCirIn">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">cm</span>
+                            </div>
+                            <input type="text" class="form-control" (blur)="calculateInc('head_circumference')"
+                              formControlName="txtHeadCirCm">
+                          </div>
+
+
+                        </div>
+
+
+
+                      </div>
+
+                    </div>
+
+                    <div class="form-row form-dashboard p-1">
+
+                      <h6 class="form-edit-sub-heading m-0 mb-1 col">Waist:</h6>
+
+
+                      <div class="form-row form-dashboard px-1">
+                        <div class="form-group col">
+
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">in</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="txtWaistIn"
+                              (blur)="calculateCM('waist')">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text  width-30">cm</span>
+                            </div>
+                            <input type="text" class="form-control" formControlName="txtWaistCm"
+                              (blur)="calculateInc('waist')">
+                          </div>
+                        </div>
+
+
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+            <div class="col-4 d-flex flex-column">
+
+              <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+
+                <div class="form-row form-dashboard px-2 py-2">
+                  <h6 class="form-edit-sub-heading m-0 mb-1 col">Temperature:</h6>
+
+                  <div class="form-row form-dashboard px-1 pt-0">
+                    <div class="form-group col-6">
+
+                      <div class="input-group">
+
+                        <input type="text" class="form-control border-right-0" (blur)="convertTempToDegreeC()"
+                          formControlName="txtTempF">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text  width-30">°F</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-6">
+
+                      <div class="input-group">
+
+                        <input type="text" class="form-control border-right-0" (blur)="convertTempToDegreeF()"
+                          formControlName="txtTempC">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text  width-30">°C</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row form-dashboard p-0 px-1 col">
+
+                    <div class="form-group col-6 mt-2">
+
+                      <label for="txtTempSource" class="col-form-label">Source</label>
+
+                      <select class="form-control" formControlName="txtTempSource">
+                        <option></option>
+                        <option>Oral</option>
+                        <option>Auxiliary</option>
+                        <option>Rectal</option>
+                        <option>Forehead</option>
+                        <option>Tympanic(ear)</option>
+                      </select>
+
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-8 d-flex flex-column">
+              <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+                <div class="form-row form-dashboard px-1 py-2">
+                  <div class="col-6 right-separator-border  px-2">
+                    <h6 class="form-edit-sub-heading m-0">1st Reading:</h6>
+                    <div class="form-row form-dashboard ">
+                      <div class="form-group col-12">
+                        <label for="txtBP1Systolic" class="col-form-label">BP (mmHg)</label>
+
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text  width-60">Systolic</span>
+                          </div>
+                          <input type="text" class="form-control" formControlName="txtBP1Systolic" 
+                          [ngClass]="{ 'is-invalid' : (vitalsForm.get('txtBP1Systolic').errors?.pattern.requiredPattern)}">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text width-60">Diastolic</span>
+                          </div>
+                          <input type="text" class="form-control" formControlName="txtBP1Diastolic"
+                          [ngClass]="{ 'is-invalid' : (vitalsForm.get('txtBP1Diastolic').errors?.pattern.requiredPattern)}">
+                        </div>
+
+                      </div>
+
+                      <div class="form-group col-6">
+                        <label for="ddBP1Position" class="col-form-label">Monitoring
+                          Pos</label>
+
+                        <select class="form-control" formControlName="ddBP1Position">
+                          <option></option>
+                          <option>Sitting</option>
+                          <option>Standing</option>
+                          <option>Supine</option>
+                          <option>Unspecified</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-6">
+                        <label for="txtBP1Pulse" class="col-form-label">Pulse Rate</label>
+
+                        <div class="input-group">
+
+                          <input type="text" class="form-control" formControlName="txtBP1Pulse">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text width-40">bpm</span>
+                          </div>
+
+                        </div>
+
+
+                      </div>
+
+
+
+                      <div class="form-group col-6">
+                        <label for="ddBP1Rhythm" class="col-form-label">Rhythm</label>
+
+                        <select class="form-control" formControlName="ddBP1Rhythm">
+                          <option></option>
+                          <option>Regular</option>
+                          <option>Irregular</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-6">
+                        <label for="txtBP1Character" class="col-form-label">Character</label>
+
+                        <select class="form-control" formControlName="txtBP1Character">
+                          <option></option>
+                          <option>Normal</option>
+                          <option>Collapsing Pulse</option>
+                          <option>Water Hammer Pulse</option>
+                          <option>Plateau Pulse</option>
+                          <option>Bisferiens Pulse</option>
+                        </select>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="col-6 px-2">
+                    <h6 class="form-edit-sub-heading m-0">2nd Reading:</h6>
+                    <div class="form-row form-dashboard ">
+
+
+                      <div class="form-group  col-12">
+                        <label for="txtBP2Systolic" class="col-form-label">BP (mmHg)</label>
+
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text width-60">Systolic</span>
+                          </div>
+                          <input type="text" class="form-control" formControlName="txtBP2Systolic"
+                          [ngClass]="{ 'is-invalid' : (vitalsForm.get('txtBP2Systolic').errors?.pattern.requiredPattern)}">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text width-60">Diastolic</span>
+                          </div>
+                          <input type="text" class="form-control" formControlName="txtBP2Diastolic"
+                          [ngClass]="{ 'is-invalid' : (vitalsForm.get('txtBP2Diastolic').errors?.pattern.requiredPattern)}">
+                        </div>
+
+                      </div>
+
+                      <div class="form-group col-6">
+                        <label for="ddBP2Position" class="col-form-label">Monitoring
+                          Pos</label>
+
+                        <select class="form-control" formControlName="ddBP2Position">
+                          <option></option>
+                          <option>Sitting</option>
+                          <option>Standing</option>
+                          <option>Supine</option>
+                          <option>Unspecified</option>
+                        </select>
+                      </div>
+
+
+                      <div class="form-group col-6">
+                        <label for="txtBP2Pulse" class="col-form-label">Pulse Rate</label>
+
+                        <div class="input-group">
+
+                          <input type="text" class="form-control" formControlName="txtBP2Pulse">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text width-40">bpm</span>
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <div class="form-group col-6">
+                        <label for="ddBP2Character" class="col-form-label">Character</label>
+
+                        <select class="form-control" formControlName="ddBP2Character">
+                          <option></option>
+                          <option>Normal</option>
+                          <option>Collapsing Pulse</option>
+                          <option>Water Hammer Pulse</option>
+                          <option>Plateau Pulse</option>
+                          <option>Bisferiens Pulse</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-6">
+                        <label for="ddl_bp2_rhythm" class="col-form-label">Delay</label>
+
+                        <select class="form-control" formControlName="ddBP2Delay">
+                          <option></option>
+                          <option>10 Min</option>
+                          <option>15 Min</option>
+                          <option>20 Min</option>
+                          <option>25 Min</option>
+                          <option>30 Min</option>
+                          <option>35 Min</option>
+                          <option>40 Min</option>
+                          <option>45 Min</option>
+                          <option>50 Min</option>
+                          <option>55 Min</option>
+                          <option>1 Hour</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-4 d-flex flex-column">
+              <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+                <div class="form-row form-dashboard px-1 py-2">
+                  <div class="col px-2">
+                    <h6 class="form-edit-sub-heading m-0">Other:</h6>
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-4">
+                        <label for="txtRespRate" class="col-form-label">Respiratory
+                          Rate</label>
+                        <input type="text" class="form-control" formControlName="txtRespRate">
+                      </div>
+
+
+
+                      <div class="form-group col-4">
+                        <label for="txtOxygenSaturation" class="col-form-label">O<sub>2</sub>
+                          Saturation</label>
+                        <div class="input-group">
+
+                          <input type="text" class="form-control" formControlName="txtOxygenSaturation">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text width-30">%</span>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="form-group col-4">
+                        <label for="ddOxygenFlow" class="col-form-label">O<sub>2</sub>
+                          Flow</label>
+                        <select class="form-control" formControlName="ddOxygenFlow">
+                          <option></option>
+                          <option>Room air</option>
+                          <option>0.5L O2</option>
+                          <option>1.0L O2</option>
+                          <option>1.5L O2</option>
+                          <option>2.0L O2</option>
+                          <option>2.5L O2</option>
+                          <option>3.0L O2</option>
+                          <option>>3.0L O2</option>
+                        </select>
+                      </div>
+
+                    </div>
+
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="form-group col-8">
+                        <label for="ddOxygenSource" class="col-form-label">Oxygen
+                          Source</label>
+                        <select class="form-control" formControlName="ddOxygenSource">
+                          <option></option>
+                          <option>On room air</option>
+                          <option>Nasal cannula</option>
+                          <option>Oxygen mask</option>
+                          <option>Partial rebreather oxygen mask</option>
+                          <option>Non rebreather oxygen mask</option>
+                          <option>Venturi mask</option>
+                          <option>Aerosol oxygen mask</option>
+                          <option>Blow by oxygen mask</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-4">
+                        <label for="txtPulseOximetry" class="col-form-label">Pulse
+                          Oximetry</label>
+                        <div class="input-group">
+
+                          <input type="text" class="form-control" formControlName="txtPulseOximetry">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text  width-30">%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+
+                      <div class="form-group col-4 ">
+                        <label for="ddPain" class="col-form-label">Pain</label>
+                        <select class="form-control" formControlName="ddPain">
+                          <option></option>
+                          <option>0</option>
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                          <option>4</option>
+                          <option>5</option>
+                          <option>6</option>
+                          <option>7</option>
+                          <option>8</option>
+                          <option>9</option>
+                          <option>10</option>
+                        </select>
+                      </div>
+
+
+                    </div>
+
+
+
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 d-flex flex-column">
+              <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+                <div class="form-row form-dashboard px-1 py-2">
+                  <div class="col-12 px-2">
+                    <h6 class="form-edit-sub-heading m-0 mb-1">Other:</h6>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group mb-0 col">
+                        <textarea class="form-control bg-notes" rows="3" formControlName="txtComments"></textarea>
+                      </div>
+
+                    </div>
+
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+
+    </div>
+
+
+
+
+
+    <!-- Freez column does not work without Col-12 -->
+    <div class="col-12 p-0" *ngIf="isCumulativeVitals">
+      <div class="overflow-auto border-light-green border-top-only" style="overflow-x:auto;">
+        <table id="mVtl" class="table sm overflow-auto light-striped-border table-cumulative-vitals">
+          <thead>
+            <tr>
+              <th class="width-130">&nbsp;</th>
+              <th *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.visit_date}}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="width-130">Height</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.height}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Weight</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.weights}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">BMI</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.bmi}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Temperatur</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.temp}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Blood Pressure 1</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.bp1}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Blood Pressure 2</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.bp2}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Pulse</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.pulse}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Respiratory Rate</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.respiration}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Pulse Oximetry</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.pulse_oximetry}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Oxygen Saturation</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.oxygen_saturation}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Oxygen Source</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.oxygen_source}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Oxygen Flow</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.oxygen_flow}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Pain</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.pain}}
+              </td>
+            </tr>
+            <tr>
+              <td class="width-130">Head Circumference</td>
+              <td *ngFor="let quickVital of lstQuickVitals">
+                {{quickVital.head_circum}}
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+      </div>
+
+
+      <!-- Freez column does not work without Col-12 -->
+      <!--
+      <div class="col-12 p-0" *ngIf="isCumulativeVitals">
+        <div class="overflow-auto" style="overflow-x:auto;">
+          <table class="table sm light-striped-border table-cumulative-vitals">
+            <thead>
+              <tr>
+      
+
+                <th width="95px" >Enc. Date</th>
+                <th>Height</th>
+                <th>Weight</th>
+                <th>BMI</th>
+                <th>Temp.</th>
+                <th>BP1</th>
+                <th>BP2</th>
+                <th>Pulse</th>
+                <th>Respiratory Rate</th>
+                <th>Pulse Oximetry</th>
+                <th>O2 Saturation</th>
+                <th>O2 Source</th>
+                <th>O2 flow</th>
+                <th>Pain</th>
+                <th>Head Cir.</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let quickVital of lstQuickVitals">
+                <td width="95px" class="border-right font-weight-bold">{{quickVital.visit_date}}</td>
+                <td>{{quickVital.height}}</td>
+                <td>{{quickVital.weights}}</td>
+                <td>{{quickVital.bmi}}</td>
+                <td>{{quickVital.temp}}</td>
+                <td>{{quickVital.bp1}}</td>
+                <td>{{quickVital.bp2}}</td>
+                <td>{{quickVital.pulse}}</td>
+                <td>{{quickVital.respiration}}</td>
+                <td>{{quickVital.pulse_oximetry}}</td>
+                <td>{{quickVital.oxygen_saturation}}</td>
+                <td>{{quickVital.oxygen_source}}</td>
+                <td>{{quickVital.oxygen_flow}}</td>
+                <td>{{quickVital.pain}}</td>
+                <td>{{quickVital.head_circum}}</td>
+                <td>{{quickVital.comments}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+-->
+
+      <!--
+      <div class="overflow-auto">
+        <table class="table sm light-striped-border">
+          <thead>
+            <tr>
+              <th>Enc. Date</th>
+              <th>Height</th>
+              <th>Weight</th>
+              <th>BMI</th>
+              <th>Temp.</th>
+              <th>BP1</th>
+              <th>BP2</th>
+              <th>Pulse</th>
+              <th>Respiratory Rate</th>
+              <th>Pulse Oximetry</th>
+              <th>O2 Saturation</th>
+              <th>O2 Source</th>
+              <th>O2 flow</th>
+              <th>Pain</th>
+              <th>Head Cir.</th>
+              <th>Comments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let quickVital of lstQuickVitals">
+              <th>{{quickVital.visit_date}}</th>
+              <td>{{quickVital.height}}</td>
+              <td>{{quickVital.weights}}</td>
+              <td>{{quickVital.bmi}}</td>
+              <td>{{quickVital.temp}}</td>
+              <td>{{quickVital.bp1}}</td>
+              <td>{{quickVital.bp2}}</td>
+              <td>{{quickVital.pulse}}</td>
+              <td>{{quickVital.respiration}}</td>
+              <td>{{quickVital.pulse_oximetry}}</td>
+              <td>{{quickVital.oxygen_saturation}}</td>
+              <td>{{quickVital.oxygen_source}}</td>
+              <td>{{quickVital.oxygen_flow}}</td>
+              <td>{{quickVital.pain}}</td>
+              <td>{{quickVital.head_circum}}</td>
+              <td>{{quickVital.comments}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      -->
+    </div>
+
+
+  </div>
+
+
+  <!--
+  <div *ngIf="deniedView" class="border-content-box border-top-0 rounded-bottom light-sky-blue px-8 py-4"
+    style="height: 50px;">
+    <div class="form-row form-dashboard">
+      <div class="access-denied">{{lblmsg}}</div>
+    </div>
+  </div>
+
+  <div *ngIf="noRecordFound && !addEditView && !isCumulativeVitals"
+    class="border-content-box border-top-0 rounded-bottom light-sky-blue p-6">
+    <div class="no-content p-6">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+  </div>
+  -->
+</div>

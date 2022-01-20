@@ -1,0 +1,366 @@
+<div class="encounter-module d-flex flex-column flex-grow-1 position-relative" *ngIf="!loadmodule">
+  <div class="header flex-shrink-0 d-flex justify-content-between">
+    <div class="title">Search Pending Results</div>
+    <div class="dashboard-sub-nav encounter bg-transparent" state="">
+      <div class="color-box orange-dark"></div>
+      <p> Follow Up Required</p>
+      <div class="color-box cyan-dark"></div>
+      <p> Follow Up Completed</p>
+      <div class="color-box purple"></div>
+      <p> Letter Sent</p>
+      <div class="color-box bg-info"></div>
+      <p> App.Made</p>
+      <div class="color-box bg-danger"></div>
+      <p> Abnormal Results</p>
+      <div class="color-box green"></div>
+      <p> Contain Physician Notes</p>
+    </div>
+  </div>
+
+  <div class="encounter-body rounded-bottom p-8 flex-grow-1 d-flex flex-column light-gray-bg">
+    <form [formGroup]="frmSearch">
+
+      <div class="border rounded bg-white pb-2 flex-shrink-0">
+        <div class="form-row form-dashboard d-flex flex-row">
+
+          <div class="form-group flex-2">
+            <label class="col-form-label required" for="dateFrom">From:</label>
+            <div class="input-group">
+              <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtDateFrom"
+                formControlName="txtDateFrom" ngbDatepicker #txtDateFrom="ngbDatepicker">
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txtDateFrom.toggle()" type="button">
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group flex-2">
+            <label class="col-form-label required" for="dateFrom">To:</label>
+            <div class="input-group">
+              <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtDateTo"
+                formControlName="txtDateTo" ngbDatepicker #txtDateTo="ngbDatepicker">
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txtDateTo.toggle()" type="button">
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group flex-3">
+            <form [formGroup]="filterForm">
+              <label for="cntrlpatientSearch" class="col-form-label">Patient:</label>
+
+              <div class="form-group">
+                <div class="input-icon d-flex flex-grow-3">
+                  <input labelForId="cntrlpatientSearch" class="form-control search-highlight flex-grow-3" type="text"
+                    #cntrlpatientSearch formControlName="cntrlpatientSearch" placeholder="Search Patient"
+                    (keydown)="onKeydown($event)" autocomplete="off">
+                  <!-- <input type="text" formControlName="txtPatientIdHidden" hidden> -->
+                  <div class="icon" *ngIf="showCross">
+                    <i *ngIf="cntrlpatientSearch.value!=''" (click)="onPatientSearchClear()"
+                      class="fas fa-times text-danger pr-1" aria-hidden="true"></i>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </div>
+                  <inline-patient-search *ngIf="showPatientSearch" [searchValue]="cntrlpatientSearch.value"
+                    (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                  </inline-patient-search>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="form-group flex-3">
+            <label class="col-form-label">Category:</label>
+            <select class="form-control" formControlName="drptestcategory">
+              <option *ngFor="let s of lstLabCatehory" [value]="s.id">{{s.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-group flex-3">
+            <label for="drpLocation" class="col-form-label">Location:</label>
+
+            <select class="form-control" formControlName="drpLocation">
+              <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-group flex-3">
+            <label for="input2" class="col-form-label">Provider:</label>
+
+            <select class="form-control" formControlName="drpProvider">
+              <option value="all">All</option>
+              <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-check-cont d-flex flex-grow-1 align-item-center mx-1 mt-4">
+            <div class="custom-control custom-checkbox green-checkbox ">
+              <input type="checkbox" class="custom-control-input" id="chkAttachmnet" formControlName="chkAttachmnet">
+              <label class="custom-control-label" for="chkAttachmnet">Attachment Only</label>
+            </div>
+          </div>
+
+        
+
+          <div class="form-group flex-1 d-flex align-items-end">
+            <button type="button" class="btn btn-success w-100" (click)="onFilter(frmSearch.value)">Search</button>
+          </div>
+
+        </div>
+      </div>
+
+    </form>
+
+
+    <div *ngIf="!isAttachment"
+      class="border custom-select-box bg-white mt-2 d-flex flex-column flex-grow-1 overflow-height">
+
+      <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Results Detail</h4>
+      <div class="dashboard-sub flex-grow-1 overflow-auto max-height-100" *ngIf="!isLoading">
+        <div role="tablist">
+          <div class="card dashboard-card" *ngFor="let med of lstPendingResults | unique:'patient_id'">
+            <div class="card-header" role="tab" id="headingOne">
+              <h5 class="mb-0">
+                <a class="d-flex align-items-center" data-toggle="collapse" href="#summaryPatient{{med.patient_id}}"
+                  aria-expanded="true">
+                  <img class="mr-2" src="./assets/images/icons/man_ico.svg" alt="" style="height: 16px;">
+                  <span class="card-header-date font-weight-bold">{{med.patient_name}}</span>
+                </a>
+              </h5>
+            </div>
+            <div id="summaryPatient{{med.patient_id}}" class="collapse">
+              <div class="card-body">
+                <!-- <p>Prescription:
+            <strong>{{med.test_description}}</strong>
+          </p> -->
+                <div class="card dashboard-card"
+                  *ngFor="let sub of lstPendingResults |unique:'test_id'| listFilter :'patient_id' :med.patient_id">
+                  <div class="card-header" role="tab" id="headingTwo">
+                    <h5 class="mb-0">
+                      <a class="d-flex align-items-center" data-toggle="collapse" href="#summarytest{{sub.test_id}}"
+                        aria-expanded="true">
+                        <img class="mr-2" src="./assets/images/icons/test-tube.svg" alt="" style="height: 15px;">
+                        <span [ngClass]="{
+                          'text-green' : (sub.physician_comments != 'null' && sub.physician_comments != ''),
+                          'text-orange-dark':(sub.followup_notes != 'null' && sub.followup_notes != '' && sub.followup_notes.toUpperCase() =='FOLLOW UP REQUIRED'),
+                          'text-cyan-dark':(sub.followup_notes != 'null' && sub.followup_notes != '' && sub.followup_notes.toUpperCase() =='FOLLOW UP COMPLETED'),
+                          'text-purple':(sub.followup_notes != 'null' && sub.followup_notes != '' && sub.followup_notes.toUpperCase() =='LETTER SENT'),
+                          'text-info':(sub.followup_notes != 'null' && sub.followup_notes != '' && sub.followup_notes.toUpperCase() =='APPOINTMENT MADE')
+                      }">
+                          {{sub.test_description}}
+                        </span>
+                      </a>
+                    </h5>
+                  </div>
+                  <div id="summarytest{{sub.test_id}}" class="collapse">
+                    <div class="card-body">
+                      <div class="table-container border">
+                        <table class="table light-striped-border">
+                          <thead>
+                            <tr>
+
+                              <th>Date</th>
+                              <th>Result</th>
+                              <th class="width-20"></th>
+                              <th class="width-30"></th>
+                              <th class="width-30"></th>
+                              <th>Value(unit)</th>
+                              <th>Rec.Range</th>
+                              <th>Provider</th>
+                              <th>Staff Comments</th>
+                              <th>Physician Comments</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let res of lstPendingResults |listFilter :'test_id' :sub.test_id;let i=index">
+                              <td><img class="mr-2" src="./assets/images/icons/ico_report.svg" alt=""
+                                  style="height: 14px;">{{res.observation_date}}</td>
+                              <td [ngClass]="{  
+                          'text-danger' : (res.abnormal_range_code != 'null' && res.abnormal_range_code != '' && res.abnormal_range_code != 'n')
+                          }">{{res.result_description}}
+
+                              </td>
+                              <td>
+                                <button *ngIf="i==0" class="link-btn width-20 mr-1 text-success" (click)="onSign(res)">
+                                  [ Sign ]
+                                </button>
+                              </td>
+                              <td>
+                                <button *ngIf="(this.openPatientInfo==null) && i==0"
+                                  class="link-btn width-30 mr-2 text-success" (click)="onOpenPatient(res)"
+                                  title="Open Patient">
+                                  [ Patient ]
+                                </button>
+                              </td>
+                              <td>
+                                <button *ngIf="(this.openPatientInfo==null) && i==0" type="button"
+                                  (click)="openResult('Result',res)" class="link-btn width-30  mr-2 text-success"
+                                  title="Open Results">
+                                  [ Result ]
+                                </button>
+                              </td>
+                              <td [ngClass]="{  
+                          'text-danger font-weight-bold' : (res.abnormal_range_code != 'null' && res.abnormal_range_code != '' && res.abnormal_range_code != 'n')
+                          }">{{res.result_value}}
+                                {{res.result_value_unit}}</td>
+                              <td [ngClass]="{  
+                          'font-weight-bold' : (res.abnormal_range_code != 'null' && res.abnormal_range_code != '' && res.abnormal_range_code != 'n')
+                          }">{{res.recomended_value}}</td>
+                              <td>{{res.provider_name}}</td>
+                              <td>{{res.staff_notes}}</td>
+                              <td>{{res.physician_comments}}</td>
+
+                            </tr>
+
+                          </tbody>
+
+                        </table>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="isAttachment" class="border custom-select-box pb-1">
+      <div *ngIf="isLoading" class="div-loader"></div>
+      <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Attachment Detail</h4>
+      <div class="dashboard-sub" *ngIf="!isLoading">
+        <div role="tablist">
+          <div class="card dashboard-card" *ngFor="let med of lstPendingAttachment | unique:'patient_id'">
+            <div class="card-header" role="tab" id="headingOne">
+              <h5 class="mb-0">
+                <a data-toggle="collapse" href="#summaryPatient{{med.patient_id}}" aria-expanded="true">
+                  <span class="fas fa-user card-header-date font-weight-bold"> {{med.patient_name}}</span>
+                </a>
+              </h5>
+            </div>
+            <div id="summaryPatient{{med.patient_id}}" class="collapse">
+              <div class="card-body">
+                <!-- <p>Prescription:
+              <strong>{{med.test_description}}</strong>
+            </p> -->
+                <div class="card dashboard-card"
+                  *ngFor="let sub of lstPendingAttachment |unique:'test_id'| listFilter :'patient_id' :med.patient_id">
+                  <div class="card-header" role="tab" id="headingTwo">
+                    <h5 class="mb-0">
+                      <a data-toggle="collapse" href="#summarytest{{sub.test_id}}" aria-expanded="true">
+                        <span class="fas fa-flask card-header-date" style="width: 20px"></span>
+                        <span [ngClass]="{
+                          'text-green' : (sub.physician_comments != 'null' && sub.physician_comments != ''),
+                          'text-orange-dark':(sub.followup_notes != 'null' && sub.followup_notes != '' && sub.followup_notes.toUpperCase() =='FOLLOW UP REQUIRED'),
+                          'text-cyan-dark':(sub.followup_notes != 'null' && sub.followup_notes != '' && sub.followup_notes.toUpperCase() =='FOLLOW UP COMPLETED'),
+                          'text-purple':(sub.followup_notes != 'null' && sub.followup_notes != '' && sub.followup_notes.toUpperCase() =='LETTER SENT'),
+                          'text-info':(sub.followup_notes != 'null' && sub.followup_notes != '' && sub.followup_notes.toUpperCase() =='APPOINTMENT MADE')
+                      }">
+                          {{sub.test_description}}
+                        </span>
+                      </a>
+                    </h5>
+                  </div>
+                  <div id="summarytest{{sub.test_id}}" class="collapse">
+                    <div class="card-body">
+                      <div class="table-container border">
+                        <table class="table light-striped-border">
+                          <thead>
+                            <tr>
+
+                              <th class="width-90">Order Date</th>
+                              <th class="width-90">Document Date</th>
+                              <th class="width-20"></th>
+                              <th class="width-30"></th>
+                              <th class="width-60"></th>
+                              <th>Name</th>
+                              <th>Provider</th>
+                              <th>Staff Comments</th>
+                              <th>Physician Comments</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              *ngFor="let res of lstPendingAttachment |listFilter :'test_id' :sub.test_id; let i=index;">
+                              <td class="width-90"><span class="fas fa-paperclip "></span> {{res.order_date}}</td>
+                              <td class="width-90">{{res.document_date}}</td>
+                              <td>
+                                <button *ngIf="i==0" class="link-btn width-20 mr-1 text-success" (click)="onSign(res)">
+                                  [ Sign ]
+                                </button>
+                              </td>
+                              <td>
+                                <button *ngIf="(this.openPatientInfo==null) && i==0"
+                                  class="link-btn width-30 mr-2 text-success" (click)="onOpenPatient(res)"
+                                  title="Open Patient">
+                                  [ Patient ]
+                                </button>
+                              </td>
+                              <td>
+                                <button *ngIf="(this.openPatientInfo==null) && i==0" type="button"
+                                  (click)="openResult('Attachment',res)" class="link-btn width-60  mr-2 text-success"
+                                  title="Open Results">
+                                  [ Attachment ]
+                                </button>
+                              </td>
+                              <td>
+                                <button type="button" class="link-btn" (click)="openDocument(res)">{{res.name}}</button>
+                              </td>
+                              <td>{{res.provider_name}}</td>
+                              <td>{{res.staff_notes}}</td>
+                              <td>{{res.physician_comments}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>
+
+<div class="d-flex flex-column flex-grow-1" *ngIf="loadmodule">
+  <div class="encounter-detail-top-bar rounded-top flex-shrink-0">
+    <button class="left-back-btn" (click)="navigateBackToSSummary()">
+      <i class="fas fa-arrow-left mr-2"></i>Lab Order Search
+    </button>
+  </div>
+  <lab-order *ngIf="module_name=='order'" class="d-flex flex-column flex-grow-1" [isNewOrder]="false"
+    [order_Id]="order_id" [objencounterToOpen]="objencounterToOpen"></lab-order>
+  <lab-result class="d-flex flex-column flex-grow-1" *ngIf="module_name=='Result'" [order_Id]=order_id
+    [patient_Id]=patient_id></lab-result>
+  <lab-attachment class="d-flex flex-column flex-grow-1" *ngIf="module_name=='Attachment'" [order_Id]=order_id
+    [patient_Id]=patient_id></lab-attachment>
+</div>

@@ -1,0 +1,188 @@
+<div class="light-title-bar  h-25 pl-3 pr-2 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Practice Insurances</div>
+  <div class="d-flex align-items-center">
+    <button class="btn btn-link fz-15 text-blue-ihc px-2 py-0">
+      <i class="fas fa-sync-alt"></i>
+    </button>
+  </div>
+</div>
+
+<div
+  class="p-1 d-flex flex-row flex-grow-1 overflow-height rounded-bottom border-content-box border-top-0 light-sky-blue">
+
+  <div class="border rounded bg-white flex-2 d-flex flex-column mr-1">
+    <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Group</h4>
+    </div>
+    <div class="overflow-auto flex-grow-1 max-height-100">
+      <table class="table light-striped-border layout-fixed table-sticky-header">
+        <thead>
+          <tr>
+            <th class="width-120">Name</th>
+          </tr>
+          <tr>
+            <th class="width-120">
+              <div class="form-group m-0">
+                <div class="icon-addon addon-sm">
+                  <input type="text" class="form-control table-td-input w-100 search-highlight h-25 rounded-0 border border-bottom-only fz-12"  
+                  autocomplete="off" name="group_name" (input)="onGroupFilter($event.target.value)" placeholder="Type for search and click on Group">
+                  <label class="fa fas fa-filter"></label>
+                </div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let g of listInsType; let i = index" (click)="onGroupSelectionChange(i,g)"
+            [ngClass]="{ 'active': i==selectedGroupRow}">
+            <td class="width-120">{{g.name}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  <div class="border rounded bg-white flex-2 d-flex flex-column mr-1">
+    <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Payer</h4>
+    </div>
+    <div class="overflow-auto flex-grow-1 max-height-100">
+      <table class="table light-striped-border layout-fixed table-sticky-header">
+        <thead>
+          <tr>
+            <th class="width-120">Name</th>
+          </tr>
+
+          <tr>
+            <th class="width-120"> 
+              <div class="form-group m-0">
+              <div class="icon-addon addon-sm">
+                <input type="text" class="form-control table-td-input w-100 search-highlight h-25 rounded-0 border border-bottom-only fz-12"  
+                autocomplete="off" name="organization_name" (input)="onPayerFilter($event.target.value)" placeholder="Type for search and click on Payer">
+                <label class="fa fas fa-filter"></label>
+              </div>
+            </div>
+          </th>
+          </tr>
+         
+
+        </thead>
+        <tbody>
+          <tr *ngFor="let pr of listInspayer; let i = index" (click)="onpayerselectionChange(i,pr)"
+            [ngClass]="{ 'active': i==selectedPayerRow}">
+            <td class="width-120">{{pr.name}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  <div class="border rounded bg-white flex-2 d-flex flex-column mr-1">
+    <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Insurance</h4>
+    </div>
+    <div class="overflow-auto flex-grow-1 max-height-100">
+      <table class="table light-striped-border layout-fixed table-sticky-header">
+        <thead>
+          <tr>
+            <th class="width-30">&nbsp;</th>
+            <th class="width-30">&nbsp;</th>
+            <th class="width-200">Insurance Name</th>
+          </tr>
+          <tr>
+            <th class="width-200" colspan="3">
+              <div class="form-group m-0">
+              <div class="icon-addon addon-sm">
+                <input type="text" class="form-control table-td-input w-100 search-highlight h-25 rounded-0 border border-bottom-only fz-12"  
+                autocomplete="off" name="organization_name" (input)="onInsuranceFilter($event.target.value)" placeholder="Type for search and click on Insurance">
+                <label class="fa fas fa-filter"></label>
+              </div>
+            </div>
+          </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr st-select-row="row" *ngFor="let ins of listunMappedInsurance  let i = index"
+            (click)="onInsuranceselectionChange(i)" [ngClass]="{'active': i==selectedUnMappedInsRow}">
+            <td class="width-30 pl-1 pr-0">
+              <a class="p-0 text-info" [ngbPopover]="popContent"
+              popoverTitle="Address/Phone [{{ins.name}}]"
+                  triggers="mouseenter:mouseleave" container="body" placement="right"
+                  popoverClass="ihc-popover width-300">
+                  <i class="fas fa-info-circle fa-md"></i>
+                  <ng-template #popContent>                                   
+                      <strong>Address: </strong>
+                      <ul class="pl-4 pr-2">
+                          <li>
+                              {{ins.address}}
+                          </li>
+                      </ul>
+                      <strong>Phone: </strong>
+                      <ul class="pl-4 pr-2">
+                          <li>
+                              {{ins.phone}}
+                          </li>
+                      </ul>
+
+                  </ng-template>
+              </a>
+          </td>
+            <td class="width-30">
+              <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                <input type="checkbox" class="custom-control-input" id="chk_{{ins.insurance_id}}"
+                  (change)="onInsuranceSelection($event,i)">
+                <label class="custom-control-label" for="chk_{{ins.insurance_id}}"></label>
+              </div>
+            </td>
+            <!-- <td class="width-120">{{ins.name}}</td> -->
+            <td class="width-200">
+              
+              <input type="text" class="form-control flex-grow-3 required width-200" 
+              id="txt-insurance-name_{{ins.insurance_id}}" value={{ins.name}}
+              (focusout)="onInsuranceNameChange($event.currentTarget.value,i)" title="{{ins.name}}">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="flex-shrink-0 d-flex flex-column align-items-center">
+    <button class="btn btn-link text-green-ihc p-0" (click)="onMapInsurance()">
+      <i class="fas fa-lg fa-arrow-alt-circle-right"></i>
+    </button>
+    <h4 class="fz-14 font-weight-400 text-dark m-0 pt-2" style="writing-mode: tb-rl;">Select Insurance(s) to Map</h4>
+  </div>
+  <div class="border rounded bg-white flex-2 d-flex flex-column mr-1">
+    <div class="d-flex align-items-center justify-content-between pr-2 flex-shrink-0 border-bottom">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 flex-grow-1">Practice Insurance</h4>
+    </div>
+    <div class="overflow-auto flex-grow-1 max-height-100">
+      <table class="table light-striped-border layout-fixed table-sticky-header">
+        <thead>
+          <tr>
+            <th >Insurance Name</th>
+            <th class="width-30">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr st-select-row="row" *ngFor="let lstMap of listMappedInsurance  let i = index"
+            (click)="onMappedInsuranceselectionChange(i)" [ngClass]="{'active': i==selectedMappedInsRow}">
+
+            <td class="width-120" title="{{lstMap.name}}">{{lstMap.name}}</td>
+            <td class="text-right">
+              <button class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDelete()">
+                <i class="far fa-trash-alt"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+
+
+   
+
+
+</div>

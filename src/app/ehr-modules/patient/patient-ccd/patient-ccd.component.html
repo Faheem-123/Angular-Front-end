@@ -1,0 +1,332 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">CCDA</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body custom">
+
+  <div class="radio-btns-bar green-sel">
+    <form [formGroup]="radioGroupForm">
+      <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic">
+        <label ngbButtonLabel class="btn" [ngClass]="{'active' : (dataOption === 'clinical')}">
+          <input ngbButton type="radio" value="clinical" formControlName="model" > Clinical Summary
+        </label>
+        <label ngbButtonLabel class="btn">
+          <input ngbButton type="radio" value="data" formControlName="model"> Data Portability
+        </label>
+        <label ngbButtonLabel class="btn">
+          <input ngbButton type="radio" value="electronic" formControlName="model"> Electronic Copy
+        </label>
+      </div>
+    </form>
+  </div>
+
+
+  <div class="bg-white d-flex flex-column flex-grow-1">
+
+    <div class="d-flex flex-column flex-grow-1 p-2" *ngIf="radioGroupForm.value['model'] == 'clinical'">
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">CCD/CCR (Clinical Summary/Patient
+            Summary Record)</h4>
+        </div>
+        <form [formGroup]="inputForm">
+        <div class="form-row form-dashboard p-2">
+         
+            <div class="form-group horizental row zero col-6">
+              <label class="col-sm-4 col-form-label">Provider:</label>
+              <select class="form-control flex-grow-1 col-sm-8" formControlName="drpprovider">
+                <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+              </select>
+
+            </div>
+
+            <div class="form-group horizental row zero col-6">
+              <label class="col-sm-4 col-form-label">Location:</label>
+              <select class="form-control flex-grow-1 col-sm-8" formControlName="drplocation">
+                <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+              </select>
+            </div>
+
+            <div class="form-group horizental row zero col-12">
+              <label class="col-sm-2 col-form-label">Select Patient:</label>
+              <div class="form-group has-search col-sm-10">
+                <span class="fa fa-search form-control-feedback"></span>
+
+                <input formControlName="cntrlpatientSearch" class="form-control" type="text"
+                  placeholder="Search Patient" #txtPatientSearch (keydown)="onKeydown($event)">
+                <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                  (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                </inline-patient-search>
+
+              </div>
+            </div>
+         
+        </div>
+      </form>
+        <div class="border-top rounded-bottom bg-white d-flex flex-column flex-grow-1">
+          <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+            <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Patient Visit</h4>
+          </div>
+
+          <div class="overflow-auto p-0 flex-grow-1" style="max-height: 280px;overflow: auto;">
+            <table class="table layout-fixed sm light-striped-border" style="max-height: 280px;overflow: auto;">
+              <thead>
+                <tr>
+                  <th>Visit Date</th>
+                  <th>Status</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let enc of lstPatientVisit">
+                  <td>{{enc.visit_date}}</td>
+                  <td>{{enc.status}}</td>
+                  <td class="text-right">
+                      <button class="btn btn-link fz-14 text-info line-height-1 p-0 mr-2"
+                           (click)="onCCDExport(enc,'false')">CCD
+                      </button>
+                      <button class="btn btn-link fz-14 text-info line-height-1 p-0 mr-2"
+                          (click)="onCCDExport(enc,'true')" >Referral
+                      </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1 p-2" *ngIf="radioGroupForm.value['model'] == 'data'">
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Data Portability</h4>
+        </div>
+
+        <div class="form-group mx-2 my-1 horizental row zero">
+          <label class="col-sm-2 col-form-label">Patient:</label>
+          <div class="input-icon d-flex flex-grow-3 col-sm-10">
+            <input autocomplete="off" class="form-control flex-grow-3"
+              placeholder="Type three characters of last name and press enter" type="text">
+            <div class="icon">
+              <i aria-hidden="true" class="fa fa-search"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="overflow-auto p-0 flex-grow-1">
+          <table class="table layout-fixed sm light-striped-border">
+            <thead>
+              <tr>
+                <th width="5%">&nbsp;</th>
+                <th width="60%">Patient Name</th>
+                <th>Gender</th>
+                <th>DOB</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1 p-2" *ngIf="radioGroupForm.value['model'] == 'electronic'">
+      <div class="border rounded bg-white d-flex flex-column flex-grow-1">
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">CCDA/CCR (Electronic Copy)</h4>
+        </div>
+
+        <div class="form-row form-dashboard p-2">
+          <div class="form-group horizental row zero col-6">
+            <label class="col-sm-4 col-form-label">Select Patient:</label>
+            <input class="col-sm-8 form-control" type="text">
+          </div>
+
+          <div class="form-group horizental row zero col-6">
+            <label class="col-sm-4 col-form-label">Request Date:</label>
+            <div class="input-group col-sm-8">
+              <input class="form-control" placeholder="mm/dd/yyyy">
+              <span class="input-group-btn">
+                <button class="btn btn-outline-primary" type="button">
+                  <i aria-hidden="true" class="far fa-calendar-alt"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group horizental row zero col-12">
+            <label class="col-sm-2 col-form-label">Comments:</label>
+            <input class="col-sm-10 form-control" type="text">
+          </div>
+        </div>
+
+        <div class="rounded-bottom bg-white d-flex flex-column flex-grow-1">
+          <div class="overflow-auto p-0 flex-grow-1">
+            <table class="table layout-fixed sm light-striped-border">
+              <thead>
+                <tr>
+                  <th>Req Date</th>
+                  <th>Comments</th>
+                  <th>Status</th>
+                  <th>Exp Date</th>
+                  <th>Exp By</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-footer custom">
+  <div class="d-flex flex-grow-1 align-items-center justify-content-between"
+    *ngIf="radioGroupForm.value['model'] == 'clinical'">
+    <div>
+      <button type="button" class="btn btn-sm btn-primary mr-1" disabled>Display</button>
+      <button type="button" class="btn btn-sm btn-success mr-1">Import CCD/C32</button>
+      <button type="button" class="btn btn-sm btn-info">Import CCR</button>
+    </div>
+    <div>
+      <!-- <button type="button" class="btn btn-sm bg-success mr-1" (click)="modal.close('Save click')">Setting</button> -->
+      <button type="button" class="btn btn-info btn-sm mr-1" data-toggle="modal" data-target="#encPrintSettingModal"
+      (click)="openModal()">
+      <i class="fas fa-cog mr-1"></i>Setting</button>
+      <button type="button" class="btn btn-sm btn-dark" (click)="modal.close('Save click')">Close</button>
+    </div>
+  </div>
+
+  <div class="d-flex flex-grow-1 align-items-center justify-content-between"
+    *ngIf="radioGroupForm.value['model'] == 'data'">
+    <div>
+      <button type="button" class="btn btn-sm btn-primary mr-1" disabled>Display</button>
+      <button type="button" class="btn btn-sm btn-info">Export</button>
+    </div>
+    <div>
+      <button type="button" class="btn btn-sm bg-success mr-1" data-toggle="modal" data-target="#encPrintSettingModal"
+      (click)="openModal()">Setting</button>
+      <!-- <i class="fas fa-cog " aria-hidden="true" data-toggle="modal" data-target="#encPrintSettingModal"
+                        (click)="openModal()"></i> -->
+      <button type="button" class="btn btn-sm btn-dark" (click)="modal.close('Save click')">Close</button>
+    </div>
+  </div>
+
+  <div class="d-flex flex-grow-1 align-items-center justify-content-between"
+    *ngIf="radioGroupForm.value['model'] == 'electronic'">
+    <div>
+      <button type="button" class="btn btn-sm btn-success mr-1">Import CCD/C32</button>
+      <button type="button" class="btn btn-sm btn-info">Import CCR</button>
+    </div>
+    <div>
+      <button type="button" class="btn btn-sm bg-success mr-1" (click)="modal.close('Save click')">Save</button>
+      <button type="button" class="btn btn-sm btn-dark" (click)="modal.close('Save click')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="encPrintSettingModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header custom">
+                <img class="logo" src="./assets/images/logo-small.png">
+                <h4 class="modal-title">Encounter Print Setting</h4>
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>              
+            <!-- model body section -->
+            <div class="modal-body" style="height: 400px !important; padding: 0;">
+               
+                <div class="encounter-module-scrollable" style="height: 400px !important;">
+                    <table class="table layout-fixed light-striped-border">
+                        <thead>
+                            <tr>
+                                <th width="30px">
+                                    <input class="table-td-checkbox" type="checkbox"
+                                        (click)="IsSettingSelectAll($event.currentTarget.checked)">
+                                </th>
+                                <th>Items to include in Print</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let enc of lstCCDSetting">
+                                <td width="30px">
+                                    <input class="table-td-checkbox" type="checkbox"
+                                        (click)="IsSettingSelect($event.currentTarget.checked,enc)"
+                                        value={{enc.enabled}} [checked]="enc.enabled">
+                                </td>
+                                <td>{{enc.description}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-primary" data-dismiss="modal"
+                    (click)="saveCCDSetting()">Save </button>
+            </div>
+        </div>
+    </div>
+</div>

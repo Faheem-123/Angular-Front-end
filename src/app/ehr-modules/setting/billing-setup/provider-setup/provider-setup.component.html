@@ -1,0 +1,289 @@
+<div class="light-title-bar  h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Provider Details</div>
+  <div class="d-flex align-items-center">
+    <button *ngIf="providerOperation=='' &&  lookupList.UserRights.provider_add" type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"
+      (click)="onAddNew()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <!-- <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onEdit()">
+      <i class="far fa-edit"></i>
+      Edit</button> -->
+    <!-- <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0">
+      <i class="far fa-trash-alt"></i>
+      Delete</button> -->
+    <button type="button" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0">New Provider
+      Request</button>
+    <button *ngIf="providerOperation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" (click)="onSave()"
+      type="submit">Save</button>
+    <button *ngIf="providerOperation!=''" class="btn btn-sm btn-dark top-right-radius h-30"
+      (click)="onCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 rounded-0 border-content-box border-top-0 light-sky-blue">
+  <div class="border-bottom bg-white px-2 py-6 flex-shrink-0">
+    <form [formGroup]="inputForm">
+      <div class="form-row form-dashboard align-items-start">
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input1" class="col-form-label label-w-80 required">First Name</label>
+          <input type="text" class="form-control flex-grow-1" id="input1" formControlName="txtfirstName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-1 col-sm-6 col-12">
+          <label for="input3" class="col-form-label label-w-30">MN</label>
+          <input type="text" class="form-control flex-grow-1" id="input3" formControlName="txtMName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+          <label for="input2" class="col-form-label label-w-70 required">Last Name</label>
+          <input type="text" class="form-control flex-grow-1" id="input2" formControlName="txtlastName">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-1 col-sm-6 col-12">
+          <label for="input4" class="col-form-label label-w-40">Title</label>
+          <input type="text" class="form-control flex-grow-1" id="input4" formControlName="txtTitle">
+        </div>
+
+        <!-- <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input5" class="col-form-label label-w-80">DOB</label>
+          <div class="input-group flex-grow-1">
+            <input class="form-control" id="input5" placeholder="mm/dd/yyyy" formControlName="txtDob">
+            <span class="input-group-btn">
+              <button class="btn btn-outline-primary" type="button"><i class="far fa-calendar-alt"></i></button>
+            </span>
+          </div> -->
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input5" class="col-form-label label-w-80 required">DOB</label>
+          <div class="input-group flex-grow-1">
+            <input id="txtdob" formControlName="txtDob" class="form-control date-control" placeholder="mm/dd/yyyy"
+              name="txtDob" ngbDatepicker #txtDob="ngbDatepicker"
+              [ngClass]="{'is-invalid': inputForm.controls.txtDob.errors?.invalidDate}">
+
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="txtDob.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-60">SSN </label>
+          <input class="form-control" id="input5" formControlName="txtSSN">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80 required">Address Line1</label>
+          <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtAddress1">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-70 required">Zip Code</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtZip"
+            (focusout)="zipFocusOut($event.target.value)">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-80 required">City</label>
+          <select class="form-control flex-grow-1" id="input9" formControlName="drpCity">
+            <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+              {{obj.city}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-60 required">State</label>
+          <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txtState" readonly>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80">Address Line2</label>
+          <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtAddress2">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-70">Home Ph.</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtHomePhone">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-80 required">Office Ph.</label>
+          <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txtOfficePhone">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-60 required">Cell Ph.</label>
+          <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txtCellPhone">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80">Email</label>
+          <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtEmail">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-70">Fax</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtFax">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-80">State License</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtStateLicense">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-60">SPI</label>
+          <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txtSPI">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80">DEA#</label>
+          <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtDEA">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-70 required">NPI</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtNPI">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-80">Spec. License</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtSpecLicense">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-60">UPN</label>
+          <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txtUPN">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input7" class="col-form-label label-w-80">DEA Expiry</label>
+          <div class="input-group flex-grow-1">
+            <input id="txtDEAExpiry" formControlName="txtDEAExpiry" class="form-control date-control"
+              placeholder="mm/dd/yyyy" name="txtDEAExpiry" ngbDatepicker #txtDEAExpiry="ngbDatepicker"
+              [ngClass]="{'is-invalid': inputForm.controls.txtDEAExpiry.errors?.invalidDate}">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="txtDEAExpiry.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input8" class="col-form-label label-w-70">CLIA#</label>
+          <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtCLIA">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input9" class="col-form-label label-w-80">CLIA Expiry</label>
+          <div class="input-group flex-grow-1">
+            <input id="txtdob" formControlName="txtCLIAExpiry" class="form-control date-control"
+              placeholder="mm/dd/yyyy" name="txtCLIAExpiry" ngbDatepicker #txtCLIAExpiry="ngbDatepicker"
+              [ngClass]="{'is-invalid': inputForm.controls.txtCLIAExpiry.errors?.invalidDate}">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="txtCLIAExpiry.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <label for="input6" class="col-form-label label-w-60">Taxonomy</label>
+          <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txtTaxonomy">
+        </div>
+
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="chkIsProvider" formControlName="chkIsAttending">
+            <label class="custom-control-label" for="chkIsProvider">Is Attending</label>
+          </div>
+          <!--
+            <input type="checkbox"  formControlName="chkIsAttending" class="mt-1 mr-1">
+
+
+            <label class="col-form-label" for="chkIsProvider">Is Attending</label>
+-->
+        </div>
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <!--
+            <input type="checkbox"  formControlName="chkIsOperating" class="mt-1 mr-1">
+            <label class="col-form-label" for="chkIsProvider">Is Operating</label>
+-->
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="chkIsOperating" formControlName="chkIsOperating">
+            <label class="custom-control-label" for="chkIsOperating">Is Operating</label>
+          </div>
+
+        </div>
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <!--
+            <input type="checkbox"  formControlName="chkIsDeactivatePrescription" class="mt-1 mr-1">
+            <label class="col-form-label" for="chkIsProvider">Is Deactivate Prescription</label>
+-->
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="chkIsDeactivatePrescription"
+              formControlName="chkIsDeactivatePrescription">
+            <label class="custom-control-label" for="chkIsDeactivatePrescription">Is Deactivate Prescription</label>
+          </div>
+
+        </div>
+        <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+          <!--
+            <input type="checkbox"  formControlName="chkIsDeactivate" class="mt-1 mr-1">
+            <label class="col-form-label" for="chkIsProvider">Is Deactivate</label>
+-->
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="chkIsDeactivate" formControlName="chkIsDeactivate">
+            <label class="custom-control-label" for="chkIsDeactivate">Is Deactivate</label>
+          </div>
+
+
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>SSN</th>
+          <th>DOB</th>
+          <th>Cell#</th>
+          <th>Address Line 1</th>
+          <th>Address Line 2</th>
+          <th>Email</th>
+          <th>Fax</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let pr of arrprovider; let i = index" (click)="onSelectionChange(i,pr)" [ngClass]="{ 'active': i==provierSelectedIndex,
+        'disabled': isDisable
+        }">
+          <td>{{pr.first_name}}</td>
+          <td>{{pr.last_name}}</td>
+          <td>{{pr.ssn}}</td>
+          <td>{{pr.dob}}</td>
+          <td>{{pr.cell_phone}}</td>
+          <td>{{pr.address}}</td>
+          <td>{{pr.address2}}</td>
+          <td>{{pr.email}}</td>
+          <td>{{pr.fax}}</td>
+          <td class="text-right">
+            <button *ngIf="lookupList.UserRights.provider_edit" class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEdit(pr)">
+              <i class="far fa-edit"></i></button>
+            <button *ngIf="lookupList.UserRights.provider_delete" class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDelete(pr)">
+              <i class="far fa-trash-alt"></i></button>
+          </td>
+        </tr>
+
+
+      </tbody>
+    </table>
+  </div>
+</div>

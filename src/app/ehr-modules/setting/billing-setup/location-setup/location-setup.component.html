@@ -1,0 +1,273 @@
+<div class="light-title-bar h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Location Details</div>
+  <div class="d-flex align-items-center">
+    <button *ngIf="LocationOperation=='' && lookupList.UserRights.location_add" type="button"
+      class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onAddNew()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <button *ngIf="LocationOperation=='' && lookupList.UserRights.location_edit" type="button"
+      class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onEdit()">
+      <i class="far fa-edit"></i>
+      Edit</button>
+    <button *ngIf="LocationOperation=='' && lookupList.UserRights.location_delete" type="button"
+      class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" (click)="onDelete()">
+      <i class="far fa-trash-alt"></i>
+      Delete</button>
+    <button *ngIf="LocationOperation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-30"
+      (click)="onSave()">Save</button>
+    <button *ngIf="LocationOperation!=''" class="btn btn-sm btn-dark top-right-radius h-30"
+      (click)="onCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 rounded-0 border-content-box border-top-0 light-sky-blue">
+  <div class="border-bottom bg-white px-2 py-6 flex-shrink-0">
+    <form [formGroup]="inputForm">
+
+      <div class="form-row form-dashboard">
+
+        <div class="col-md-4 col-sm-12 col-12">
+
+          <div class="px-2">
+
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col-12">
+
+                <label for="txtName" class="width-85 col-form-label">Location Name</label>
+                <input type="text" class="form-control col" id="txtName" formControlName="txtName">
+
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col-12">
+
+                <label for="txtPhone" class="width-85 col-form-label">Phone</label>
+                <input type="text" class="form-control col" id="txtPhone" formControlName="txtPhone">
+
+              </div>
+
+
+            </div>
+
+            <div class="form-row form-dashboard">
+
+
+              <div class="form-group horizental row zero col-12">
+
+                <label for="txtFax" class="width-85 col-form-label">Fax</label>
+                <input type="text" class="form-control col" id="txtFax" formControlName="txtFax">
+
+              </div>
+
+            </div>
+
+
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col-12">
+                <label class="col-form-label width-85" for="ddFaciliy">Facility:</label>
+                <select class="col form-control" id="ddFaciliy" formControlName="ddFaciliy">
+                  <option></option>
+                  <option *ngFor="let facility of lookupList.facilityList" [value]="facility.id">{{facility.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+
+
+        <div class="col-md-4 col-sm-12 col-12">
+
+          <div class="px-2">
+
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col-12">
+
+                <label for="txtAddressL1" class="width-85 col-form-label">Address Line 1</label>
+                <input type="text" class="form-control col" id="txtAddressL1" formControlName="txtAddressL1">
+
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col-12">
+
+                <label for="txtAddressL2" class="width-85 col-form-label">Address Line 2</label>
+                <input type="text" class="form-control col" id="txtAddressL2" formControlName="txtAddressL2">
+
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard">
+
+              <div class="form-group horizental row zero col-8">
+                <label for="txtZip" class="width-85 col-form-label">Zip</label>
+                <input type="text" class="form-control col" id="txtZip" formControlName="txtZip"
+                  (focusout)="zipFocusOut($event.target.value)">
+
+              </div>
+
+              <div class="form-group horizental row zero col-4">
+                <label for="txtState" class="col-form-label col">State</label>
+                <input type="text" class="form-control col" id="txtState" formControlName="txtState" readonly>
+              </div>
+
+
+            </div>
+
+
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col">
+                <label for="drpCity" class="col-form-label width-85">City</label>
+                <select class="form-control col" id="drpCity" formControlName="drpCity">
+                  <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+                    {{obj.city}}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="col-md-4 col-sm-12 col-12">
+
+          <div class="px-2">
+
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col-12">
+
+                <label for="txtCliaNo" class="width-85 col-form-label">CLIA #</label>
+                <input type="text" class="form-control col" id="txtCliaNo" formControlName="txtCliaNo">
+
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard">
+              <div class="form-group horizental row zero col-12">
+
+                <label for="dpCLIAExpiry" class="col-form-label width-85">CLIA Expiry</label>
+                <div class="input-group flex-grow-1 col">
+                  <input id="dpCLIAExpiry" formControlName="dpCLIAExpiry" class="form-control date-control"
+                    placeholder="mm/dd/yyyy" name="dpCLIAExpiry" ngbDatepicker #dpCLIAExpiry="ngbDatepicker"
+                    [ngClass]="{'is-invalid': inputForm.controls.dpCLIAExpiry.errors?.invalidDate}" maxlength="10">
+
+                  <span class="input-group-btn">
+                    <button class="btn date-control-btn" (click)="dpCLIAExpiry.toggle()" type="button">
+                    </button>
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
+      <!-- <div class="form-row form-dashboard align-items-start">
+          <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+            <label for="input1" class="col-form-label label-w-90 required">Location Name</label>
+            <input type="text" class="form-control flex-grow-1" id="input1" formControlName="txtName">
+          </div>
+          <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+              <label for="input8" class="col-form-label label-w-60 required">Zip Code</label>
+              <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtZip" (focusout)="zipFocusOut($event.target.value)">
+            </div>
+
+          <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+              <label for="input9" class="col-form-label label-w-80 required">City</label>
+              <select class="form-control flex-grow-1" id="input9" formControlName="drpCity">
+                  <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+                      {{obj.city}}
+                    </option>
+              </select>
+            </div>
+          <div class="form-group horizental d-flex col-md-1 col-sm-6 col-12">
+            <label for="input3" class="col-form-label label-w-40 required">State</label>
+            <input type="text" class="form-control flex-grow-1" id="input3" formControlName="txtState" readonly>
+          </div>
+  
+          <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+            <label for="input2" class="col-form-label label-w-50">CLIA#</label>
+            <input type="text" class="form-control flex-grow-1" id="input2" formControlName="txtCliaNo">
+          </div>
+  
+          <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+            <label for="input4" class="col-form-label label-w-70">CLIA Expiry</label>
+            <div class="input-group flex-grow-1">
+                <input id="txtCliaExpiry" formControlName="txtCliaExpiry" class="form-control date-control" placeholder="mm/dd/yyyy"
+                  name="txtCliaExpiry" ngbDatepicker #txtCliaExpiry="ngbDatepicker"
+                  [ngClass]="{'is-invalid': inputForm.controls.txtCliaExpiry.errors?.invalidDate}" maxlength="10">
+    
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="txtCliaExpiry.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+          </div>
+  
+          <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+            <label for="input7" class="col-form-label label-w-90 required">Address Line1</label>
+            <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtAddress1">
+          </div>
+  
+          <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+            <label for="input7" class="col-form-label label-w-80">Address Line2</label>
+            <input type="text" class="form-control flex-grow-1" id="input7" formControlName="txtAddress2">
+          </div>
+  
+          <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+            <label for="input8" class="col-form-label label-w-50">Phone</label>
+            <input type="text" class="form-control flex-grow-1" id="input8" formControlName="txtPhone">
+          </div>
+  
+          <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+            <label for="input9" class="col-form-label label-w-70">Fax</label>
+            <input type="text" class="form-control flex-grow-1" id="input6" formControlName="txtFax">
+          </div>
+  
+        </div> -->
+    </form>
+  </div>
+
+  <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100">
+    <table class="table light-striped-border">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Zip</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Fax</th>
+          <th>CLIA#</th>
+          <th>CLIA Expiry</th>
+          <th>Facilty</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let pr of arrLocation; let i = index" (click)="onSelectionChange(i,pr)" [ngClass]="{ 'active': i==LocationSelectedIndex,
+          'disabled': isDisable
+          }">
+          <td>{{pr.name}}</td>
+          <td>{{pr.address}}</td>
+          <td>{{pr.zip}}</td>
+          <td>{{pr.city}}</td>
+          <td>{{pr.state}}</td>
+          <td>{{pr.fax}}</td>
+          <td>{{pr.clia_number}}</td>
+          <td>{{pr.clia_expiry_date}}</td>
+          <td>{{pr.facility_name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

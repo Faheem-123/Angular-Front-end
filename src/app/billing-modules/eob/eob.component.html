@@ -1,0 +1,550 @@
+<div class="light-title-bar  h-25 pl-3 pr-2 d-flex align-items-center justify-content-between flex-shrink-0"
+  *ngIf="callingFrom=='eob'">
+  <div class="fz-15 font-weight-400">EOB's
+    <small class="text-muted">(Explanation Of Benefits)</small>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue position-relative">
+
+  <div class="d-flex flex-column flex-shrink-0" *ngIf="callingFrom=='eob' || callingFrom=='user_admin'">
+
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchCriteriaEOB" aria-expanded="true" class="accordian-link">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+
+      <div id="SearchCriteriaEOB" class="show">
+        <div class="accordian-body bg-transparent">
+
+          <form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+            <div class="p-6 pt-0">
+
+              <div class="form-row form-dashboard pb-1">
+
+
+                <div class="form-group col-4">
+                  <div class="btn-group radio-btn-tabs ">
+
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateRangeType === 'filing_date')}">
+                      <input type="radio" name="dateRangeType" autocomplete="off" checked
+                        formControlName="dateRangeType" value="filing_date" (ngModelChange)="onDateTypeChange($event)">
+                      Filing Date
+                    </label>
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateRangeType === 'check_date')}">
+                      <input type="radio" name="dateRangeType" autocomplete="off" formControlName="dateRangeType"
+                        value="check_date" (ngModelChange)="onDateTypeChange($event)"> Check Date
+                    </label>
+                  </div>
+
+
+
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dpFrom" formControlName="dpFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker #dpFrom="ngbDatepicker"
+                        (blur)="onDateFocusOut($event.currentTarget.value,'dpFrom')">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpFrom.toggle()" type="button">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dpTo" formControlName="dpTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dpTo" ngbDatepicker #dpTo="ngbDatepicker"
+                        (blur)="onDateFocusOut($event.currentTarget.value,'dpTo')">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dpTo.toggle()" type="button">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+                <div class="form-group col-3">
+                  <label for="txtPayerSearch" class="col-form-label">Payer</label>
+
+                  <div class="input-icon d-flex flex-grow-3">
+                    <input id="txtPayerSearch" class="form-control flex-grow-3 " type="text" placeholder="Search Payer"
+                      (keydown)="onPayerSearchKeydown($event)" (blur)="onPayerSearchBlur()" autocomplete="off"
+                      #txtPayerSearch formControlName="txtPayerSearch"
+                      (input)="onPayerSearchInputChange(txtPayerSearch.value)">
+                    <input type="text" hidden>
+                    <div class="icon">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </div>
+                    <inline-payer-search *ngIf="showPayerSearch" [searchValue]="txtPayerSearch.value" #inlinePayerSearch
+                      (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()"></inline-payer-search>
+
+                  </div>
+                </div>
+
+                <div class="form-group col-3">
+                  <label for="txtPatientSearch" class="col-form-label">Patient</label>
+
+                  <div class="input-icon d-flex flex-grow-3">
+
+                    <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                      formControlName="txtPatientSearch" placeholder="Search Patient"
+                      (keydown)="onPatientSearchKeydown($event)" autocomplete="off" (blur)="onPatientSearchBlur()"
+                      (input)="onPatientSearchInputChange(txtPatientSearch.value)">
+
+                    <div class="icon">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </div>
+
+                    <inline-patient-search #inlinePatientSearch id="inlineAddAppPatSearch" *ngIf="showPatientSearch"
+                      [searchValue]="txtPatientSearch.value" style="top:25px;right:450px;" class="position-absolute"
+                      (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                    </inline-patient-search>
+
+                  </div>
+                </div>
+
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="ddPaymentType">Payment Type</label>
+                  <select class="col form-control px-1" id="ddPaymentType" formControlName="ddPaymentType"
+                    labelForId="ddPaymentType">
+                    <option></option>
+                    <option>EOB</option>
+                    <option>ACA</option>
+                    <option>Patient</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <div class="form-row form-dashboard pb-1">
+
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="txtEOBId">EOB Id</label>
+                  <input labelForId="txtEOBId" class="form-control" type="text" formControlName="txtEOBId"
+                    autocomplete="off">
+                </div>
+
+                <div class="form-group col-2">
+                  <label class="col-form-label" for="txtCheckNo">Check No</label>
+                  <input labelForId="txtCheckNo" class="form-control" type="text" formControlName="txtCheckNo"
+                    autocomplete="off">
+                </div>
+
+
+                <!--
+                  <div class="form-group col-3">
+                    <label class="col-form-label" for="ddStatus">Status</label>
+                    <select class="col form-control px-1" id="ddStatus" formControlName="ddStatus"
+                      labelForId="ddStatus">
+                      <option>All</option>
+                      <option>Pending</option>
+                      <option>Posted</option>
+                    </select>
+                   
+                  </div>
+                  -->
+
+
+
+
+
+                <div class="form-group col-6">
+                  <label class="col-form-label"></label>
+                  <div class="form-group horizental d-flex col px-1">
+
+                    <div class="custom-control custom-checkbox green-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="chkPending" formControlName="chkPending">
+                      <label class="custom-control-label" for="chkPending">Pending</label>
+                    </div>
+
+                    <div class="custom-control custom-checkbox green-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="chkPosted" formControlName="chkPosted">
+                      <label class="custom-control-label" for="chkPosted">Posted</label>
+                    </div>
+
+
+                    <div class="custom-control custom-checkbox green-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="attornyCollection"
+                        formControlName="chkAttorney">
+                      <label class="custom-control-label" for="attornyCollection">Attorny Collection</label>
+                    </div>
+
+                    <div class="custom-control custom-checkbox green-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="chkDeleted" formControlName="chkDeleted">
+                      <label class="custom-control-label" for="chkDeleted">Deleted</label>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="form-group col-1 d-flex flex-column justify-content-end">
+                  <button type="button" class="btn btn-success w-100"
+                    (click)="searchEOB(searchFormGroup.value)">Search</button>
+                </div>
+                <div class="form-group col-1 d-flex flex-column justify-content-end">
+                  <button type="button" class="btn btn-dark w-100" (click)="onClearSearch()">Clear</button>
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!--
+    <form [formGroup]="searchForm" *ngIf="callingFrom=='eob'">
+
+    <div class="bg-white flex-shrink-0 p-2">
+
+      <div class="form-row form-dashboard">
+        <div class="form-group horizental d-flex col-4">
+          <div class="custom-control custom-radio green-radio">
+            <input value="filling" type="radio" class="custom-control-input" name="dateRange" id="fillingDateRange"
+              formControlName="dateRange" checked>
+            <label class="custom-control-label" for="fillingDateRange">Filling Date Range</label>
+          </div>
+
+          <div class="custom-control custom-radio green-radio">
+            <input value="check" type="radio" class="custom-control-input" name="dateRange" id="checkDateRange"
+              formControlName="dateRange">
+            <label class="custom-control-label" for="checkDateRange">Check Date Range</label>
+          </div>
+        </div>
+
+        <div class="form-group horizental row zero col-3">
+          <label for="input2" class="col-form-label col-2">Payer:</label>
+          <div class="form-group col-10">
+            <div class="input-icon d-flex flex-grow-3">
+              <input id="txtPayerSearch" class="form-control flex-grow-3 " type="text" placeholder="Search Payer"
+                (keydown)="onPayerSearchKeydown($event)" (blur)="onPayerSearchBlur()" autocomplete="off" #txtPayerSearch
+                formControlName="txtPayerSearch">
+              <input type="text" hidden>
+              <div class="icon">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </div>
+              <inline-payer-search *ngIf="showPayerSearch" [searchValue]="txtPayerSearch.value"
+                (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()"></inline-payer-search>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group horizental row zero col-2">
+          <label for="cmbProvider" class="col-form-label col-4">EOB ID:</label>
+          <input type="text" class="form-control col-8" id="eobID" formControlName="txtEOBId">
+        </div>
+
+        <div class="form-group horizental d-flex col-3">
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="pending" formControlName="chkPending">
+            <label class="custom-control-label" for="pending">Pending</label>
+          </div>
+
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="posted" formControlName="chkPosted">
+            <label class="custom-control-label" for="posted">Posted</label>
+          </div>
+
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="attornyCollection" formControlName="chkAttorney">
+            <label class="custom-control-label" for="attornyCollection">Attorny Collection</label>
+          </div>
+        </div>
+
+        <div class="form-group horizental py-0 col-4 row zero">
+          <div class="col-6 form-group horizental row zero ">
+            <label class="col-form-label col-3" for="dpfromDate">From:</label>
+            <div class="input-group col-9">
+              <input id="txtFromDate" formControlName="txtFromDate" class="form-control date-control "
+                placeholder="mm/dd/yyyy" name="txtFromDate" ngbDatepicker #txtFromDate="ngbDatepicker">
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txtFromDate.toggle()" type="button">
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="col-6 form-group horizental row zero">
+            <label class="col-form-label col-3 pl-2" for="dptoDate">To:</label>
+            <div class="input-group col-9">
+              <input id="txtToDate" formControlName="txtToDate" class="form-control date-control "
+                placeholder="mm/dd/yyyy" name="txtToDate" ngbDatepicker #txtToDate="ngbDatepicker">
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txtToDate.toggle()" type="button">
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group horizental row zero col-3">
+          <label for="input2" class="col-form-label col-2">Patient:</label>
+          <div class="form-group col-10">
+            <div class="input-icon d-flex flex-grow-3">
+              <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                formControlName="txtPatientSearch" placeholder="Search Patient"
+                (keydown)="onPatientSearchKeydown($event)" autocomplete="off" (blur)="onPatientSearchBlur()">
+              <input type="text" hidden>
+              <div class="icon">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </div>
+              <inline-patient-search #inlineSearchEOBPatient id="inlineSearchEOBPatient" *ngIf="showPatientSearch"
+                [searchValue]="txtPatientSearch.value" (onPatientSelect)="openSelectPatient($event)"
+                (onClose)="closePatientSearch()">
+              </inline-patient-search>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group horizental row zero col-2">
+          <label for="checkNo" class="col-form-label col-4">Check No:</label>
+          <input type="text" class="form-control col-8" id="checkNo" formControlName="txtCheckNo" />
+        </div>
+
+        <div class="form-group horizental col-1">
+          <div class="custom-control custom-checkbox green-checkbox">
+            <input type="checkbox" class="custom-control-input" id="deleted" formControlName="chkDeleted">
+            <label class="custom-control-label" for="deleted">Deleted</label>
+          </div>
+        </div>
+
+        <div class="form-group horizental col-1">
+          <select class="form-control " formControlName="cmbType">
+            <option>Payment Type</option>
+            <option>EOB</option>
+            <option>ACA</option>
+            <option>Patient</option>
+          </select>
+        </div>
+
+        <div class="form-group horizental col-1">
+          <button #btnSearch id="btnSearch" type="button" class="btn btn-success w-100"
+            (click)="searchEOB(searchForm.value)">Search</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+-->
+  <div class="d-flex flex-grow-1 overflow-height mt-1">
+    <div class="border d-flex flex-column flex-10  overflow-auto  mr-1">
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <div class="d-flex align-items-center">
+          <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">EOB Details</h4>
+          <div class="dashboard-sub-nav encounter bg-white float-right h-25">
+            <div class="color-box bg-success"></div>
+            <p>Resolved</p>
+            <div class="color-box bg-danger"></div>
+            <p>Deleted</p>
+            <div class="color-box bg-dark"></div>
+            <p>Pending</p>
+          </div>
+        </div>
+
+        <button class="btn btn-link  px-0 py-0 fz-12 mr-1" type="button" (click)="addEditEOB('new',undefined)"
+        *ngIf="callingFrom=='eob' || callingFrom=='user_admin' && lookupList.UserRights.eob_new">
+          <i class="fas fa-upload mr-1"></i>Upload EOB
+        </button>
+
+      </div>
+
+      <div class="overflow-auto flex-grow-1 max-height-100">
+        <table class="table light-striped-border table-sticky-header">
+          <thead>
+            <tr>
+              <th class="width-20"></th>
+              <th scope="col" sortable="eob_id" type="numeric" (sort)="onSort($event)">EOB ID</th>
+              <th scope="col" sortable="eob_date" type="datetime" formate="MM/DD/YYYY" (sort)="onSort($event)">Filing
+                Date</th>
+              <th scope="col" sortable="check_date" type="datetime" formate="MM/DD/YYYY" (sort)="onSort($event)">Check
+                Trans. Date</th>
+              <th scope="col" sortable="check_number" type="alpha" (sort)="onSort($event)">Check Trans. No</th>
+              <th scope="col" sortable="check_amount" type="numeric" (sort)="onSort($event)">Total Amount</th>
+              <th scope="col" sortable="payment_source" type="alpha" (sort)="onSort($event)">Source</th>
+              <th scope="col" sortable="payment_type" type="alpha" (sort)="onSort($event)">Type</th>
+              <th scope="col" sortable="payer_name" type="alpha" (sort)="onSort($event)">Payer</th>
+              <th scope="col" sortable="patient_name" type="alpha" (sort)="onSort($event)">Patient Name</th>
+              <th scope="col" sortable="attorney_firm_name" type="alpha" (sort)="onSort($event)">Attorny Collection</th>
+              <th scope="col" sortable="is_posted" type="alpha" (sort)="onSort($event)">Posted</th>
+              <th scope="col" sortable="deleted" type="alpha" (sort)="onSort($event)">Deleted</th>
+              <th scope="col" sortable="created_user" type="alpha" (sort)="onSort($event)">Uploaded By</th>
+              <th scope="col" sortable="client_date_created" type="alpha" (sort)="onSort($event)">Date Uploaded</th>
+              <th scope="col" sortable="modified_user" type="alpha" (sort)="onSort($event)">Modified By</th>
+              <th scope="col" sortable="client_date_modified" type="alpha" (sort)="onSort($event)">Date Modified</th>
+              <!-- <th></th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of listEOB;let i=index" (click)="onselectionChange(e,i)" [ngClass]="{
+              'active': i==selectedSummaryRow,
+              'text-danger ' : (e.deleted == true),
+              'text-success':(e.is_posted  ==true)
+            }">
+              <td>
+                <div class="btn-group" *ngIf="(e.deleted == true  ? false : true)">
+                  <button class="btn btn-link p-0 fz-12" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"><i class="fa fa-bars" aria-hidden="true"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right custome-menu">
+                    <a class="dropdown-item cursor-default" (click)="postingDetails(e)"
+                      *ngIf="e.deleted == true  ? false : true">
+                      Posting Details
+                    </a>
+
+                    <a class="dropdown-item cursor-default" (click)="postPatientPayment(e)"
+                      *ngIf="e.patient_id == null ? false : e.is_posted == true ? false : e.deleted==true  ? false : true">
+                      Post
+                    </a>
+
+                    <a class="dropdown-item cursor-default" (click)="onMarkPOsted(e)"
+                      *ngIf="(e.is_posted == true  ? false : e.deleted==true  ? false : true) && lookupList.UserRights.eob_markas_posted">
+                      Mark as Posted
+                    </a>
+                    <a class="dropdown-item cursor-default" (click)="addEditEOB('edit',e.eob_id)"
+                      *ngIf="(e.deleted == true  ? false : true) && lookupList.UserRights.eob_edit">
+                      Edit
+                    </a>
+
+                    <a class="dropdown-item cursor-default" *ngIf="(e.deleted == true  ? false : true) && lookupList.UserRights.eob_delete"
+                      (click)="onDeleteEOB(e)">
+                      Delete
+                    </a>
+
+                  </div>
+                </div>
+
+              </td>
+              <td>{{e.eob_id}}</td>
+              <td>{{e.eob_date}}</td>
+              <td>{{e.check_date}}</td>
+              <td>{{e.check_number}}</td>
+
+              <td class="text-right">{{e.check_amount | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{e.payment_source}}</td>
+              <td>{{e.payment_type}}</td>
+              <td>{{e.payer_name}}</td>
+              <td>
+                <button title="{{e.patient_name}}" type="button" class="link-btn"
+                  (click)="openPatient(e)">{{e.patient_name}}</button>
+              </td>
+              <td>{{e.attorney_firm_name}}</td>
+              <td>
+                <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                  <input type="checkbox" class="custom-control-input" id="chk_eob_{{e.eob_id}}" value={{e.is_posted}}
+                    [checked]="e.is_posted" disabled>
+                  <label class="custom-control-label" for="chk_eob_{{e.eob_id}}"></label>
+                </div>
+              </td>
+              <td>
+                <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                  <input type="checkbox" class="custom-control-input" id="chk_eob_deleted_{{e.eob_id}}"
+                    value={{e.deleted}} [checked]="e.deleted" disabled>
+                  <label class="custom-control-label" for="chk_eob_deleted_{{e.eob_id}}"></label>
+                </div>
+              </td>
+              <td>{{e.created_user}}</td>
+              <td>{{e.client_date_created}}</td>
+              <td>{{e.modified_user}}</td>
+              <td>{{e.client_date_modified}}</td>
+              <!--
+              <td>
+                <button type="button" class="btn btn-link  px-0 py-0 fz-12 mr-2" (click)="onMarkPOsted(e)"
+                  *ngIf="(e.is_posted == true  ? false : e.deleted==true  ? false : true)">Mark as Posted</button>
+                <button type="button" class="btn btn-link  px-0 py-0 fz-12 mr-2" (click)="onDeleteEOB(e)"
+                  *ngIf="(e.deleted == true  ? false : true)">Delete</button>
+               
+               
+                <button type="button" class="btn btn-link  px-0 py-0 fz-12 mr-2" (click)="postingDetails(e)"
+                  *ngIf="e.deleted == true  ? false : true">Posting Details</button>
+               
+                <button type="button" class="btn btn-link  px-0 py-0 fz-12 mr-2"
+                  *ngIf="(e.deleted == true  ? false : true)" (click)="addEditEOB('edit',e.eob_id)">Edit</button>
+
+                   <button type="button" class="btn btn-link  px-0 py-0 fz-12 mr-2"
+                  *ngIf="e.patient_id == null ? false : e.is_posted == true ? false : e.deleted==true  ? false : true"
+                  (click)="postPatientPayment(e)">Post</button>
+              </td>
+              -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="border  bg-white flex-3 d-flex flex-column">
+      <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+        <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">EOB Attachments</h4>
+      </div>
+
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th width="2%">&nbsp;</th>
+              <th>EOB File</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let e of listEOBAttachment;let i=index">
+              <td>
+                <button class="btn btn-link text-secondary p-0 fz-14 line-height-normal" type="button"
+                  (click)="onDownload(e)">
+                  <i class="fas fa-download mr-1"></i>
+                </button>
+              </td>
+              <td>
+                <!-- <i class="far fa-file-pdf fz-14 line-height-normal mr-2"></i> -->
+                <button type="button" class="btn btn-link fz-13 btn-sm p-0 text-success" (click)="openDocument(e)">
+                  {{e.original_file_name}}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isProcessing">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Processing...
+    </div>
+  </div>
+</div>

@@ -1,0 +1,301 @@
+<div class="modal-header custom" (keydown.esc)="activeModal.close()">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Credit Card Payment</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+<div class="modal-body custom p-0 ">
+
+  <div class="cc-payment-form-wrapper m-0 w-100">
+
+    <div class="alert alert-danger py-0 px-2 rounded-0">
+
+      <div class="form-row form-dashboard m-0">
+
+        <div class="font-weight-bold alert alert-danger p-2 border-0 m-0 fz-14 col-6">Payment Amount:</div>
+        <div class="font-weight-bold alert alert-danger p-2 border-left-only rounded-0 m-0 fz-14 col-6">
+          {{paymentAmount |
+          currency:'USD':'symbol-narrow'}}</div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+
+    <div class="cc-payment-form-wrapper" *ngIf="!isLoading">
+
+      <!-- <div class="alert alert-danger py-0 px-2 rounded-0">
+
+        <div class="form-row form-dashboard m-0">
+
+          <div class="font-weight-bold alert alert-danger p-2 border-0 m-0 fz-14 col-6">Payment Amount:</div>
+          <div class="font-weight-bold alert alert-danger p-2 border-left-only rounded-0 m-0 fz-14 col-6">
+            {{paymentAmount |
+            currency:'USD':'symbol-narrow'}}</div>
+
+        </div>
+
+      </div> -->
+
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)"
+        (keydown.esc)="activeModal.dismiss('Cross click')" *ngIf="!isCCInfoView">
+
+        <div class="alert alert-primary rounded-0 mb-0">
+          <h6 class="m-0">Billing Information</h6>
+        </div>
+
+
+        <div class="form-row form-dashboard">
+          <div class="form-group col">
+            <label for="txtCardHolderName">Full Name on Card</label>
+
+            <input type="text" class="form-control required" id="txtCardHolderName" placeholder="Full Name on Card"
+              aria-describedby="txtCardHolderName" formControlName="txtCardHolderName">
+
+          </div>
+
+        </div>
+
+        <div class="form-row form-dashboard">
+          <div class="form-group col">
+            <label for="txtStreetAddress1">Street Address</label>
+            <div class="input-group mb-1">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="border-radius: 0 !important;" id="inputGroupPrepend">Line 1</span>
+              </div>
+              <input type="text" class="form-control required" id="txtStreetAddress1"
+                placeholder="Street Address Line 1" aria-describedby="txtStreetAddress1"
+                formControlName="txtStreetAddress1">
+            </div>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="border-radius: 0 !important;" id="inputGroupPrepend">Line 2</span>
+              </div>
+              <input type="text" class="form-control" id="txtStreetAddress2" placeholder="Street Address Line 2"
+                aria-describedby="txtStreetAddress2" formControlName="txtStreetAddress2">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-row form-dashboard">
+          <div class="form-group col-8">
+            <label for="txtCity">City</label>
+            <input type="text" class="form-control required" id="txtCity" placeholder="City" aria-describedby="txtCity"
+              formControlName="txtCity">
+
+          </div>
+
+          <div class="form-group col-4">
+            <label for="txtState">State</label>
+
+            <input type="text" class="form-control required" id="txtState" placeholder="State"
+              aria-describedby="txtState" formControlName="txtState">
+
+          </div>
+
+        </div>
+
+        <div class="form-row form-dashboard">
+          <div class="form-group col-8">
+            <label for="txtZipCode">Zip Code</label>
+
+            <input type="text" class="form-control required" id="txtZipCode" placeholder="Zip Code"
+              aria-describedby="txtZipCode" formControlName="txtZipCode">
+
+          </div>
+
+        </div>
+
+
+
+
+
+        <div class="form-row form-dashboard my-3">
+
+          <div class="col-4">
+
+            <button class="btn  btn-link text-dark h-50-px px-0" type="button"
+              (click)="activeModal.dismiss('Cancel')">Back</button>
+          </div>
+
+          <div class="col-8">
+            <button class="btn btn-success rounded-0 h-50-px px-0 col" type="submit">Next</button>
+          </div>
+
+
+        </div>
+
+        <!-- <button type="button" class="btn btn-dark btn-sm col" (click)="activeModal.dismiss('Cancel')">Cancel</button> -->
+
+
+      </form>
+
+    </div>
+
+
+    <!-- <div class="px6-py3 flex-grow-1">
+
+
+
+
+        <div class="d-flex flex-column">
+
+          <div class="info-box-stipes rounded-custom flex-grow-1 mb-2 pb-1">
+
+            <div class="title-bar px-2 border-bottom">Credit Card</div>
+
+
+
+            <div class="px-2 py-1">
+
+              <div class="form-row form-dashboard">
+                <div class="form-group col">
+                  <label>Payment Amount</label>
+                  <div class="font-weight-bold alert alert-primary rounded-2 mb-1">{{paymentAmount |
+                    currency:'USD':'symbol-narrow'}}</div>
+                </div>
+
+              </div>
+
+              <div class="form-row form-dashboard">
+                <div class="form-group col">
+                  <label for="txtCardNo">Card Number</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control required" id="txtCardNo" placeholder="Card Number"
+                      aria-describedby="txtCardNo" formControlName="txtCardNo">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-credit-card"
+                          aria-hidden="true"></i></span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="form-row form-dashboard mt-1">
+                <div class="form-group col-8">
+                  <label for="txtExpirationMM">Expiration (MM/YY)</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control text-center required" id="txtExpirationMM" placeholder="MM"
+                      maxlength="2" aria-describedby="txtExpirationMM" formControlName="txtExpirationMM">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroupPrepend">/</span>
+                    </div>
+                    <input type="text" class="form-control text-center required" id="txtExpirationYY" placeholder="YY"
+                      maxlength="2" aria-describedby="txtExpirationYY" formControlName="txtExpirationYY">
+                  </div>
+                </div>
+
+                <div class="form-group col-4">
+                  <label for="txtCVC">CVC</label>
+
+                  <input type="text" class="form-control text-center required" id="txtCVC" placeholder="CVC"
+                    aria-describedby="txtCVC" formControlName="txtCVC">
+
+                </div>
+
+              </div>
+
+              <div class="form-row form-dashboard mt-1">
+                <div class="form-group col">
+                  <label for="txtCardHolderName">Full Name on Card</label>
+
+                  <input type="text" class="form-control required" id="txtCardHolderName"
+                    placeholder="Full Name on Card" aria-describedby="txtCardHolderName"
+                    formControlName="txtCardHolderName">
+
+                </div>
+
+              </div>
+
+
+
+            </div>
+          </div>
+
+          <div class="info-box-stipes rounded-custom flex-grow-1 pb-1">
+
+            <div class="title-bar px-2  border-bottom">Billing Address</div>
+
+            <div class="px-2 py-1">
+
+              <div class="form-row form-dashboard">
+                <div class="form-group col">
+                  <label for="txtStreetAddress1">Street Address</label>
+                  <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroupPrepend">Line 1</span>
+                    </div>
+                    <input type="text" class="form-control required" id="txtStreetAddress1"
+                      placeholder="Street Address Line 1" aria-describedby="txtStreetAddress1"
+                      formControlName="txtStreetAddress1">
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroupPrepend">Line 2</span>
+                    </div>
+                    <input type="text" class="form-control" id="txtStreetAddress2" placeholder="Street Address Line 2"
+                      aria-describedby="txtStreetAddress2" formControlName="txtStreetAddress2">
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="form-row form-dashboard mt-1">
+                <div class="form-group col-8">
+                  <label for="txtCity">City</label>
+                  <input type="text" class="form-control required" id="txtCity" placeholder="City"
+                    aria-describedby="txtCity" formControlName="txtCity">
+
+                </div>
+
+                <div class="form-group col-4">
+                  <label for="txtState">State</label>
+
+                  <input type="text" class="form-control required" id="txtState" placeholder="State"
+                    aria-describedby="txtState" formControlName="txtState">
+
+                </div>
+
+              </div>
+
+              <div class="form-row form-dashboard mt-1">
+                <div class="form-group col-8">
+                  <label for="txtZipCode">Zip Code</label>
+
+                  <input type="text" class="form-control required" id="txtZipCode" placeholder="Zip Code"
+                    aria-describedby="txtZipCode" formControlName="txtZipCode">
+
+                </div>
+
+              </div>
+
+
+
+            </div>
+          </div>
+
+        </div>
+
+      </div> -->
+
+    <!-- <cc-payment-form (onCallBack)="ccFormCallBack($event)" *ngIf="isCCInfoView"></cc-payment-form> -->
+  </div>
+
+
+
+</div>
+<!-- <div class="modal-footer custom d-flex justify-content-between">
+    <button class="btn btn-success btn-sm col" type="submit">Confirm Payment</button>
+    <button type="button" class="btn btn-dark btn-sm col" (click)="activeModal.dismiss('Cancel')">Cancel</button>
+  </div> -->
+
+
+ <div *ngIf="isLoading" class="div-loader"></div> 

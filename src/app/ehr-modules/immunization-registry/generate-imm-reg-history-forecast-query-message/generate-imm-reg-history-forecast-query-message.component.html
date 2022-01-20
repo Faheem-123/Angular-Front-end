@@ -1,0 +1,125 @@
+<form [formGroup]="registryFormGroup">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title flex-grow-1">Generate Immunization History and Forecast Query</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="close('Close')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom rounded-0 border-0 m-0" [ngClass]="{'alert alert-danger': (registryProcessStatus=='ERROR'),
+    'alert alert-success': (registryProcessStatus=='SUCCESS'),
+    'alert alert-info': isRegistryFileProcessing}">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div class="px6-py3 flex-grow-1" *ngIf="!isLoading">
+
+      <ng-template id="section_pre_processing"
+        [ngIf]="!isRegistryFileProcessing && (registryProcessStatus==undefined || registryProcessStatus=='') ">
+
+        <div class="form-row form-dashboard">
+          <div class="form-group horizental row zero col">
+            <label class="col-2  col-form-label module-view-headding pr-2" for="ddOffice">Select Office:</label>
+            <select class="col form-control required" formControlName="ddOffice" id="ddOffice">
+              <option *ngFor="let clinic of lookupList.lstImmRegClinics" [value]="clinic.clinic_id">
+                {{clinic.clinic_code.padEnd(15, '&#160;')}}|&nbsp;&nbsp;{{clinic.clinic_name}}
+              </option>
+            </select>
+
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard">
+          <div class="form-group horizental row zero col">
+            <label class="col-2 col-form-label module-view-headding pr-2" for="ddOffice">Patient:</label>
+            <div class="input-icon d-flex flex-grow-3">
+
+              <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                formControlName="txtPatientSearch" placeholder="Search Patient"
+                (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+              <input type="text" formControlName="txtPatientIdHidden" hidden>
+              <div class="icon">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </div>
+
+              <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+              </inline-patient-search>
+
+            </div>
+
+          </div>
+        </div>
+      </ng-template>
+
+
+
+      <ng-template id="section_error" [ngIf]="registryProcessStatus=='ERROR'">
+
+        <div class="overflow-auto flex-grow-1 mb-1" style="overflow-x:auto;"
+          *ngIf="regMessageErroList!=undefined && regMessageErroList.length>0">
+
+          <div class="alert-heading pb-1 fz-14">
+            <strong> File Generation Errors</strong>
+          </div>
+
+          <table class="table sm layout-fixed light-striped-border table-danger">
+           
+            <tbody>
+              <tr *ngFor="let error of regMessageErroList; let i = index">
+                <td class="width-20">{{i+1}}</td>
+                <td class="width-150" title="{{error.segment}}">{{error.segment}}</td>
+                <td title="{{error.description}}"><pre>{{error.message}}</pre></td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </ng-template>
+
+      <ng-template id="section_success" [ngIf]="registryProcessStatus=='SUCCESS'">
+
+        <p class="m-0"> {{fileGenerationSuccessMsg}}</p>
+
+      </ng-template>
+
+      <ng-template id="section_in_progress" [ngIf]="isRegistryFileProcessing">
+
+        <div *ngIf="isRegistryFileProcessing" class="p-2 col">
+          <i class="fas fa-cog fa-spin"></i> Processing registry file, please wait...
+        </div>
+
+      </ng-template>
+
+
+    </div>
+  </div>
+  <div class="modal-footer custom">
+
+    <button type="button" class="btn btn-info btn-sm" (click)="GenerateQBP_HL7(true)"
+      [disabled]="!registryFormGroup.valid"
+      *ngIf="!isRegistryFileProcessing && (registryProcessStatus==undefined )">
+      <i class="far fa-paper-plane mr-1"></i>Generate & Submit</button>
+
+    <button type="button" class="btn btn-info btn-sm" (click)="GenerateQBP_HL7(false)"
+      [disabled]="!registryFormGroup.valid"
+      *ngIf="canDownloadHL7File && !isRegistryFileProcessing && (registryProcessStatus==undefined )">
+      <i class="fas fa-download mr-1"></i>Generate & Download</button>
+
+    <button type="button" class="btn btn-info btn-sm" (click)="downlaodGeneratedFile()" *ngIf="canDownloadHL7File && !isRegistryFileProcessing && registryProcessStatus=='SUCCESS' 
+      && (regMessageString!=undefined && regMessageString!='')
+      && (regMessageId!=undefined && regMessageId!='')">
+      <i class="fas fa-download mr-1"></i>Download HL7 File</button>
+
+    <button type="button" style="width: 100px;" class="btn btn-dark btn-sm" (click)="close('Cancel')">
+      <span *ngIf="(registryProcessStatus==undefined )">
+        Cancel</span>
+      <span *ngIf="registryProcessStatus=='ERROR' || registryProcessStatus=='SUCCESS'">
+        Close </span>
+    </button>
+
+  </div>
+</form>

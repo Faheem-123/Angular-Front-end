@@ -1,0 +1,21 @@
+export class ORMCarePlan
+{
+        chart_careplanid:String;
+		patient_id:String;
+		chart_id:String;
+		plan_type:String;
+		code:String;
+		description:String;
+		code_type:String;
+		instruction:String;
+		date:String;
+		created_user:String;
+		date_created:String;
+		modified_user:String;
+		date_modified:String;
+		client_date_created:String;
+		client_date_modified:String;
+		deleted:String;
+		practice_id:String;
+		system_ip:String;
+}

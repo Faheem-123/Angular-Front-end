@@ -1,0 +1,21 @@
+export class ORMPatientLetter{
+    patient_letter_id:String;
+	template_id:String;
+	patient_id:String;
+	patient_text:String;
+	dos:String;
+	header_id:String;
+	section_id:String;
+	optional_section_id:String;
+	body_text:String;
+	signed:String;
+	signed_by:String;
+	signed_date:String;
+	practice_id:String;
+	created_user:String;
+	client_date_created:String;
+	modified_user:String;
+	client_date_modified:String;
+	date_created:String;
+	date_modified:String;
+}

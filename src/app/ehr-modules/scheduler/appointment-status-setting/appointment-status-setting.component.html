@@ -1,0 +1,74 @@
+<div class="border-content-box border-top-0 d-flex flex-row flex-grow-1 max-height-100 p-2">
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)" class="d-flex">
+    <div
+      class="border-content-box rounded-3  bg-white d-flex flex-column flex-1  p-0 col-lg-6 col-md-6 col-sm-12 col-12 position-relative">
+
+
+      <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0">
+        Appointment Status
+        <div class="d-flex align-items-center">
+
+          <button *ngIf="!editState" type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+            (click)="onAddNew()"><i class="fa fa-plus mr-1"></i>Add New</button>
+
+          <button *ngIf="editState" class="btn rounded-0 btn-sm bg-green-ihc text-white h-24" type="submit"
+            [disabled]="!formGroup.valid">Save</button>
+          <button *ngIf="editState" class="btn btn-sm btn-dark rounded-3-top-right h-24" type="button"
+            (click)="cancelAddEdit()">Cancel</button>
+
+        </div>
+
+
+      </div>
+
+
+      <div class="border rounded-0 bg-white m-1 d-flex flex-row flex-shrink-0" *ngIf="editState">
+
+        <div class="dashboard-add-edit flex-grow-2 flex-basis-2">
+
+
+          <div class="d-flex flex-column flex-grow-1 flex-basis-1">
+            <div class="dashboard-add-edit p-8-px">
+              <div class="form-row form-dashboard">
+                <div class="form-group col">
+                  <label for="txtSource" class="col-form-label required mr-5-px">Appointment Status</label>
+                  <input type="text" id="txtStatus" formControlName="txtStatus" class="form-control">
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+
+      <div class="flex-grow-1 overflow-auto overflow-height" [ngClass]="{'border-top': editState}">
+        <table class="table sm layout-fixed light-striped-border">
+
+          <tbody>
+            <tr *ngFor="let status of lstStatus" [ngClass]="{'active' : (status.status_id === selectedId)}">
+              <td>
+                {{status.status}}
+              </td>
+              <td class="width-90 ">
+                <button *ngIf="!editState" type="button" (click)="onEdit(status)" class="link-btn mr-3">Edit</button>
+                <button *ngIf="!editState" type="button" (click)="onDelete(status)" class="link-btn ">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
+      </div>
+
+      <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+          <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

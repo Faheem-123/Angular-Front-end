@@ -1,0 +1,101 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Label Print View</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-sub-header d-flex justify-content-between">
+  <h6 class="pl-2 mt-1">{{header}}</h6>
+  <button class="btn btn-success btn-sm rounded-0 h-100 width-80" *ngIf="errorMsg==''" type="button"
+    (click)="print()">Print</button>
+</div>
+
+<div class="modal-body custom p-0 overflow-auto position-relative">
+
+  <div id="dymo_print" class="report" *ngIf="errorMsg==''">
+    <div class="report" style="width: 300px; height: 96px;">
+
+      <div class="content fz-12" *ngIf="labelType=='PATIENT_MAILING_LABEL'">
+        <p class="p-0 m-0 font-weight-500">
+          {{patientName}}
+        </p>
+        <p class="p-0 m-0">
+          {{addressLine1}}
+        </p>
+        <p class="p-0 m-0" *ngIf="addressLine2!=undefined && addressLine2!=''">
+          {{addressLine2}}
+        </p>
+        <p class="p-0 m-0">
+          {{cityStateZip}}
+        </p>
+
+      </div>
+
+      <div class="content  fz-12" *ngIf="labelType=='PATIENT_CHART_LABEL'">
+
+        <div class="form-row form-dashboard">
+          <div class="col-6">
+            <p class="p-0 m-0">
+              PId: {{pid}}
+            </p>
+          </div>
+          <div class="col-6">
+            <p class="p-0 m-0">
+              DOB: {{dob}}
+            </p>
+          </div>
+
+        </div>
+
+        <p class="p-0 m-0 font-weight-500">
+          {{patientName}}
+        </p>
+        <p class="p-0 m-0">
+          {{addressLine1}} <span  *ngIf="addressLine2!=undefined && addressLine2!=''">, {{addressLine2}}</span>
+        </p>
+       
+        <p class="p-0 m-0">
+          {{cityStateZip}} {{phoneNo}}
+        </p>
+        <!-- <p class="p-0 m-0">
+          {{phoneNo}}
+        </p> -->
+
+      </div>
+
+
+      <div class="content  fz-12" *ngIf="labelType=='LAB_ORDER_SPECIMENT_LABEL'">
+        <p class="p-0 m-0 font-weight-500">
+          {{patientName}}
+        </p>
+        <p class="p-0 m-0">
+          Patient Id: {{pid}}
+        </p>
+        <p class="p-0 m-0">
+          Req #: {{orderId}}
+        </p>
+        <p class="p-0 m-0">
+          Collectino Date: {{collectionDateTime}}
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="alert alert-danger m-2 p-2 fz-12" *ngIf="errorMsg!=''">
+    <p class="p-0 m-0">
+      {{errorMsg}}
+    </p>
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>

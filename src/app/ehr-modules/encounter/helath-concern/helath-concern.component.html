@@ -1,0 +1,217 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false}">
+  <div class="title pl-8">Health Concern</div>
+
+
+  <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+    <button *ngIf="!addEditView && canAddEdit && canView" class="nav-link green px-2 py-0 top-right-radius"
+      (click)="onAdd()">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </button>
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="onSave()">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+
+    <button *ngIf="addEditView" class="nav-link btn-dark px-2 py-0 top-right-radius" (click)="cancelAddEdit()">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </button>
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <ng-template id="sectionAccessDenied" [ngIf]="!isLoading && !canView">
+    <div class="access-denied">
+      <i class="fas fa-ban mr-2"></i> Access Denied
+    </div>
+  </ng-template>
+
+  <ng-template id="sectionView" [ngIf]="!isLoading && canView && !addEditView">
+
+
+    <div *ngIf="noRecordFound" class="no-content">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+
+
+    <div *ngIf="canView && !noRecordFound && !addEditView" class="encounter-view flex-grow-1 mt-0">
+
+      <div class="encounter-data-accordian accordian-data" *ngFor="let concern of lstConcern; ">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5>
+            <a data-toggle="collapse" href="#healthConcern{{concern.health_id}}" aria-expanded="false">
+              <span class="accordian-header-date">{{concern.health_date}}</span>
+              <ng-template id="concernWithCode" [ngIf]="concern.code!=undefined && concern.code!=''">
+                <span class="icd-code">{{concern.code}}</span> {{concern.description}}
+              </ng-template>
+              <span *ngIf="concern.code!=undefined || concern.code!=''">{{concern.observation}}</span>
+            </a>
+          </h5>
+          <button type="button" class="btn btn-link btn-md text-primary" (click)="onEdit(concern)">
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" class="btn btn-link btn-md btn-delete" (click)="onDeleteMainConern(concern)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </div>
+
+        <div id="healthConcern{{concern.health_id}}" class="collapse" class="collapse">
+          <div class="accordian-body">
+            <div class="row">
+              <div class="col-12">
+                <p>Concern Date:
+                  <strong class="mr-5">{{concern.health_date}}</strong>
+                </p>
+                <p>Observation:
+                  <strong>{{concern.code}} - {{concern.description}}</strong>
+                </p>
+              </div>
+              <div class="col-12">
+                <p>Notes:
+                  <strong>{{concern.observation}}</strong>
+                </p>
+              </div>
+            </div>
+
+            <div class="form-row form-dashboard">
+
+              <div class="col-12 col-md-12 p-0 m-0">
+
+                <h6 class="form-edit-sub-heading-small m-0 p-0 pt-1">Concern</h6>
+
+                <div class="form-view">
+                  <ul class="m-0 pl-4">
+                    <li
+                      *ngFor="let detail of lstConcernDetail | listFilter : 'health_id' : concern.health_id ; let i = index">
+                      {{detail.diag_code}} {{detail.diag_description}}
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+
+
+
+            </div>
+
+            <div class="accordian-footer">
+              <p class="form-text text-muted">Last Modified by {{concern.modified_user}} at {{concern.date_modified}}
+              </p>
+              <button class="btn btn-sm btn-link pr-0" type="button">View Log</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template id="sectionAddEdit" [ngIf]="addEditView">
+    <div *ngIf="addEditView">
+      <form [formGroup]="healthConcernForm">
+        <div class="light-gray-bg p-2">
+          <div class="d-flex flex-column">
+            <div class="border-content-box rounded d-flex flex-column flex-grow-1 mb-2">
+              <div class="form-row form-dashboard px-1 py-2">
+                <div class="col-12 px-2">
+                  <h6 class="form-edit-sub-heading m-0 mb-1">Observation:</h6>
+                  <div class="form-row form-dashboard mt-1">
+                      <div class="form-group col-2">
+                          <label for="dfDate" class="col-form-label">Date:</label>
+                          <div class="input-group">
+                            <input id="dfDate" formControlName="dfDate" class="form-control date-control"
+                              placeholder="mm/dd/yyyy" name="dfDate" ngbDatepicker #dfDate="ngbDatepicker">
+                            <span class="input-group-btn">
+                              <button class="btn date-control-btn" (click)="dfDate.toggle()" type="button">
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                    <div class="form-group col-10">
+                      <div class="btn-group radio-btn-tabs required">
+                        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (codeType === 'ICD-10')}">
+                          <input type="radio" name="codeType" autocomplete="off" checked formControlName="codeType"
+                            value="ICD-10" (ngModelChange)="onCodeTypeChange($event)"> ICD-10
+                        </label>
+                        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (codeType === 'SnomedCT')}">
+                          <input type="radio" name="codeType" autocomplete="off" checked formControlName="codeType"
+                            value="SnomedCT" (ngModelChange)="onCodeTypeChange($event)"> SnomedCT
+                        </label>
+                      </div>
+                      <div class="input-icon d-flex flex-grow-3">
+                        <input type="text" class="form-control mr-1" formControlName="txtIcdCode" style="width: 100px;"
+                          readonly>
+                        <input id="txtProblemSearch" class="form-control flex-grow-3  bl-0" type="text"
+                          #txtProblemSearch formControlName="txtProblemSearch" placeholder="Search Problem"
+                          (keydown)="onProblemSearchKeydown($event)" autocomplete="off">
+                        <div class="icon">
+                          <i class="fas fa-search" aria-hidden="true"></i>
+                        </div>
+                        <inline-diagnosis-search *ngIf="showDiagSearch" [diagSearchCriteria]="diagSearchCriteria"
+                          (onDiagSelect)="onDiagnosisSelect($event)" (onClose)="closeDiagSearch()">
+                        </inline-diagnosis-search>
+                      </div>
+                    </div>
+                  
+                  </div>
+                  <div class="form-row form-dashboard mt-1">
+                    <div class="form-group col-12">
+                      <label for="txtComments">Notes:</label>
+                      <textarea class="form-control" id="txtComments" rows="2" formControlName="txtComments"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+              <div class="form-row form-dashboard px-1 py-2">
+                <div class="col-12 px-0">
+                  <h6 class="form-edit-sub-heading m-0 px-2 d-flex justify-content-between">Concern:
+
+                    <button type="button" class="btn btn-sm btn-link p-0" (click)="AddProblems()">Add Problem</button>
+
+                  </h6>
+
+                  <table class="table sm layout-fixed light-striped-border">
+                    <thead>
+                      <tr>
+                        <th class="width-80">Code</th>
+                        <th>Problem</th>
+                        <th class="width-30">&nbsp;</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let detail of lstConcernDetailAddEdit">
+                        <td>{{detail.diag_code}}</td>
+                        <td>{{detail.diag_description}}</td>
+                        <td class="text-right">
+                          <button type="button" class="btn btn-link btn-md btn-delete p-0"
+                            (click)="onDeleteConcernDetail(detail)"><i class="far fa-trash-alt"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+        </div>
+      </form>
+
+    </div>
+
+
+  </ng-template>
+
+</div>

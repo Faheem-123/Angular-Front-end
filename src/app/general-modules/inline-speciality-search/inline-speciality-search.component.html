@@ -1,0 +1,45 @@
+<div class="inline-search">
+  <div class="inline-search-header">
+    <h6 class="title">Speciality Search</h6>
+    <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <section *ngIf="!isLoading" >
+        <div *ngFor="let specialityGroup of lstSpeciality | unique: 'taxonomy_group'; let i = index" >
+
+            <h6 class="form-edit-sub-heading-small m-1">
+              {{specialityGroup.taxonomy_group | uppercase}}
+            </h6>
+            <table class="table light-striped-border" >       
+                <tbody>
+                  <tr *ngFor="let speciality of lstSpeciality | listFilter : 'taxonomy_group' : specialityGroup.taxonomy_group">
+                    <td style="width: 20px;">
+                    </td>
+                    <td style="width: 50px;">
+                      <button type="button" class="link-btn" (click)="onSelect.emit(speciality)">{{speciality.taxonomy_code}}</button>
+                    </td>
+                    <td><button type="button" class="link-btn" (click)="onSelect.emit(speciality)"> {{speciality.taxonomy_description}}</button>                     
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!--
+            <ul class="m-0 pl-4">
+              <li *ngFor="let raceCDC of lstSearchResult | listFilter : 'omb_code' : omb.omb_code">
+                <label class="mb-1">{{raceCDC.cdc_description | uppercase}}</label>
+              </li>
+            </ul>
+          -->
+      
+          </div>
+    </section>
+    
+
+
+
+  </div>
+</div>

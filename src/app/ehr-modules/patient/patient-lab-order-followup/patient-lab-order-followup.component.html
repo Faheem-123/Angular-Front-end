@@ -1,0 +1,390 @@
+<div class="encounter-module d-flex flex-column flex-grow-1 position-relative" *ngIf="!isLoading">
+  <div class="header flex-shrink-0 d-flex justify-content-between">
+    <div class="title">Follow Up</div>
+  </div>
+
+
+  <div class="encounter-body rounded-bottom p-8 flex-grow-1 d-flex flex-column light-gray-bg">
+
+    <div class="border  bg-white px-2 py-1 flex-shrink-0 mb-8">
+      <form [formGroup]="searchForm">
+        <div class="form-row form-dashboard">
+          <div class="form-group horizental row zero col-md-4 col-sm-6 col-12">
+            <label for="input2" class="col-sm-2 col-form-label ">Patient:</label>
+            <div class="form-group has-search col-sm-10">
+              <span class="fa fa-search form-control-feedback"></span>
+              <input formControlName="txtPatient" #txtPatient class="form-control search-highlight"
+                placeholder="Search Patient" type="text" (keydown)="onKeydown($event)" autocomplete="off">
+              <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatient.value"
+                (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+              </inline-patient-search>
+            </div>
+          </div>
+
+          <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+            <label for="input2" class="col-sm-3 col-form-label">Provider:</label>
+            <select class="form-control col-sm-9" labelForId="drpProvider" formControlName="drpProvider">
+              <option [value]="null">All</option>
+              <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-group horizental row zero col-md-2 col-sm-6 col-12">
+            <label for="input2" class="col-sm-4 col-form-label">Category:</label>
+            <select formControlName="drpCategory" class="form-control col-sm-8" labelForlabelForId="input1">
+              <option *ngFor="let s of lstLabCategory" [value]="s.id">{{s.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+            <div class="form-check-cont d-flex">
+
+              <div class="custom-control custom-checkbox green-checkbox pt-1">
+                <input type="checkbox" class="custom-control-input" id="chkFUSigned" formControlName="chkSigned">
+                <label class="custom-control-label text-dark font-weight-400" for="chkFUSigned">Signed</label>
+              </div>
+
+              <div class="custom-control custom-checkbox green-checkbox pt-1">
+                <input type="checkbox" class="custom-control-input" id="chkNotesNotExist"
+                  formControlName="chkNotesExsist">
+                <label class="custom-control-label text-dark font-weight-400" for="chkNotesNotExist">Notes Not
+                  Exists</label>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="form-group horizental row zero col-md-4 col-sm-6 col-12">
+            <label for="input2" class="col-sm-2 col-form-label">Follow Up:</label>
+            <div class="form-group col-sm-10 d-flex">
+              <select formControlName="drpFollowupNotes" class="form-control flex-3" labelForlabelForId="input1">
+                <option *ngFor="let s of lookupList.arrFollowNote">{{s}}</option>
+              </select>
+
+
+              <select formControlName="drpFollowupAction" class="form-control flex-2 ml-1" labelForId="input1">
+                <option *ngFor="let s of lookupList.arrFollowAction">{{s}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
+            <label for="input2" class="col-sm-3 col-form-label">Location:</label>
+            <select class="form-control col-sm-9" labelForId="drpLocation" formControlName="drpLocation">
+              <option [value]="null">All</option>
+              <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-group horizental row zero col-md-2 col-sm-6 col-12">
+            <label for="input2" class="col-sm-3 col-form-label ">From:</label>
+            <div class="input-group col-sm-9">
+              <input class="form-control" placeholder="mm/dd/yyyy" name="txtFromDate" formControlName="txtFromDate"
+                ngbDatepicker #txtFromDate="ngbDatepicker">
+              <span class="input-group-btn">
+                <button class="btn btn-outline-primary" (click)="txtFromDate.toggle()" type="button">
+                  <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group horizental row zero col-md-2 col-sm-6 col-12">
+            <label for="input2" class="col-sm-3 col-form-label ">To:</label>
+            <div class="input-group col-sm-9">
+              <input class="form-control" placeholder="mm/dd/yyyy" name="txtToDate" formControlName="txtToDate"
+                ngbDatepicker #txtToDate="ngbDatepicker">
+              <span class="input-group-btn">
+                <button class="btn btn-outline-primary" (click)="txtToDate.toggle()" type="button">
+                  <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                </button>
+              </span>
+
+            </div>
+
+
+          </div>
+
+          <div class="form-group horizental row zero col-sm-1 col-12">
+            <button type="button" class="btn btn-sm btn-success w-100"
+              (click)="onSearch(searchForm.value)">Search</button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="flex-2 d-flex overflow-height mb-8">
+      <div class="border  bg-white flex-1 d-flex flex-column mr-8">
+        <div class="rounded-box-title-bar">Patients : {{total_patient}}</div>
+        <div class="border-top overflow-auto flex-grow-1 max-height-100">
+          <table class="table layout-fixed sm light-striped-border">
+            <tbody>
+              <tr *ngFor="let l of lstPatient" (click)="OnPatientSelectionChanged(l)"
+                [ngClass]="{'active' : (l.patient_id === rowId)}">
+                <td>
+                  <button type="button" class="link-btn d-flex align-items-center" [ngClass]="{
+                      'text-success':(l.notes_aging >5),
+                      'text-primary':(l.notes_aging >=0),
+                      'text-danger':(l.notes_aging ==-1)
+                       }">
+                    <img class="img-h-15 mr-1" *ngIf="l.gender ==='F'" src="./assets/images/icons/woman_ico.svg" alt="">
+                    <img class="img-h-15 mr-1" *ngIf="l.gender ==='M'" src="./assets/images/icons/man_ico.svg" alt="">
+                    {{l.patient_display_name}}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="border  bg-white flex-4 d-flex flex-column mr-8 width-200">
+        <div class="rounded-box-title-bar justify-content-between">Test Details
+          <div class="justify-content-end">
+            {{rowPatientName}}
+          </div>
+          <div class="justify-content-end">
+            {{rowPatientAge}}
+          </div>
+          <div class="justify-content-end">
+            {{rowPatientLanguage}}
+          </div>
+        </div>
+        <div class="overflow-auto flex-grow-1 max-height-100">
+          <table class="table layout-fixed sm light-striped-border" style="overflow-y:visible">
+            <thead>
+              <tr>
+                <th class="width-150">Patient/Order Date/Test</th>
+                <th class="width-60"></th>
+                <th class="width-100">Result/Doc</th>
+                <th class="width-100">Comp. Date</th>
+                <th class="width-170">Follow Up Notes</th>
+                <th class="width-100">Category</th>
+                <th class="width-120">Provider</th>
+                <th class="width-120">Location</th>
+                <th class="width-100">Followup Details</th>
+                <th class="width-100">Signed Detail</th>
+                <th class="width-100">Result Date Created</th>
+              </tr>
+            </thead>
+
+            <ng-container *ngFor="let group of lstPatientTestDetail | unique:'order_id'">
+              <thead>
+                <tr data-toggle="collapse" attr.data-target="#labFollowUp{{group.order_id}}"
+                  class="accordion-toggle table-group-row " (click)="OnTestSelectionChanged(group)">
+
+                  <th class="accordian-link">
+                    {{group.order_date}}
+                  </th>
+                  <th class="overflow-visible">
+                    <div class="btn-group">
+                      <button type="button" class="table-link-btn" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+                      </button>
+                      <div class="dropdown-menu schedular-card pl-2">
+                        <a class="dropdown-item" (click)="onMenuClick(group,'Appointment')">Appointment</a>
+                        <a class="dropdown-item" (click)="onMenuClick(group,'Patient')">Patient</a>
+                        <a class="dropdown-item" (click)="onMenuClick(group,'Scheduler')">Scheduler</a>
+                        <a class="dropdown-item" (click)="onMenuClick(group,'Encounters')">Encounters</a>
+                        <a class="dropdown-item" (click)="onMenuClick(group,'Document')">Document</a>
+                        <a class="dropdown-item" (click)="onMenuClick(group,'Notes')">Patient Notes</a>
+                        <a class="dropdown-item" (click)="onMenuClick(group,'Letters')">Letters</a>
+                      </div>
+                    </div>
+
+                  </th>
+
+                  <th>&nbsp;</th>
+
+                  <th>&nbsp;</th>
+                  <th>{{group.follow_up_notes_summary}}</th>
+                  <th>{{group.category_name}}</th>
+                  <th>{{group.provider_name}}</th>
+                  <th>{{group.location_name}}</th>
+                  <th>&nbsp;</th>
+                  <th>{{group.signed_info}}</th>
+                  <th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody class="accordian-body collapse p-0 m-0" id="labFollowUp{{group.order_id}}">
+                <tr *ngFor="let detail of lstPatientTestDetail | listFilter : 'order_id' : group.order_id">
+                  <td class="td-payment-source pl-4" title="{{detail.test_description}}">
+                    {{detail.test_description}}
+                  </td>
+                  <td></td>
+                  <td>{{detail.result_date }}</td>
+                  <td>{{detail.complete_date }}</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>{{group.followup_detail}}</td>
+                  <td>&nbsp;</td>
+                  <td>{{detail.result_date_created}}</td>
+                </tr>
+              </tbody>
+
+            </ng-container>
+
+
+          </table>
+        </div>
+      </div>
+
+      <div class="border  bg-white flex-1 d-flex flex-column">
+        <div class="rounded-box-title-bar">Contact Info</div>
+        <div class="d-flex flex-column">
+          <div class="border-top flex-grow-1 p-2">
+            <div class="form-view vertical">
+              <div class="title">Primary Contact Type:</div>
+              <div class="value">{{lblPrimaryContactType}}</div>
+            </div>
+
+            <div class="form-view vertical">
+              <div class="title">Cell Phone:</div>
+              <div class="value">{{lblCellPhone}}</div>
+            </div>
+
+            <div class="form-view vertical">
+              <div class="title">Home Phone:</div>
+              <div class="value">{{lblHomePhone}}</div>
+            </div>
+
+            <div class="form-view vertical">
+              <div class="title">Work Phone:</div>
+              <div class="value">{{lblWorkPhone}}</div>
+            </div>
+          </div>
+
+          <div class="border-top flex-grow-1 p-2">
+            <div class="d-flex flex-column">
+              <div class="d-flex align-items-center">
+                <div class="box-25 bg-success flex-shrink-0"></div>
+                <div class="pl-2 line-height-1">
+                  <span class="fz-11">Notes Entered within 5 days</span>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center mt-1">
+                <div class="box-25 bg-primary flex-shrink-0"></div>
+                <div class="pl-2 line-height-1">
+                  <span class="fz-11">Notes Entered before 5 days</span>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center mt-1">
+                <div class="box-25 bg-danger flex-shrink-0"></div>
+                <div class="pl-2 line-height-1">
+                  <span class="fz-11">Notes not Entered</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 d-flex overflow-height">
+      <div class="border  bg-white flex-1 d-flex flex-column mr-8">
+        <div class="rounded-box-title-bar justify-content-between p-0">Staff Notes
+          <div class="title-link justify-content-end">
+            <div class="dropdown dropup nav color-buttons align-items-center justify-content-end">
+              <button type="button" class="nav-link blue h-20 px-2 py-0" data-toggle="dropdown" aria-expanded="false">
+                Add Notes
+                <i class="fas fa-caret-up ml-1"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right mt-1 light-gray-bg width-300" role="menu">
+                <form class="px-2 py-2" [formGroup]="notesForm">
+
+                  <div class="form-group">
+                    <label class="col-form-label required">Notes</label>
+                    <input class="form-control col-12" formControlName="txtNotes" type="text">
+                  </div>
+                  <div class="form-group">
+                    <label class="col-form-label required">Follow Up</label>
+                    <select class="form-control col-12" formControlName="drpFollowUp">
+                      <option *ngFor="let s of lookupList.arrFollowNote">{{s}}</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleDropdownFormPassword1">Action</label>
+                    <select class="form-control" formControlName="drpFollowUpaction">
+                      <option *ngFor="let s of lookupList.arrFollowAction">{{s}}</option>
+                    </select>
+
+                    <div class="custom-control custom-checkbox green-checkbox pt-1">
+                      <input type="checkbox" class="custom-control-input" id="chkFUAlert" labelForId="chkFUAlert"
+                        formControlName="chkAlert">
+                      <label class="custom-control-label text-dark font-weight-400" for="chkFUAlert">Alert</label>
+                    </div>
+
+                  </div>
+                  <button [disabled]="!notesForm.valid" class="btn btn-success btn-sm px-2 py-0" type="submit"
+                    (click)="onSaveNotes(notesForm.value)">
+                    <i class="far fa-save pr-1"></i>Save
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overflow-auto flex-grow-1 max-height-100">
+          <table class="table layout-fixed sm light-striped-border">
+            <thead>
+              <tr>
+                <th>Notes</th>
+                <th class="width-100">Date</th>
+                <th class="width-100">User</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of acStaffNotesFromDB;">
+                <td>{{s.notes}}</td>
+                <td>{{s.client_date_created}}</td>
+                <td>{{s.created_user}}</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="border  bg-white flex-1 d-flex flex-column">
+        <div class="rounded-box-title-bar">Physician Notes</div>
+        <div class="overflow-auto flex-grow-1 max-height-100">
+          <table class="table layout-fixed sm light-striped-border">
+            <thead>
+              <tr>
+                <th>Result</th>
+                <th>Notes</th>
+                <th class="width-100">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of acPhysicianNotesFromDB;">
+                <td>{{p.result_description}}</td>
+                <td>{{p.physician_comments}}</td>
+                <td>{{p.phy_comments_date}}</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+
+</div>

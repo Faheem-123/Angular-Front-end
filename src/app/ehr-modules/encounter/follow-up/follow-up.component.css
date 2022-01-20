@@ -1,0 +1,15 @@
+.follow-up-type-desc {
+    position:absolute;
+    width: calc(41.66% - 4px);
+    right: 4px;
+    top: 45px;
+    bottom: 0;
+    z-index: 100;
+}
+
+.close-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    padding: 2px 6px;
+}

@@ -1,0 +1,116 @@
+<div id="main-pat-annotation" class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+
+  <div class="title pl-8">Patient Annotations</div>
+
+  <ul class="nav color-buttons align-items-center">
+
+    <div class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+
+      <button  *ngIf="!addEditView" class="nav-link green px-2 py-0 top-right-radius" (click)="onAddNew()">
+        <i aria-hidden="true" class="far fa-plus-square pr-1"></i> Add
+      </button>
+      <!--
+      <button *ngIf="!addEditView" (click)="getHistoryAnnotations();" class="nav-link blue px-2 py-0 top-right-radius">
+        <i aria-hidden="true" class="fas fa-history pr-1"></i> History
+      </button>
+      -->
+
+      <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="onSaveAnnotations()">
+        <i class="far fa-save pr-1"></i>Save
+      </button>
+      <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="onCancel();">
+        <i class="fas fa-times pr-1"></i>Cancel
+      </button>
+
+    </div>
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <i class="fas fa-ban mr-2"></i> Access Denied
+  </div>
+
+
+  <div *ngIf="!isLoading &&  noRecordFound && !addEditView" class="no-content">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+
+  <table class="table layout-fixed light-striped-border" 
+  *ngIf="!noRecordFound && !addEditView && canView">
+    <thead>
+      <tr>
+        <th style="width: 150px;">Provided By</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let ann of listChartAnnotations">
+        <td>{{ann.provided_by}}</td>
+        <td>{{ann.comments}}</td>
+        <td class="text-right">
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md text-primary line-height-1 p-0 mr-2"
+            (click)="editAnnotation(ann)">
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md btn-delete line-height-1 p-0"
+            (click)="deleteselectedRecord(ann)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+  <div *ngIf="addEditView" class="p-2 pt-0">
+    <form [formGroup]="patannotationForm">
+      <div class="form-row form-dashboard">
+
+        <div class="form-group col-8">
+          <label for="input2">Provided By:</label>
+          <select class="form-control" id="txtannotationprovidedby" placeholder="annotationprovidedby"
+            formControlName="annotationprovidedby">
+            <option></option>
+            <option>Aunt</option>
+            <option>Brother</option>
+            <option>Father</option>
+            <option>Grand Father</option>
+            <option>Grand Mother</option>
+            <option>Mother</option>
+            <option>Sister</option>
+            <option>Spouse</option>
+            <option>Uncle</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-group col-12">
+          <label for="input1">Notes:</label>
+          <textarea class="form-control" id="txt_annotation_comments" rows="4" placeholder="annotationcomments"
+            formControlName="annotationcomments"></textarea>
+        </div>
+
+
+      </div>
+    </form>
+  </div>
+
+
+  <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && canView && !addEditView">
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="getHistoryAnnotations()">View Log</button>
+  </div>
+
+</div>

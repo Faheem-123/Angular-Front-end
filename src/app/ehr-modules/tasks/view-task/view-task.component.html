@@ -1,0 +1,285 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">View Task</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body custom p-0  d-flex flex-column" style="max-height: 500px !important">
+
+  <div class="inner-tool-tab justify-content-end pr-0 flex-shrink-0 h-25">
+
+    <button class="btn btn-link fz-12 title-bar-blue-btn" (click)="markAsCompleted()" *ngIf="!isCompleted">Mark as
+      Completed</button>
+
+    <button class="btn btn-link fz-12 title-bar-blue-btn" (click)="editTask('forward')"
+      *ngIf="!isCompleted">Forward</button>
+
+    <button class="btn btn-link fz-12 title-bar-blue-btn" (click)="editTask('edit')"
+      *ngIf="isUserTaskOwner && !isCompleted">Edit</button>
+
+      <button class="btn btn-link fz-12 title-bar-blue-btn" (click)="deleteTask()"
+      *ngIf="!isCompleted">Delete</button>
+
+
+  </div>
+
+
+
+  <div class="overflow-auto flex-grow-1 max-height-100" *ngIf="!isLoading">
+
+    <div class="dashboard-content d-flex flex-column flex-grow-1 p-2">
+      <div class="dashboard flex-grow-0 h-auto ">
+        <div class="dashboard-content dashboard-add-edit px-3">
+
+
+          <div class="form-row form-dashboard border-bottom pb-2 mb-2">
+
+            <div class="col-md-4 col-sm-12 col-12">
+
+              <div class="form-row form-dashboard">
+                <div class="form-view">
+                  <div class="title-normal">From</div>
+                  <div class="value">{{taskDetail.assigned_from_name}} ({{taskDetail.assigned_from}})</div>
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-view ">
+                  <div class="title-normal">To</div>
+                  <div class="value">{{taskDetail.assigned_to_name}} ({{taskDetail.assigned_to}})</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-12">
+
+              <div class="form-row form-dashboard">
+                <div class="form-view">
+                  <div class="title-normal">Priority</div>
+                  <div class="value"><i class="fas fa-exclamation text-danger mr-1" *ngIf="taskDetail.priority=='High'"></i>{{taskDetail.priority}}</div>
+                </div>
+
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-view ">
+                  <div class="title-normal">Due Date</div>
+                  <div class="value" [ngClass]="{'text-danger': taskDetail.over_due}">{{taskDetail.due_date}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-12">
+
+              <div class="form-row form-dashboard">
+                <div class="form-view ">
+                  <div class="title-normal">Current Status</div>
+                  <div class="value" [ngClass]="{'text-success': taskDetail.status=='Completed',
+                  'text-primary': taskDetail.status=='In Progress',
+                  'font-weight-500': taskDetail.status=='New'}">{{taskDetail.status}}</div>
+                </div>
+              </div>
+              <div class="form-row form-dashboard" *ngIf="taskDetail.status=='Completed'">
+                <div class="form-view ">
+                  <div class="title-normal">Date Completed</div>
+                  <div class="value">{{taskDetail.date_completed}}</div>
+                </div>
+              </div>
+
+            </div>
+
+
+
+          </div>
+
+          <div class="form-row form-dashboard justify-content-between">
+            <div class="form-view col-md-8 col-sm-12 col-12 px-0">
+              <div class="title-normal">Title</div>
+              <div class="value font-weight-500">{{taskDetail.title}}</div>
+            </div>
+
+
+            <div class="form-view col-md-4 col-sm-12 col-12 px-0" *ngIf="taskDetail.patient_id!=undefined">
+              <button class="btn sm btn-primary py-0 col" type="button" (click)="openPatient()">
+                {{taskDetail.patient_name}}
+                <span *ngIf="taskDetail.claim_id!=undefined">
+                  CLAIM:{{taskDetail.claim_id}}
+                </span>
+                <span *ngIf="taskDetail.chart_id!=undefined">
+                  ENCOUNTER:{{taskDetail.chart_id}}
+                </span>
+
+              </button>
+            </div>
+          </div>
+          <div class="form-row form-dashboard">
+            <div class="form-view ">
+              <div class="title-normal">Detail</div>
+              <div class="value">{{taskDetail.detail}}</div>
+            </div>
+          </div>
+
+
+          <div class="form-row form-dashboard justify-content-end border-top mt-1 pt-1">
+
+            <div class="col-4">
+              <div class="form-row form-dashboard">
+                <div class="form-view">
+                  <div class="title-normal">Created By</div>
+                  <div class="value">{{taskDetail.created_user}}</div>
+                </div>
+                <div class="form-view">
+                  <div class="title-normal">Date Created</div>
+                  <div class="value">{{taskDetail.date_created}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-row form-dashboard">
+                <div class="form-view">
+                  <div class="title-normal">Modified By</div>
+                  <div class="value">{{taskDetail.modified_user}}</div>
+                </div>
+                <div class="form-view">
+                  <div class="title-normal">Date Modified</div>
+                  <div class="value">{{taskDetail.date_modified}}</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <div class="dashboard dashboard-add-edit p-0 flex-grow-0 h-auto mt-2">
+
+        <div class="dashboard-title-md">
+          <div class="title-md">History</div>
+        </div>
+
+        <div class="dashboard-content px-3 py-2 border mx-1 mb-1" *ngFor="let task of lstTaskLog">
+
+          <div class="form-row form-dashboard border-bottom pb-2 mb-2">
+
+            <div class="col-md-4 col-sm-12 col-12">
+
+              <div class="form-row form-dashboard">
+                <div class="form-view ">
+                  <div class="title-normal">From</div>
+                  <div class="value">{{task.assigned_from_name}} ({{task.assigned_from}})</div>
+                </div>
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-view ">
+                  <div class="title-normal">To</div>
+                  <div class="value">{{task.assigned_to_name}} ({{task.assigned_to}})</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-12">
+
+              <div class="form-row form-dashboard">
+                <div class="form-view">
+                  <div class="title-normal">Priority</div>
+                  <div class="value">{{task.priority}}</div>
+                </div>
+
+              </div>
+              <div class="form-row form-dashboard">
+                <div class="form-view ">
+                  <div class="title-normal">Due Date</div>
+                  <div class="value">{{task.due_date}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-12">
+
+              <div class="form-row form-dashboard">
+                <div class="form-view ">
+                  <div class="title-normal">Status</div>
+                  <div class="value">{{task.status}}</div>
+                </div>
+              </div>
+              <div class="form-row form-dashboard" *ngIf="task.status=='Completed'">
+                <div class="form-view ">
+                  <div class="title-normal">Date Completed</div>
+                  <div class="value">{{task.date_completed}}</div>
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
+
+          <div class="form-row form-dashboard justify-content-between">
+            <div class="form-view col-md-8 col-sm-12 col-12 px-0">
+              <div class="title-normal">Title</div>
+              <div class="value font-weight-500">{{task.title}}</div>
+            </div>
+
+
+            <div class="form-group col-md-4 col-sm-12 col-12 px-0" *ngIf="task.patient_id!=undefined">
+              <label class="form-control pt-1 "> {{task.patient_name}}
+                <span *ngIf="taskDetail.claim_id!=undefined">
+                  CLAIM:{{task.claim_id}}
+                </span>
+                <span *ngIf="taskDetail.chart_id!=undefined">
+                  ENCOUNTER:{{task.chart_id}}
+                </span></label>
+
+            </div>
+          </div>
+          <div class="form-row form-dashboard">
+            <div class="form-view ">
+              <div class="title-normal">Detail</div>
+              <div class="value">{{task.detail}}</div>
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard  border-top mt-1 pt-1">
+            <div class="form-view col-4">
+              <div class="title-normal">Operation Performed</div>
+              <div class="value">{{task.operation_performed}}</div>
+            </div>
+
+            <div class="form-view col-4">
+              <div class="title-normal">Modified By</div>
+              <div class="value">{{task.modified_user}}</div>
+            </div>
+            <div class="form-view col-4">
+              <div class="title-normal">Date Modified</div>
+              <div class="value">{{task.date_modified}}</div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isProcessing">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Processing
+    </div>
+  </div>
+
+
+</div>
+<div class="modal-footer custom">
+
+  <button class="btn btn-dark btn-sm width-80" type="button" (click)="activeModal.dismiss('Cross click')">close</button>
+</div>

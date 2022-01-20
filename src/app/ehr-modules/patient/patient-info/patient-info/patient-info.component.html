@@ -1,0 +1,2925 @@
+<div class="dashboard-container d-flex flex-column  position-relative">
+
+  <div class="dashboard mx-1"
+    [ngClass]="{'border-0': (callingFrom=='patient_search' || callingFrom=='scheduler')}" *ngIf="!isLoading">
+
+    <div class="dashboard-title border-bottom pr-0 h-30">
+
+      <div class="title"><span *ngIf="addEditOperation!='add'">Patient Information</span>
+        <span *ngIf="addEditOperation=='add'">New Patient</span>
+      </div>
+
+
+      <div *ngIf="!editMode">
+
+        <button class="btn btn-link fz-12 title-bar-blue-btn" (click)="printDemographics()">
+          <i aria-hidden="true" class="fas fa-print mr-1"></i>Print Demographic</button>
+
+        <div class="dropdown btn btn-link title-bar-blue-btn fz-12">
+          <button class="btn btn-link fz-12 title-bar-blue-btn" type="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Scan
+            <i class="fas fa-caret-down"></i>
+          </button>
+
+          <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+            <button class="dropdown-item" type="button" (click)="ScanCard('id_card')">
+              ID Card</button>
+            <button class="dropdown-item" type="button" (click)="ScanCard('driving_license')">
+              Driving License</button>
+            <button class="dropdown-item" type="button" (click)="ScanCard('patient_agreement')">
+              Patient Agreement</button>
+
+
+
+            <ng-template id="btnGroupScanInsuranceCards"
+              [ngIf]="!isSelfPay &&
+                  (!checkIfInsuranceExist('Primary') || !checkIfInsuranceExist('Secondary') || !checkIfInsuranceExist('Other'))">
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" type="button" (click)="ScanCard('primary')"
+                [disabled]="!checkIfInsuranceExist('primary') ">
+                Primary Insurance Card</button>
+              <button class="dropdown-item" type="button" (click)="ScanCard('secondary')"
+                [disabled]="!checkIfInsuranceExist('secondary') ">
+                Secondary Insurance Card</button>
+              <button class="dropdown-item" type="button" (click)="ScanCard('other')"
+                [disabled]="!checkIfInsuranceExist('other') ">
+                Other Insurance Card</button>
+            </ng-template>
+          </div>
+        </div>
+
+
+        <button class="btn btn-link fz-12 title-bar-blue-btn" (click)="OnEdit()"><i aria-hidden="true"
+            class="fas fa-edit mr-1"></i>Edit</button>
+
+
+      </div>
+
+
+
+      <button *ngIf="editMode" class="btn btn-sm btn-success width-90 mr-1" type="button"
+        [disabled]="isSaving" (click)="onSubmit(patInfoFormGroup.value)">
+        <i aria-hidden="true" class="fas fa-save mr-1"></i> Save
+      </button>
+      <button *ngIf="editMode" class="btn btn-sm btn-dark width-90 mr-1" (click)="OnCancel()" type="button">
+        <i class="fas fa-times-circle mr-1"></i> Cancel
+      </button>
+
+    </div>
+    <form [formGroup]="patInfoFormGroup" (keydown.enter)="$event.preventDefault()"
+      class="d-flex flex-column flex-grow-1">
+
+
+
+      <div class="form-row form-dashboard" *ngIf="lstErrors!=undefined && lstErrors.length>0">
+        <div class="form-group col-12">
+          <div class="alert alert-danger rounded-0 m-0" role="alert">
+            <ul>
+              <li *ngFor="let error of lstErrors">{{error}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="d-flex flex-grow-1 overflow-height">
+
+        <!--Don't move inside ng-tab...... it will not popup for image selection if moved inside tab-->
+        <input id="patPic_{{uniqueModuleId}}" type="file" style="display: none;" (change)="onFileChange($event)" />
+
+        <ngb-tabset class="inner-vertical-tab patient-info-tab d-flex flex-row" [destroyOnHide]="false"
+          (tabChange)="onTabChange($event)" [activeId]="selectedTab">
+          <ngb-tab id="tab_pat_pic">
+            <ng-template ngbTabTitle>
+              <div class="align-self-center my-2">
+                <div class="pat-info-pic-container">
+
+                  <img class="img" src="{{patPicURL}}" alt="Picture" width="126px" height="126px" (click)="onPicClick()"
+                    (error)="patPicErrorHandler($event)">
+
+                </div>
+                <div class="width-130 d-flex justify-content-between mt-2 width-130 d-flex justify-content-between">
+
+                  <ng-template id="pat_pic_edit_buttons" [ngIf]="(editMode || !isPatPicChanged)">
+
+                    <button class="btn btn-link btn-md p-0 px-2" type="button" (click)="onBrowsePatPic()">
+                      <i class="far fa-folder-open text-primary"></i>
+                    </button>
+                    <button class="btn btn-link btn-md p-0 px-2" type="button" (click)="caputurePicture()">
+                      <i class="fas fa-camera text-dark"></i>
+                    </button>
+                    <button class="btn btn-link btn-md p-0 px-2 btn-delete" type="button" (click)="removePicture()">
+                      <i class="far fa-trash-alt"></i>
+                    </button>
+
+                  </ng-template>
+
+                  <ng-template id="pat_pic_save_buttons" [ngIf]="!editMode && isPatPicChanged">
+                    <button class="btn btn-sm btn-link text-success pl-2 pr-1" type="button" (click)="OnPatPicSave()">
+                      <i aria-hidden="true" class="fas fa-save"></i> Save
+                    </button>
+                    <button class="btn btn-sm btn-link text-danger pl-1 pr-2" (click)="OnPatPicCancel()" type="button">
+                      <i class="fas fa-times-circle"></i> Cancel
+                    </button>
+
+                  </ng-template>
+
+                </div>
+
+              </div>
+            </ng-template>
+            <ng-template ngbTabContent>
+
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="tab_pat_info">
+            <ng-template ngbTabTitle>Patient Info</ng-template>
+            <ng-template ngbTabContent>
+              <div class="d-flex flex-column flex-grow-1">
+
+                <div class="dashboard-content d-flex flex-column flex-grow-1 overflow-auto overflow-height p-2">
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto shadow-none">
+
+                    <div class="dashboard-content dashboard-add-edit px-3" *ngIf="!editMode">
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-md-4 col-sm-12 col-12">
+
+                          <div class="form-row form-dashboard "
+                            *ngIf="patient.preffix!=underParents && patient.preffix!=''">
+                            <div class="form-view ">
+                              <div class="title-normal">Title</div>
+                              <div class="value">{{patient.preffix | uppercase}}</div>
+                            </div>
+
+                          </div>
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal">First Name</div>
+                              <div class="value">{{patient.first_name | uppercase}}</div>
+                            </div>
+                          </div>
+                          <div class="form-row form-dashboard" *ngIf="patient.mname!=underParents && patient.mname!=''">
+
+                            <div class="form-view ">
+                              <div class="title-normal">Middle Name</div>
+                              <div class="value">{{patient.mname | uppercase}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal">Last Name</div>
+                              <div class="value">{{patient.last_name | uppercase}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard "
+                            *ngIf="patient.suffix!=underParents && patient.suffix!=''">
+                            <div class="form-view ">
+                              <div class="title-normal">Suffix</div>
+                              <div class="value">{{patient.suffix | uppercase}}</div>
+                            </div>
+                          </div>
+
+
+
+
+
+
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 col-12">
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal">Birth Date</div>
+                              <div class="value">{{patient.dob}}</div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal">Gender</div>
+                              <div class="value">{{patient.gender | uppercase}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">SSN</div>
+                              <div class="value pl-4 width-120">
+                                <span *ngIf="!showSSN">
+                                  {{maskedSSN}}
+                                </span>
+                                <span *ngIf="showSSN">
+                                  {{patient.ssn}}
+                                </span>
+
+                              </div>
+
+                              <a (click)="ShowHideSSN(true)"
+                                *ngIf="!showSSN && patient.ssn!=undefined && patient.ssn!='' "><i
+                                  class="fa fa-eye text-ihc-blue" aria-hidden="true"></i></a>
+                              <a (click)="ShowHideSSN(false)" *ngIf="showSSN"><i class="fa fa-eye-slash text-ihc-blue"
+                                  aria-hidden="true"></i>
+                              </a>
+
+
+                            </div>
+                          </div>
+
+
+                          <div class="form-row form-dashboard"
+                            *ngIf="patient.previous_name!=underParents && patient.previous_name!=''">
+                            <div class="form-view ">
+                              <div class="title-normal">Previous Name</div>
+                              <div class="value">{{patient.previous_name | uppercase}}</div>
+                            </div>
+                          </div>
+
+
+
+
+
+
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 col-12">
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view my-0">
+                              <div class="title-normal">Patient Status</div>
+
+                              <div class="alert  py-0 m-0 rounded-3 ml-2" [ngClass]="{
+                                'alert-success' : (patient != undefined && patient.patient_status == 'ACTIVE'),
+                                'alert-danger' :  (patient != undefined && patient.patient_status == 'INACTIVE'),                                                
+                                'alert-warning' : (patient != undefined && ( patient.patient_status == 'PHYSICIAN DISCHARGED' || patient.patient_status == 'CLINIC DISCHARGED' || patient.patient_status == 'DECEASED')),                                
+                                'alert-primary' : (patient != undefined && patient.patient_status == 'NEVER SEEN')
+                                
+                              }">
+                                {{patient.patient_status}}
+                              </div>
+
+                              <!--
+                              <div class="value font-weight-500"
+                                [ngClass]="{
+                                            'text-success' : (patient != undefined && patient.patient_status == 'ACTIVE'),
+                                            'text-danger' :  (patient != undefined && patient.patient_status == 'INACTIVE'),                                                
+                                            'text-warning' : (patient != undefined && patient.patient_status == 'PHYSICIAN DISCHARGED'),
+                                            'text-warning' : (patient != undefined && patient.patient_status == 'CLINIC DISCHARGED'),
+                                            'text-warning' : (patient != undefined && patient.patient_status == 'DECEASED')}">
+                                {{patient.patient_status}}</div>
+                                -->
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view ">
+                              <div class="title-normal">Marital Status</div>
+                              <div class="value">{{patient.marital_status | uppercase}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Preferred Language</div>
+                              <div class="value">{{patient.patient_language | uppercase}}</div>
+                            </div>
+
+                          </div>
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Interpreter required</div>
+                              <div class="value">{{patient.interpreter_req ? "YES":"No" }}</div>
+                            </div>
+
+                          </div>
+
+
+
+
+                        </div>
+
+
+                      </div>
+
+
+                    </div>
+
+                    <div class="dashboard-content dashboard-add-edit px-2" *ngIf="editMode">
+
+
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-md-4 col-sm-12 col-12">
+
+                          <div class="px-2">
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-80 col-form-label required" for="txtPatFName">First Name</label>
+                                <input type="text" class="form-control required col" id="txtPatFName" autoFocus
+                                  formControlName="txtPatFName" autocomplete="off" maxlength="50">
+                              </div>
+                            </div>
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-80 col-form-label" for="txtPatMName">Middle Name</label>
+                                <input type="text" class="form-control col" id="txtPatMName"
+                                  formControlName="txtPatMName" autocomplete="off" maxlength="15">
+                              </div>
+                            </div>
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-80 col-form-label required" for="txtPatSuffix">Last Name</label>
+                                <input type="text" class="form-control required col" id="txtPatSuffix"
+                                  formControlName="txtPatLName" autocomplete="off" maxlength="50">
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-6">
+                                <label class="width-80 col-form-label" for="txtPatTitle">Title</label>
+                                <input type="text" class="form-control col" id="txtPatTitle"
+                                  formControlName="txtPatTitle" autocomplete="off">
+                              </div>
+
+                              <div class="form-group horizental row zero col-6">
+                                <label class="width-80 col-form-label text-right pr-1"
+                                  for="txtPatPrevName">Suffix</label>
+                                <input type="text" class="form-control col" formControlName="txtPatSuffix"
+                                  autocomplete="off">
+                              </div>
+
+                            </div>
+
+
+
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-12">
+
+                          <div class="px-2">
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-65 col-form-label required" for="dpBirthDate">Birth Date</label>
+                                <div class="input-group col">
+                                  <input id="dpBirthDate" class="form-control date-control required"
+                                    placeholder="mm/dd/yyyy" name="dpBirthDate" data-container="body"
+                                    [navigation]="navigation" formControlName="dpBirthDate" ngbDatepicker
+                                    #dpBirthDate="ngbDatepicker"
+                                    (blur)="onDateFocusOut($event.currentTarget.value,'dpBirthDate')"
+                                    [ngClass]="{'is-invalid': (patInfoFormGroup.controls.dpBirthDate.errors?.invalidDate)}">
+                                  <span class="input-group-btn">
+                                    <button class="btn date-control-btn" (click)="dpBirthDate.toggle()" type="button"
+                                      focusable="false" tabindex="-1">
+                                    </button>
+                                  </span>
+
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-65 col-form-label required" for="txtPatFName">Gender</label>
+                                <select class="form-control required col" id="ddGender" formControlName="ddGender"
+                                  (change)="genderSelecttionchange($event)">
+                                  <option *ngFor="let gender of this.lookupList.lstGender" [value]="gender.code">
+                                    {{gender.description}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-65 col-form-label " for="txtSSN">SSN</label>
+                                <input type="text" class="form-control col" formControlName="txtSSN">
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-65 col-form-label" for="txtPatPrevName">Prev. Name</label>
+                                <input type="text" class="form-control col" id="txtPatPrevName"
+                                  formControlName="txtPatPrevName" autocomplete="off">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-5 col-sm-12 col-12">
+
+                          <div class="px-2">
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label for="ddPatStatus" class="col-form-label required width-115">Patient
+                                  Status</label>
+                                <select class="form-control col required" id="ddPatStatus"
+                                  formControlName="ddPatStatus">
+                                  <option *ngFor="let status of lstPatStatus" [value]="status"> {{status}}</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-115 col-form-label " for="txtPatFName">Marital Status</label>
+                                <select class="form-control col" id="ddMaritalStatus" formControlName="ddMaritalStatus"
+                                  (change)="maritalStatusSelecttionchange($event)">
+                                  <option></option>
+                                  <option *ngFor="let status of lookupList.lstMaritalStatus" [value]="status.code">
+                                    {{status.display}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-115 col-form-label" for="txtPatFName">Preferred
+                                  Language</label>
+                                <select class="form-control col" id="ddPreferredLanguage"
+                                  formControlName="ddPreferredLanguage" (change)="languageSelecttionchange($event)">
+                                  <option></option>
+                                  <option *ngFor="let langage of lookupList.lstLanguages" [value]="langage.code">
+                                    {{langage.display}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label class="width-115 col-form-label " for="txtPatFName">Interpreter required</label>
+                                <div class="form-control form-check form-check-inline mt-0 pt-0 col mx-0">
+                                  <input class="form-check-input" id="rbInterperetorNo" type="radio"
+                                    name="rbInterpreterRequired" formControlName="rbInterpreterRequired"
+                                    [value]="false">
+                                  <label class="form-check-label" for="rbInterperetorNo">No</label>
+                                  <input class="form-check-input ml-3" id="rbInterperetorYes" type="radio"
+                                    name="rbInterpreterRequired" formControlName="rbInterpreterRequired" [value]="true">
+                                  <label class="form-check-label" for="rbInterperetorYes">YES</label>
+                                </div>
+                              </div>
+                            </div>
+
+
+                          </div>
+                        </div>
+
+
+                      </div>
+
+
+
+
+
+                    </div>
+
+
+                  </div>
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto  mt-2 shadow-none">
+
+                    <div class="dashboard-content dashboard-add-edit px-3" *ngIf="!editMode">
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-md-4 col-sm-12 col-12">
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Address</div>
+                              <div class="value">
+                                <div class="form-row ml-1">
+                                  {{patient.address | uppercase}}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row form-dashboard"
+                            *ngIf="patient.address2!=undefined && patient.address2!=''">
+                            <div class="form-view">
+                              <div class="title-normal">Address Line 2</div>
+                              <div class="value">
+                                <div class="form-row ml-1">
+                                  {{patient.address2 | uppercase}}
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">City</div>
+                              <div class="value">{{patient.city | uppercase}}</div>
+                            </div>
+
+                          </div>
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Zip</div>
+                              <div class="value">{{patient.zip | uppercase}}</div>
+                            </div>
+
+                            <div class="form-view ml-3">
+                              <div class="title-normal">State</div>
+                              <div class="value">{{patient.state | uppercase}}</div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view">
+                              <div class="title-normal">Country/Parish Code</div>
+                              <div class="value">{{patient.county_code | uppercase}}</div>
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-3 col-sm-12 col-12">
+                          <div class="form-row form-dashboard ">
+                            <div class="form-view">
+                              <div class="title-normal">Primary Phone</div>
+                              <div class="value">{{patient.primary_contact_type | uppercase}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Home Phone</div>
+                              <div class="value">{{patient.home_phone | phonePipe}}</div>
+                            </div>
+
+                          </div>
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Cell Phone</div>
+                              <div class="value">{{patient.cell_phone | phonePipe}}</div>
+                            </div>
+
+                          </div>
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Work Phone</div>
+                              <div class="value">{{patient.work_phone | phonePipe}}</div>
+                            </div>
+
+                          </div>
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Email</div>
+                              <div class="value">{{patient.email | uppercase}}</div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="col-md-5 col-sm-12 col-12">
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Emerg. Contanct</div>
+                              <div class="value">{{patient.emrg_contact_name | uppercase}}</div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Emerg. Contact Relationship</div>
+                              <div class="value">{{patient.emrg_contact_relation | uppercase}}</div>
+                            </div>
+
+                          </div>
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Emerg. Contact No</div>
+                              <div class="value">{{patient.emrg_contact | uppercase}}</div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Comm. Preferences</div>
+                              <div class="value">{{patient.confid_contact_type | uppercase}}</div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Comm. Detail</div>
+                              <div class="value">{{patient.confid_contact | uppercase}}</div>
+                            </div>
+
+                          </div>
+
+                        </div>
+
+
+
+                      </div>
+                    </div>
+
+
+                    <div class="dashboard-content dashboard-add-edit px-2" *ngIf="editMode">
+
+
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-md-4 col-sm-12 col-12">
+
+                          <div class="px-2">
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="txtAddressL1" class="width-85 col-form-label">Address Line 1</label>
+                                <input type="text" class="form-control col" id="txtAddressL1"
+                                  formControlName="txtAddressL1">
+
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="txtAddressL2" class="width-85 col-form-label">Address Line 2</label>
+                                <input type="text" class="form-control col" id="txtAddressL2"
+                                  formControlName="txtAddressL2">
+
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-group horizental row zero col-8">
+                                <label for="txtZipCode" class="width-85 col-form-label">Zip</label>
+                                <input type="text" class="form-control col" id="txtZipCode" formControlName="txtZipCode"
+                                  (focusout)="zipFocusOut($event.target.value)" (change)="zipChanged()">
+
+                              </div>
+
+                              <div class="form-group horizental row zero col-4">
+                                <label for="txtState" class="col-form-label col">State</label>
+                                <input type="text" class="form-control col" id="txtState" disabled value="{{state}}">
+                              </div>
+
+
+                            </div>
+
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col">
+                                <label for="ddCity" class="col-form-label width-85">City</label>
+                                <select class="form-control col" id="ddCity" formControlName="ddCity">
+                                  <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+                                    {{obj.city}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+
+
+                            <div class="form-row form-dashboard ">
+                              <div class="form-group horizental row zero col">
+                                <label for="ddParishcode" class="col-form-label width-115">Country/Parish Code</label>
+                                <select class="form-control col" id="ddParishcode" formControlName="ddParishcode">
+                                  <option value="">Select country/parish Code</option>
+                                  <option *ngFor="let parishCode of lstCountryParishCode" [value]="parishCode.code">
+                                    {{parishCode.description}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+
+
+
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-3 col-sm-12 col-12">
+
+                          <div class="px-2">
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label for="ddPrimaryPhone" class="col-form-label width-80">Primary Phone</label>
+                                <select class="form-control col" id="ddPrimaryPhone" formControlName="ddPrimaryPhone">
+                                  <option [value]=""></option>
+                                  <option *ngFor="let type of lstPrimaryPhoneType" [value]="type">
+                                    {{type}}
+                                  </option>
+                                </select>
+
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="txtCellPhone" class="col-form-label width-80"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddPrimaryPhone').value=='CELL PHONE' }">Cell
+                                  Phone</label>
+                                <input type="text" class="form-control col" id="txtCellPhone"
+                                  formControlName="txtCellPhone"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddPrimaryPhone').value=='CELL PHONE' }">
+                              </div>
+
+                            </div>
+
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-group horizental row zero col-12">
+                                <label for="txtHomePhone" class="col-form-label width-80"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddPrimaryPhone').value=='HOME PHONE' }">Home
+                                  Phone</label>
+                                <input type="text" class="form-control col" id="txtHomePhone"
+                                  formControlName="txtHomePhone"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddPrimaryPhone').value=='HOME PHONE' }">
+
+                              </div>
+
+
+
+                            </div>
+
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col">
+                                <label for="txtWorkPhone" class="col-form-label width-80"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddPrimaryPhone').value=='WORK PHONE' }">Work
+                                  Phone</label>
+                                <input type="text" class="form-control col" id="txtWorkPhone"
+                                  formControlName="txtWorkPhone"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddPrimaryPhone').value=='WORK PHONE' }">
+                              </div>
+                            </div>
+
+
+                            <div class="form-row form-dashboard ">
+                              <div class="form-group horizental row zero col">
+                                <label for="txtEmail" class="col-form-label width-80">Email</label>
+                                <input type="text" class="form-control col" id="txtEmail" formControlName="txtEmail">
+                              </div>
+                            </div>
+
+
+
+                          </div>
+                        </div>
+
+                        <div class="col-md-5 col-sm-12 col-12">
+
+                          <div class="px-2">
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label for="txtEmrContactPerson" class="col-form-label width-150">Emergency contact
+                                  person</label>
+                                <input type="text" class="form-control col" id="txtEmrContactPerson"
+                                  formControlName="txtEmrContactPerson">
+
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+                                <label for="ddEmrContactRelationship"
+                                  class="col-form-label width-150">Relationship</label>
+                                <select class="form-control col" id="ddEmrContactRelationship"
+                                  formControlName="ddEmrContactRelationship">
+                                  <option *ngFor="let rel of lstContactRelationship" [value]="rel">
+                                    {{rel}}
+                                  </option>
+                                </select>
+
+                              </div>
+
+                            </div>
+
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-group horizental row zero col-12">
+                                <label for="txtEmrContactNo" class="col-form-label width-150">Contact No</label>
+                                <input type="text" class="form-control col" id="txtEmrContactNo"
+                                  formControlName="txtEmrContactNo">
+                              </div>
+
+
+
+                            </div>
+
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col">
+                                <label for="ddCommPreference" class="col-form-label width-150">Conf. Comm.
+                                  Preferences</label>
+                                <select class="form-control col" id="ddCommPreference"
+                                  formControlName="ddCommPreference">
+                                  <option [value]=""></option>
+                                  <option *ngFor="let type of listConfContactType" [value]="type">
+                                    {{type}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+
+
+                            <div class="form-row form-dashboard ">
+                              <div class="form-group horizental row zero col">
+                                <label for="txtCommDetail" class="col-form-label width-150"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddCommPreference').value!=undefined && patInfoFormGroup.get('ddCommPreference').value!='' }">Confidential
+                                  Comm. Detail</label>
+                                <input type="text" class="form-control col" id="txtCommDetail"
+                                  formControlName="txtCommDetail"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddCommPreference').value!=undefined && patInfoFormGroup.get('ddCommPreference').value!=''}">
+                              </div>
+                            </div>
+
+
+
+                          </div>
+                        </div>
+
+
+                      </div>
+                    </div>
+
+
+                  </div>
+
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto  mt-2 shadow-none">
+                    <div class="dashboard-content dashboard-add-edit overflow-visible mt-0 pt-1">
+                      <div class="form-row form-dashboard">
+                        <div class="col-md-6 col-sm-12 col-12 p-0 m-0">
+                          <div class="px-2">
+
+                            <div class="form-flex col-12 py-0 form-edit-sub-heading my-1 px-1">
+                              <label class="fz-14 fw-400 mr-2">Race</label>
+
+                              <div class="custom-control custom-checkbox green-checkbox " *ngIf="editMode">
+                                <input type="checkbox" class="custom-control-input" id="chkRaceDeclined_{{patientId}}"
+                                  formControlName="chkRaceDeclined">
+                                <label class="custom-control-label font-weight-normal text-dark"
+                                  for="chkRaceDeclined_{{patientId}}">Declined
+                                  to
+                                  specify</label>
+                              </div>
+                             
+                            </div>
+                           
+
+                            <section *ngIf="!patInfoFormGroup.get('chkRaceDeclined').value">
+
+                              <div *ngIf="editMode" class="form-row form-dashboard m-0 p-0 pt-1">
+                                <div class="form-group col-12">
+                                  <div class="input-icon d-flex flex-grow-3 px-0 ">
+                                    <input id=" txtRaceSearch" class="form-control flex-grow-3" type="text"
+                                      #txtRaceSearch placeholder="Search Other Race"
+                                      (keydown)="onRaceSearchKeydown($event)" autocomplete="off">
+                                    <div class="icon">
+                                      <i class="fa fa-search" aria-hidden="true"></i>
+                                    </div>
+
+                                    <inline-race-ethnicity-search *ngIf="showRaceSearch" searchType="RACE"
+                                      [searchValue]="txtRaceSearch.value" title="Race Search"
+                                      (onSelect)="addRace($event)" (onClose)="closeRaceSearch()">
+                                    </inline-race-ethnicity-search>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div *ngIf="editMode" class="form-row form-dashboard">
+                                <div class="form-group px-0">
+                                  <ul class="m-0 list-with-checkbox">
+                                    <li *ngFor="let raceOMB of lstPatOMBRace; let i = index" Class="list-no-bullet">
+
+                                      <div class="custom-control custom-checkbox green-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                          id="chkRaceOBM_{{patientId}}_{{raceOMB.omb_code}}"
+                                          [checked]='raceOMB.selected' formControlName="chkRaceOBM_{{raceOMB.omb_code}}"
+                                          (change)="RaceOMBChanged($event,raceOMB.omb_code)">
+                                        <label class="custom-control-label"
+                                          for="chkRaceOBM_{{patientId}}_{{raceOMB.omb_code}}">{{raceOMB.omb_description
+                                                          | uppercase}}</label>
+                                      </div>
+
+                                      <ul class="ml-8">
+                                        <li
+                                          *ngFor="let raceCDC of lstPatCDCRace | listFilter : 'omb_code' : raceOMB.omb_code">
+                                          <label
+                                            class="col-form-label pr-2">{{raceCDC.cdc_description | uppercase}}</label>
+                                          <i class="far fa-times-circle fa-sm btn-delete"
+                                            (click)="onRemoveRace(raceCDC.omb_code,raceCDC.cdc_code)"></i>
+                                        </li>
+                                      </ul>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </section>
+
+                            <div
+                              *ngIf="(lstPatRace==undefined || lstPatRace.length==0 ) && (patient == undefined || patient.race_code!='ASKU') && !editMode">
+                              <div class="no-content mx-0 px-0">
+                                <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                              </div>
+
+                            </div>
+                            <div *ngIf=" patient != undefined && patient.race_code=='ASKU' && !editMode"
+                              class="form-view">
+                              <div class="value">Declined to specify</div>
+                            </div>
+                            <div *ngIf=" lstPatRace !=undefined && lstPatRace.length>0 && !editMode" class="form-view">
+                              <ul class="m-0 pl-4">
+                                <li *ngFor="let raceOMB of lstPatRace | unique: 'omb_code'; let i = index"
+                                  [ngClass]="{'list-no-bullet' : editMode}">
+                                  <label class="mb-1">{{raceOMB.omb_description | uppercase}}</label>
+                                  <ul class="m-0 pl-4">
+                                    <li
+                                      *ngFor="let raceCDC of lstPatCDCRace | listFilter : 'omb_code' : raceOMB.omb_code">
+                                      <label class="mb-1">{{raceCDC.cdc_description | uppercase}}</label>
+                                    </li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-12 p-0 m-0">
+                          <div class="px-2">
+
+                            <div class="form-flex col-12 py-0 form-edit-sub-heading my-1 px-1">
+                              <label class="fz-14 fw-400 mr-2">Ethnicity</label>
+
+                              <div class="custom-control custom-checkbox green-checkbox" *ngIf="editMode">
+                                <input type="checkbox" class="custom-control-input"
+                                  id="chkEthnicityDeclined{{patientId}}" formControlName="chkEthnicityDeclined">
+                                <label class="custom-control-label font-weight-normal text-dark"
+                                  for="chkEthnicityDeclined{{patientId}}">Declined
+                                  to
+                                  specify</label>
+                              </div>
+
+                            </div>
+ 
+                            <section *ngIf="!patInfoFormGroup.get('chkEthnicityDeclined').value">
+                              <div *ngIf="editMode" class="form-row form-dashboard m-0 p-0 pt-1">
+                                <div class="form-group col-12">
+                                  <div class="input-icon d-flex flex-grow-3 px-0">
+                                    <input id="txtEthnicitySearch" class="form-control flex-grow-3" type="text"
+                                      #txtEthnicitySearch placeholder="Search Other Ethnicity"
+                                      (keydown)="onEthnicitySearchKeydown($event)" autocomplete="off">
+                                    <div class="icon">
+                                      <i class="fa fa-search" aria-hidden="true"></i>
+                                    </div>
+
+                                    <inline-race-ethnicity-search *ngIf="showEthnicitySearch" searchType="ETHNICITY"
+                                      [searchValue]="txtEthnicitySearch.value" title="Ethnicity Search"
+                                      (onSelect)="addEthnicity($event)" (onClose)="closeEthnicitySearch()">
+                                    </inline-race-ethnicity-search>
+                                  </div>
+                                </div>
+                              </div>
+                              <div *ngIf="editMode" class="form-row form-dashboard">
+                                <div class="form-group px-0">
+                                  <ul class="m-0 list-with-checkbox">
+                                    <li *ngFor="let ethOMB of lstPatOMBEthnicity ; let i = index"
+                                      Class="list-no-bullet">
+
+
+
+
+                                      <div class="custom-control custom-checkbox green-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                          id="chkEthnicityOBM_{{patientId}}_{{ethOMB.omb_code}}"
+                                          [checked]='ethOMB.selected'
+                                          formControlName="chkEthnicityOBM_{{ethOMB.omb_code}}"
+                                          (change)="EthnicityOMBChanged($event,ethOMB.omb_code)">
+                                        <label class="custom-control-label"
+                                          for="chkEthnicityOBM_{{patientId}}_{{ethOMB.omb_code}}">{{ethOMB.omb_description
+                                                          | uppercase}}</label>
+                                      </div>
+
+                                      <ul class="ml-8">
+                                        <li
+                                          *ngFor="let ethCDC of lstPatCDCEthnicity | listFilter : 'omb_code' : ethOMB.omb_code">
+                                          <label
+                                            class="col-form-label pr-2">{{ethCDC.cdc_description | uppercase}}</label>
+                                          <i class="far fa-times-circle fa-sm btn-delete"
+                                            (click)="onRemoveEthnicity(ethCDC.omb_code,ethCDC.cdc_code)"></i>
+                                        </li>
+                                      </ul>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+
+                            </section>
+                            <div
+                              *ngIf=" (lstPatEthnicity ==undefined || lstPatEthnicity.length==0) && (patient==undefined || patient.ethnicity_code!='ASKU') && !editMode">
+                              <div class="no-content mx-0 px-0">
+                                <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                              </div>
+
+                            </div>
+                            <div *ngIf="patient!=undefined && patient.ethnicity_code=='ASKU'" class="form-view">
+                              <div class="value">Declined to specify</div>
+                            </div>
+
+                            <div *ngIf=" lstPatEthnicity != undefined && lstPatEthnicity.length>0 && !editMode"
+                              class="form-view">
+                              <ul class="m-0 pl-4">
+                                <li *ngFor="let ethOMB of lstPatEthnicity | unique: 'omb_code'; let i = index">
+                                  <label class="mb-1">{{ethOMB.omb_description | uppercase}}</label>
+                                  <ul class="m-0 pl-4">
+                                    <li
+                                      *ngFor="let ethCDC of lstPatCDCEthnicity | listFilter : 'omb_code' : ethOMB.omb_code">
+                                      <label class="mb-1">{{ethCDC.cdc_description | uppercase}}</label>
+                                    </li>
+                                  </ul>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+
+                        </div>
+
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto  mt-2 shadow-none">
+
+
+                    <div class="dashboard-content dashboard-add-edit px-3" *ngIf="!editMode">
+
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-md-4 col-sm-12 col-12 ">
+                          <div class="form-row form-dashboard">
+                            <div class="form-view">
+                              <div class="title-normal">Primary Physician</div>
+                              <div class="value">{{patient.primary_provider_name | uppercase}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-view">
+                              <div class="title-normal">Default Location</div>
+                              <div class="value">{{patient.location_name | uppercase}}</div>
+                            </div>
+
+                          </div>
+
+
+
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-12 ">
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-view">
+                              <div class="title-normal">Referring Physician</div>
+                              <div class="value">{{patient.referral_name | uppercase}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-view">
+                              <div class="title-normal">Subscriber</div>
+                              <div class="value">{{patient.guarantor_name | uppercase}}</div>
+                            </div>
+                          </div>
+
+
+
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 col-12 ">
+                          <div class="form-row form-dashboard">
+                            <div class="form-view">
+                              <div class="title-normal">Comments</div>
+                              <div class="value">
+                                <pre>{{patient.comment}}</pre>
+                              </div>
+                            </div>
+
+
+
+                          </div>
+                        </div>
+
+                      </div>
+
+
+
+
+
+                    </div>
+
+                    <div class="dashboard-content dashboard-add-edit px-2 overflow-visible" *ngIf="editMode">
+
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-md-4 col-sm-12 col-12">
+
+                          <div class="px-2">
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="ddPrimaryPhy" class="col-form-label width-90">Pri. Physician</label>
+                                <select class="form-control col" id="ddPrimaryPhy" formControlName="ddPrimaryPhy">
+                                  <option [value]=""></option>
+                                  <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="ddLocation" class="col-form-label width-90">Default location</label>
+                                <select class="form-control col" id="ddLocation" formControlName="ddLocation">
+                                  <option [value]=""></option>
+                                  <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}
+                                  </option>
+                                </select>
+
+                              </div>
+                            </div>
+
+
+
+
+                          </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 col-12">
+                          <div class="px-2">
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="txtRefPhy" class="col-form-label width-80">Ref. Physician</label>
+                                <div class="input-icon d-flex flex-grow-3 col">
+
+                                  <input id="txtRefPhy" class="form-control flex-grow-3" type="text" #txtRefPhy
+                                    placeholder="Search Referring" (keydown)="onRefPhysicianSearchKeydown($event)"
+                                    (focusout)="onRefPhysicianFocusOut()" autocomplete="off"
+                                    formControlName="txtRefPhy">
+                                  <input type="text" formControlName="txtRefPhyIDHidden" hidden>
+                                  <div class="icon">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                  </div>
+
+                                  <inline-ref-physician-search *ngIf="showRefPhySearch" [searchValue]="txtRefPhy.value"
+                                    (onSelect)="addRefPhysician($event)" (onClose)="closeRefPhysicianSearch($event)">
+                                  </inline-ref-physician-search>
+                                </div>
+
+
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="txtPatientSubscriber" class="col-form-label width-80">Subscriber</label>
+                                <div class="input-icon d-flex flex-grow-3 col">
+                                  <input id="txtPatientSubscriber" class="form-control flex-grow-3" type="text"
+                                    #txtPatientSubscriber placeholder="Search subscriber"
+                                    (keydown)="onPatientSubsciberSearchKeydown($event)"
+                                    (focusout)="onPatientSubsciberFocusOut()" autocomplete="off"
+                                    formControlName="txtPatientSubscriber">
+                                  <input type="text" formControlName="txtPatientSubscriberIDHidden" hidden>
+                                  <div class="icon">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                  </div>
+
+                                  <inline-guarantor-search *ngIf="showPatientSubscriberSearch"
+                                    [searchValue]="txtPatientSubscriber.value" (onSelect)="addPatientSubsciber($event)"
+                                    (onClose)="closePatientSubsciberSearch($event)">
+                                  </inline-guarantor-search>
+                                </div>
+
+                              </div>
+                            </div>
+
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 col-12">
+                          <div class="px-2">
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-group horizental row zero col-12">
+                                <label for="txtComments" class="col-form-label width-65">Comments</label>
+
+                                <textarea class="form-control col" id="txtComments" rows="4"
+                                  formControlName="txtComments"></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+
+
+
+                    </div>
+                  </div>
+
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto  mt-2 shadow-none">
+
+                    <div class="dashboard-title-md border-0 h-30 px-1">
+                      <div class="title-md">
+
+                        <button type="button" class="btn btn-link p-0 text-ihc-blue"
+                          (click)="selectInsuranceTab()">Insurance</button>
+                        <div class="custom-control custom-checkbox green-checkbox ml-3" *ngIf="editMode">
+                          <input type="checkbox" class="custom-control-input" id="chkSelfpay_{{patientId}}"
+                            (change)="chkSelfPayChanged($event.target.checked)" [checked]="isSelfPay">
+                          <label class="custom-control-label text-dark font-weight-400"
+                            for="chkSelfpay_{{patientId}}">Selfpay</label>
+                        </div>
+
+                        <div *ngIf="isSelfPay && !editMode" class="">
+                          <div class="form-view">
+                            <div class="value">Patient is Selfpay</div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="dashboard-content dashboard-add-edit m-0 p-0 overflow-visible">
+
+                      <section>
+                        <div
+                          *ngIf="(this.lstPatInsurance == undefined || this.lstPatInsurance.length ==0 ) && !isSelfPay ">
+                          <div class="no-content">
+                            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                          </div>
+
+                        </div>
+
+
+                      </section>
+                      <div *ngIf="this.lstPatInsurance != undefined && this.lstPatInsurance.length>0">
+                        <div class="d-flex justify-content-between pr-0 flex-shrink-0 h-30 border-top border-bottom-0"
+                          *ngFor="let ins of lstPatInsurance" [ngClass]="{'bg-disabled': isSelfPay }">
+                          <h4
+                            class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-normal  d-flex  pt-1 flex-grow-1">
+                            <div class="d-flex flex-grow-1">
+                              <span class="accordian-sub-header-title pl-1  width-70">{{ins.insurace_type |
+                                                        uppercase}}</span>
+                              <span class="v-separtor"></span>
+                              <span *ngIf="ins.name !=undefined" class="accordian-sub-header-title  text-dark pr-2">{{ins.name |
+                                                        uppercase}}</span>
+                            </div>
+
+                          </h4>
+
+                          <div class="px-1">
+                            <span class="title-other-info">
+                              <i class="fas fa-map-marker-alt pr-1"></i> {{ins.address | uppercase}}
+                            </span>
+                            <span class="v-separtor"></span>
+                            <label class="title-other-info min-width-110">
+                              <i class="fas fa-phone pr-1"></i><strong>{{ins.phone | phonePipe}}</strong>
+                            </label>
+                            <span class="v-separtor"></span>
+                            <label class="title-other-info min-width-130">
+                              Policy No : <strong>{{ins.policy_number | uppercase}}</strong>
+                            </label>
+                          </div>
+
+                          <button [disabled]="ins.doc_link==undefined || ins.doc_link==''" type="button"
+                            class="btn btn-link btn-sm" (click)="viewScanCard(ins.insurace_type,ins.doc_link)"
+                            [ngClass]="{disabled: isSelfPay}">
+                            <i class="far fa-id-card fa-lg" [ngClass]="{'text-success': (ins.doc_link!=undefined && ins.doc_link!=''),
+                                'text-dark': (ins.doc_link==undefined || ins.doc_link=='')}"></i>
+                          </button>
+
+
+
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto  mt-2 shadow-none">
+
+                    <div class="dashboard-content dashboard-add-edit px-3" *ngIf="!editMode">
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-md-6 col-sm-12 col-12">
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Mother's Maiden Name:</div>
+                              <div class="value">
+                                {{patient.mother_maiden_first_name | uppercase}}
+                                {{patient.mother_maiden_last_name | uppercase}}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard ">
+
+                            <div class="form-view">
+                              <div class="title-normal">Gender Identity</div>
+                              <div class="value">
+                                {{patient.gender_identity | uppercase}}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-row form-dashboard">
+                            <div class="form-view">
+                              <div class="title-normal">Sexual Orientation</div>
+                              <div class="value">
+                                {{patient.sexual_orientation | uppercase}}
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard">
+
+                            <div class="form-view">
+                              <div class="title-normal">Advance Directive</div>
+                              <div class="value">{{patient.advance_directive | uppercase}}</div>
+                            </div>
+                          </div>
+
+
+
+
+                        </div>
+
+                        <div class="col-md-6 col-sm-12 col-12">
+
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-view col-6 px-0">
+                              <div class="title-normal">Multiple Birth</div>
+                              <div class="value">
+                                <span *ngIf="patient.multi_birth=='N'">
+                                  NO
+                                </span>
+                                <span *ngIf="patient.multi_birth=='Y'">
+                                  Yes
+                                </span>
+                              </div>
+
+                            </div>
+
+                            <div class="form-view col-6  px-0" *ngIf="patient.multi_birth=='Y'">
+                              <div class="title-normal">Birth Order</div>
+                              <div class="value">{{patient.birth_order}}</div>
+                            </div>
+
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-view col-6 px-0">
+                              <div class="title-normal">Annual Income</div>
+                              <div class="value">{{patient.annual_income}}</div>
+                            </div>
+
+                            <div class="form-view col-6 px-0">
+                              <div class="title-normal">Family Size</div>
+                              <div class="value">{{patient.family_size}}</div>
+                            </div>
+                          </div>
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-view col-6 px-0">
+                              <div class="title-normal">Disabled Date</div>
+                              <div class="value">{{patient.disabled_date}}</div>
+                            </div>
+
+                            <div class="form-view px-0">
+                              <div class="title-normal">Death Date</div>
+                              <div class="value">{{patient.expired_date}}</div>
+                            </div>
+                          </div>
+
+
+
+                          <div class="form-row form-dashboard">
+                            <div class="form-view">
+                              <div class="title-normal">Death Cause</div>
+                              <div class="value">
+                                <pre>{{patient.death_cause}}</pre>
+                              </div>
+                            </div>
+                          </div>
+
+
+
+                        </div>
+
+                      </div>
+
+                      <div class="form-row form-dashboard border-top mt-1 pt-1">
+
+
+                        <div class="col-md-2 col-sm-6 col-12 p-0">
+                          <div class="form-view">
+                            <div class="title-normal">Transition of care</div>
+                            <div class="value">{{patient.is_transition_of_care ? 'YES' : 'NO'}}</div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-2 col-sm-6 col-12 p-0">
+                          <div class="form-view">
+                            <div class="title-normal">Block reminder calls</div>
+                            <div class="value">{{patient.acu ? 'YES' : 'NO'}}</div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-2 col-sm-6 col-12 p-0">
+                          <div class="form-view">
+                            <div class="title-normal">Don't send statment</div>
+                            <div class="value">{{patient.pat_statement ? 'YES' : 'NO'}}</div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-2 col-sm-6 col-12 p-0">
+                          <div class="form-view">
+                            <div class="title-normal">Dental Patient</div>
+                            <div class="value">{{patient.is_dental ? 'YES' : 'NO'}}</div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-4 col-sm-6 col-12 p-0">
+                          <div class="form-view">
+                            <div class="title-normal">Access restricted</div>
+                            <div class="value">{{patient.access_restricted ? 'YES' : 'NO'}}
+                              <i class="fas fa-info-circle text-ihc-blue ml-1"
+                                title="If YES then only provider have access to charts"></i>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div class="dashboard-content dashboard-add-edit px-2" *ngIf="editMode">
+
+
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-md-6 col-sm-12 col-12">
+
+                          <div class="px-2">
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="txtMotherFName" class="width-130 col-form-label">Mother's Maiden
+                                  Name</label>
+                                <div class="input-group col">
+                                  <input type="text" class="form-control" id="txtMotherFName"
+                                    aria-describedby="basic-addon3" placeholder="First Name"
+                                    formControlName="txtMotherFName">
+                                  <input type="text" class="form-control" id="txtMotherLName"
+                                    aria-describedby="basic-addon3" placeholder="Last Name"
+                                    formControlName="txtMotherLName">
+                                </div>
+
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="ddMultiBirthIndicator" class="width-100 col-form-label"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddGenderIdentity').value=='OTH' }">Gender
+                                  Identity</label>
+
+                                <div class="input-group col">
+                                  <select class="form-control" id="ddGenderIdentity" formControlName="ddGenderIdentity"
+                                    (change)="genderIdentitySelecttionchange($event)">
+                                    <option value="ngNull"></option>
+                                    <option *ngFor="let gId of lookupList.lstGenderIdentity" [value]="gId.code">
+                                      {{gId.description}}</option>
+                                  </select>
+                                  <input type="text" class="form-control required" id="basic-url"
+                                    aria-describedby="basic-addon3" placeholder="Specify Other"
+                                    formControlName="txtOtherGenderIdentity"
+                                    *ngIf="patInfoFormGroup.get('ddGenderIdentity').value=='OTH'">
+                                </div>
+                              </div>
+
+
+
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="ddMultiBirthIndicator" class="width-100 col-form-label"
+                                  [ngClass]="{'required' :  patInfoFormGroup.get('ddSexualOrientation').value=='OTH' }">Sexual
+                                  Orientation</label>
+
+                                <div class="input-group col">
+                                  <select class="form-control" id="ddSexualOrientation"
+                                    formControlName="ddSexualOrientation"
+                                    (change)="sexualOrientationSelecttionchange($event)">
+                                    <option value="ngNull"></option>
+                                    <option *ngFor="let sexOrientation of lookupList.lstSexualOrientation"
+                                      [value]="sexOrientation.code">{{sexOrientation.description}}</option>
+                                  </select>
+                                  <input type="text" class="form-control required" id="basic-url"
+                                    aria-describedby="basic-addon3" placeholder="Specify Other"
+                                    formControlName="txtOtherSexualOrientation"
+                                    *ngIf="patInfoFormGroup.get('ddSexualOrientation').value=='OTH'">
+                                </div>
+                              </div>
+
+
+
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="ddAdvanceDirective" class="col-form-label width-100">Adv.
+                                  directive</label>
+                                <select class="form-control col" id="ddAdvanceDirective"
+                                  formControlName="ddAdvanceDirective">
+                                  <option *ngFor="let directive of lstAdvanceDirectives" [value]="directive">
+                                    {{directive}}
+                                  </option>
+                                </select>
+
+                              </div>
+                            </div>
+
+
+
+
+
+
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-sm-12 col-12">
+
+                          <div class="px-2">
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-6 ">
+
+                                <label for="ddMultiBirthIndicator" class="width-85 col-form-label">Multiple
+                                  Birth</label>
+
+                                <select class="form-control col" id="ddMultiBirthIndicator"
+                                  formControlName="ddMultiBirthIndicator">
+                                  <option [ngValue]="null"></option>
+                                  <option value='Y'>Yes</option>
+                                  <option value='N'>No</option>
+                                </select>
+
+                              </div>
+
+                              <div class="form-group horizental row zero col-6"
+                                *ngIf="patInfoFormGroup.get('ddMultiBirthIndicator').value=='Y'">
+
+                                <label for="ddBirthOrder" class="width-70 col-form-label ">Birth Order</label>
+
+                                <select class="form-control required col" id="ddBirthOrder"
+                                  formControlName="ddBirthOrder">
+                                  <option *ngFor="let item of lstBirthOrder" [value]="item">{{item}}</option>
+                                </select>
+
+                              </div>
+
+                            </div>
+
+                            <div class="form-row form-dashboard">
+
+                              <div class="form-group horizental row zero col-6">
+
+                                <label for="txtAnnualIncome" class="col-form-label width-85">Annual Income</label>
+                                <input type="text" class="form-control col" id="txtAnnualIncome"
+                                  formControlName="txtAnnualIncome">
+
+                              </div>
+
+                              <div class="form-group horizental row zero col-6">
+
+                                <label for="txtFamilySize" class="col-form-label width-70">Family
+                                  size</label>
+                                <input type="text" class="form-control col" id="txtFamilySize"
+                                  formControlName="txtFamilySize">
+
+
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-6">
+
+                                <label for="dpDisabledDate" class="col-form-label width-85">Disabled Date</label>
+                                <div class="input-group col">
+                                  <input id="dpDisabledDate" class="form-control date-control" placeholder="mm/dd/yyyy"
+                                    name="dpDisabledDate" data-container="body" ngbDatepicker
+                                    #dpDisabledDate="ngbDatepicker" formControlName="dpDisabledDate"
+                                    (blur)="onDateFocusOut($event.currentTarget.value,'dpDisabledDate')"
+                                    [ngClass]="{ 'is-invalid': (patInfoFormGroup.controls.dpDisabledDate.errors?.invalidDate)}">
+                                  <span class="input-group-btn">
+                                    <button class="btn date-control-btn" (click)="dpDisabledDate.toggle()" type="button"
+                                      focusable="false" tabindex="-1">
+                                    </button>
+                                  </span>
+
+                                </div>
+                              </div>
+
+                              <div class="form-group horizental row zero col-6">
+
+                                <label for="dpDeathDate" class="col-form-label width-70">Death Date</label>
+                                <div class="input-group col">
+                                  <input id="dpDeathDate" class="form-control date-control" placeholder="mm/dd/yyyy"
+                                    name="dpDeathDate" data-container="body" ngbDatepicker #dpDeathDate="ngbDatepicker"
+                                    formControlName="dpDeathDate"
+                                    (blur)="onDateFocusOut($event.currentTarget.value,'dpDeathDate')"
+                                    [ngClass]="{ 'is-invalid': (patInfoFormGroup.controls.dpDeathDate.errors?.invalidDate)}">
+                                  <span class="input-group-btn">
+                                    <button class="btn date-control-btn" (click)="dpDeathDate.toggle()" type="button"
+                                      focusable="false" tabindex="-1">
+                                    </button>
+                                  </span>
+
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-group horizental row zero col-12">
+
+                                <label for="txtDeathReason" class="col-form-label width-85">Death reason</label>
+                                <input type="text" class="form-control col" id="txtDeathReason"
+                                  formControlName="txtDeathReason">
+                              </div>
+                            </div>
+
+
+
+
+                          </div>
+                        </div>
+
+
+                      </div>
+
+
+
+                      <div class="form-row form-dashboard border-top mt-1 pt-1">
+
+                        <div class="col-md-2 col-sm-6 col-12">
+                          <div class="px-2">
+                            <div class="custom-control custom-checkbox green-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="chkTransisionOfCare_{{patientId}}"
+                                formControlName="chkTransisionOfCare">
+                              <label class="custom-control-label" for="chkTransisionOfCare_{{patientId}}">Transition
+                                of
+                                care</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-2 col-sm-6 col-12 ">
+                          <div class="px-2">
+                            <div class="custom-control custom-checkbox green-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="chkBlockRemCalls_{{patientId}}"
+                                formControlName="chkBlockRemCalls">
+                              <label class="custom-control-label" for="chkBlockRemCalls_{{patientId}}">Block
+                                reminder
+                                calls</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-2 col-sm-6 col-12 ">
+                          <div class="px-2">
+                            <div class="custom-control custom-checkbox green-checkbox">
+                              <input type="checkbox" class="custom-control-input"
+                                id="chkDontSendStatement_{{patientId}}" formControlName="chkDontSendStatement">
+                              <label class="custom-control-label" for="chkDontSendStatement_{{patientId}}">Don't
+                                send
+                                statement</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-2 col-sm-6 col-12 ">
+                          <div class="px-2">
+                            <div class="custom-control custom-checkbox green-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="chkIsDental_{{patientId}}"
+                                formControlName="chkIsDental">
+                              <label class="custom-control-label" for="chkIsDental_{{patientId}}">Dental
+                                Patient</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-6 col-12 ">
+                          <div class="px-2 d-flex">
+                            <div class="custom-control custom-checkbox green-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="chkAccessRestricted_{{patientId}}"
+                                formControlName="chkAccessRestricted">
+                              <label class="custom-control-label" for="chkAccessRestricted_{{patientId}}">Access
+                                restricted</label>
+                            </div>
+
+                            <i class="fas fa-info-circle text-ihc-blue mt-1 ml-1"
+                              title="If YES then only provider have access to charts"></i>
+
+                          </div>
+                        </div>
+
+                      </div>
+
+
+                    </div>
+
+
+                  </div>
+
+
+                </div>
+
+              </div>
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="tab_pat_ins">
+            <ng-template ngbTabTitle>Insurance</ng-template>
+            <ng-template ngbTabContent>
+
+              <div class="d-flex flex-column flex-grow-1">
+
+                <div class="dashboard-content d-flex flex-column flex-grow-1 overflow-auto overflow-height p-2">
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto shadow-none">
+
+                    <div class="dashboard-title-md border-0">
+                      <div class="title-md">Insurance
+
+
+                        <div class="custom-control custom-checkbox green-checkbox ml-3" *ngIf="editMode">
+                          <input type="checkbox" class="custom-control-input" id="chkSelfpay_ins_{{patientId}}"
+                            (change)="chkSelfPayChanged($event.target.checked)" [checked]="isSelfPay">
+                          <label class="custom-control-label text-dark font-weight-400"
+                            for="chkSelfpay_ins_{{patientId}}">Selfpay</label>
+                        </div>
+
+                        <div *ngIf="isSelfPay && !editMode">
+                          <div class="form-view">
+                            <div class="value">Patient is Selfpay</div>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <div class="flex-grow-1">&nbsp;</div>
+
+                      <div class="d-flex align-items-center title-bar-blue-btn px-0" *ngIf="editMode && (!checkIfInsuranceExist('Primary') || !checkIfInsuranceExist('Secondary') || !checkIfInsuranceExist('Other'))
+                                    && !isSelfPay">
+                        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                          *ngIf="!checkIfInsuranceExist('Primary')"
+                          (click)="addNewInsurance('ADD','Primary',undefined)">Add
+                          Primary Insurance</button>
+                        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                          *ngIf="!checkIfInsuranceExist('Secondary') && checkIfInsuranceExist('Primary')"
+                          (click)="addNewInsurance('ADD','Secondary',undefined)">Add
+                          Secondary Insurance</button>
+                        <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                          *ngIf="!checkIfInsuranceExist('Other')  && checkIfInsuranceExist('Primary')  && checkIfInsuranceExist('Secondary')"
+                          (click)="addNewInsurance('ADD','Other',undefined)">Add
+                          Other Insurance</button>
+
+                      </div>
+
+                      <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                        *ngIf="!isSelfPay" (click)="onImportInactiveInsurance()">Inactive
+                        Insurances</button>
+
+
+                    </div>
+
+                  </div>
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto mt-2 shadow-none"
+                    *ngIf="!editMode  && (this.lstPatInsurance == undefined || this.lstPatInsurance.length ==0)  && !isSelfPay">
+                    <div class="dashboard-content dashboard-add-edit m-0 p-0 overflow-visible">
+
+                      <div class="no-content">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div *ngIf="this.lstPatInsurance != undefined && this.lstPatInsurance.length>0">
+                    <div class="dashboard rounded-0 flex-grow-0 h-auto mt-2 shadow-none" *ngFor="let ins of lstPatInsurance"
+                      [ngClass]="{'bg-disabled': isSelfPay }">
+
+
+                      <div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-30 border-bottom">
+                        <h4
+                          class="form-edit-sub-heading border-top-0 m-1 mb-0 px-1 font-weight-400  d-flex  pt-1 flex-grow-1">
+                          <div class="d-flex flex-grow-1">
+                            <span class="accordian-sub-header-title pl-1 width-70">{{ins.insurace_type |
+                                                      uppercase}}</span>
+                            <span class="v-separtor"></span>
+                            <span *ngIf="ins.name !=undefined"
+                              class="accordian-sub-header-title font-weight-500  text-dark pr-2">{{ins.name |
+                                                      uppercase}}</span>
+
+                            <span *ngIf="ins.name ==undefined" class="accordian-sub-header-title text-dark">[Please
+                              Select
+                              Insurance]</span>
+                          </div>
+
+
+
+                        </h4>
+
+                        <div class="px-1 pt-1">
+                          <span class="title-other-info">
+                            <i class="fas fa-map-marker-alt pr-1"></i> {{ins.address | uppercase}}
+                          </span>
+                          <span class="v-separtor"></span>
+                          <label class="title-other-info min-width-110">
+                            <i class="fas fa-phone pr-1"></i><strong>{{ins.phone | phonePipe}}</strong>
+                          </label>
+
+                        </div>
+
+                        <button [disabled]="ins.doc_link==undefined || ins.doc_link==''" type="button"
+                          class="btn btn-md py-0 btn-link text-primary border-left title-bar-blue-btn"
+                          (click)="viewScanCard(ins.insurace_type,ins.doc_link)" [ngClass]="{disabled: isSelfPay}">
+                          <i class="far fa-id-card fa-lg mt-1" [ngClass]="{'text-success': (ins.doc_link!=undefined && ins.doc_link!=''),
+                            'text-dark': (ins.doc_link==undefined || ins.doc_link=='')}"></i>
+                        </button>
+
+                        <div class="dropdown btn btn-link title-bar-blue-btn px-0 title-bar-blue-btn" *ngIf="editMode"
+                          [ngClass]="{disabled: isSelfPay}">
+
+                          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+                          </button>
+
+
+                          <div class="dropdown-menu dropdown-menu-left schedular-card"
+                            aria-labelledby="dropdownMenuButton">
+                            <button class="dropdown-item px-2"
+                              (click)="onMoveInsurance(ins,ins.insurace_type,'Primary')"
+                              *ngIf="ins.insurace_type.toLowerCase()!='primary' ">
+                              Change Type to Primary
+                            </button>
+                            <button class="dropdown-item px-2"
+                              (click)="onMoveInsurance(ins,ins.insurace_type,'Secondary')"
+                              *ngIf="ins.insurace_type.toLowerCase()!='secondary' ">
+                              Change Type to Secondary
+                            </button>
+                            <button class="dropdown-item px-2" (click)="onMoveInsurance(ins,ins.insurace_type,'Other')"
+                              *ngIf="ins.insurace_type.toLowerCase()!='other' ">
+                              Change Type to Other
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item px-2 text-danger"
+                              (click)="onRemoveInsurance(ins.patientinsurance_id,ins.name)">
+                              Delete
+                            </button>
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+
+                      <div class="dashboard-content dashboard-add-edit overflow-visible">
+
+
+                        <div class="form-row form-dashboard px-2" *ngIf="!editMode">
+                          <div class="col-md-6 col-sm-12 col-12">
+
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-view col-12 px-0">
+                                <div class="title-normal">Name</div>
+                                <div class="value">{{ins.name | uppercase}}</div>
+                              </div>
+                            </div>
+
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view col-12 px-0">
+                                <div class="title-normal">Subscriber</div>
+                                <div class="value">
+                                  <span>
+                                    {{ins.guarantor_relationship | uppercase}}
+                                  </span>
+                                  <span *ngIf="ins.guarantor_name!=undefined && ins.guarantor_name!=''">
+                                    | {{ins.guarantor_name| uppercase}}
+                                  </span>
+                                </div>
+
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-2 col-sm-4 col-12">
+
+                            <div class="form-row form-dashboard ">
+
+                              <div class="form-view col-12 px-0">
+                                <div class="title-normal">Policy No</div>
+                                <div class="value">{{ins.policy_number | uppercase}}</div>
+                              </div>
+                            </div>
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view col-12 px-0">
+                                <div class="title-normal">Group No</div>
+                                <div class="value">{{ins.group_number | uppercase}}</div>
+                              </div>
+                            </div>
+
+
+                          </div>
+
+                          <div class="col-md-2 col-sm-4 col-12">
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view col-12 px-0">
+                                <div class="title-normal">Stard Date</div>
+                                <div class="value">{{ins.start_date}}</div>
+                              </div>
+                            </div>
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view col-12 px-0">
+                                <div class="title-normal">End Date</div>
+                                <div class="value">{{ins.end_date}}</div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-md-2 col-sm-4 col-12">
+
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view col-12 px-0">
+                                <div class="title-normal">Copay</div>
+                                <div class="value">{{ins.copay | currency:'USD':'symbol-narrow' }}</div>
+                              </div>
+                            </div>
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view col-12 px-0">
+                                <div class="title-normal">PCP</div>
+                                <div class="value">{{ins.pcp}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-row form-dashboard" *ngIf="editMode">
+                          <div class="col-md-4 col-sm-12 col-12">
+                            <div class="pl-1 pr-1">
+                              <div class="form-row form-dashboard">
+
+                                <div class="form-group horizental row zero col-12">
+                                  <label class="width-70 col-form-label required"
+                                    for="txtInsuranceName_{{ins.patientinsurance_id}}">Insurance:</label>
+
+                                  <div class="col form-group has-search flex-grow-1">
+                                    <span class="fa fa-search form-control-feedback"></span>
+                                    <input type="text" class="form-control required" placeholder="Search Insurance"
+                                      (focusout)="onInsuranceSearchFocusOut(ins.patientinsurance_id)"
+                                      formControlName="txtInsuranceName_{{ins.patientinsurance_id}}" autocomplete="off"
+                                      (input)="onInsuranceSearchInput($event,ins.patientinsurance_id)"
+                                      (keydown.enter)="onInsuranceSearchEnter($event,ins.patientinsurance_id)"
+                                      (keyup.arrowdown)="shiftFocusToInsSearch(ins.patientinsurance_id)"
+                                      (keydown.esc)="setInsuranceVisiblity(ins.patientinsurance_id,'false')">
+
+                                    <inline-insurance-search id="inlinePatientInsSearch" #inlinePatientInsSearch
+                                      *ngIf="showInsuranceSearch(ins.patientinsurance_id)"
+                                      searchValue="{{patInfoFormGroup.get('txtInsuranceName_'+ins.patientinsurance_id).value}}"
+                                      recordId="{{ins.patientinsurance_id}}" (onSelect)="addInsurance($event)"
+                                      (onClose)="closeInsuranceSearch($event)"></inline-insurance-search>
+
+                                  </div>
+                                </div>
+
+                              </div>
+
+                              <div class="form-row form-dashboard">
+
+                                <div class="form-group horizental row zero col-12">
+                                  <label class="width-70 col-form-label"
+                                    for="txtInsuranceSubscriber_{{ins.patientinsurance_id}}">Subscriber:</label>
+
+
+
+                                  <div class="col form-group has-search flex-grow-1">
+                                    <span class="fa fa-search form-control-feedback"
+                                      *ngIf="patInfoFormGroup.get('ddInsuranceSubscriberRel_'+ins.patientinsurance_id).value !='SELF'"></span>
+
+                                    <div class="input-group">
+
+                                      <select class="form-control"
+                                        [ngClass]="{'width-100 flex-grow-0':  patInfoFormGroup.get('ddInsuranceSubscriberRel_'+ins.patientinsurance_id).value !='SELF' }"
+                                        id="ddInsuranceSubscriberRel_{{ins.patientinsurance_id}}"
+                                        formControlName="ddInsuranceSubscriberRel_{{ins.patientinsurance_id}}">
+                                        <option *ngFor="let rel of this.lookupList.lstSubsciberRelationship"
+                                          [value]="rel">
+                                          {{rel}}
+                                        </option>
+                                      </select>
+                                      <input
+                                        *ngIf="patInfoFormGroup.get('ddInsuranceSubscriberRel_'+ins.patientinsurance_id).value !='SELF'"
+                                        type="text" class="form-control required" placeholder="Search Subscriber"
+                                        (keydown)="onInsuranceSubscriberSearchKeydown($event,ins.patientinsurance_id)"
+                                        (focusout)="onInsuranceSubscriberFocusOut(ins.patientinsurance_id)"
+                                        formControlName="txtInsuranceSubscriber_{{ins.patientinsurance_id}}"
+                                        autocomplete="off">
+                                    </div>
+
+                                    <inline-guarantor-search
+                                      *ngIf="showInsuranceSubscriberSearch(ins.patientinsurance_id)"
+                                      searchValue="{{patInfoFormGroup.get('txtInsuranceSubscriber_'+ins.patientinsurance_id).value}}"
+                                      recordId="{{ins.patientinsurance_id}}" (onSelect)="addInsuranceSubscriber($event)"
+                                      (onClose)="closeInsuranceSubscriberSearch($event)">
+                                    </inline-guarantor-search>
+
+                                  </div>
+
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-3 col-sm-4 col-12">
+
+                            <div class="pl-1 pr-1">
+
+                              <div class="form-row form-dashboard">
+
+                                <div class="form-group horizental row zero col-12">
+                                  <label class="width-60 col-form-label required"
+                                    for="txtPolicyNo_{{ins.patientinsurance_id}}">Policy
+                                    No:</label>
+                                  <input type="text" class="form-control col required"
+                                    id="txtPolicyNo_{{ins.patientinsurance_id}}"
+                                    (paste)="onPaste($event,'txtPolicyNo_'+ins.patientinsurance_id)"
+                                    formControlName="txtPolicyNo_{{ins.patientinsurance_id}}" autocomplete="off">
+                                </div>
+                              </div>
+
+                              <div class="form-row form-dashboard">
+                                <div class="form-group horizental row zero col-12">
+                                  <label class="width-60 col-form-label"
+                                    for="txtGroupNo_{{ins.patientinsurance_id}}">Group
+                                    No:</label>
+                                  <input type="text" class="form-control col"
+                                    id="txtGroupNo_{{ins.patientinsurance_id}}"
+                                    (paste)="onPaste($event,'txtGroupNo_'+ins.patientinsurance_id)"
+                                    formControlName="txtGroupNo_{{ins.patientinsurance_id}}" autocomplete="off">
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+                          <div class="col-md-3 col-sm-4 col-12">
+
+                            <div class="pl-1 pr-1">
+                              <div class="form-row form-dashboard">
+                                <div class="form-group horizental row zero col-12">
+                                  <label class="width-60 col-form-label"
+                                    for="dpInsStartDate_{{ins.patientinsurance_id}}">Start
+                                    Date:</label>
+
+                                  <div class="input-group col">
+                                    <input id="dpInsStartDate_{{ins.patientinsurance_id}}"
+                                      class="form-control date-control" placeholder="mm/dd/yyyy"
+                                      name="dpInsStartDate_{{ins.patientinsurance_id}}" data-container="body"
+                                      [navigation]="navigation"
+                                      formControlName="dpInsStartDate_{{ins.patientinsurance_id}}" ngbDatepicker
+                                      #dpInsStartDate="ngbDatepicker"
+                                      (blur)="onDateFocusOut($event.currentTarget.value,'dpInsStartDate_'+ins.patientinsurance_id)"
+                                      [ngClass]="{ 'is-invalid': (patInfoFormGroup!=undefined && patInfoFormGroup.controls['dpInsStartDate_'+ins.patientinsurance_id].errors?.invalidDate)}">
+
+                                    <span class="input-group-btn">
+                                      <button class="btn date-control-btn" (click)="dpInsStartDate.toggle()"
+                                        [disabled]="isSelfPay" type="button" focusable="false" tabindex="-1">
+                                      </button>
+                                    </span>
+
+                                  </div>
+
+                                </div>
+
+                              </div>
+
+                              <div class="form-row form-dashboard">
+                                <div class="form-group horizental row zero col-12">
+                                  <label class="width-60 col-form-label"
+                                    for="dpInsEndDate_{{ins.patientinsurance_id}}">End
+                                    Date:</label>
+
+                                  <div class="input-group col">
+                                    <input id="dpInsEndDate_{{ins.patientinsurance_id}}"
+                                      class="form-control date-control" placeholder="mm/dd/yyyy"
+                                      name="dpInsEndDate_{{ins.patientinsurance_id}}" data-container="body"
+                                      [navigation]="navigation"
+                                      formControlName="dpInsEndDate_{{ins.patientinsurance_id}}" ngbDatepicker
+                                      #dpInsEndDate="ngbDatepicker"
+                                      (blur)="onDateFocusOut($event.currentTarget.value,'dpInsEndDate_'+ins.patientinsurance_id)"
+                                      [ngClass]="{ 'is-invalid': (patInfoFormGroup!=undefined && patInfoFormGroup.controls['dpInsEndDate_'+ins.patientinsurance_id].errors?.invalidDate)}">
+
+                                    <span class="input-group-btn">
+                                      <button class="btn date-control-btn" (click)="dpInsEndDate.toggle()"
+                                        [disabled]="isSelfPay" type="button" focusable="false" tabindex="-1">
+                                      </button>
+                                    </span>
+
+                                  </div>
+
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+
+
+                          <div class="col-md-2 col-sm-4 col-12">
+
+                            <div class="pl-1 pr-1">
+
+                              <div class="form-row form-dashboard">
+                                <div class="form-group horizental row zero col-12">
+                                  <label class="width-40 col-form-label"
+                                    for="txtInsCopy_{{ins.patientinsurance_id}}">Copay:</label>
+
+                                  <div class="input-group col">
+                                    <div class="input-group-prepend table-td-input-group-prepend">
+                                      <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" class="form-control text-right"
+                                      id="txtInsCopy_{{ins.patientinsurance_id}}"
+                                      formControlName="txtInsCopy_{{ins.patientinsurance_id}}" autocomplete="off"
+                                      (blur)="formateCurrencyInputs('txtInsCopy_'+ins.patientinsurance_id)">
+                                  </div>
+
+                                </div>
+                              </div>
+
+                              <div class="form-row form-dashboard">
+                                <div class="form-group horizental row zero col-12">
+                                  <label class="width-40 col-form-label"
+                                    for="txtInsPCP_{{ins.patientinsurance_id}}">PCP:</label>
+                                  <input type="text" class="col form-control" id="txtInsPCP_{{ins.patientinsurance_id}}"
+                                    formControlName="txtInsPCP_{{ins.patientinsurance_id}}" autocomplete="off">
+                                </div>
+                              </div>
+
+
+
+                            </div>
+                          </div>
+
+                        </div>
+
+                        <div class="form-row form-dashboard px-2">
+                          <div class="col-12 col-md-12 p-0 m-0">
+                            <h6 class="form-edit-sub-heading-small m-0 p-0 pt-2">WORKER'S COMPENSATION</h6>
+                          </div>
+                          <div *ngIf="(ins.workercomp_name == undefined || ins.workercomp_name=='') && !editMode"
+                            class="col-12 col-md-12 pb-0 fz-12">
+                            <label class="form-text text-muted">N/A</label>
+                          </div>
+                          <div *ngIf="ins.workercomp_name != undefined && ins.workercomp_name!='' && !editMode"
+                            class="col-12 col-md-12 pb-0">
+
+                            <div class="form-row form-dashboard">
+                              <div class="form-view">
+                                <div class="title-normal">Name</div>
+                                <div class="value">{{ins.workercomp_name | uppercase}}</div>
+                              </div>
+                            </div>
+                            <div class="form-row form-dashboard">
+                              <div class="form-view">
+                                <div class="title-normal">Address</div>
+                                <div class="value">{{ins.workercomp_address | uppercase}} {{ins.workercomp_city |
+                                                          uppercase}}
+                                  {{ins.workercomp_state | uppercase}}, {{ins.workercomp_zip }}</div>
+                              </div>
+                            </div>
+                          </div>
+
+
+                          <div class="form-row form-dashboard " *ngIf="editMode">
+                            <div class="form-group col-sm-3 col-md-3 col-12">
+                              <div class="pl-2 pr-2">
+                                <div class="form-row form-dashboard ">
+                                  <div class="form-group col p-0">
+                                    <label for="txtWorkerCompName_{{ins.patientinsurance_id}}"
+                                      class="col-form-label">Name</label>
+                                    <input type="text" class="form-control"
+                                      id="txtWorkerCompName_{{ins.patientinsurance_id}}"
+                                      value="{{ins.workercomp_name | uppercase}}"
+                                      formControlName="txtWorkerCompName_{{ins.patientinsurance_id}}">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-sm-3 col-md-3 col-12">
+                              <div class="pl-2 pr-2">
+                                <div class="form-row form-dashboard ">
+                                  <div class="form-group col p-0">
+                                    <label for="txtWorkerCompAddress_{{ins.patientinsurance_id}}"
+                                      class="col-form-label">Address</label>
+                                    <input type="text" class="form-control"
+                                      id="txtWorkerCompAddress_{{ins.patientinsurance_id}}"
+                                      value="{{ins.workercomp_address | uppercase}}"
+                                      formControlName="txtWorkerCompAddress_{{ins.patientinsurance_id}}">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-sm-3 col-md-3 col-12">
+                              <div class="pl-2 pr-2">
+                                <div class="form-row form-dashboard ">
+                                  <div class="form-group col-8 pl-0">
+                                    <label for="txtWCZipCode_{{ins.patientinsurance_id}}"
+                                      class="col-form-label">Zip</label>
+                                    <input type="text" class="form-control"
+                                      id="txtWCZipCode_{{ins.patientinsurance_id}}" value="{{ins.workercomp_zip}}"
+                                      (focusout)="WCzipFocusOut(ins.patientinsurance_id,$event.target.value)"
+                                      (change)="WCzipChanged(ins.patientinsurance_id)"
+                                      formControlName="txtWCZipCode_{{ins.patientinsurance_id}}">
+                                  </div>
+                                  <div class="form-group  col-4 pr-0">
+                                    <label for="txtWCState_{{ins.patientinsurance_id}}"
+                                      class="col-form-label">State</label>
+                                    <input type="text" class="form-control" id="txtWCState_{{ins.patientinsurance_id}}"
+                                      value="{{ins.workercomp_state | uppercase}}" disabled>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group col-sm-3 col-md-3 col-12">
+                              <div class="pl-2 pr-2">
+                                <div class="form-row form-dashboard ">
+                                  <div class="form-group col p-0">
+                                    <label for="ddWorkerCompCity_{{ins.patientinsurance_id}}"
+                                      class="col-form-label">City</label>
+                                    <select class="form-control" id="ddWorkerCompCity_{{ins.patientinsurance_id}}"
+                                      formControlName="ddWorkerCompCity_{{ins.patientinsurance_id}}">
+                                      <option *ngFor="let obj of getWorkerCompCities(ins.patientinsurance_id)"
+                                        value="{{obj.city}}">
+                                        {{obj.city}}
+                                      </option>
+
+
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                    </div>
+                  </div>
+
+
+
+                </div>
+              </div>
+
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="tab_pat_nok">
+            <ng-template ngbTabTitle>Guardian/Next of Kin</ng-template>
+            <ng-template ngbTabContent>
+
+              <div class="d-flex flex-column flex-grow-1">
+
+                <div class="dashboard-content d-flex flex-column flex-grow-1 overflow-auto overflow-height p-2">
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto shadow-none">
+
+                    <div class="dashboard-title-md border-0">
+                      <div class="title-md">Patient Guardian/Next of Kin</div>
+                      <button *ngIf="editMode" type="button" class="btn btn-sm btn-link"
+                        (click)="addEditNextOfKin('ADD',undefined)">Add New</button>
+
+                    </div>
+
+                  </div>
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto mt-2 shadow-none"
+                    *ngIf="this.lstNextOfKin == undefined || this.lstNextOfKin.length ==0">
+                    <div class="dashboard-content dashboard-add-edit m-0 p-0 overflow-visible">
+
+                      <div *ngIf="lstNextOfKin ==undefined || lstNextOfKin.length==0">
+                        <div class="no-content">
+                          <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div *ngIf="this.lstNextOfKin != undefined && this.lstNextOfKin.length>0">
+                    <div class="dashboard rounded-0 flex-grow-0 h-auto mt-2 shadow-none" *ngFor="let NoK of lstNextOfKin">
+
+
+                      <div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-30">
+                        <h4
+                          class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400  d-flex  pt-1 flex-grow-1">
+                          <div class="d-flex flex-grow-1">
+                            <span
+                              class="accordian-sub-header-title pl-1 width-90">{{NoK.relationship_description | uppercase}}</span>
+                            <span class="v-separtor"></span>
+
+                            <span
+                              class="accordian-sub-header-title font-weight-500  text-dark pr-2">{{NoK.first_name | uppercase}}
+                              <span *ngIf="NoK.mname!=undefined && NoK.mname!=''">{{NoK.mname
+                              | uppercase}}</span> {{NoK.last_name | uppercase}}</span>
+                          </div>
+
+                        </h4>
+
+
+
+                        <button *ngIf="editMode" type="button" class="btn btn-link btn-sm text-primary"
+                          (click)="addEditNextOfKin('EDIT',NoK)"><i class="far fa-edit"></i></button>
+                        <button *ngIf="editMode" type="button" class="btn btn-link btn-sm btn-delete"
+                          (click)="onRemoveNOK(NoK.next_of_kin_id)"><i class="far fa-trash-alt"></i></button>
+
+                      </div>
+
+
+
+                      <div class="dashboard-content dashboard-add-edit overflow-visible">
+
+
+                        <div class="form-row form-dashboard">
+                          <div class="col-md-3 col-sm-6 col-12">
+
+                            <div class="form-row form-dashboard ">
+
+                              <div class="form-view">
+                                <div class="title-normal">Name</div>
+                                <div class="value">{{NoK.first_name | uppercase}} <span
+                                    *ngIf="NoK.mname!=undefined && NoK.mname!=''">{{NoK.mname
+                                        | uppercase}}</span> {{NoK.last_name | uppercase}}</div>
+                              </div>
+
+                            </div>
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view">
+                                <div class="title-normal">Relationship</div>
+                                <div class="value">{{NoK.relationship_description | uppercase}}</div>
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-3 col-sm-6 col-12">
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view">
+                                <div class="title-normal">Address</div>
+                                <div *ngIf="NoK.address==undefined || NoK.address==''" class="value text-muted">N/A
+                                </div>
+                                <div *ngIf="NoK.address!=undefined && NoK.address!=''" class="value">
+                                  <div class="form-row ml-1">
+                                    {{NoK.address | uppercase}}
+                                  </div>
+                                  <div class="form-row ml-1">
+                                    {{NoK.city | uppercase}} {{NoK.state | uppercase}}, {{NoK.zip}}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-md-3 col-sm-6 col-12">
+                            <div class="form-row form-dashboard ">
+
+                              <div class="form-view">
+                                <div class="title-normal">Home Phone</div>
+                                <div *ngIf="NoK.phone==undefined || NoK.phone==''" class="value text-muted">N/A</div>
+                                <div *ngIf="NoK.phone!=undefined && NoK.phone!=''" class="value">
+                                  {{NoK.phone | phonePipe}}</div>
+                              </div>
+
+                            </div>
+                            <div class="form-row form-dashboard ">
+                              <div class="form-view">
+                                <div class="title-normal">Cell Phone</div>
+                                <div *ngIf="NoK.cell_phone==undefined || NoK.cell_phone==''" class="value text-muted">
+                                  N/A
+                                </div>
+                                <div class="value" *ngIf="NoK.cell_phone!=undefined && NoK.cell_phone!=''">
+                                  {{NoK.cell_phone | phonePipe}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>
+
+                    </div>
+                  </div>
+
+
+
+                </div>
+              </div>
+
+            </ng-template>
+          </ngb-tab>
+
+          <ngb-tab id="tab_pat_careteam">
+            <ng-template ngbTabTitle>Care Team</ng-template>
+            <ng-template ngbTabContent>
+
+              <div class="d-flex flex-column flex-grow-1">
+
+                <div class="dashboard-content d-flex flex-column flex-grow-1 overflow-auto overflow-height p-2">
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto shadow-none">
+
+                    <div class="dashboard-title-md border-0">
+                      <div class="title-md">Patient Care Team</div>
+                      <button *ngIf="editMode" type="button" class="btn btn-sm btn-link"
+                        (click)="addEditCareTeam('ADD',undefined)">Add
+                        New Team</button>
+
+                    </div>
+
+                  </div>
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto mt-2 shadow-none"
+                    *ngIf="this.lstPatientCareTeams == undefined || this.lstPatientCareTeams.length ==0">
+                    <div class="dashboard-content dashboard-add-edit m-0 p-0 overflow-visible">
+
+                      <div *ngIf="lstPatientCareTeams ==undefined || lstPatientCareTeams.length==0">
+                        <div class="no-content">
+                          <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div *ngIf="this.lstPatientCareTeams != undefined && this.lstPatientCareTeams.length>0">
+                    <div class="dashboard rounded-0 flex-grow-0 h-auto mt-2 shadow-none"
+                      *ngFor="let careTeam of lstPatientCareTeams">
+
+
+                      <div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-30">
+                        <h4
+                          class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400  d-flex  pt-1 flex-grow-1">
+                          <div class="d-flex flex-grow-1">
+                            <i class="far fa-circle fa-sm"></i>
+                            <span
+                              class="accordian-main-header-title pl-2 pr-1">{{careTeam.team_name | uppercase}}</span>
+                            <span class="accordian-main-header-title font-weight-normal" [ngClass]="{
+                            'text-success' :  (careTeam.team_status == 'proposed' || careTeam.team_status == 'active'),
+                            'text-danger' :  (careTeam.team_status == 'inactive' || careTeam.team_status == 'suspended')
+                          }">({{careTeam.team_status
+                        | uppercase}})</span>
+                          </div>
+
+                        </h4>
+
+
+
+                        <button *ngIf="editMode" type="button" class="btn btn-link btn-sm text-primary"
+                          (click)="addEditCareTeam('EDIT',careTeam)"><i class="far fa-edit"></i></button>
+                        <button *ngIf="editMode" type="button" class="btn btn-link btn-delete btn-md p-0"
+                          (click)="onRemoveCareTeam(careTeam.team_id)"><i class="far fa-trash-alt"></i></button>
+                        <button *ngIf="editMode" type="button" class="btn btn-link btn-sm text-primary"
+                          (click)="addEditCareTeamMember('ADD',careTeam.team_id, undefined)"><i
+                            class="fas fa-user-plus"></i></button>
+
+                      </div>
+
+
+                      <section *ngIf="lstPatientCareTeams != undefined && lstPatientCareTeams.length>0">
+
+                        <div class="dashboard-content dashboard-add-edit overflow-visible">
+
+                          <div class="col-12 col-md-12 pb-0 px-2">
+
+                            <div class="encounter-data-sub-accordian accordian-data rounded-0"
+                              *ngFor="let teamMember of getFilteredCareTeamMembers(careTeam.team_id)">
+                              <div class="sub-accordian-header" role="tab" id="headingOne">
+                                <h5 class=" m-0 p-0 pt-1">
+                                  <a data-toggle="collapse" href="#patCTM{{teamMember.id}}" aria-expanded="false">
+
+                                    <i class="far fa-circle fa-sm"></i>
+
+                                    <span class="accordian-sub-header-title pl-2 pr-1">{{teamMember.title | uppercase}}
+                                      {{teamMember.first_name | uppercase}} {{teamMember.last_name | uppercase}}
+                                    </span>
+                                    <span class="font-weight-normal text-muted">({{teamMember.relationship_description
+                                          |
+                                          uppercase}}
+                                      <span class="font-weight-normal text-muted" *ngIf="teamMember.pcp">- PRIMARY CARE
+                                        PHYSICIAN</span>
+                                      )</span>
+
+                                  </a>
+                                </h5>
+
+
+                                <button *ngIf="editMode" type="button" class="btn btn-link btn-sm text-primary"
+                                  (click)="addEditCareTeamMember('EDIT',careTeam.team_id, teamMember)"><i
+                                    class="fas fa-user-edit"></i></button>
+                                <button *ngIf="editMode" type="button" class="btn btn-link btn-delete"
+                                  (click)="onRemoveCareTeamMember(teamMember.id)"><i
+                                    class="fas fa-user-times"></i></button>
+
+                              </div>
+
+                              <div id="patCTM{{teamMember.id}}" class="collapse" class="collapse">
+                                <div class="sub-accordian-body bg-transparent">
+                                  <div class="form-row form-dashboard"
+                                    *ngIf="teamMember.member_type=='Provider in Practice' || teamMember.member_type=='Referring Provider'">
+
+                                    <div class="col-md-3 col-12 pl-4 pt-1">
+                                      <div class="form-row form-dashboard">
+                                        <div class="form-view">
+                                          <div class="title-normal mr-2">NPI</div>
+                                          <div class="value ml-4">{{teamMember.npi}}</div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-md-9 col-12 pl-4 pt-1">
+                                      <div class="form-row form-dashboard">
+                                        <div class="form-view">
+                                          <div class="title-normal">Speciality</div>
+                                          <div class="value">({{teamMember.taxonomy | uppercase}})
+                                            {{teamMember.taxonomy_description | uppercase}}</div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                  </div>
+
+                                  <div class="form-row form-dashboard"
+                                    *ngIf="teamMember.address!=undefined && teamMember.address!='' && teamMember.phone!=undefined && teamMember.phone!=''">
+
+                                    <div class="col-md-3 col-12 pl-4 pt-1">
+                                      <div class="form-row form-dashboard">
+                                        <div class="form-view">
+                                          <div class="title-normal mr-2">Phone</div>
+                                          <div class="value ml-2">{{teamMember.phone | phonePipe}}</div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-md-9  col-12 pl-4 pt-1">
+                                      <div class="form-row form-dashboard">
+                                        <div class="form-view">
+                                          <div class="title-normal">Address</div>
+                                          <div class="value pl-3">
+                                            <span *ngIf="teamMember.address!=undefined && teamMember.address!=''">{{teamMember.address
+                                                  | uppercase}}</span>
+                                            <span *ngIf="teamMember.address2!=undefined && teamMember.address2!=''">,
+                                              {{teamMember.address2| uppercase}}</span>
+                                            <span *ngIf="teamMember.city!=undefined && teamMember.city!=''">,
+                                              {{teamMember.city
+                                                  | uppercase}}</span>
+                                            <span *ngIf="teamMember.state!=undefined && teamMember.state!=''">{{teamMember.state
+                                                  | uppercase}}</span>
+                                            <span *ngIf="teamMember.zip!=undefined && teamMember.zip!=''">,
+                                              {{teamMember.zip | uppercase}}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </section>
+
+
+                    </div>
+                  </div>
+
+
+
+                </div>
+              </div>
+
+            </ng-template>
+          </ngb-tab>
+
+
+          <ngb-tab id="tab_pat_scanned_cards" *ngIf="patient!=undefined">
+            <ng-template ngbTabTitle>Scanned Cards</ng-template>
+            <ng-template ngbTabContent>
+
+              <div class="d-flex flex-column flex-grow-1">
+
+                <div class="dashboard-content d-flex flex-column flex-grow-1 overflow-auto overflow-height p-2">
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto shadow-none">
+
+                    <div class="dashboard-title-md border-0 ">
+                      <div class="title-md">Patient Scanned Cards</div>
+
+
+
+                    </div>
+
+                  </div>
+
+                  <div class="dashboard rounded-0 flex-grow-0 h-auto mt-2 shadow-none">
+
+                    <div class="dashboard-content dashboard-add-edit overflow-visible  py-0">
+
+                      <div class="form-row form-dashboard p-1">
+                        <i class="far fa-circle fa-tiny fz-10 pt-2 font-weight-bold " [ngClass]="{'text-ihc-green': (patient.id_card !=undefined && patient.id_card !=''),
+                        'text-ihc-blue': (patient.id_card ==undefined || patient.id_card =='')}"></i>
+                        <span class="accordian-sub-header-title text-dark px-2 pt-1 flex-grow-1">ID Card</span>
+
+                        <div *ngIf="(patient.id_card !=undefined && patient.id_card !='')">
+                          <button class="btn btn-sm btn-link py-0" (click)="viewScanCard('id_card',patient.id_card)">
+                            View
+                          </button>
+                          <button class="btn btn-sm btn-link text-danger  py-0 border-left ml-2"
+                            (click)="removeScanCard('id_card')" *ngIf="editMode">
+                            Remove
+                          </button>
+                        </div>
+
+                        <span class="text-muted font-italic mt-0 fz-11 pt-2 px-1"
+                          *ngIf="(patient.id_card ==undefined || patient.id_card =='')">No Scan
+                          Found</span>
+
+                        <button class="btn btn-sm btn-link  py-0 border-left ml-2" *ngIf="!editMode"
+                          (click)="ScanCard('id_card')">
+                          Scan
+                        </button>
+
+                      </div>
+
+                      <div class="form-row form-dashboard border-top p-1">
+                        <i class="far fa-circle fa-tiny fz-10 pt-2 font-weight-bold" [ngClass]="{'text-ihc-green': (patient.driving_license !=undefined && patient.driving_license !=''),
+                        'text-ihc-blue': (patient.driving_license ==undefined || patient.driving_license =='')}"></i>
+                        <span class="accordian-sub-header-title text-dark px-2 pt-1 flex-grow-1">Driving License</span>
+
+
+
+
+
+
+                        <div *ngIf="(patient.driving_license !=undefined && patient.driving_license !='')">
+                          <button class="btn btn-sm btn-link py-0"
+                            (click)="viewScanCard('driving_license',patient.driving_license)">
+                            View
+                          </button>
+                          <button class="btn btn-sm btn-link text-danger  py-0 border-left ml-2" *ngIf="editMode"
+                            (click)="removeScanCard('driving_license')">
+                            Remove
+                          </button>
+                        </div>
+
+                        <span class="text-muted font-italic mt-0 fz-11 pt-2 px-1"
+                          *ngIf=" (patient.driving_license ==undefined || patient.driving_license =='')">No
+                          Scan
+                          Found</span>
+                        <button class="btn btn-sm btn-link  py-0 border-left ml-2" *ngIf="!editMode"
+                          (click)="ScanCard('driving_license')">
+                          Scan
+                        </button>
+                      </div>
+
+                      <div class="form-row form-dashboard border-top p-1">
+                        <i class="far fa-circle fa-tiny fz-10 pt-2 font-weight-bold "
+                          [ngClass]="{'text-ihc-green': (patient.patient_agreement !=undefined && patient.patient_agreement !=''),
+                        'text-ihc-blue': (patient.patient_agreement ==undefined || patient.patient_agreement =='')}"></i>
+                        <span class="accordian-sub-header-title text-dark px-2 pt-1 flex-grow-1">Patient
+                          Agreement</span>
+
+
+                        <div *ngIf="(patient.patient_agreement !=undefined && patient.patient_agreement !='')">
+                          <button class="btn btn-sm btn-link py-0"
+                            (click)="viewScanCard('patient_agreement',patient.patient_agreement)">
+                            View
+                          </button>
+                          <button class="btn btn-sm btn-link text-danger  py-0 border-left ml-2" *ngIf="editMode"
+                            (click)="removeScanCard('patient_agreement')">
+                            Remove
+                          </button>
+                        </div>
+
+                        <span class="text-muted font-italic mt-0 fz-11 pt-2 px-1"
+                          *ngIf="(patient.patient_agreement ==undefined || patient.patient_agreement =='')">No
+                          Scan
+                          Found</span>
+
+                        <button class="btn btn-sm btn-link  py-0 border-left ml-2" *ngIf="!editMode"
+                          (click)="ScanCard('patient_agreement')">
+                          Scan
+                        </button>
+
+                      </div>
+
+
+                    </div>
+
+
+                    <ng-template id="sec_ins_scan_cards"
+                      [ngIf]="lstPatInsurance !=undefined && lstPatInsurance.length != 0">
+
+
+
+
+                      <div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-30 border-top">
+                        <h4
+                          class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400  d-flex  pt-1 flex-grow-1">
+                          <div class="d-flex flex-grow-1">
+                            <span class="accordian-main-header-title px-2 fz-14 font-weight-400">Insurance Cards</span>
+                          </div>
+                        </h4>
+
+                      </div>
+
+                      <div class="dashboard-content dashboard-add-edit overflow-visible  py-0">
+
+
+                        <div class="form-row form-dashboard p-1" *ngFor="let ins of lstPatInsurance ; let i = index"
+                          [ngClass]="{'border-top': i>0}">
+
+
+
+
+
+                          <div class="px-0  flex-grow-1">
+                            <i class="far fa-circle fa-tiny fz-10 pt-2 font-weight-bold" [ngClass]="{'text-ihc-green': (ins.doc_link !=undefined && ins.doc_link !=''),
+                            'text-ihc-blue': (ins.doc_link ==undefined || ins.doc_link =='')}"></i>
+                            <span class="accordian-sub-header-title px-1 pt-1 width-70">
+                              {{ins.insurace_type |
+                                  uppercase}}
+                            </span>
+                            <span class="v-separtor"></span>
+
+                            <span class="accordian-sub-header-title text-dark d-flex- flex-grow-1">
+                              {{ins.name |
+                                  uppercase}}
+                            </span>
+                          </div>
+
+
+                          <div *ngIf="ins.doc_link!=undefined && ins.doc_link!=''">
+                            <button class="btn btn-sm btn-link py-0"
+                              (click)="viewScanCard(ins.insurace_type,ins.doc_link)">
+                              View
+                            </button>
+                            <button class="btn btn-sm btn-link text-danger  py-0 border-left ml-2" *ngIf="editMode"
+                              (click)="removeScanCard('insurance' ,ins.patientinsurance_id)">
+                              Remove
+                            </button>
+                          </div>
+
+                          <span class="text-muted font-italic mt-0 fz-11 pt-2 px-1"
+                            *ngIf="(ins.doc_link==undefined || ins.doc_link=='')">No Scan Found</span>
+                          <button class="btn btn-sm btn-link py-0 border-left ml-2" *ngIf="!editMode"
+                            (click)="ScanCard('patient_agreement')">
+                            Scan
+                          </button>
+                        </div>
+                      </div>
+
+                    </ng-template>
+
+
+
+                  </div>
+
+
+
+
+
+
+
+                </div>
+              </div>
+
+            </ng-template>
+          </ngb-tab>
+
+
+        </ngb-tabset>
+
+
+
+      </div>
+
+    </form>
+
+
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isSaving">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Saving Patient...
+    </div>
+  </div>
+
+
+</div>

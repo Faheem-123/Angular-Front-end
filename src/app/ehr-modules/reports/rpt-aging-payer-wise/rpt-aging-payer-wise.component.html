@@ -1,0 +1,70 @@
+<div class="d-flex flex-column flex-grow-1 mt-0 position-relative">
+
+  <div class="d-flex flex-column flex-grow-1 border-content-box border-top-0 light-sky-blue">
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 max-height-100">
+      <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+        <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+
+          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="exportAsXLSX()"><i
+              class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export</button>
+        </div>
+      </div>
+      <div class="overflow-auto flex-grow-1  overflow-height">
+        <table class="table light-striped-border layout-fixed table-sticky-header">
+          <thead>
+            <tr>
+              <th width="160px">Payer </th>
+
+              <th width="180px">Insurance</th>
+              <th width="155px">30 Days</th>
+
+              <th width="155px">60 Days</th>
+
+              <th width="155px"> 90 Days</th>
+
+              <th width="155px">120 days</th>
+
+              <th width="155px">120+ Days</th>
+
+              <th width="180px">Total</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let eleg of lstFinal; let i=index" [ngClass]="{'table-primary font-weight-bold': eleg.payer_name=='',
+                        'table-success font-weight-bold':(eleg.payer_type=='Client Totals')}">
+
+              <td width="160px" title="{{eleg.payer_type}}">{{eleg.payer_type}}</td>
+
+              <td title="{{eleg.payer_number +' | '+eleg.payer_name}}">{{eleg.payer_number +' '+eleg.payer_name}}</td>
+              <td>{{eleg.aging_30| currency:'USD':'symbol-narrow'}} <sub
+                  class="title-bar-blue-btn">{{eleg.aging_30_per}}</sub></td>
+
+              <td>{{eleg.aging_60 | currency:'USD':'symbol-narrow'}} <sub
+                  class="title-bar-blue-btn">{{eleg.aging_60_per}}</sub></td>
+
+              <td>{{eleg.aging_90 | currency:'USD':'symbol-narrow'}} <sub
+                  class="title-bar-blue-btn">{{eleg.aging_90_per}}</sub></td>
+
+              <td>{{eleg.aging_120 | currency:'USD':'symbol-narrow'}} <sub
+                  class="title-bar-blue-btn">{{eleg.aging_120_per}}</sub></td>
+
+              <td>{{eleg.aging_120_plus | currency:'USD':'symbol-narrow'}} <sub
+                  class="title-bar-blue-btn">{{eleg.aging_120_plus_per}}</sub></td>
+
+              <td class="font-weight-bold">{{eleg.total | currency:'USD':'symbol-narrow'}} <sub
+                  class="title-bar-blue-btn">{{eleg.total_per}}</sub></td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>

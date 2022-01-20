@@ -1,0 +1,90 @@
+<div class="dashboard-container d-flex flex-column">
+  <div class="dashboard m-2">
+    <div class="bg-green-ihc h-30 px-3 d-flex align-items-center flex-shrink-0 text-white">
+      <div class="title mt-1">User Admin</div>
+    </div>
+    <div class="alert alert-warning rounded-0 mb-0" role="alert" *ngIf="!showModule">
+      <i class="fas fa-exclamation-triangle text-warning mr-1"></i>
+      <span class="fz-12">No Module is Assigned to Logined User</span>
+    </div>
+    <div class="dashboard-content d-flex flex-row mt-0">
+      <div class="scheduler-left width-205">
+        <div class="d-flex flex-column flex-grow-1">
+          <aside class="reports-main-sidebar border-right">
+            <section class="reports-sidebar">
+              <ul class="reports-sidebar-menu">
+                <li class="active">
+                  <!-- <a href="#">
+                    <span class="ml-2">Admin Module</span>
+                  </a> -->
+
+                  <ul class="reports-treeview-menu"
+                    *ngFor="let mode of acUserModuels | listFilter : 'is_enabled' : 'true'  ; let i = index">
+                    <li class=" rpt-pointer" [ngClass]="{'active-green-round' : (mode.module_name === componentName)}">
+                      <a (click)="generalOnChange(mode.module_name)">{{mode.module_name}}</a>
+                    </li>
+
+                    <!-- <tr *ngFor="let pro of lstFileredProviders"
+                    [ngClass]="{'active-blue' : (pro.provider_id === providerId)}">
+                    <td (click)="providerChanged(pro.provider_id)">
+                      {{pro.provider_name}}
+                    </td>
+                  </tr> -->
+
+                    <!-- <li class=" rpt-pointer" [ngClass]="{'active-green': componentName=='dashboard-setting'}">
+                      <a (click)="generalOnChange('dashboard-setting')">Dashboard Setting</a>
+                    </li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green': componentName=='fax-contacts-setup'}">
+                      <a (click)="generalOnChange('fax-contacts-setup')">Fax Contacts List</a>
+                    </li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green': componentName=='encounter-setting'}">
+                      <a (click)="generalOnChange('encounter-setting')">Encounter Setting</a>
+                    </li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green': componentName=='add-new-insurance'}">
+                      <a (click)="generalOnChange('add-new-insurance')">Add New Insurance</a>
+                    </li>
+                    <li class="rpt-pointer" [ngClass]="{'active-green': componentName=='mylist-icd'}">
+                      <a (click)="generalOnChange('mylist-icd')">My List</a>
+                    </li> -->
+                  </ul>
+                </li>
+              </ul>
+            </section>
+          </aside>
+        </div>
+      </div>
+      <div class="scheduler-right pl-0 d-flex flex-column flex-grow-1">
+        <dashboard-setting class="d-flex flex-column flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='DashBoard Settings'"></dashboard-setting>
+        <fax-contacts-setup class="d-flex flex-row flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='Fax Contact List'"></fax-contacts-setup>
+        <encounter-setting class="d-flex flex-column flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='Encounter Settings'"></encounter-setting>
+        <add-new-insurance class="d-flex flex-column flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='Insurances'"></add-new-insurance>
+        <mylist-icd class="d-flex flex-column flex-grow-1 overflow-height p-1" *ngIf="componentName=='My List'">
+        </mylist-icd>
+        <!-- <encounter-template-setup class="d-flex flex-column flex-grow-1 overflow-height p-1" 
+        *ngIf="componentName=='Template Setup'"></encounter-template-setup> -->
+        <!-- <provider-wise-templates class="d-flex flex-column flex-grow-1 overflow-height p-1" 
+        *ngIf="componentName=='Template Setup'"></provider-wise-templates> -->
+        <providerbase-template-main class="d-flex flex-column flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='Template Setup'"></providerbase-template-main>
+        <reffering-physician-setup class="d-flex flex-column flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='Referring Provider'"></reffering-physician-setup>
+        <patient-referral-request class="d-flex flex-column flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='Referral Request'"></patient-referral-request>
+        <rpt-css-call-log class="d-flex flex-column flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='CSS Call Log'"></rpt-css-call-log>
+        <cdr-rules role_id="{{this.lookupList.logedInUser.userRole}}"
+          class="d-flex flex-column flex-grow-1 overflow-height p-1" *ngIf="componentName=='My CDS Rules'"></cdr-rules>
+        <eob class="d-flex flex-column flex-grow-1 overflow-height p-1" callingFrom='user_admin'
+          *ngIf="componentName=='EOB'"></eob>
+        <guarantor-setup class="d-flex flex-column flex-grow-1 overflow-height p-1" *ngIf="componentName=='Guarantor'">
+        </guarantor-setup>
+        <extender-template class="d-flex flex-column flex-grow-1 overflow-height p-1"
+          *ngIf="componentName=='Extender Template'"></extender-template>
+      </div>
+    </div>
+  </div>
+</div>

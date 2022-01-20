@@ -1,0 +1,242 @@
+<ngb-tabset [destroyOnHide]="false" class="nav pateint-nav" #patientMaintab >
+<!-- <ngb-tabset class="nav pateint-nav" #patientMaintab> -->
+
+  <ngb-tab id="tab-OrderCross">
+    <ng-template ngbTabTitle>Order cross</ng-template>
+    <ng-template ngbTabContent>
+        <div class="encounter-module">
+            <div class="header" >
+              <div class="title">Cross Report</div>
+              <span class="badge badge-pill">{{recordCount}}</span>
+            </div>
+            
+            <form [formGroup]="frmCallSubmit" >
+              <div class="custom-select-box pb-1" style="overflow: visible;">
+                <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+                <div class="form-row form-dashboard">
+                  <div class="form-group">
+                    <label for="dateFrom" class="col-form-label required">From:</label>
+                    <div class="form-row form-dashboard">
+                      <div class="form-group">
+          
+                          <div class="input-group">
+                              <input class="form-control" placeholder="mm/dd/yyyy" name="dateFrom"
+                                formControlName="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-outline-primary" (click)="dateFrom.toggle()" type="button">
+                                      <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                    </button>
+                                  </span>
+                            </div>
+                          
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="dateTo" class="col-form-label required">To:</label>
+                    
+                    <div class="input-group">
+                        <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" 
+                        formControlName="dateTo" ngbDatepicker #dateTo="ngbDatepicker">
+                        <span class="input-group-btn">
+                            <button class="btn btn-outline-primary" (click)="dateTo.toggle()" type="button">
+                              <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                            </button>
+                          </span>
+                      </div>
+          
+          
+                  </div>
+                  <div class="form-group col-sm-4 text-right">
+                    <button type="button" ng-disabled="btnHide" class="btn btn-success ml-2 mt-3" (click)="searchCallData(frmCallSubmit.value)">Search</button>
+                  </div>
+                </div>
+              </div>
+              </form>
+              <div class="custom-select-box pb-1 mt-2">
+                  <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+                  <div class="dashboard-content">
+                    <table class="table layout-fixed light-striped-border">
+                      <thead>
+                        <tr>
+                          <th style="width:60px">PID</th>
+                          <th style="width: 250px;">Patient</th>
+                          <th style="width: 85;">DOB</th>
+                          <th style="width: 85px;">App. Date</th>
+                          <th style="width: 85px;">App. Status</th>
+                          <th style="width: 120px">App. Type</th>
+                          <th style="width: 150px;">Visit Reason</th>
+                          <th style="width: 100px;">Encounter Reason</th>
+                          <th style="width: 180px;">Provider</th>
+                          <th style="width: 75px;">Encounter</th>
+                          <th style="width: 50px;">Claim</th>
+                          <th style="width: 75px;">Document</th>
+                          <th style="width: 200px;">Doc. Name</th>
+                          <th style="width: 65px;">H.Check</th>
+                          <th style="width: 150px;">App. Location</th>
+                          <th style="width: 100px;">Facility</th>
+                          <th style="width: 100px;">Claim Location</th>
+                          <th style="width: 40px;">HPI</th>
+                          <th style="width: 50px;">Notes</th>
+                          <th style="width: 60px;">Signed</th>
+                        </tr>
+                      </thead>
+                    <tbody>
+                       <tr st-select-row="row" *ngFor="let lstCross of lstOrderCross">
+                          <td>{{lstCross.pid}}</td>
+                          <td>{{lstCross.patient}}</td>
+                          <td>{{lstCross.patient_dob}}</td>
+                          <td>{{lstCross.appointment_date}}</td>
+                          <td>{{lstCross.app_status}}</td>
+                          <td>{{lstCross.app_type}}</td>
+                          <td>{{lstCross.visit_reason}}</td>
+                          <td>{{lstCross.encounter_Reason}}</td>
+                          <td>{{lstCross.provider}}</td>
+                          <td>{{lstCross.encounter_date}}</td>
+                          <td>{{lstCross.claim_Date}}</td>
+                          <td>{{lstCross.document_date}}</td>
+                          <td>{{lstCross.document_name}}</td>
+                          <td>{{lstCross.health_check}}</td>
+                          <td>{{lstCross.appointment_location}}</td>
+                          <td>{{lstCross.facilityname}}</td>
+                          <td>{{lstCross.claim_location}}</td>
+                          <td>{{lstCross.hpi}}</td>
+                          <td>{{lstCross.notes}}</td>
+                          <td>{{lstCross.signed}}</td>
+                       </tr>
+                      </tbody> 
+                    </table>
+          
+                  </div>
+                </div>
+          
+            </div>
+    </ng-template>
+  </ngb-tab>
+  <!-- Lab complate report
+   -->
+  <ngb-tab id="tab-Lab">
+      <ng-template ngbTabTitle>Lab cross</ng-template>
+      <ng-template ngbTabContent>
+
+          <div class="encounter-module">
+              <div class="header" >
+                <div class="title">Lab Complated</div>
+                <span class="badge badge-pill">{{recordCountComp}}</span>
+              </div>
+              
+              <form [formGroup]="frmlabComplate" >
+                <div class="custom-select-box pb-1" style="overflow: visible;">
+                  <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+                  <div class="form-row form-dashboard">
+                    <div class="form-group">
+                      <label for="dateFromComp" class="col-form-label required">From:</label>
+                      <div class="form-row form-dashboard">
+                        <div class="form-group">
+            
+                            <div class="input-group">
+                                <input class="form-control" placeholder="mm/dd/yyyy" name="dateFromComp"
+                                  formControlName="dateFromComp" ngbDatepicker #dateFromComp="ngbDatepicker">
+                                  <span class="input-group-btn">
+                                      <button class="btn btn-outline-primary" (click)="dateFromComp.toggle()" type="button">
+                                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                      </button>
+                                    </span>
+                              </div>
+                            
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="dateToComp" class="col-form-label required">To:</label>
+                      
+                      <div class="input-group">
+                          <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" 
+                          formControlName="dateToComp" ngbDatepicker #dateToComp="ngbDatepicker">
+                          <span class="input-group-btn">
+                              <button class="btn btn-outline-primary" (click)="dateToComp.toggle()" type="button">
+                                <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                              </button>
+                            </span>
+                        </div>
+            
+            
+                    </div>
+
+                    <!-- search pat -->
+                    <div class="form-group col-6">
+                        <label for="txtPatientSearch" class="col-form-label">Patient:</label>
+    
+                        <div class="form-row form-dashboard">
+                          <div class="form-group col-12">
+                            <div class="input-icon d-flex flex-grow-3">
+    
+                              <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+                                formControlName="txtPatientSearch" placeholder="Search Patient" (keydown)="onPatientSearchKeydown($event)"
+                                autocomplete="off" (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+                              <div class="icon">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                              </div>
+    
+                              <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                                (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()"></inline-patient-search>
+    
+                            </div>
+                          </div>
+                        </div>
+        
+                      </div>
+
+                    <div class="form-group text-right">
+                      <button type="button" ng-disabled="btnHide" class="btn btn-success ml-2 mt-3" (click)="searchCompData(frmlabComplate.value)">Search</button>
+                    </div>
+                  </div>
+                </div>
+                </form>
+
+                <div class="custom-select-box pb-1 mt-2">
+                    <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+                    <div class="dashboard-content">
+                      <table class="table layout-fixed light-striped-border">
+                        <thead>
+                          <tr>
+                            <th style="width: 55px;">PID</th>
+                            <th style="width: 200px;">Patient</th>
+                            <th style="width: 85px;">Order Date</th>
+                            <th style="width: 150px;">Status</th>
+                            <th style="width: 120px;">Location</th>
+                            <th style="width: 150px;">Provider</th>
+                            <th style="width: 100px;">Category</th>
+                            <th style="width: 350px;">Test Name</th>
+                            <th style="width: 75px;"></th>
+                          </tr>
+                        </thead>
+                      <tbody>
+                         <tr st-select-row="row" *ngFor="let lstOC of lstOrderComp">
+                            <td title={{lstOC.pid}}>{{lstOC.pid}}</td>
+                            <td title={{lstOC.pat_name}}>{{lstOC.pat_name}}</td>
+                            <td title={{lstOC.order_date}}>{{lstOC.order_date}}</td>
+                            <td title={{lstOC.status}}>{{lstOC.status}}</td>
+                            <td title={{lstOC.loc_name}}>{{lstOC.loc_name}}</td>
+                            <td title={{lstOC.pro_name}}>{{lstOC.pro_name}}</td>
+                            <td title={{lstOC.category}}>{{lstOC.category}}</td>
+                            <td title={{lstOC.cptlist}}><pre>{{lstOC.cptlist}}</pre></td>
+                            <td title={{lstOC.attac}}>{{lstOC.attac}}</td>                            
+                         </tr>
+                        </tbody> 
+                      </table>
+            
+                    </div>
+                  </div>
+            
+              </div>
+      </ng-template>
+    </ngb-tab>
+
+</ngb-tabset>
+
+
+
+
+
+

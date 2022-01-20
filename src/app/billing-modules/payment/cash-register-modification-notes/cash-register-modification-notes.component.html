@@ -1,0 +1,62 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)"
+(keydown.esc)="activeModal.dismiss('Cross click')">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">{{title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body custom">
+
+    <div class="flex-grow-1 overflow-auto">
+      <div class="info-box-stipes rounded-3 flex-grow-1">
+        <div class="px-2 py-1">
+
+          <div class="form-row form-dashboard">
+
+            <div class="col-12">
+              <div class="pl-1 pr-1">
+                <div class="form-row form-dashboard">
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label" for="txtComments">Comments:</label>
+                    <textarea class="form-control required" id="txtComments" rows="3" maxlength="500"
+                      formControlName="txtComments"></textarea>
+                  </div>
+
+                </div>
+
+                <div class="fz-12 pt-2 pb-1" *ngIf="(footerNote!=undefined && footerNote!='' )">
+                  <i class="fas fa-exclamation-triangle text-warning mr-2"></i><span class="font-weight-bold">Note:
+                  </span>{{footerNote}}
+                </div>
+
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-flex flex-grow-1 p-0 m-0" *ngIf="errorMsg!=''">
+        <div class="form-group flex-grow-1  fz-12 pt-1 m-0 ">
+          <div class="alert alert-danger mb-1  py-1 rounded-3" role="alert">
+            {{errorMsg}}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="modal-footer custom">
+
+    <button style="min-width: 80px;" class="btn btn-success btn-sm" [disabled]="!formGroup.valid"
+      type="submit">{{okButtonLable}}</button>
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+  </div>
+</form>

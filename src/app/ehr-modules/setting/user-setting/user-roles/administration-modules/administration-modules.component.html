@@ -1,0 +1,55 @@
+<div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-25">
+  <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400  d-flex  pt-2-px">Role Administration
+    Modules
+  </h4>
+
+  <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-26" [disabled]="isLoading"
+    (click)="onSave()">Save</button>
+</div>
+
+<div class="table-header-bg h-26 px-2 d-flex align-items-center justify-content-between">
+
+
+  <div class="form-row form-dashboard">
+
+    <div class="form-group ">
+      <div class="form-check-cont">
+        <div class="form-check form-check-inline mt-0 pt-1">
+          <input class="form-check-input" type="checkbox" id="chkAdminModuleSelectAll" 
+            (click)="IsSelectAll($event.currentTarget.checked)">
+          <label class="form-check-label font-weight-500" for="chkAdminModuleSelectAll">Select All</label>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+
+<div class="bg-white d-flex flex-column flex-grow-1 overflow-auto">
+  <table class="table light-striped-border">
+    <tbody>
+      <tr *ngFor="let u of lstModules;let i = index">
+        <td>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="chkModule_{{u.module_id}}" value={{u.is_enabled}}
+              [checked]="u.is_enabled" (change)="IsSelect($event.currentTarget.checked,u)">
+            <label class="form-check-label" for="chkModule_{{u.module_id}}">{{u.module_name}}</label>
+          </div>
+
+          <!--
+          <div>
+            <input (click)="IsSelect($event.currentTarget.checked,u)" id="customCheck1" type="checkbox"
+              value={{u.is_enabled}} [checked]="u.is_enabled">
+            <label for={{u.module_id}}>&nbsp;</label>
+          </div>
+          -->
+        </td>
+        <!--  <td>{{u.module_name}}</td>-->
+      </tr>
+
+    </tbody>
+  </table>
+</div>

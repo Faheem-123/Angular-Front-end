@@ -1,0 +1,162 @@
+<div class="dashboard">
+    <div class="dashboard-title position-relative">
+        <div class="icon light-gray">
+            <!-- <i class="ihc-report"></i> -->
+            <img class="img-h-24" src="./assets/images/icons/ico_report.svg" alt="">
+        </div>
+
+
+        <div class="title">
+            Pending Encounters <span class="text-danger ml-2"> ({{pendingchartscount}}) </span>
+        </div>
+
+        <div class="title-link">
+            <a class="nav-link" (click)="signSelected()">Sign Selected</a>
+        </div>
+
+        <div class="title-btn-link dropdown position-initial">
+            <button class="btn-dropdown p-0 line-height-1" type="button" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" (click)="showHidetoggle()">
+                <img class="img-h-25" src="./assets/images/icons/ico_filter_green.svg" alt="">
+            </button>
+
+            <div class="dropdown-menu dashboard-dropdown rounded shadow-md m-0 t-0"
+                [ngClass]="{'hide': showHideSearch}">
+                <div class="dropdown-title">Provider & Location Selection
+                    <button class="close"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
+                </div>
+
+                <form [formGroup]="filterForm" (ngSubmit)="onFilter(filterForm.value)">
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group col-12">
+                            <label for="input1">Provider</label>
+                            <select class="form-control" formControlName="ctrlproviderSearch">
+                                <!-- <option value="all">All</option> -->
+                                <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="input1">Location</label>
+                            <select class="form-control" formControlName="ctrllocationSearch">
+                                <option value="all">All</option>
+                                <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+
+                        <!-- <div class="form-group col-12">
+                                    <label for="input1">Date From</label>
+                                    <input type="date" class="form-control" formControlName="datefrom">
+                                </div> -->
+                        <div class="form-group col-12">
+                            <label for="txtDate">Date From<span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input class="form-control" placeholder="mm/dd/yyyy" name="datefrom"
+                                    formControlName="datefrom" ngbDatepicker #datefrom="ngbDatepicker">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-outline-primary" (click)="datefrom.toggle()" type="button">
+                                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+
+
+
+                        <!-- <div class="form-group col-12">
+                                        <label for="input1">Date To</label>
+                                        <input type="date" class="form-control" formControlName="dateto"> 
+                                    </div> -->
+
+                        <div class="form-group col-12">
+                            <label for="dateto">Date To <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input class="form-control" placeholder="mm/dd/yyyy" name="dateto"
+                                    formControlName="dateto" ngbDatepicker #dateto="ngbDatepicker">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-outline-primary" (click)="dateto.toggle()" type="button">
+                                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-12 text-right">
+                            <button type="submit" class="btn btn-success btn-search  mt-2">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="title-btn p-0">
+            <a (click)="onFilter(filterForm.value)"><img class="img-h-25"
+                    src="./assets/images/icons/ico_refresh_green.svg" alt=""></a>
+        </div>
+    </div>
+
+    <div class="dashboard-content position-relative">
+
+        <table class="table light-striped-border wide">
+            <thead>
+                <tr>
+
+                    <th class="width-20">
+
+                        <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                            <input type="checkbox" class="custom-control-input" id="select-all"
+                                (change)="checkAllPendingEncounters($event.currentTarget.checked)">
+                            <label class="custom-control-label" for="select-all"></label>
+                        </div>
+
+                    </th>
+                    <th>Visit Date</th>
+                    <th>Patient</th>
+                    <th>Provider</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr st-select-row="row" *ngFor="let charts of listPendingEncounterResult">
+                    <td>
+                        <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                            <input type="checkbox" class="custom-control-input" id="{{charts.chart_id}}"
+                                (change)=" checkEncounter($event.currentTarget.checked,charts)" value={{charts.isSign}}
+                                [checked]="charts.isSign">
+                            <label class="custom-control-label" for="{{charts.chart_id}}"></label>
+                        </div>
+
+                      
+                    </td>
+                    <td>{{charts.visit_date}}</td>
+                    <td>
+                        <button [disabled]="!this.lookupList.UserRights.patient_view" type="button" class="link-btn"
+                                (click)="openPatientSummary(charts)">{{charts.patient_name}}</button>
+                    </td>
+                    <td>{{charts.provider_name}}</td>
+
+                    <td class="text-right">
+                        <button [disabled]="!this.lookupList.UserRights.canViewChart" type="button" class="link-btn"
+                            (click)="openPrint(charts)">
+                            <img class="img-h-16" src="./assets/images/icons/view_ico.svg" alt="">
+                        </button>
+                        <button [disabled]="!this.lookupList.UserRights.CanSignChart" type="button"
+                            class="link-btn text-primary pl-2" (click)="onEncounterSign(charts)">
+                            <i class="fas fa-pen-nib fa-lg"></i>
+                        </button>
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+        <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+            <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,524 @@
+<div class="border-content-box light-gray-bg border-0 d-flex flex-column flex-grow-1">
+  <div class="inner-tool-tab h-auto  d-flex justify-content-between pr-0 flex-shrink-0">
+
+    <div class="legend-container">
+      <div class="color-box bg-success"></div>
+      <p class="text-success"> Successfull</p>
+
+      <div class="color-box bg-danger"></div>
+      <p class="text-danger"> Error/Failure</p>
+
+      <div class="color-box bg-brown"></div>
+      <p class="text-brown"> Queued</p>
+
+      <div class="color-box bg-primary"></div>
+      <p class="text-primary"> Transmitted</p>
+    </div>
+
+
+    <div class="btn-group pr-2">
+      <button class="btn btn-link p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false"><i class="fa fa-bars" aria-hidden="true"></i>
+      </button>
+
+      <div class="dropdown-menu dropdown-menu-left custome-menu">
+
+        <input id="responseFile" type="file" style="display:none;" (change)="onResponseFileChange($event)"
+          accept=".txt" />
+
+
+        <a class="dropdown-item cursor-default" (click)="generateQBPMessage()">
+          Generate New Query Message
+        </a>
+
+        <a class="dropdown-item cursor-default"
+          onclick="document.getElementById('responseFile').value = null;document.getElementById('responseFile').click();">
+          Proceess Response File
+        </a>
+
+        <a class="dropdown-item cursor-default" (click)="processAcknowledgementMessageFromDirectory()">
+          Proceess Response Files From Directory
+        </a>
+
+      </div>
+    </div>
+    <!--
+
+
+    <div class="dropdown">
+      <button class="btn btn-link p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false"><i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+
+      <div class="dropdown-menu dropdown-menu-left schedular-card" aria-labelledby="dropdownMenuButton">
+        <input id="responseFile" type="file" style="display:none;" (change)="onResponseFileChange($event)"
+          accept=".txt" />
+
+        <button class="dropdown-item" (click)="generateQBPMessage()">
+          <i class="fa fa-edit text-info pr-1" aria-hidden="true"></i> Generate New Query Message
+        </button>
+        <button class="dropdown-item"
+          onclick="document.getElementById('responseFile').value = null;document.getElementById('responseFile').click();">
+          <i class="far fa-trash-alt text-danger pr-1" aria-hidden="true"></i> Proceess Response File
+        </button>
+        <button class="dropdown-item" (click)="processAcknowledgementMessageFromDirectory()">
+          <i class="fas fa-notes-medical text-info pr-1" aria-hidden="true"></i> Proceess Response Files From Directory
+        </button>
+
+      </div>
+    </div>
+-->
+
+    <!--
+    <ul class="nav color-buttons align-items-center">
+
+      <input id="responseFile" type="file" style="display:none;" (change)="onResponseFileChange($event)"
+        accept=".txt" />
+
+      <button class="nav-link btn btn-info rounded-0 px-2 py-0" type="button" (click)="generateQBPMessage()">
+        Generate Query Message
+      </button>
+
+      <button class="nav-link btn btn-info rounded-0 px-2 py-0" type="button"
+        onclick="document.getElementById('responseFile').value = null;document.getElementById('responseFile').click();">
+        Proceess Response File
+      </button>
+      <button class="nav-link btn btn-info rounded-0 px-2 py-0" type="button"
+        (click)="processAcknowledgementMessageFromDirectory()">
+        Proceess Response Files From Directory
+      </button>
+
+
+
+    </ul>
+-->
+  </div>
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+
+  <div class="p-6 d-flex flex-column flex-grow-1 overflow-height rounded-bottom light-sky-blue">
+
+    <!--<div class="border rounded bg-white flex-shrink-0 p-2">-->
+    <div class="border rounded-3  bg-white flex-shrink-0 d-block">
+
+
+      <div class="encounter-data-accordian accordian-data rounded-0 border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5>
+            <a data-toggle="collapse" href="#SearchCriteriaQBP" aria-expanded="true" class="accordian-link">
+              <span class="accordian-main-header-title pl-1 pr-1">Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+
+        <div id="SearchCriteriaQBP" class="collapse show">
+          <div class="accordian-body bg-transparent px-1 py-0">
+
+            <form [formGroup]="searchFormGroup" (ngSubmit)="onSearchSubmit(searchFormGroup.value)"
+              (keydown.enter)="$event.preventDefault()">
+
+              <div class="p-6 pt-0">
+
+                <div class="form-row form-dashboard pb-1">
+
+                  <div class="form-group col-4">
+                    <label class="col-form-label" for="ddClinic">Clinic (Code |
+                      Name)</label>
+                    <select class="col form-control px-1 required" id="ddClinic" formControlName="ddClinic"
+                      (change)="clinicChanged($event.currentTarget.value)">
+                      <option *ngIf="lookupList.lstImmRegClinics !=undefined && lookupList.lstImmRegClinics.length>1">
+                        Select
+                        Clinic
+                      </option>
+                      <option *ngFor="let clinic of lookupList.lstImmRegClinics" [value]="clinic.clinic_id">
+                        {{clinic.clinic_code.padEnd(15, '&#160;')}}|&nbsp;&nbsp;{{clinic.clinic_name}}
+                      </option>
+                    </select>
+                  </div>
+
+
+                  <div class="form-group col-4">
+                    <!--
+                    <div class="btn-group radio-btn-tabs required">
+
+                      <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'message_date')}">
+                        <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                          value="message_date" (ngModelChange)="onDateTypeChange($event)"> Message Date
+                      </label>
+                      <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'dose_date')}">
+                        <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                          value="dose_date" (ngModelChange)="onDateTypeChange($event)"> Dose Date
+                      </label>
+                    </div>
+                    -->
+                    <label class="col-form-label" for="dpFrom">Message Date</label>
+                    <div class="d-flex flex-grow-3">
+
+                      <div class="input-group mr-1">
+
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">From</span>
+                        </div>
+
+                        <input id="dpFrom" formControlName="dpFrom" class="form-control date-control required"
+                          placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker #dpFrom="ngbDatepicker">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="dpFrom.toggle()" type="button">
+                          </button>
+                        </span>
+
+                      </div>
+
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">To</span>
+                        </div>
+
+                        <input id="dpTo" formControlName="dpTo" class="form-control  date-control required"
+                          placeholder="mm/dd/yyyy" name="dpTo" ngbDatepicker #dpTo="ngbDatepicker">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="dpTo.toggle()" type="button">
+                          </button>
+                        </span>
+
+                      </div>
+
+
+                    </div>
+                  </div>
+
+                  <div class="form-group col-3">
+                    <label for="txtPatientSearch" class="col-form-label">Patient</label>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col-12">
+                        <div class="input-icon d-flex flex-grow-3">
+
+                          <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text"
+                            #txtPatientSearch formControlName="txtPatientSearch" placeholder="Search Patient"
+                            (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                            (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()">
+                          <input type="text" formControlName="txtPatientIdHidden" hidden>
+                          <div class="icon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                          </div>
+
+                          <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                            (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                          </inline-patient-search>
+
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </div>
+
+                  <div class="form-group col-1 d-flex flex-column justify-content-end">
+                    <button type="submit" class="btn btn-success w-100"
+                      [disabled]="!searchFormGroup.valid">Search</button>
+                  </div>
+
+
+                </div>
+
+
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="d-flex flex-grow-1 mt-2 overflow-height">
+
+      <div class="border rounded-3  bg-white w-33 flex-grow-1 d-flex flex-column max-height-100 mr-2">
+        <div class="rounded-box-title-bar flex-shrink-0">
+          Registry Messages
+        </div>
+
+        <div class="overflow-auto flex-grow-1 max-height-100">
+          <table class="table sm layout-fixed light-striped-border">
+            <thead>
+              <tr>
+                <th class="width-120">Status</th>
+                <th class="width-150">Patient</th>
+                <th class="width-135">Date Time Sent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let msg of lstRegMessages" [ngClass]="{
+                            'active' : (msg.message_id == selectedMessageId),
+                            'text-brown' : (msg.message_status == 'AQ'),
+                            'text-primary' : (msg.message_status == 'AT'),
+                            'text-danger' : (msg.message_status == 'TF' || msg.message_status == 'AE' || msg.message_status == 'AR' || msg.message_status == 'AF'),
+                            'text-success' : (msg.message_status == 'AA' || msg.message_status == 'AA_IW')
+                          }" (click)="selectionChanged(msg)">
+                <td class="text-white" [ngClass]="{                                        
+                              'bg-brown' : (msg.message_status == 'AQ'),
+                              'bg-primary' : (msg.message_status == 'AT'),
+                              'bg-danger' : (msg.message_status == 'TF' || msg.message_status == 'AE' || msg.message_status == 'AR' || msg.message_status == 'AF'),
+                              'bg-success' : (msg.message_status == 'AA' || msg.message_status == 'AA_IW')
+                            }">{{msg.message_status_description}}</td>
+                <td>
+                  <button type="button" class="link-btn d-flex align-items-center" (click)="openPatient(msg)">
+                    {{msg.patient_name}}
+                  </button>
+                </td>
+                <td>{{msg.message_sent_date}}</td>
+
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+      <div class="border rounded-3  bg-white w-66 flex-grow-1 d-flex flex-column max-height-100">
+
+        <div
+          class="alert alert-primary fz-12 py-1 px-2 rounded-0 rounded-top border-top-0 border-left-0 border-right=0 mb-0"
+          role="alert" [ngClass]="{                  
+                  'alert-primary': (messageStatusCode==undefined || messageStatusCode==''),
+                  'alert-warning': (messageStatusCode=='AQ' || messageStatusCode=='AT'),
+                  'alert-success': (messageStatusCode=='AA' || messageStatusCode=='AA_IW'),
+                  'alert-danger': (messageStatusCode=='TF' || messageStatusCode=='AE' || messageStatusCode=='AR' || messageStatusCode=='AR')            
+              }">
+
+          <strong>Query Status: &nbsp;</strong>
+          <span *ngIf="messageStatusCode=='AQ' || messageStatusCode=='AT'"> Pending for Registry Response.</span>
+          <span *ngIf="messageStatusCode=='AA' || messageStatusCode=='AA_IW'"> Completed.</span>
+          <span *ngIf="messageStatusCode=='TF'"> Transport Failed.</span>
+          <span *ngIf="messageStatusCode=='AE'"> Application Error.</span>
+          <span *ngIf="messageStatusCode=='AR'"> Application Reject.</span>
+          <span *ngIf="messageStatusCode=='AF'"> Application Fail.</span>
+        </div>
+        <div class="overflow-auto flex-grow-1 max-height-100">
+          <div class="border rounded-3 bg-white m-2">
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Patient Information</h4>
+              </div>
+            </div>
+
+            <div class="d-flex flex-row flex-grow-1" *ngIf="patientInfo==undefined">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="text-muted font-italic">
+                    <div class="value text-muted"><strong>N/A</strong></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="overflow-auto flex-grow-1" *ngIf="patientInfo!=undefined">
+              <table class="table sm light-striped-border">
+                <tbody>
+                  <tr>
+                    <td class="width-100 pl-3"><strong>Patient Identifier:</strong></td>
+                    <td>{{patientInfo.patient_id}}</td>
+                  </tr>
+                  <tr>
+                    <td class="width-100 pl-3"><strong>Patient Name:</strong></td>
+
+                    <td>{{patientInfo.first_name}} {{patientInfo.mname}}
+                      {{patientInfo.last_name}}</td>
+                  </tr>
+                  <tr>
+                    <td class="width-100 pl-3"><strong>DOB:</strong></td>
+
+                    <td>{{patientInfo.dob}}</td>
+                  </tr>
+
+                  <tr>
+                    <td class="width-100 pl-3"><strong>Gender:</strong></td>
+                    <td>{{patientInfo.gender_description}}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex flex-row flex-grow-1 border-top note-box-background"
+              *ngIf="patientInfoNotes!=undefined && patientInfoNotes!='' && patientInfo!=undefined">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="text-muted font-italic">
+                    <div class="value">
+                      <pre><strong>Note:</strong>{{patientInfoNotes}}</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="border rounded-3 bg-white m-2">
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Evaluated Immunization History and
+                  Immunization Forecast</h4>
+              </div>
+            </div>
+
+            <div class="d-flex flex-row flex-grow-1" *ngIf="(scheduleUsed==undefined || scheduleUsed=='')
+          && (reqResponse==undefined || reqResponse=='')">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="text-muted font-italic">
+                    <div class="value text-muted"><strong>N/A</strong></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="overflow-auto flex-grow-1" *ngIf="scheduleUsed!=undefined && scheduleUsed!=''">
+              <table class="table sm light-striped-border">
+                <tbody>
+                  <tr>
+                    <td class="width-100 pl-3"><strong>Schedule Used:</strong></td>
+                    <td>{{scheduleUsed}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-flex flex-row flex-grow-1 note-box-background"
+              *ngIf="reqResponse=='NF' ||  reqResponse=='TM'">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="value"><strong>Note:</strong>
+                    <span *ngIf="reqResponse=='NF'">No matching records were found for the person in the query.</span>
+                    <span *ngIf="reqResponse=='TM'">Too many matching records were found for the person in the
+                      query.</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+          <div class="border rounded-3 bg-white m-2" *ngIf="reqResponse=='OK' || reqResponse=='AA_IW'">
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Evaluated Immunization History</h4>
+              </div>
+            </div>
+
+            <div class="d-flex flex-row flex-grow-1 border-top" *ngIf="lstEvaluatedHistory==undefined">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="text-muted font-italic">
+                    <div class="value text-muted"><strong>N/A</strong></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="overflow-auto flex-grow-1" *ngIf="lstEvaluatedHistory!=undefined">
+              <table class="table light-striped-border">
+                <thead>
+                  <tr>
+                    <td>Vaccine Group</td>
+                    <td>Vaccine Administered</td>
+                    <td>Date Administered</td>
+                    <td>Valid Dose</td>
+                    <td>Validity Reason</td>
+                    <td>Completion Status*</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let imm of lstEvaluatedHistory">
+                    <td>{{imm.imm_group}}</td>
+                    <td>{{imm.imm_name}}</td>
+                    <td>{{imm.date_administered}}</td>
+                    <td>{{imm.dos_validity}}</td>
+                    <td>{{imm.reason_applied}}</td>
+                    <td>{{imm.completion_status}}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-flex flex-row flex-grow-1 border-top"
+              *ngIf="lstEvaluatedHistory!=undefined && lstEvaluatedHistory.length>0">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="text-muted font-italic">
+                    <div class="value text-muted"><small> <strong>* </strong> "Completion Status" refers to the status
+                        of
+                        the dose of vaccine
+                        administered on the indicated date and may be interpreted as "Dose Status". A status of
+                        "Complete"
+                        means that the vaccine dose was "completely administered" as opposed to "partially
+                        administered".
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="border rounded-3 bg-white m-2" *ngIf="reqResponse=='OK' || reqResponse=='AA_IW'">
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">Immunization Forecast</h4>
+              </div>
+            </div>
+
+            <div class="d-flex flex-row flex-grow-1 border-top" *ngIf="lstForecast==undefined">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="text-muted font-italic">
+                    <div class="value text-muted"><strong>N/A</strong></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="overflow-auto flex-grow-1" *ngIf="lstForecast!=undefined">
+              <table class="table light-striped-border">
+                <thead>
+                  <tr>
+                    <td>Vaccine Group</td>
+                    <td>Due Date</td>
+                    <td>Earliest Date To Give</td>
+                    <td>Latest Date to Give</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let imm of lstForecast">
+                    <td>{{imm.imm_group}}</td>
+                    <td>{{imm.due_date}}</td>
+                    <td>{{imm.ealiest_date_to_give}}</td>
+                    <td>{{imm.latest_date_to_give}}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

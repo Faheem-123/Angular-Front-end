@@ -1,0 +1,787 @@
+<!-- <div *ngIf="isLoading" class="div-loader"></div> -->
+
+<div class="d-flex flex-column flex-grow-1" *ngIf="!printView">
+
+  <div class="d-flex flex-shrink-0" *ngIf="!addEditView && callingFrom=='settings'">
+    <div class="w-100 d-flex flex-column">
+      <div class="border-content-box rounded-3 bg-white flex-grow-1 mb-2">
+        <div class="px6-py3 flex-grow-1">
+
+          <form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+            <div class="form-row form-dashboard pb-1">
+
+              <div class="form-group col-4">
+                <label for="txtPatientSearch" class="col-form-label">Patient</label>
+
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-12">
+                    <div class="input-icon d-flex flex-grow-3">
+
+                      <input labelForId="txtPatientSearchCriteria" class="form-control flex-grow-3" type="text"
+                        #txtPatientSearchCriteria formControlName="txtPatientSearchCriteria"
+                        placeholder="Search Patient" (keydown)="onPatientSearchCriteriaKeydown($event)"
+                        autocomplete="off" (input)="onPatientSearchCriteriaInputChange(txtPatientSearchCriteria.value)"
+                        (blur)="onPatientSearchCriteriaBlur()">
+                      <input type="text" formControlName="txtPatientIdHiddenSearchCrieteria" hidden>
+                      <div class="icon">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                      </div>
+
+                      <inline-patient-search *ngIf="showPatientSearchCriteria"
+                        [searchValue]="txtPatientSearchCriteria.value"
+                        (onPatientSelect)="openSelectCriteriaPatient($event)" (onClose)="closePatientSearchCriteria()">
+                      </inline-patient-search>
+
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+              <div class="form-group col-2">
+                <label class="col-form-label" for="txtUserNameSearch">User ID</label>
+
+                <div class="input-group">
+                  <input type="text" class="form-control" formControlName="txtUserNameSearch">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">{{lookupList.practiceInfo.domain}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-2">
+                <label class="col-form-label" for="txtLastNameSearch">User Last Name</label>
+                <input type="text" class="form-control" autocomplete="off" name="txtLastNameSearch"
+                  formControlName="txtLastNameSearch">
+              </div>
+
+              <div class="form-group col-2">
+                <label class="col-form-label" for="txtFirstNameSearch">User First Name</label>
+                <input type="text" class="form-control" autocomplete="off" name="txtFirstNameSearch"
+                  formControlName="txtFirstNameSearch">
+              </div>
+
+              <div class="form-group col-2 d-flex flex-column justify-content-end">
+                <button type="button" class="btn btn-success w-100" [disabled]="!searchFormGroup.valid"
+                  (click)="onAPIUserSearchClicked()">Search</button>
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-grow-1 overflow-height position-relative">
+    <div class="w-30 d-flex flex-column ">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1">
+        <div class="rounded-box-title-bar bg-title-light-green-ihc flex-shrink-0 pr-0">
+          API Users
+        </div>
+
+        <div class="d-flex flex-grow-1 overflow-auto max-height-100">
+          <table class="table light-striped-border table-sticky-header">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>User Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of lstUsersList" [ngClass]="{'active': userIdSelected==user.user_id}"
+                (click)="onUserSelectionChanged(user)">
+                <td>{{user.user_name}}</td>
+                <td>{{user.last_name}}, {{user.first_name}}</td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="w-70 d-flex flex-column">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 ml-6 overflow-auto">
+
+        <div class="rounded-box-title-bar bg-title-light-green-ihc flex-shrink-0 justify-content-end  pr-0">
+
+          <div class="d-flex align-items-center">
+            <button *ngIf="!addEditView && userIdSelected!=undefined" type="button"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onPrintView()"><i
+                class="fas fa-print"></i>
+              Print</button>
+
+            <button *ngIf="!addEditView" type="button"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onAdd()"><i
+                class="fas fa-plus"></i>
+              Add</button>
+            <button *ngIf="!addEditView && userIdSelected!=undefined" type="button"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onEdit()"><i
+                class="far fa-edit"></i> Edit</button>
+            <button *ngIf="!addEditView && userIdSelected!=undefined" type="button"
+              class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onDelete()"><i
+                class="far fa-trash-alt"></i> Delete</button>
+            <button *ngIf="addEditView" class="btn rounded-0 btn-sm bg-green-ihc text-white" type="button"
+              (click)="onSave(userFormGroup.value)">Save</button>
+            <button *ngIf="addEditView" class="btn btn-sm btn-dark top-right-radius" type="button"
+              (click)="onCancel()">Cancel</button>
+          </div>
+        </div>
+
+
+        <form [formGroup]="userFormGroup" (keydown.enter)="$event.preventDefault()"
+          class="d-flex flex-column flex-grow-1 overflow-auto max-height-100">
+          <div class="border rounded-3 bg-white m-2">
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1">User Detail</h4>
+              </div>
+            </div>
+
+
+            <div class="d-flex flex-row flex-grow-1" *ngIf="selectedUser==undefined && !addEditView">
+              <div class="flex-1 px-2">
+                <div class="form-view row zero mb-1">
+                  <div class="text-muted font-italic">
+                    <div class="value text-muted"><strong>N/A</strong></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="p-8 py-6" *ngIf="addEditView">
+
+
+              <div class="form-row form-dashboard">
+
+                <div class="col-6 px-2">
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero col">
+                      <label class="col-form-label mr-2 width-95" for="txtUserName">User Name:</label>
+                      <span class="form-control col p-1 bg-disabled font-weight-500" *ngIf="addEditOperation=='edit'">
+                        {{selectedUser.user_name}}</span>
+                      <div class="input-group col" *ngIf="addEditOperation=='add'">
+                        <input type="text" class="form-control" formControlName="txtUserName">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">{{lookupList.practiceInfo.domain}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero col">
+                      <label class="col-form-label  mr-2 width-95" for="txtLastName">Last Name:</label>
+                      <input type="text" class="form-control col px-2" formControlName="txtLastName">
+                    </div>
+                  </div>
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero col">
+                      <label class="col-form-label  mr-2 width-95" for="txtFirstName">First Name:</label>
+                      <input type="text" class="form-control col  px-2" formControlName="txtFirstName">
+                    </div>
+                  </div>
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero col">
+                      <label class="col-form-label  mr-2 width-95" for="txtEmail">Email:</label>
+                      <input type="text" class="form-control col  px-2" formControlName="txtEmail">
+                    </div>
+                  </div>
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero col">
+                      <label class="col-form-label  mr-2 width-95" for="txtContactNumber">Contact Number:</label>
+                      <input type="text" class="form-control col  px-2" formControlName="txtContactNumber">
+                    </div>
+                  </div>
+
+                  <div class="form-row form-dashboard">
+
+                    <div class="form-group horizental row zero col">
+                      <label class="col-form-label  mr-2 width-95" for="dpDOS">Status:</label>
+
+                      <div class="form-control form-check form-check-inline m-0 pt-0 col px-2">
+                        <input class="form-check-input" id="rbIsBlockedNo" type="radio" name="rbIsBlocked"
+                          formControlName="rbIsBlocked" [value]="false">
+                        <label class="form-check-label" for="rbIsBlockedNo">Active</label>
+                        <input class="form-check-input ml-3" id="rbIsBlockedYes" type="radio" name="rbIsBlocked"
+                          formControlName="rbIsBlocked" [value]="true">
+                        <label class="form-check-label" for="rbIsBlockedYes">Inactive</label>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-6 px-2 border-left">
+
+                  <div class="form-row form-dashboard" *ngIf="addEditOperation=='edit'">
+                    <div class="form-group horizental row zero col">
+                      <div class="form-control form-check form-check-inline m-0 pt-0 col px-2">
+                        <input class="form-check-input" id="chkChangePwd" type="checkbox" name="chkChangePwd"
+                          formControlName="chkChangePwd">
+                        <label class="form-check-label" for="chkChangePwd">Change Password</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-row form-dashboard"
+                    *ngIf="userFormGroup.get('chkChangePwd').value==true || addEditOperation=='add'">
+                    <div class="form-group horizental row zero col">
+                      <label class="col-form-label  mr-2 width-105" for="txtPassword">New Password:</label>
+                      <input type="password" class="form-control col  px-2" formControlName="txtPassword">
+                    </div>
+                  </div>
+                  <div class="form-row form-dashboard"
+                    *ngIf="userFormGroup.get('chkChangePwd').value==true || addEditOperation=='add'">
+                    <div class="form-group horizental row zero col">
+                      <label class="col-form-label  mr-2 width-105" for="txtConfirmPassword">Confirm
+                        Password:</label>
+                      <input type="password" class="form-control col  px-2 " formControlName="txtConfirmPassword">
+                    </div>
+                  </div>
+                  <div class="form-row form-dashboard"
+                    *ngIf="userFormGroup.get('txtConfirmPassword').value!=undefined && userFormGroup.get('txtConfirmPassword').value!='' && userFormGroup.errors?.matchPassword">
+                    <div class="alert alert-danger rounded-3 col m-1" role="alert">
+                      Password mismatch.
+                    </div>
+                  </div>
+
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <table class="table light-striped-border table-sticky-header"
+              *ngIf="selectedUser!=undefined && !addEditView">
+              <tbody>
+
+                <tr>
+                  <td class="width-100 font-weight-500 pl-4">User ID:</td>
+                  <td colspan="3">{{selectedUser.user_name}}</td>
+                </tr>
+                <tr>
+                  <td class="width-100 font-weight-500 pl-4">User Name:</td>
+                  <td colspan="3">{{selectedUser.last_name}}, {{selectedUser.first_name}}</td>
+                </tr>
+                <tr>
+                  <td class="width-100 font-weight-500 pl-4">Email:</td>
+                  <td>{{selectedUser.email}}</td>
+                  <td class="width-100 font-weight-500 pl-4">Contact No:</td>
+                  <td>{{selectedUser.contact_no | phonePipe}}</td>
+                </tr>
+                <tr>
+                  <td class="width-100 font-weight-500 pl-4">Status:</td>
+                  <td colspan="3">{{selectedUser.is_blocked ? 'Inactive' : 'Active'}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+
+          </div>
+
+
+          <div class="border rounded-3 bg-white d-flex flex-column flex-grow-1 m-2 mt-0 max-height-135">
+            <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+              <div class="d-flex align-items-center">
+                <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 "> Accessible Patients</h4>
+              </div>
+
+              <div class="form-group horizental row zero m-0 w-70 pr-0 py-0">
+                <div class="input-icon d-flex flex-grow-3" *ngIf="addEditView">
+
+                  <input labelForId="txtPatientSearch"
+                    class="form-control flex-grow-3 required border-bottom-0 border-top-0 border-right-0 h-25"
+                    type="text" #txtPatientSearch placeholder="Search Patient to Add"
+                    (keydown)="onPatientSearchKeydown($event)" autocomplete="off" (blur)="onPatientSearchBlur()">
+                  <div class="icon">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </div>
+
+                  <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                    (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                  </inline-patient-search>
+
+                </div>
+              </div>
+            </div>
+
+
+            <div class="rounded-bottom overflow-auto bg-white flex-grow-1">
+              <table class="table light-striped-border table-sticky-header">
+                <thead>
+                  <tr>
+                    <td class="width-30" *ngIf="addEditView">&nbsp;</td>
+                    <td class="width-120">Relationship</td>
+                    <td class="width-100">PID</td>
+                    <td class="width-120">Patient Name</td>
+                    <td class="width-100">DOB</td>
+                    <td class="width-100">Gender</td>
+                    <td class="width-100">Home Phone</td>
+                    <td class="width-100">Cell Phone</td>
+
+                    <td class="width-100">Patient Status</td>
+                    <td class="width-150">address</td>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  <tr *ngFor="let patient of lstUserPatientsList">
+                    <td *ngIf="addEditView">
+                      <button type="button" class="link-btn btn-delete" *ngIf="patient.patient_id!=patientId"
+                        (click)="onRemovePatient(patient.patient_id)"><i class="far fa-trash-alt fz-13"></i></button>
+                    </td>
+                    <td>
+                      <span *ngIf="!addEditView">{{patient.user_relationship}}</span>
+                      <select *ngIf="addEditView" class="table-td-select pl-0 pr-0"
+                        formControlName="ddUserRelationship_{{patient.patient_id}}"
+                        id="ddUserRelationship_{{patient.patient_id}}"
+                        [ngClass]="{ 'is-invalid' : userFormGroup.get('ddUserRelationship_'+patient.patient_id)!=undefined && (userFormGroup.get('ddUserRelationship_'+patient.patient_id).errors?.required)}">
+                        <option *ngFor="let rel of lstUserRlationshipg" [value]="rel.code">{{rel.description}}
+                        </option>
+                      </select>
+                    </td>
+                    <td>{{patient.alternate_account}}</td>
+                    <td>{{patient.name}}</td>
+                    <td>{{patient.dob}}</td>
+                    <td>{{patient.gender}}</td>
+                    <td>{{patient.home_phone | phonePipe}}</td>
+                    <td>{{patient.cell_phone | phonePipe}}</td>
+                    <td>{{patient.patient_status}}</td>
+                    <td>{{patient.address}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+          </div>
+
+<!-- ---------------------------- -->
+
+
+<div class="border rounded-3 bg-white d-flex flex-column flex-grow-1 m-2 mt-0 max-height-135">
+  <div class="d-flex align-items-center justify-content-between flex-shrink-0 border-bottom">
+    <div class="d-flex align-items-center">
+      <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 "> Patient Rights</h4>
+      <div class="custom-control custom-checkbox green-checkbox pl-3">
+        <input type="checkbox" class="custom-control-input" id="chkbox_SelectAll"
+        (click)="IsRightsSelectAll($event.currentTarget.checked)">
+        <label class="custom-control-label" for="chkbox_SelectAll">Select All</label>
+      </div>
+    </div>
+  </div>
+  <div class="rounded-bottom  bg-white">
+    <table class="table light-striped-border table-sticky-header">
+      <!-- <thead>
+          <tr>
+              <th width="35px">
+                  <input class="table-td-checkbox" type="checkbox">
+              </th>
+              <th>Check ALL</th>
+          </tr>
+      </thead> -->
+
+      <tbody>
+          <tr *ngFor="let enc of phrRightsFList; let i = index" (click)="onRowChange(i)" [ngClass]="{'active': i==selectedRightRow}">
+              <td width="35px">
+                  <input class="table-td-checkbox" type="checkbox"
+                  (click)="IsRightSettingSelect($event.currentTarget.checked,enc)"
+                      value={{enc.id}} [checked]="enc.is_check">
+              </td>
+              <td>{{enc.name}}</td>
+          </tr>
+      </tbody>
+  </table>
+  </div>
+
+  <!-- <div class="rounded-bottom overflow-auto bg-white">
+      <div class="form-row form-dashboard">
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_rfv" formControlName="chkbox_rfv" value="1"
+            (click)="IsPrintSettingSelectAll('1',$event.currentTarget.checked)">
+            <label class="custom-control-label" for="chkbox_rfv">RFV HPI </label>
+          </div>
+        </div>
+
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_Vitals" formControlName="chkbox_Vitals" value="2"
+            (click)="IsPrintSettingSelectAll('2',$event.currentTarget.checked)">
+            <label class="custom-control-label" for="chkbox_Vitals">Vitals </label>
+          </div>
+        </div>
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_Problems" formControlName="chkbox_Problems" value="3">
+            <label class="custom-control-label" for="chkbox_Problems">Problems</label>
+          </div>
+        </div>
+
+
+
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_Surgeries" formControlName="chkbox_Surgeries" value="4">
+            <label class="custom-control-label" for="chkbox_Surgeries">Surgeries</label>
+          </div>
+        </div>
+  
+      </div>
+
+      <div class="form-row form-dashboard">
+      
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_Vaccination" formControlName="chkbox_Vaccination" value="5">
+            <label class="custom-control-label" for="chkbox_Vaccination">Vaccination </label>
+          </div>
+        </div>
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_socialhist" formControlName="chkbox_socialhist" value="6">
+            <label class="custom-control-label" for="chkbox_socialhist">Social History</label>
+          </div>
+        </div>
+        
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_famhist" formControlName="chkbox_famhist" value="7">
+            <label class="custom-control-label" for="chkbox_famhist">Family history </label>
+          </div>
+        </div>
+
+
+
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_prascript" formControlName="chkbox_prascript" value="8">
+            <label class="custom-control-label" for="chkbox_prascript">Prescription</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_ros" formControlName="chkbox_ros" value="9">
+            <label class="custom-control-label" for="chkbox_ros">ROS</label>
+          </div>
+        </div>
+
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_poc" formControlName="chkbox_poc" value="10">
+            <label class="custom-control-label" for="chkbox_poc">Plan of Care</label>
+          </div>
+        </div>
+        <div class="form-group col-6">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_cognitive" formControlName="chkbox_cognitive" value="17">
+            <label class="custom-control-label" for="chkbox_cognitive">Cognitive functional history</label>
+          </div>
+        </div>
+       
+        
+
+      </div>
+
+      <div class="form-row form-dashboard">
+     
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_Annotation" formControlName="chkbox_Annotation" value="11">
+            <label class="custom-control-label" for="chkbox_Annotation">Annotation</label>
+          </div>
+        </div>
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_careplan" formControlName="chkbox_careplan" value="18">
+            <label class="custom-control-label" for="chkbox_careplan">Care Plan</label>
+          </div>
+        </div>
+
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_labresults" formControlName="chkbox_labresults" value="labresult">
+            <label class="custom-control-label" for="chkbox_labresults">Lab Results</label>
+          </div>
+        </div>
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_messages" formControlName="chkbox_messages" value="message">
+            <label class="custom-control-label" for="chkbox_messages">Messages</label>
+          </div>
+        </div>
+
+
+
+      
+       
+      
+      </div>
+      <div class="form-row form-dashboard">
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_viewccd" formControlName="chkbox_viewccd" value="viewccd">
+            <label class="custom-control-label" for="chkbox_viewccd">View CCD</label>
+          </div>
+        </div>
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_downloadccd" formControlName="chkbox_downloadccd" value="downloadccd">
+            <label class="custom-control-label" for="chkbox_downloadccd">Download CCD</label>
+          </div>
+        </div>
+        <div class="form-group col-3">
+          <div class="custom-control custom-checkbox green-checkbox pl-3">
+            <input type="checkbox" class="custom-control-input" id="chkbox_transmitccd" formControlName="chkbox_transmitccd" value="transmitccd">
+            <label class="custom-control-label" for="chkbox_transmitccd">Transmit CCD</label>
+          </div>
+        </div>
+    </div>
+
+  </div> -->
+
+
+</div>
+
+          
+        </form>
+
+
+
+      </div>
+
+    </div>
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+          <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+      </div>
+  </div>
+  </div>
+
+
+
+
+</div>
+
+
+
+<div class="light-title-bar rounded-top h-25 pl-3 d-flex align-items-center justify-content-between flex-shrink-0"
+  *ngIf="printView">
+  <div class="fz-14 font-weight-500">Patient API User Print View</div>
+  <div class="d-flex align-items-center">
+
+    <button class="btn btn-primary btn-sm rounded-0 h-100 width-80" type="button" (click)="print()">Print</button>
+    <button class="btn btn-dark btn-sm top-right-radius h-100 width-80" type="button"
+      (click)="closePrint()">Close</button>
+  </div>
+</div>
+
+<div class="d-flex flex-row flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue p-8 overflow-auto"
+  *ngIf="printView">
+
+  <div id="patient_api_user_print" class="report">
+
+    <div class="report">
+      <div class="header border-bottom-green">
+        <img class="logo" src="{{lookupList.practiceInfo.logo}}" width="175"
+          (error)="$event.target.style.display = 'none';"
+          *ngIf="lookupList.practiceInfo.logo!=undefined && lookupList.practiceInfo.logo != '' ">
+        <div class="title d-flex flex-column flex-grow-1">
+          <h4 class="maintitle">{{lookupList.practiceInfo.practiceName}}</h4>
+          <h6 class="subtitle font-weight-500">{{printLocationName}}</h6>
+          <h6 class="subtitle">{{printLocationAddress}}, {{printLocationCityStateZip}}</h6>
+          <h6 class="subtitle d-flex justify-content-between">
+            <span>
+              Phone:&nbsp; {{printLocationPhone | phonePipe}}&nbsp;&nbsp;|&nbsp;&nbsp;
+              Fax:&nbsp;{{printLocationFax | phonePipe}}
+            </span>
+            <small class="mt-auto text-dark">Print Date: {{printDateTime}}</small>
+          </h6>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="content-header border-bottom-green col-12">
+          <div class="content-header-title">PATIENT ELECTRONIC ACCESS</div>
+
+          <!--<div class="content-header-title col-4 text-right">
+                    <small>Print Date: {{printDateTime}}</small>
+                  </div>
+                  -->
+        </div>
+
+
+        <div class="py-2 report-print-details">
+          <p>
+            Cursa Health Patient Electronic Access contains detail from your medical record, managed by
+            the clinic named below. Access to this portal is being provided to you in accordance with criteria defined
+            in 45 CFR Part170 Subpart C of the Final Rule for Health Information Technology, as published in the
+            Federal Register on July 28,2010.
+          </p>
+
+          <p>
+            It is your exclusive responsibility to keep the information on this form safe. You may access your health
+            record at anytime from an internet enabled computer. Do not
+            share this information with anyone. If you lose this information, or if you believe your access codes
+            have been compromised, call your clinic immediately and ask for a Patient Access reset.
+          </p>
+
+          <p>
+            Receipt and acceptance of this form represents your acceptance and agreement to the Terms and Conditions of
+            use,set forth by your clinic and Cursa Health.
+          </p>
+          <p>
+            Use following Link, username and password provided by the clinic staff to access your health record.
+          </p>
+        </div>
+        <div class="py-2 report-print-details">
+          <p>
+            Cursa Health Patient Electronic Access contains detail from your medical record, managed by
+            the clinic named below. Access to this portal is being provided to you in accordance with criteria defined
+            in 45 CFR Part170 Subpart C of the Final Rule for Health Information Technology, as published in the
+            Federal Register on July 28,2010.
+          </p>
+
+          <p>
+            It is your exclusive responsibility to keep the information on this form safe. You may access your health
+            record at anytime from an internet enabled computer. Do not
+            share this information with anyone. If you lose this information, or if you believe your access codes
+            have been compromised, call your clinic immediately and ask for a Patient Access reset.
+          </p>
+
+          <p>
+            Receipt and acceptance of this form represents your acceptance and agreement to the Terms and Conditions of
+            use,set forth by your clinic and Cursa Health.
+          </p>
+          <p>
+            Use following Link, username and password provided by the clinic staff to access your health record.
+          </p>
+        </div>
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border w-100">
+          <tbody>
+            <tr>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Patient Portal</label>
+                  <label class="report-form-group-value">https://instanthealthcare.net/phr/</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">User ID</label>
+                  <label class="report-form-group-value">{{selectedUser.user_name}}</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">User Name</label>
+                  <label class="report-form-group-value">{{selectedUser.last_name}},
+                    {{selectedUser.first_name}}</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Email</label>
+                  <label class="report-form-group-value">{{selectedUser.email}}</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Contact Number</label>
+                  <label class="report-form-group-value">{{selectedUser.contact_no | phonePipe }}</label>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+
+        <div class="content-header col-12 mt-4">
+          <div class="content-header-title col-8 pb-0 mb-0">PATIENT</div>
+        </div>
+
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border w-100">
+          <thead>
+            <tr>
+              <th class="width-100">
+                PID
+              </th>
+              <th>
+                Patient Name
+              </th>
+              <th>
+                Relationship with User
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let patient of lstUserPatientsList">
+              <td class="width-100">{{patient.alternate_account}}</td>
+              <td>{{patient.name}}</td>
+              <td>
+                <span *ngIf="patient.user_relationship=='self'">Self</span>
+                <span *ngIf="patient.user_relationship=='representative'">Representative</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+        <div class="content-header  border-top-green border-bottom-green  col-12 mt-4">
+
+          <div class="border-right border-secondary d-flex align-items-center pr-2">
+            <img src="./assets/images/logoLogin.png" alt="" style="width:100px;">
+          </div>
+
+          <div class="flex-grow-1 report-print-footer-details px-2 pt-2">
+            <p class="mb-1">
+              We are committed to providing quality health care and respecting the privacy and confidentiality of your
+              medical information.
+            </p>
+            <p>
+              Our policies and procedures regarding access to and release of medical records confirm to state and
+              federal
+              laws and are designed to safeguard your privacy.
+            </p>
+
+          </div>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

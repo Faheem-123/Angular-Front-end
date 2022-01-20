@@ -1,0 +1,118 @@
+<div id="main-cognitivefunct-hitory" class="rounded-top mt-8" [class.rotate]="cfh" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Cognitive/Functional History</div>
+
+  <div class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+    <button [disabled]="!canAddEdit" *ngIf="!addEditView" (click)="onNew()" class="nav-link green px-2 py-0 top-right-radius">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </button>
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="onSave()">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+
+
+    <button *ngIf="addEditView" class="nav-link btn-dark px-2 py-0 top-right-radius" (click)="onCancel()">
+        <i class="fas fa-times  pr-1"></i>Cancel
+    </button>
+
+  </div>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <p>
+      <i class="fas fa-ban"></i> Access Denied</p>
+  </div>
+
+  <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content ml-2 p-6">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+  <div *ngIf="canView && !noRecordFound && !addEditView" class="p-0">
+    <table class="table light-striped-border">
+      <tr *ngFor="let cong of listCogFunctHistory">
+        <td>{{cong.effective_date}}<b> {{cong.type}} History:</b> {{cong.snomed_description}}
+          <br />Snomed Code: ({{cong.snomed_code}})<br />
+          Notes: {{cong.notes}}
+        </td>
+        <td>Status: {{cong.status}}</td>
+        <td class="text-right">
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-md btn-link line-height-1 p-0 mr-2" (click)="editSelectedRecord(cong)">
+            <i class="far fa-edit"></i>
+          </button>
+
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-md btn-link btn-delete line-height-1 p-0"
+            (click)="deleteselectedRecord(cong)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
+
+  <div *ngIf="addEditView" class="p-2 pt-0">
+
+    <div class="dashboard-content">
+      <form [formGroup]="cfunchistoryForm">
+        <div class="form-row form-dashboard">
+          <div class="form-group col-md-3 col-sm-6 col-12">
+            <label for="input2">History Type:</label>
+            <select class="form-control" id="txthistorytype" placeholder="historytype" formControlName="historytype">
+              <option>Cognitive</option>
+              <option>Functional</option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-2 col-sm-4 col-12">
+            <label class="col-form-label required" for="txt_cfhdate">Date</label>
+
+            <div class="input-group">
+              <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="txt_cfhdate"
+                formControlName="txt_cfhdate" ngbDatepicker #txt_cfhdate="ngbDatepicker">
+
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txt_cfhdate.toggle()" type="button">
+                </button>
+              </span>
+
+            </div>
+
+          </div>
+          <div class="form-group col-md-4 col-sm-6 col-12">
+            <label for="input1">Value:</label>
+            <select class="form-control" id="txtvalue" placeholder="cfhvalue" formControlName="cfhvalue">
+              <option *ngFor="let val of listCogValues" [value]="val.col1">{{val.col3}}</option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-3 col-sm-6 col-12">
+            <label for="input1">Status:</label>
+            <select class="form-control" id="txtstatus" placeholder="cfhstatus" formControlName="cfhstatus">
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-12 col-sm-12 col-12">
+            <label for="input3">Notes:</label>
+            <textarea class="form-control" id="txt_notes" rows="4" placeholder="cfhnotes"
+              formControlName="cfhnotes"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && canView && !addEditView">
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="getCongFunctionalHistory()">View Log</button>
+  </div>
+</div>

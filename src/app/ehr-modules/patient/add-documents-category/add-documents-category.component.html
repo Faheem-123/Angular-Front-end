@@ -1,0 +1,63 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Adding Document Category</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom">
+  <!--old hight - 225px -->
+  <!-- <div class="div-loader"></div> -->
+  <div class="dashboard-content mt-0">
+
+    <div class="form-row form-dashboard">
+      <div class="form-group col-12">
+        <div class="p-6 d-flex flex-column flex-grow-1 light-sky-blue">
+          <!--old hight - 180px -->
+          <div class="p3 flex-grow-1 flex-wrap-nowrap">
+            <form [formGroup]="docCategoryForm">
+              <div class="row p3">
+                <div class="col-12 d-flex flex-column">
+                  <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+                    <h4 class="form-edit-sub-heading m-1 p-1">Category Name</h4>
+                    <div class="form-row form-dashboard p-2 pt-0">
+                      <div class="form-group col-12">
+                        <input type="text" class="form-control" id="txtcategoryname" formControlName="txtcategoryname">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 d-flex flex-column" *ngIf="showhideChkBox">
+                  <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+                    <h4 class="form-edit-sub-heading m-1 p-1">Default Category</h4>
+                    <div class="form-row form-dashboard p-2 pt-0">
+                      <div class="form-group col-12">
+                        <div class="form-group horizental row zero col-12">
+                          <div class="form-check-cont">
+                            <div class="form-check form-check-inline pt-1">
+                              <input class="form-check-input" labelForId="chk_detaultCategory" type="checkbox"
+                                formControlName="chk_detaultCategory">
+                              <label class="form-check-label" for="chk_detaultCategory">Is Default Category:</label>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="modal-footer custom">
+  <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+    (click)="activeModal.dismiss('Cross click')">Cancel</button>
+  <button style="width: 80px;" class="btn btn-success btn-sm" (click)="saveDocCategory()">Save</button>
+</div>

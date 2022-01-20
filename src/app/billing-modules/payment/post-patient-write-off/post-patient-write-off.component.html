@@ -1,0 +1,230 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)"
+(keydown.esc)="activeModal.close()">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Post Patient Wrtie Off</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom ">
+    <div class="dashboard-content">
+
+      <div *ngIf="isLoading" class="div-loader"></div>
+
+      <div class="px6-py3 flex-grow-1 overflow-auto" *ngIf="!isLoading">
+
+        <div class="row p8 mb-1">
+          <div class="col p-0">
+            <div class="info-box-stipes rounded-custom flex-grow-1">
+
+              <div class="px-2 py-1">
+
+                <div class="form-row form-dashboard">
+                  <div class="form-group col-4">
+                    <label for="input2" class="col-form-label module-view-headding">Claim DOS</label>
+                    <label for="input2" class="col-form-label module-view-value pt-0">
+                      {{openedClaimInfo.dos}}
+                    </label>
+                  </div>
+                  <div class="form-group col-4">
+                    <label for="input2" class="col-form-label module-view-headding">Claim Provider</label>
+                    <label for="input2" class="col-form-label module-view-value pt-0">
+                      {{openedClaimInfo.providerName}}
+                    </label>
+                  </div>
+                  <div class="form-group col-4">
+                    <label for="input2" class="col-form-label module-view-headding">Claim Location</label>
+                    <label for="input2" class="col-form-label module-view-value pt-0">
+                      {{openedClaimInfo.locationName}}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row p8 mb-1">
+          <div class="col p-0">
+            <div class="info-box-stipes rounded-custom flex-grow-1">
+
+              <div class="dashboard-sub-nav encounter justify-content-between d-flex flex-row ">
+                <p>Posting Detail</p>
+              </div>
+
+              <div class="no-content p-2"
+                *ngIf="!isLoading && (lstClaimProcedures==undefined || lstClaimProcedures.length==0)">
+                <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No CPT found for due balance.
+              </div>
+
+
+              <div class="overflow-auto" style="overflow-x:auto;"
+                *ngIf="!isLoading && (lstClaimProcedures!=undefined && lstClaimProcedures.length>0)">
+
+                <table class="table sm layout-fixed light-striped-border">
+                  <thead>
+                    <tr>
+                      <th>CPT</th>
+                      <th class="text-right">Charges</th>
+                      <th class="text-right">Patient Paid</th>
+                      <th class="text-right">Balance</th>
+                      <th class="text-right">Write Off</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let proc of lstClaimProcedures">
+                      <td>{{proc.proc_code}}</td>
+                      <td class="text-right">
+                        <div class="input-group table-td-input-group w-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{proc.total_charges | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+                      <td class="text-right0">
+                        <div class="input-group table-td-input-group w-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{proc.patient_paid | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+                      <td class="text-right">
+                        <div class="input-group table-td-input-group w-100">
+                          <div class="input-group-prepend table-td-input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <span
+                            class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{proc.cpt_balance | number :'.2-2'}}</span>
+                        </div>
+                      </td>
+
+                      <td class="text-right">
+                        <div class="input-group table-td-input-group w-100">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text table-td-input-group-text ">$</span>
+                          </div>
+                          <input type="text" class="form-control table-td-input text-right required pl-0 pr-1 "
+                            [ngClass]="{'text-danger': proc.invalid}" placeholder="0.00"
+                            [disabled]="totalPendingWriteOff==0" id="txtWO{{proc.claim_procedures_id}}"
+                            (blur)="formateCurrencyInputs($event.target,proc.claim_procedures_id,'write_off')"
+                            autocomplete="off">
+                        </div>
+
+                      </td>
+
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="flex-shrink-0">
+                  <table class="table sm layout-fixed light-striped-border summary">
+
+                    <thead>
+                      <tr>
+                        <th class="text-right pr-2">Total Write Off to Post</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <td class="align-middle text-right">
+                          <div class="input-group table-td-input-group width-100 float-right">
+                            <div class="input-group-prepend table-td-input-group-prepend">
+                              <span class="input-group-text table-td-input-group-text ">$</span>
+                            </div>
+                            <span [ngClass]="{'text-danger': totalWriteOffToPost>totalClaimDue}"
+                              class="form-control table-td-input table-td-input-disabled text-right pl-0 pr-1">{{totalWriteOffToPost | number :'.2-2'}}</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+        </div>
+
+
+        <div class="row p8 mb-1">
+
+          <div class="col p-0">
+            <div class="info-box-stipes rounded-custom flex-grow-1">
+
+              <div class="px-2 py-1">
+
+                <div class="form-row form-dashboard">
+
+                  <div class="col-12">
+                    <div class="pl-1 pr-1">
+
+                      <div class="form-row form-dashboard"
+                        *ngIf="lookupList.lstPracticeWriteOffCodes!=undefined && lookupList.lstPracticeWriteOffCodes.length>0">
+
+                        <div class="form-group col-6">
+                          <label class="col-form-label" for="cmbWriteOff">Write Off Code</label>
+                          <select class="form-control" id="cmbWriteOff" formControlName="cmbWriteOff">
+                            <option></option>
+                            <option *ngFor="let wo of lookupList.lstPracticeWriteOffCodes" [value]="wo.code">{{wo.code}}
+                              -
+                              {{wo.description}}</option>
+                          </select>
+                        </div>
+                      </div>
+
+
+                      <div class="form-row form-dashboard">
+
+                        <div class="form-group horizental row zero col-12">
+                          <label class="col-form-label" for="txtComments">Comments:</label>
+                          <textarea class="form-control required" id="txtComments" rows="2" maxlength="500"
+                            formControlName="txtComments"></textarea>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard" *ngIf="lstErrors 
+          || (totalWriteOffToPost > totalClaimDue) ">
+          <div class="form-group col-12 px-0">
+            <div class="alert alert-danger rounded-custom mb-1" role="alert">
+              <ul>
+                <li *ngIf="totalWriteOffToPost > totalClaimDue">Total write off amount can't exceed total due amount.
+                </li>
+                <li *ngFor="let error of lstErrors">{{error}}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+  <div class="modal-footer custom" *ngIf="!isLoading">
+    <button style="width: 100px;" class="btn btn-success btn-sm" type="submit"
+      [disabled]="!formGroup.valid || totalWriteOffToPost==0 || totalClaimDue==0 || (totalWriteOffToPost > totalClaimDue)">Post
+      Write Off</button>
+    <button type="button" style="width: 100px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.close(false)">Cancel</button>
+  </div>
+</form>

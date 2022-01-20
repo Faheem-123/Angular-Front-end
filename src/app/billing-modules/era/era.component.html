@@ -1,0 +1,1356 @@
+<ng-template [ngIf]="!showDenials && !showImportERAFromText">
+
+  <div class="light-title-bar h-25 pl-2 pr-2 d-flex align-items-center justify-content-between flex-shrink-0"
+    *ngIf="callingFrom=='era'">
+    <div class="fz-15 font-weight-400 text-ihc-dark-blue">ERA
+      <small class="text-muted">(Electronic Remittance Advice)</small>
+    </div>
+    <div class="d-flex align-items-center">
+      <button class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" *ngIf="this.lookupList.UserRights.era_import"
+        (click)="onImportFromTextClick()">ERA(835) Text</button>
+      <button class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0" *ngIf="this.lookupList.UserRights.era_import"
+        (click)="importERAFromGatewayEdi()">
+        <i class="fas fa-file-download mr-1"></i>Import Form Gateway
+        EDI</button>
+      <!--<button class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0">View Claim Payment</button>-->
+
+    </div>
+  </div>
+
+
+  <div
+    class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+    <div class="d-flex flex-column flex-shrink-0" *ngIf="callingFrom=='era'">
+
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaERA" aria-expanded="false" class="accordian-link">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+
+        <div id="SearchCriteriaERA" class="collapse">
+          <div class="accordian-body">
+
+            <form [formGroup]="searchFormGroup" (keydown.enter)="$event.preventDefault()">
+
+              <div class="form-row form-dashboard pb-1">
+
+                <div class="col-2">
+
+                  <div class="px-1">
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col">
+                        <label class="col-form-label" for="ddStatus">Status</label>
+                        <select class="col form-control px-1" id="ddStatus" formControlName="ddStatus"
+                          labelForId="ddStatus">
+                          <option *ngFor="let status of lstStatus" [value]="status">
+                            {{status}}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group  col">
+                        <label class="col-form-label" for="txtEraId">ERA Id</label>
+                        <input labelForId="txtEraId" class="form-control" formControlName="txtEraId" type="text"
+                          autocomplete="off">
+                      </div>
+                    </div>
+
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group  col">
+                        <label class="col-form-label" for="txtClaimId">Claim Id</label>
+                        <input labelForId="txtClaimId" class="form-control" formControlName="txtClaimId" type="text"
+                          autocomplete="off">
+                      </div>
+                    </div>
+
+
+                  </div>
+
+                </div>
+
+
+                <div class="col-2">
+
+                  <div class="px-1">
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group  col">
+                        <label class="col-form-label" for="txtPayerId">Payer Id</label>
+                        <input labelForId="txtPayerId" class="form-control" formControlName="txtPayerId" type="text"
+                          autocomplete="off">
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col">
+                        <label class="col-form-label" for="txtCheckNumber">Check Number</label>
+                        <input labelForId="txtCheckNumber" class="form-control" formControlName="txtCheckNumber"
+                          type="text" autocomplete="off">
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group  col">
+                        <label class="col-form-label" for="ddCheckAmountOperator">Check Amount</label>
+                        <div class="input-group">
+                          <select class="form-control flex-grow-1" formControlName="ddCheckAmountOperator"
+                            labelForId="ddCheckAmountOperator">
+                            <option value=''></option>
+                            <option *ngFor="let operator of lstERAAmountOperator" [value]="operator">
+                              {{operator}}</option>
+                          </select>
+
+                          <input labelForId="txtCheckAmount" class="form-control flex-grow-1"
+                            formControlName="txtCheckAmount" type="text" autocomplete="off">
+
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class="col-4">
+
+                  <div class="px-1">
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group  col">
+                        <label for="dpCheckFrom" class="col-form-label">Check Date Range</label>
+                        <div class="d-flex flex-grow-3">
+
+                          <div class="input-group mr-1">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">From</span>
+                            </div>
+
+                            <input id="dpCheckFrom" formControlName="dpCheckFrom" class="form-control date-control "
+                              placeholder="mm/dd/yyyy" name="dpCheckFrom" ngbDatepicker #dpCheckFrom="ngbDatepicker">
+
+                            <span class="input-group-btn">
+                              <button class="btn date-control-btn" (click)="dpCheckFrom.toggle()" type="button">
+                              </button>
+                            </span>
+
+                          </div>
+
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">To</span>
+                            </div>
+
+                            <input id="dpCheckTo" formControlName="dpCheckTo" class="form-control date-control "
+                              placeholder="mm/dd/yyyy" name="dpCheckTo" ngbDatepicker #dpCheckTo="ngbDatepicker">
+
+                            <span class="input-group-btn">
+                              <button class="btn date-control-btn" (click)="dpCheckTo.toggle()" type="button">
+                              </button>
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group  col">
+                        <label for="dpDOSFrom" class="col-form-label">DOS Range</label>
+                        <div class="d-flex flex-grow-3">
+
+                          <div class="input-group mr-1">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">From</span>
+                            </div>
+
+                            <input id="dpDOSFrom" formControlName="dpDOSFrom" class="form-control date-control "
+                              placeholder="mm/dd/yyyy" name="dpDOSFrom" ngbDatepicker #dpDOSFrom="ngbDatepicker">
+
+                            <span class="input-group-btn">
+                              <button class="btn date-control-btn" (click)="dpDOSFrom.toggle()" type="button">
+                              </button>
+                            </span>
+
+                          </div>
+
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">To</span>
+                            </div>
+
+                            <input id="dpDOSTo" formControlName="dpDOSTo" class="form-control date-control "
+                              placeholder="mm/dd/yyyy" name="dpDOSTo" ngbDatepicker #dpDOSTo="ngbDatepicker">
+
+                            <span class="input-group-btn">
+                              <button class="btn date-control-btn" (click)="dpDOSTo.toggle()" type="button">
+                              </button>
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group  col">
+                        <label for="dpCreatedFrom" class="col-form-label">Date Created Range</label>
+                        <div class="d-flex flex-grow-3">
+
+                          <div class="input-group mr-1">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">From</span>
+                            </div>
+
+                            <input id="dpCreatedFrom" formControlName="dpCreatedFrom" class="form-control date-control "
+                              placeholder="mm/dd/yyyy" name="dpCreatedFrom" ngbDatepicker
+                              #dpCreatedFrom="ngbDatepicker">
+
+                            <span class="input-group-btn">
+                              <button class="btn date-control-btn" (click)="dpCreatedFrom.toggle()" type="button">
+                              </button>
+                            </span>
+
+                          </div>
+
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">To</span>
+                            </div>
+
+                            <input id="dpCreatedTo" formControlName="dpCreatedTo" class="form-control date-control "
+                              placeholder="mm/dd/yyyy" name="dpCreatedTo" ngbDatepicker #dpCreatedTo="ngbDatepicker">
+
+                            <span class="input-group-btn">
+                              <button class="btn date-control-btn" (click)="dpCreatedTo.toggle()" type="button">
+                              </button>
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="col-4">
+
+                  <div class="px-1">
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-group col">
+                        <label for="txtPatientSearch" class="col-form-label">Patient</label>
+
+                        <div class="input-icon d-flex flex-grow-3">
+
+                          <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text"
+                            #txtPatientSearch formControlName="txtPatientSearch" placeholder="Search Patient"
+                            (keydown)="onPatientSearchKeydown($event)" autocomplete="off"
+                            (input)="onPatientSearchInputChange()" (blur)="onPatientSearchBlur()">
+
+                          <div class="icon">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                          </div>
+
+                          <inline-patient-search #inlineSearchDenialPatient id="inlineAddAppPatSearch"
+                            *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+                            (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                          </inline-patient-search>
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-row form-dashboard">
+
+                      <div class="col-6">
+
+                        <div class="form-row form-dashboard mt-3">
+                          <div class="form-group col-12">
+                            <div class="custom-control custom-checkbox green-checkbox">
+                              <input type="checkbox" class="custom-control-input"
+                                id="chkFileWithError_{{controlUniqueId}}" formControlName="chkFileWithError">
+                              <label class="custom-control-label" for="chkFileWithError_{{controlUniqueId}}">File With
+                                Error</label>
+                            </div>
+                          </div>
+
+                          <div class="form-group  col-12">
+                            <div class="custom-control custom-checkbox green-checkbox">
+                              <input type="checkbox" class="custom-control-input"
+                                id="chkFileNotProccessed_{{controlUniqueId}}" formControlName="chkFileNotProccessed">
+                              <label class="custom-control-label" for="chkFileNotProccessed_{{controlUniqueId}}">File
+                                Not
+                                Processed</label>
+                            </div>
+                          </div>
+                          <div class="form-group  col-12">
+                            <div class="custom-control custom-checkbox green-checkbox">
+                              <input type="checkbox" class="custom-control-input"
+                                id="chkNotificationOnly_{{controlUniqueId}}" formControlName="chkNotificationOnly">
+                              <label class="custom-control-label"
+                                for="chkNotificationOnly_{{controlUniqueId}}">Notification
+                                Only</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="form-row form-dashboard">
+                          <div class="form-group col-12">
+                            <label class="col-form-label" for="txtICN">ICN No</label>
+                            <input labelForId="txtICN" class="form-control" formControlName="txtICN" type="text"
+                              autocomplete="off">
+                          </div>
+
+                        </div>
+
+                        <div class="form-row form-dashboard mt-3">
+                          <div class="form-group col-6 d-flex flex-column justify-content-end">
+                            <button type="button" class="btn btn-success w-100"
+                              (click)="onSearch(searchFormGroup.value)">Search</button>
+                          </div>
+                          <div class="form-group col-6 d-flex flex-column justify-content-end">
+                            <button type="button" class="btn btn-dark w-100" (click)="onClearSearch()">Clear</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="d-flex flex-grow-1  overflow-height overflow-auto">
+
+      <div class="flex-2 d-flex flex-column overflow-auto py-2 pl-2">
+
+
+        <div class="border-content-box  rounded-3  d-flex flex-column bg-white overflow-height mb-2" [ngClass]="{'h-25': !isEraListExpanded,
+      'flex-1' : isEraListExpanded}">
+          <div class="light-title-bar pl-2 h-25 d-flex align-items-center justify-content-between flex-shrink-0"
+            [ngClass]="{'rounded-2' : !isEraListExpanded}" *ngIf="callingFrom=='era'">
+            <h4 class="fz-12 font-weight-500 my-0 text-ihc-dark-blue">ERA's ({{eraCount}})</h4>
+
+
+            <div class="d-flex">
+              <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="loadPendingEra()">Load
+                Pending</button>
+
+              <button type="button" class="btn btn-link title-bar-blue-btn px-1 py-0 fz-12"
+                (click)="expandCollapseEraList()">
+                <i class="fas fa-lg fa-arrow-circle-up" [ngClass]="{'fa-arrow-circle-down': !isEraListExpanded,
+              'fa-arrow-circle-up': isEraListExpanded}"></i>
+              </button>
+            </div>
+
+          </div>
+
+
+          <div class="overflow-auto flex-grow-1" *ngIf="isEraListExpanded">
+            <table class="table sm layout-fixed light-striped-border table-sticky-header">
+              <thead>
+                <tr>
+                  <th class="width-80 pr-0" table="era" scope="col" sortable="check_date" type="datetime"
+                    formate="MM/DD/YYYY" (sort)="onSortERA($event)">Check Date</th>
+                  <th table="era" scope="col" sortable="payer_name" type="alpha" (sort)="onSortERA($event)">Payer Name
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let era of lstEra ; let i = index" [ngClass]="{'active-green': eraId == era.era_id,
+              'text-danger': (era.is_error || !era.is_processed),
+              'text-success': era.posted
+            }" (click)="onEraSelectionChange(era,false)">
+                  <td title="{{era.check_date}}">{{era.check_date}}</td>
+                  <td title="{{era.payer_name}}" class="pr-0">{{era.payer_name}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+        </div>
+
+        <div class="border-content-box  rounded-3 d-flex flex-column  bg-white flex-1 overflow-height">
+          <div class="light-title-bar pl-2 h-25 d-flex align-items-center justify-content-between flex-shrink-0"
+            *ngIf="callingFrom=='era'">
+            <h4 class="fz-12 font-weight-500 my-0 text-ihc-dark-blue">ERA Claims ({{eraClaimCount}})</h4>
+
+            <div class="form-group horizental row zero p-0 m-0">
+
+              <select class="col form-control rounded-3-top-right border-bottom-0 border-top-0 border-right-0 required"
+                [(ngModel)]="selectedEraClaimStatus" id="ddEraClaimStatus" labelForId="ddEraClaimStatus"
+                (change)="eraClaimStatusChange($event.currentTarget.value)">
+                <option *ngFor="let status of lstStatus" [value]="status">
+                  {{status}}</option>
+              </select>
+
+            </div>
+
+            <!--
+          <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 px-1"><img alt="" class="img-h-14"
+              src="./assets/images/icons/ico_refresh_green.svg"></button>
+              -->
+            <!--<button class="btn btn-link px-2 py-0 fz-12" type="button"><i class="fas fa-sync-alt mr-1"></i>Refresh</button>-->
+          </div>
+
+          <div class="form-group horizental row zero p-0 m-0" *ngIf="callingFrom=='era'">
+
+            <input id="txtEraClaimPatientFilter"
+              class="col form-control rounded-0 border-left-0 border-right-0 required" placeholder="Filter Patient"
+              type="text" autocomplete="off" (keydown.enter)="onEraClaimPatientFilter($event.currentTarget.value)"
+              (keydown.esc)="$event.currentTarget.value='' ; onEraClaimPatientFilter($event.currentTarget.value)">
+
+          </div>
+
+
+          <div class="overflow-auto flex-grow-1">
+            <table class="table sm layout-fixed light-striped-border table-sticky-header">
+              <thead>
+                <tr>
+                  <th table="era_claim" scope="col" sortable="patient_lname" type="alpha"
+                    (sort)="onSortPatient($event)">Last Name</th>
+                  <th table="era_claim" scope="col" sortable="patient_fname" type="alpha"
+                    (sort)="onSortPatient($event)">First Name</th>
+                </tr>
+
+              </thead>
+              <tbody>
+                <tr *ngFor="let claim of lstEraClaimFiltered ; let i = index" [ngClass]="{'active-green': eraClaimId == claim.era_claim_id,
+                'text-success': claim.posted}" (click)="onEraClaimSelectionChange(claim,false)">
+                  <td class="pr-0">{{claim.patient_lname}}</td>
+                  <td class="pr-0">{{claim.patient_fname}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-column flex-8 overflow-auto border-content-box  rounded-3 m-2">
+
+
+        <div class="light-title-bar pl-2 h-25 d-flex align-items-center justify-content-between flex-shrink-0"
+          *ngIf="callingFrom=='era'">
+          <h4 class="fz-12 font-weight-500 my-0 text-ihc-dark-blue">ERA Detail
+            <span class="v-separtor"></span>
+            <span class="font-weight-400">ERA ID: <span class="font-weight-500 text-dark">{{eraId}}</span> </span>
+          </h4>
+
+
+          <div class="d-flex align-items-center" *ngIf="eraId!=undefined && eraId>0">
+
+            <button class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12" (click)="onViewDenial()">View
+              Denial</button>
+
+            <button type="button" class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12"
+              *ngIf="lookupList.UserRights.mark_era_as_posted && !isEraPosted" (click)="markAsPosted('ERA',eraId)">Mark
+              ERA As
+              Posted</button>
+
+            <button type="button" class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12" (click)="postErapaymentFull()"
+              *ngIf="lookupList.UserRights.post_full_era && !isEraPosted">Post Full ERA</button>
+
+
+            <!--
+            <button type="button" class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12"
+              *ngIf="isBillingAdmin && !isEraPosted" (click)="onDeleteEra()"><i
+                class="far fa-trash-alt mr-1 text-danger"></i>Delete ERA</button>
+            <button type="button" class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12" (click)="onDownloadERA()"><i
+                class="fas fa-download mr-1 text-success"></i>Download</button>
+                -->
+
+            <div class="dropdown btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 px-0">
+              <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" type="button"
+                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-left custome-menu" aria-labelledby="dropdownMenuButton">
+
+                <a *ngIf="lookupList.practiceInfo.practiceId==513
+                && (
+                  lookupList.logedInUser.user_name.toLowerCase()=='bill@ihc'
+                  || lookupList.logedInUser.user_name.toLowerCase()=='fs@ihc'
+                  || lookupList.logedInUser.user_name.toLowerCase()=='atif@ihc'
+                  || lookupList.logedInUser.user_name.toLowerCase()=='abasit@ihc')"
+                  class="dropdown-item cursor-default"
+                  (click)="moveEraTo(517,'Muslim Community Health Center (Behavioral Medicine)')">
+                  <span class="font-weight-500">Move ERA To</span>
+                  <span class="row pl-4 ml-4 mr-1">517 | Muslim Community Health Center (Behavioral Medicine)</span>
+                </a>
+
+                <a class="dropdown-item cursor-default" (click)="onDownloadERA()">Download ERA</a>
+                <a *ngIf="this.lookupList.UserRights.era_delete && !isEraPosted" class="dropdown-item cursor-default"
+                  (click)="onDeleteEra()"><span class="text-danger">Delete ERA</span></a>
+
+                <!--
+                <button class="dropdown-item px-2"
+                  (click)="moveEraTo(517,'Muslim Community Health Center (Behavioral Medicine)')">
+                  <span class="font-weight-500">
+                    Move To
+                  </span>
+                  Move To :<span class="font-weight-500"> 517 | Muslim Community Health Center (Behavioral
+                    Medicine)</span>
+                </button>
+              -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="alert alert-warning rounded-0 fz-12"
+          *ngIf="duplicateEOBId!=undefined && duplicateEOBId!='' && !isLoading">
+          <p class="m-0"> <i class="fas fa-exclamation-triangle"></i> Duplicate EOB exist with the ID:
+            {{duplicateEOBId}}</p>
+        </div>
+
+        <div class="overflow-auto h-100" *ngIf="(eraError==undefined  || eraError=='') && !isLoading">
+
+          <ng-template id="eraDetailSection" [ngIf]="eraId!=undefined && eraId>0">
+
+
+            <div class="d-flex flex-column flex-shrink-0">
+
+              <div class="encounter-data-accordian accordian-data rounded-0 border-bottom border-top-0">
+                <div class="accordian-header" role="tab" id="headingOne">
+                  <h5 class="mb-0 d-flex">
+                    <a data-toggle="collapse" href="#eraPayerInfo_{{controlUniqueId}}" aria-expanded="false"
+                      class="accordian-link">
+                      <span class="accordian-main-header-title pl-1 pr-1 width-130">Payer Information</span>
+
+                    </a>
+                    <div class="mt-1">
+                      <span class="v-separtor"></span>
+                      <span class="font-weight-400"><span class="text-secondary pr-1">Payer Id: </span>
+                        {{strPayerID}}</span>
+                      <span class="v-separtor"></span>
+                      <span class="font-weight-400"><span class="text-secondary pr-1">Payer
+                          Name:</span>{{strPayerName}}</span>
+                    </div>
+                  </h5>
+                </div>
+
+                <div id="eraPayerInfo_{{controlUniqueId}}" class="collapse">
+                  <div class="accordian-body pb-2">
+                    <div class="form-row form-dashboard">
+                      <div class="form-view form-view zero col-6 px-0">
+                        <div class="title-normal">Payer Id/Name:</div>
+
+                        <div class="d-flex">
+                          <div class="value">{{strPayerID}}
+                            <span class="v-separtor h-75 mt-2-px"></span>
+                            {{strPayerName}}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-view form-view zero col-6 px-0">
+                        <div class="title-normal">Address:</div>
+                        <div class="value">{{strPayerAddress}} {{strPayerCity}}, {{strPayerState}} {{strPayerZip}}</div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+            <div class="d-flex flex-column flex-shrink-0">
+
+              <div class="encounter-data-accordian accordian-data rounded-0 border-bottom border-top-0">
+                <div class="accordian-header" role="tab" id="headingOne">
+                  <h5 class="mb-0 d-flex">
+                    <a data-toggle="collapse" href="#eraPayeeInfo_{{controlUniqueId}}" aria-expanded="false"
+                      class="accordian-link">
+                      <span class="accordian-main-header-title pl-1 pr-1 width-130">Payee Information</span>
+
+                    </a>
+
+                    <div class="mt-1">
+                      <span class="v-separtor"></span>
+                      <span class="font-weight-400"><span class="text-secondary pr-1">Payee
+                          Name:</span>{{strPayeeName}}</span>
+                    </div>
+                  </h5>
+                </div>
+
+                <div id="eraPayeeInfo_{{controlUniqueId}}" class="collapse">
+                  <div class="accordian-body pb-2">
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-view form-view zero col-6 px-0">
+                        <div class="title-normal">Payee Name:</div>
+                        <div class="value">{{strPayeeName}}</div>
+                      </div>
+
+                      <div class="form-view form-view zero col-6 px-0">
+                        <div class="title-normal">Payee Address:</div>
+                        <div class="value">{{strPayeeCity}}, {{strPayeeState}} {{strPayeeZip}}</div>
+                      </div>
+
+                    </div>
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-view form-view zero col-6 px-0">
+                        <div class="title-normal">Payee Identification:</div>
+                        <div class="value">{{strPayeeID}}
+                          <i class="fas fa-info-circle text-ihc-blue ml-1" title="{{strPayeeIDQualifier}}"
+                            *ngIf="strPayeeIDQualifier!=undefined && strPayeeIDQualifier!=''"></i>
+                        </div>
+                      </div>
+
+                      <div class="form-view form-view zero col-6 px-0">
+                        <div class="title-normal">Payee Additional ID:</div>
+                        <div class="value">{{strPayeeAdditionalID}}
+                          <i class="fas fa-info-circle text-ihc-blue ml-1" title="{{strPayeeAdditionalIDQualifier}}"
+                            *ngIf="strPayeeAdditionalIDQualifier!=undefined && strPayeeAdditionalIDQualifier!=''"></i>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+            </div>
+
+            <div class="d-flex flex-column flex-shrink-0">
+
+              <div class="encounter-data-accordian accordian-data rounded-0 border-bottom border-top-0">
+                <div class="accordian-header" role="tab" id="headingOne">
+                  <h5 class="mb-0 d-flex">
+                    <a data-toggle="collapse" href="#eraCheckInfo_{{controlUniqueId}}" aria-expanded="false"
+                      class="accordian-link">
+                      <span class="accordian-main-header-title pl-1 pr-1 width-130">Check Information</span>
+
+                    </a>
+
+                    <div class="mt-1">
+                      <span class="v-separtor"></span>
+                      <span class="font-weight-400"><span class="text-secondary pr-1">Check
+                          Date:</span>{{strCheckDate}}</span>
+                      <span class="v-separtor"></span>
+                      <span class="font-weight-400"><span class="text-secondary pr-1">Check
+                          No:</span>{{strCheckNo}}</span>
+                      <span class="v-separtor"></span>
+                      <span class="font-weight-400"><span class="text-secondary pr-1">Check Amount:</span>
+                        <span class="font-weight-500  py-0 px-1 rounded-2 alert" [ngClass]="{'alert-success': checkAmount>0,
+                      'alert-danger': checkAmount<=0}">{{checkAmount | currency:'USD':'symbol-narrow'}}</span>
+                      </span>
+                      <span class="v-separtor"></span>
+                      <span class="font-weight-400">
+                        <span class="text-secondary">Provider Adj. Amt:</span>
+                        <button type="button" class="btn btn-link title-bar-blue-btn px-0 py-0 fz-12"
+                          [ngClass]="{'font-weight-500': providerAdjustmentAmount!=0 }"
+                          (click)="showEraProviderAdjusment()">{{ providerAdjustmentAmount | currency:'USD':'symbol-narrow'}}</button>
+                      </span>
+                    </div>
+
+
+                    <!--
+                    <div class="d-flex flex-grow-1 justify-content-end">
+                      <button type="button"
+                        class="btn btn-link title-bar-blue-btn px-0 py-0 fz-12 text-decoration-underline"
+                        (click)="showEraProviderAdjusment()">Provider
+                        Adjustment</button>
+                    </div>
+                    -->
+                  </h5>
+                </div>
+
+                <div id="eraCheckInfo_{{controlUniqueId}}" class="collapse">
+                  <div class="accordian-body pb-2">
+
+                    <div class="form-row form-dashboard">
+                      <div class="form-view form-view zero col-3 px-0">
+                        <div class="title-normal">Check Number:</div>
+                        <div class="value">{{strCheckNo}}</div>
+                      </div>
+
+                      <div class="form-view form-view zero col-3 px-0">
+                        <div class="title-normal">Check Date:</div>
+                        <div class="value">{{strCheckDate}}</div>
+                      </div>
+
+                      <div class="form-view form-view zero col-3 px-0">
+                        <div class="title-normal">Check Amount:</div>
+                        <div class="m-0 py-0 px-1 font-weight-500 alert" [ngClass]="{'alert-success': checkAmount>0,
+                    'alert-danger': checkAmount<=0}">{{checkAmount | currency:'USD':'symbol-narrow'}}</div>
+                      </div>
+
+                      <div class="form-view form-view zero col-3 px-0">
+                        <div class="title-normal">Production Date:</div>
+                        <div class="value">{{strProductionDate}}</div>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+            </div>
+
+
+            <ng-template id="eraClaimDetailSection" [ngIf]="eraClaimId!=undefined && eraClaimId>0">
+
+
+              <div class="d-flex flex-column flex-shrink-0">
+
+                <div class="encounter-data-accordian accordian-data rounded-0 border-bottom border-top-0">
+                  <div class="accordian-header" role="tab" id="headingOne">
+                    <h5 class="mb-0 d-flex flex-grow-1">
+                      <a data-toggle="collapse" href="#eraClaimDetail_{{controlUniqueId}}" aria-expanded="true"
+                        class="accordian-link">
+                        <span class="accordian-main-header-title pl-1 pr-1 width-130">EHR Claim Information</span>
+
+                      </a>
+
+                      <div class="mt-1">
+                        <span class="v-separtor"></span>
+                        <ng-template id="secClaimInfoHeaderSummary" [ngIf]="!claimNotfound">
+
+                          <span class="font-weight-400"><span class="text-secondary">DOS:</span>
+                            <span class="font-weight-400" *ngIf="callingFrom!='era'">{{ehrClaimDOS}}</span>
+                            <button type="button" *ngIf="callingFrom=='era'"
+                              class="btn btn-link title-bar-blue-btn px-0 py-0 fz-12 font-weight-500 text-decoration-underline"
+                              (click)="openClaim()">{{ehrClaimDOS}}</button>
+                          </span>
+                          <!--
+                        <span class="v-separtor"></span>
+                        <span class="font-weight-400">
+                          <span class="text-secondary pr-1">Claim Id :</span>
+                          <button type="button" class="btn btn-link title-bar-blue-btn px-0 py-0 fz-12 font-weight-500"
+                            (click)="openClaim()">{{ehrClaimId}}</button>
+                        </span>
+                        -->
+
+                          <span class="v-separtor"></span>
+
+                          <span class="font-weight-400"><span class="text-secondary pr-1">Claim Due :</span>
+                            <span class="font-weight-500 py-0 px-1 rounded-2 alert" [ngClass]="{'alert-danger': ehrClaimDue>0,
+                      'alert-success': ehrClaimDue==0}">{{ehrClaimDue | currency:'USD':'symbol-narrow'}}</span>
+                          </span>
+
+                          <span class="v-separtor"></span>
+
+                          <span class="font-weight-400 alert alert-danger py-0 px-1"
+                            *ngIf="mappedInsurance=='' || mappedInsurance==undefined">Payment is not Mapped to
+                            Insurance</span>
+
+
+
+                          <ng-template id="secClaimInfoMappdedPriInsuranceHeaderSummary"
+                            [ngIf]="mappedInsurance=='primary'">
+
+                            <span class="font-weight-400 ">
+                              <span class="text-secondary pr-1">Pri. Insurance :</span>
+                              <span
+                                class="font-weight-500 alert alert-success py-0 px-1 rounded-2">{{priInsName}}</span>
+                            </span>
+                            <span class="v-separtor"></span>
+                            <span class="font-weight-400">
+                              <span class="text-secondary pr-1">Policy # :</span>
+                              <span class="font-weight-400">{{priInsPolicyNo}}</span>
+                            </span>
+                          </ng-template>
+
+
+
+                          <ng-template id="secClaimInfoMappdedSecInsuranceHeaderSummary"
+                            [ngIf]="mappedInsurance=='secondary'">
+                            <span class="font-weight-400 "><span class="text-secondary pr-1">Sec. Insurance :</span>
+                              <span
+                                class="font-weight-500 alert alert-success py-0 px-1 rounded-2">{{secInsName}}</span>
+                            </span>
+                            <span class="v-separtor"></span>
+                            <span class="font-weight-400"><span class="text-secondary pr-1">Policy # :</span>
+                              <span class="font-weight-400">{{secInsPolicyNo}}</span>
+                            </span>
+                          </ng-template>
+
+                          <ng-template id="secClaimInfoMappdedOthInsuranceHeaderSummary"
+                            [ngIf]="mappedInsurance=='other'">
+                            <span class="font-weight-400 "><span class="text-secondary pr-1">Oth. Insurance :</span>
+                              <span
+                                class="font-weight-500 alert alert-success py-0 px-1 rounded-2">{{othInsName}}</span>
+                            </span>
+                            <span class="v-separtor"></span>
+                            <span class="font-weight-400">
+                              <span class="text-secondary pr-1">Policy # :</span>
+                              <span class="font-weight-400">{{othInsPolicyNo}}</span>
+                            </span>
+                          </ng-template>
+
+                        </ng-template>
+
+                        <span class="font-weight-500 alert alert-danger py-0 px-1 rounded-2" *ngIf="claimNotfound">
+                          <i class="fas fa-exclamation-triangle mr-2"></i>Claim Not found in EHR</span>
+                      </div>
+
+                    </h5>
+
+
+                  </div>
+
+                  <div id="eraClaimDetail_{{controlUniqueId}}" class="show">
+                    <div class="accordian-body pb-2" *ngIf="!claimNotfound">
+
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-4" *ngIf="priInsId!=undefined">
+                          <div class="flex-1  alert rounded-3 m-0 pt-1 px-1 pb-0 h-100" [ngClass]="{'alert-success': mappedInsurance=='primary',
+                          'alert-secondary': mappedInsurance!='primary',
+                          'alert-disabled' : priInsId==undefined}">
+                            <h5 class="d-flex justify-content-between alert-heading fz-12  border-bottom-only mb-0"
+                              [ngClass]="{'border-success-alert': mappedInsurance=='primary',
+                          'border-secondary-alert': mappedInsurance!='primary'}">
+                              <span>
+                                <i class="fas" [ngClass]="{'fa-check-circle': mappedInsurance=='primary',
+                            'fa-times-circle': mappedInsurance!='primary'}"></i>
+                                Primary Insurance
+                              </span>
+
+
+                              <button class="btn btn-sm btn-link p-0 fz-12 mr-1 text-decoration-underline"
+                                (click)="mapEraClaimPaymentInsurance('primary',priInsId)"
+                                *ngIf="!claimNotfound && mappedInsurance!='primary' && !isEraClaimPosted && callingFrom=='era'">Map</button>
+                            </h5>
+                            <div class="pt-1 px-1">
+                              <div class="form-view row zero mb-1">
+                                <div class="title col-12 pb-1">{{priInsName}}</div>
+                                <div class="title-normal pr-2">Policy No:</div>
+                                <div class="value">{{priInsPolicyNo}}</div>
+                              </div>
+                            </div>
+                          </div>
+
+
+                        </div>
+
+                        <div class="col-4" *ngIf="secInsId!=undefined">
+                          <div class=" flex-1  alert rounded-3 m-0 pt-1 px-1 pb-0 h-100" [ngClass]="{'alert-success': mappedInsurance=='secondary',
+                    'alert-secondary': mappedInsurance!='secondary'}">
+                            <h5 class="d-flex justify-content-between alert-heading fz-12  border-bottom-only mb-0"
+                              [ngClass]="{'border-success-alert': mappedInsurance=='secondary',
+                          'border-secondary-alert': mappedInsurance!='secondary'}">
+                              <span>
+                                <i class="fas" [ngClass]="{'fa-check-circle': mappedInsurance=='secondary',
+                                'fa-times-circle': mappedInsurance!='secondary'}"></i>
+                                Secondary Insurance
+                              </span>
+                              <button class="btn btn-sm btn-link p-0 fz-12 mr-1 text-decoration-underline"
+                                (click)="mapEraClaimPaymentInsurance('secondary',secInsId)"
+                                *ngIf="!claimNotfound && mappedInsurance!='secondary' && !isEraClaimPosted && callingFrom=='era'">Map</button>
+                            </h5>
+                            <div class="pt-1 py-1">
+                              <div class="form-view row zero mb-1">
+                                <div class="title col-12 pb-1">{{secInsName}}</div>
+                                <div class="title-normal pr-2">Policy No:</div>
+                                <div class="value">{{secInsPolicyNo}}</div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+
+
+                        <div class="col-4" *ngIf="othInsId!=undefined">
+                          <div class="flex-1 alert rounded-3 m-0 pt-1 px-1 pb-0 h-100" [ngClass]="{'alert-success': mappedInsurance=='other',
+                    'alert-secondary': mappedInsurance!='other'}">
+                            <h5 class="d-flex justify-content-between alert-heading fz-12  border-bottom-only mb-0"
+                              [ngClass]="{'border-success-alert': mappedInsurance=='other',
+                          'border-secondary-alert': mappedInsurance!='other'}">
+                              <span>
+                                <i class="fas" [ngClass]="{'fa-check-circle': mappedInsurance=='other',
+                                    'fa-times-circle': mappedInsurance!='other'}"></i>
+                                Other Insurance
+                              </span>
+                              <button class="btn btn-sm btn-link p-0 fz-12 mr-1 text-decoration-underline"
+                                (click)="mapEraClaimPaymentInsurance('other',OthInsId)"
+                                *ngIf="!claimNotfound && mappedInsurance!='other' && !isEraClaimPosted && callingFrom=='era'">Map</button>
+                            </h5>
+                            <div class="pt-1 py-1">
+                              <div class="form-view row zero mb-1">
+                                <div class="title col-12 pb-1">{{OthInsName}}</div>
+                                <div class="title-normal pr-2">Policy No:</div>
+                                <div class="value">{{OthInsPolicyNo}}</div>
+                              </div>
+
+
+                            </div>
+                          </div>
+
+                        </div>
+
+
+
+                        <div class="no-content p-2"
+                          *ngIf="priInsId!=undefined && secInsId!=undefined && othInsId!=undefined">
+                          <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Insurance found in EHR.
+                        </div>
+
+
+                      </div>
+
+
+
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+
+              <div class="d-flex flex-column flex-shrink-0">
+
+                <div class="encounter-data-accordian accordian-data rounded-0 border-bottom border-top-0">
+                  <div class="accordian-header" role="tab" id="headingOne">
+                    <h5 class="mb-0 d-flex">
+                      <a data-toggle="collapse" href="#eraClaimInfo_{{controlUniqueId}}" aria-expanded="true"
+                        class="accordian-link">
+                        <span class="accordian-main-header-title pl-1 pr-1 width-130">ERA Claim Information</span>
+
+                      </a>
+                      <div class="d-flex flex-grow-1 justify-content-end" *ngIf="callingFrom=='era'">
+                        <button type="button"
+                          class="btn btn-link title-bar-blue-btn px-0 py-0 fz-12 text-decoration-underline"
+                          *ngIf="!isEraClaimPosted && lookupList.UserRights.payment_add && callingFrom=='era'"
+                          (click)="markAsPosted('ERA_CLAIM',eraClaimId)">Mark Claim as
+                          Posted</button>
+                      </div>
+
+                    </h5>
+
+                  </div>
+
+                  <div id="eraClaimInfo_{{controlUniqueId}}" class="show">
+                    <div class="accordian-body pb-2">
+
+                      <div class="form-row form-dashboard">
+
+                        <div class="col-3">
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Billed Amount:</div>
+                            <div class="value">{{amtBilled | currency:'USD':'symbol-narrow'}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero  px-0">
+                            <div class="title-normal">Paid Amount:</div>
+                            <div class="value">{{amtPaid | currency:'USD':'symbol-narrow'}}</div>
+                          </div>
+                          <div class="form-view form-view zero  px-0">
+                            <div class="title-normal">Claim Interest:</div>
+                            <div class="value">{{claimInteres | currency:'USD':'symbol-narrow'}}</div>
+                          </div>
+                          <div class="form-view form-view zero  px-0">
+                            <div class="title-normal">Adjusted Amount:</div>
+                            <div class="value">{{claimAdjustedAmt | currency:'USD':'symbol-narrow'}}</div>
+                          </div>
+                          <div class="form-view form-view zero  px-0">
+                            <div class="title-normal">Patient Responsibility:</div>
+                            <div class="value">{{patResponsibiltiy | currency:'USD':'symbol-narrow'}}</div>
+                          </div>
+
+                        </div>
+                        <div class="col-4">
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Claim Id:</div>
+                            <div class="value">{{claimIdFromEra}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Payer Claim Control No:</div>
+                            <div class="value">{{payerClaimControlNo}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Claim Status:</div>
+                            <div class="value text-pre-wrap">{{earClaimStatus}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Claim Start Date:</div>
+                            <div class="value">{{claimStartDate}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Claim End Date:</div>
+                            <div class="value">{{claimEndDate}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Adjust Codes:</div>
+                            <div class="value">{{adjustCodes}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Remarks Codes:</div>
+                            <div class="value">{{remarksCodes}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Patient Resp. Reason Code:</div>
+                            <div class="value">{{patReasonCode}}</div>
+                          </div>
+
+                        </div>
+                        <div class="col-5">
+
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Patient Name:</div>
+                            <div class="value">{{eraPatientName}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Patient Identification:</div>
+                            <div class="value">{{patientIdentification}}
+                              <i class="fas fa-info-circle text-ihc-blue ml-1"
+                                title="{{patientIdentificationQualifier}}"
+                                *ngIf="patientIdentificationQualifier!=undefined && patientIdentificationQualifier!=''"></i>
+                            </div>
+                          </div>
+
+
+                          <div class="form-view form-view zero  px-0">
+                            <div class="title-normal">Subscribe Name:</div>
+                            <div class="value">{{subscriberName}}</div>
+                          </div>
+
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Subscribe Identifier:</div>
+                            <div class="value">{{subscriberIdentification}}
+                              <i class="fas fa-info-circle text-ihc-blue ml-1"
+                                title="{{subscriberIdentificationQualifier}}"
+                                *ngIf="subscriberIdentificationQualifier!=undefined && subscriberIdentificationQualifier!=''"></i>
+                            </div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Corrected Sub. Name:</div>
+                            <div class="value">{{subscriberNameCorrected}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Corrected Sub. Identifier:</div>
+                            <div class="value">{{subscriberIdentificationCorrected}}
+                              <i class="fas fa-info-circle text-ihc-blue ml-1"
+                                title="{{subscriberIdentificationCorrectedQualifier}}"
+                                *ngIf="subscriberIdentificationCorrectedQualifier!=undefined && subscriberIdentificationCorrectedQualifier!=''"></i>
+                            </div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Rendering Provider Name:</div>
+                            <div class="value">{{renderingProviderName}}</div>
+                          </div>
+
+                          <div class="form-view form-view zero px-0">
+                            <div class="title-normal">Rendering Provider Identifier:</div>
+                            <div class="value">{{renderingProviderIdentification}}
+                              <i class="fas fa-info-circle text-ihc-blue ml-1"
+                                title="{{renderingProviderIdentificationQualifier}}"
+                                *ngIf="renderingProviderIdentificationQualifier!=undefined && renderingProviderIdentificationQualifier!=''"></i>
+                            </div>
+                          </div>
+
+                        </div>
+
+
+                      </div>
+
+
+
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+
+              <div class="d-flex flex-column flex-shrink-0">
+
+                <div class="encounter-data-accordian accordian-data rounded-0 border-bottom border-top-0">
+                  <div class="accordian-header" role="tab" id="headingOne">
+                    <h5 class="mb-0 d-flex">
+
+                      <a data-toggle="collapse" href="#eraPaymentDetail_{{controlUniqueId}}" aria-expanded="true"
+                        class="accordian-link">
+                        <span class="accordian-main-header-title pl-1 pr-1 width-130">Payment Details
+                          ({{eraClaimServiceCount}})</span>
+                      </a>
+                      <div class="mt-1">
+                        <span class="v-separtor"></span>
+                      </div>
+
+                      <div class=" d-flex flex-grow-1 justify-content-between">
+
+                        <div class="dashboard-sub-nav encounter bg-none" state="">
+                          <div class="color-box bg-success"></div>
+                          <p> Posted</p>
+                          <div class="color-box bg-danger"></div>
+                          <p> Denial Posted</p>
+                          <div class="color-box bg-dark"></div>
+                          <p> Pending</p>
+                        </div>
+
+
+                        <div class="d-flex align-items-center" *ngIf="!claimNotfound">
+                          <button type="button"
+                            class="btn btn-link title-bar-blue-btn px-1 py-0 fz-12 text-decoration-underline"
+                            (click)="showAdjustmentCodesGlossary()">Adjustment Codes Glossary</button>
+                          <button type="button"
+                            class="btn btn-link title-bar-blue-btn px-1 py-0 fz-12 text-decoration-underline"
+                            *ngIf="lookupList.UserRights.payment_add && !isEraClaimPosted && callingFrom=='era'"
+                            (click)="mapEraClaimServicesIds()">Map</button>
+                          <button type="button"
+                            class="btn btn-link title-bar-blue-btn px-1 py-0 fz-12 text-decoration-underline"
+                            (click)="postErapaymentCPTWise()"
+                            *ngIf="lookupList.UserRights.payment_add && !isEraClaimPosted && callingFrom=='era'">Post
+                            Payment</button>
+                        </div>
+                      </div>
+                    </h5>
+                  </div>
+
+                  <div id="eraPaymentDetail_{{controlUniqueId}}" class="show">
+                    <div class="accordian-body p-0">
+                      <div class="overflow-auto flex-grow-1">
+                        <table class="table sm light-striped-border table-sticky-header">
+                          <thead>
+                            <tr>
+                              <th class="width-30" *ngIf="!isEraClaimPosted && callingFrom=='era'">
+                                <div class="custom-control custom-checkbox green-checkbox custom-control-td">
+                                  <input type="checkbox" class="custom-control-input"
+                                    id="era-claimservice-select-all_{{controlUniqueId}}"
+                                    (change)="selectAllServices($event.currentTarget.checked)">
+                                  <label class="custom-control-label"
+                                    for="era-claimservice-select-all_{{controlUniqueId}}">
+                                  </label>
+                                </div>
+                              </th>
+                              <th class="width-100">Procedure ID</th>
+                              <th class="width-100">Begin DOS</th>
+                              <th class="width-100">EHR CPT</th>
+                              <th class="width-100">CPT Charges</th>
+                              <th class="width-100">CPT Paid</th>
+                              <th class="width-100">Units</th>
+                              <th class="width-100">Billed Amount</th>
+                              <th class="width-100">Allowed Amount</th>
+                              <th class="width-100">Paid Amount</th>
+                              <!--
+                              <th class="width-100">Amount to Post</th>
+                              <th class="width-100">Posted Amount</th>
+                              -->
+
+                              <th class="width-100">Deduct Amt</th>
+                              <th class="width-100">Coinsurance Amt</th>
+                              <th class="width-100">Copay Amt</th>
+                              <!--<th class="width-100">Late Filing Red.</th>-->
+                              <!--<th class="width-100">Risk Amt</th>-->
+
+
+                              <th class="width-100">Other Adjusts</th>
+                              <th class="width-100">Adjust Codes</th>
+                              <th class="width-100">Remark Codes</th>
+
+
+                              <!--
+                              <th class="width-100">Rendering ID Type</th>
+                              <th class="width-100">Rendering ID</th>
+                              -->
+
+
+                              <!--<th class="width-100">Auto Posted</th>-->
+                              <th class="width-100">Posted By</th>
+                              <th class="width-100">Date Posted</th>
+                              <th class="width-100" *ngIf="lookupList.UserRights.payment_add && callingFrom=='era'">
+                                &nbsp;</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let service of lstEraClaimService; let i = index" [ngClass]="{'text-success': service.payment_posted,
+                      'text-danger': service.denial_posted}">
+                              <td *ngIf="!isEraClaimPosted && callingFrom=='era'">
+                                <div class="custom-control custom-checkbox green-checkbox custom-control-td"
+                                  *ngIf="!service.payment_posted && !service.denial_posted ">
+                                  <input type="checkbox" class="custom-control-input"
+                                    id="{{controlUniqueId+'_eraservice_'+service.era_claim_service_id}}"
+                                    (change)="selectService($event.currentTarget.checked,i)" value={{service.selected}}
+                                    [checked]="service.selected">
+                                  <label class="custom-control-label"
+                                    for="{{controlUniqueId+'_eraservice_'+service.era_claim_service_id}}"></label>
+                                </div>
+                              </td>
+                              <td>{{service.claim_procedures_id}}</td>
+                              <td>{{service.begin_service_date}}</td>
+                              <td>{{service.ehr_proc_code}}</td>
+                              <td>{{service.cpt_charged_with_modifier}}</td>
+                              <td>{{service.cpt_paid_with_modifier}}</td>
+                              <td>{{service.paid_units}}</td>
+                              <td>{{service.billed_amount | currency:'USD':'symbol-narrow'}}</td>
+                              <td>{{service.allowed_amount | currency:'USD':'symbol-narrow'}}</td>
+                              <td>{{service.paid_amount | currency:'USD':'symbol-narrow'}}</td>
+
+                              <!--
+                              <td>{{service.amount_to_post | currency:'USD':'symbol-narrow'}}</td>
+                              <td>{{service.posted_amount | currency:'USD':'symbol-narrow'}}</td>
+                              -->
+
+
+                              <td>{{service.deduct_amount | currency:'USD':'symbol-narrow'}}</td>
+                              <td>{{service.co_ins_amount | currency:'USD':'symbol-narrow'}}</td>
+                              <td>{{service.co_pay_amount | currency:'USD':'symbol-narrow'}}</td>
+                              <!--<td>{{service.late_filing_reduction | currency:'USD':'symbol-narrow'}}</td>-->
+                              <!--<td>{{service.risk_amount | currency:'USD':'symbol-narrow'}}</td>-->
+
+                              <td>{{service.other_adjusts | currency:'USD':'symbol-narrow'}}</td>
+                              <td>{{service.adjust_codes}}</td>
+                              <td>{{service.remark_codes}}</td>
+
+                              <!--
+                              <td>{{service.rendering_provider_identifier_qualifier}}</td>
+                              <td>{{service.rendering_provider_identifier}}</td>
+                              -->
+                              <!--<td>{{service.auto_posted ? 'Yes' : 'No'}}</td>-->
+                              <td>{{service.posted_by}}</td>
+                              <td>{{service.date_posted}}</td>
+                              <td *ngIf="lookupList.UserRights.payment_add && callingFrom=='era'">
+                                <button type="button" *ngIf="!service.payment_posted && !service.denial_posted"
+                                  (click)="markAsPosted('ERA_CLAIM_SERVICE',service.era_claim_service_id)"
+                                  class="btn btn-outline-primary px-2 py-0 fz-12 text-decoration-underline">Mark as
+                                  Posted</button>
+                              </td>
+                            </tr>
+
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </ng-template>
+
+            <div *ngIf="eraClaimId==undefined || eraClaimId==0" class="no-content">
+              <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Select ERA Claim.
+            </div>
+          </ng-template>
+
+          <div *ngIf="eraId==undefined || eraId==0" class="no-content">
+            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>Select ERA.
+          </div>
+
+        </div>
+
+        <div class="alert alert-danger rounded-0 fz-12" *ngIf="eraError!=undefined && eraError!='' && !isLoading">
+          <p class="m-0"><i class="fas fa-exclamation-triangle"></i> {{eraError}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+      </div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isProcessing">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-cog fa-spin mr-1"></i>Processing
+      </div>
+    </div>
+  </div>
+
+</ng-template>
+
+<div class="d-flex flex-column flex-grow-1" *ngIf="showDenials">
+  <rpt-denial class="d-flex flex-column flex-grow-1" [eraId]="eraId" callingFrom='era' (callBack)="callBack()">
+  </rpt-denial>
+</div>
+
+<div class="d-flex flex-column flex-grow-1" *ngIf="showImportERAFromText">
+
+
+  <div class="light-title-bar h-25 pl-1 pr-2 d-flex align-items-center flex-shrink-0">
+
+    <button type="button" class="btn btn-link title-bar-blue-btn px-1 mr-1 py-0 fz-12" (click)="callBack()">
+      <i class="fas fa-lg fa-arrow-circle-left mr-1"></i> Back to ERA
+    </button>
+    <div class="d-flex flex-grow-1 align-content-between">
+      <div class="d-flex flex-grow-1 fz-14 font-weight-400 text-ihc-dark-blue"> Import ERA From Text</div>
+      <button (click)="importERAFromText(textEraString.value)" class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0">
+        Process Text
+      </button>
+    </div>
+  </div>
+
+
+  <div
+    class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+
+    <div class="form-row form-dashboard col-12">
+      <div class="form-group col">
+        <label class="col-form-label" for="textEraString">ERA Text</label>
+        <textarea class="form-control required" labelForId="textEraString" rows="30" id="textEraString"
+          autocomplete="off" #textEraString></textarea>
+      </div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isProcessing">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-cog fa-spin mr-1"></i>Processing
+      </div>
+    </div>
+
+  </div>
+</div>

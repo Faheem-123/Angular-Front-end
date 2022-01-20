@@ -1,0 +1,260 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Referral</div>
+  <ul class="nav color-buttons align-items-center">
+
+
+    <!--
+    <a *ngIf="!addEditView" class="nav-link green px-2 py-0 top-right-radius" (click)="OnAddNew()">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </a>
+
+
+    <a *ngIf="addEditView" class="nav-link blue px-2 py-0" (click)="OnSave()">
+      <i class="fas fa-sign-in-alt pr-1"></i>Sign and Save
+    </a>
+
+    <a *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="OnSave()">
+      <i class="far fa-save pr-1"></i>Save
+    </a>
+    <a *ngIf="addEditView" class="nav-link btn-dark px-2 py-0 top-right-radius" (click)="Oncancel();">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </a>
+
+    <button class="nav-link blue px-2 py-0 top-right-radius" *ngIf="!addEditView">
+      <i class="fas fa-history pr-1"></i>History
+    </button>
+    -->
+
+
+
+    <button  class="nav-link green px-2 py-0 top-right-radius" (click)="OnAddNew()" *ngIf="!addEditView && canAddEdit">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </button>
+
+    <button class="nav-link bg-info px-2 py-0" (click)="OnSignAndSave()" *ngIf="addEditView"
+    [disabled]="!inputForm.valid">
+      <i class="fas fa-sign-in-alt pr-1"></i>Sign and Save
+    </button>
+    <button class="nav-link encounter-btn-save px-2 py-0" (click)="OnSave()" *ngIf="addEditView"
+      [disabled]="!inputForm.valid">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+    <button class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="Oncancel()" *ngIf="addEditView">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </button>
+
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <i class="fas fa-ban mr-2"></i> Access Denied
+  </div>
+
+
+  <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+
+  <table class="table layout-fixed light-striped-border td-normal-wrap"
+    *ngIf="!isLoading &&  !noRecordFound && canView && !addEditView">
+
+    <tr *ngFor="let rf of lstReferralRequest">
+      <td width="12%">
+        <!-- <div *ngIf="rf.high_importance"> -->
+
+        <!-- </div> -->
+        <p>
+          <span class="text-info">
+            <i *ngIf="rf.high_importance" class="fas fa-exclamation text-danger mr-2"></i>
+            {{rf.date_created}}
+          </span>
+        </p>
+
+      </td>
+      <td>
+        <div class="row zero">
+          <div class="col-md-4 col-sm-6 col-12">
+            <p><span class="font-weight-bold mr-2">Type:</span>{{rf.consult_type}}</p>
+          </div>
+
+          <div class="col-md-4 col-sm-6 col-12">
+            <p><span class="font-weight-bold mr-2">Provider:</span>{{rf.provider_name}}</p>
+          </div>
+
+          <div class="col-md-4 col-sm-6 col-12">
+            <p><span class="font-weight-bold mr-2">Referred To:</span>{{rf.referral_provider_name}}</p>
+          </div>
+        </div>
+
+        <div class="row zero" *ngIf="rf.referral_reason">
+          <div class="col-md-2 col-sm-4 col-12">
+            <p> <span class="font-weight-bold">Diagnosis/Comments</span></p>
+          </div>
+
+          <div class="col-md-10 col-sm-8 col-12">
+            <p>{{rf.referral_reason}}</p>
+          </div>
+        </div>
+
+        <div class="row zero" *ngIf="rf.notes">
+          <div class="col-md-2 col-sm-4 col-12">
+            <p><span class="font-weight-bold">Staff Notes:</span></p>
+          </div>
+
+          <div class="col-md-10 col-sm-8 col-12">
+            <p><span>{{rf.notes}}</span></p>
+          </div>
+        </div>
+
+        <div class="row zero" *ngIf="rf.signed_by" style="height: 15px;">
+          <div class="col-12 text-right">
+            <p class="fz-12 font-weight-light font-italic text-primary">Signed by {{rf.signed_by}}
+              at {{rf.date_signed}}</p>
+          </div>
+        </div>
+      </td>
+      <td class="text-right" style="width: 120px">
+        <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md text-success line-height-1 p-0 mr-2"
+          (click)="onStaffNotes(rf)">
+          <i class="far fa-comments"></i>
+        </button>
+        <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md line-height-1 p-0 p-0 mr-2" (click)="onEdit(rf)">
+          <i class="far fa-edit"></i>
+        </button>
+        <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md btn-delete  line-height-1 p-0" (click)="onDelete(rf)">
+          <i class="far fa-trash-alt"></i>
+        </button>
+      </td>
+
+    </tr>
+  </table>
+
+
+
+
+
+  <div *ngIf="addEditView">
+    <form [formGroup]="inputForm">
+      <div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+        <div class="px6-py3">
+          <div class="row p8">
+            <div class="col-12 col-md-6 d-flex flex-column">
+              <div class="info-box-stipes rounded flex-grow-1">
+                <div class="p-8 pt-0">
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-12 col-md-6">
+                      <label for="input011">Consult Type:</label>
+                      <select class="form-control" id="input3" formControlName="drpConsultType"
+                        (change)="OnConsultChange()">
+                        <option *ngFor="let s of lstConsultType" [value]="s.id">{{s.name}}</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-12 col-md-6">
+                      <label>&nbsp;</label>
+                      <div class="d-flex justify-content-between">
+                       
+                        <div class="custom-control custom-checkbox green-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="chkHigh"
+                            formControlName="chkImportance">
+                          <label class="custom-control-label" for="chkHigh">High Important</label>
+                        </div>
+
+                        <ul class="nav color-buttons align-items-center">
+                          <button class="btn btn-sm btn-link" (click)="onImport()" type="button">Import Dx</button>
+                        </ul>
+
+                        <inline-diagnosis-search *ngIf="showDiagnosisSearch" [lstChartDiagnosis]="lstchartDiagnosis"
+                          (onDiagMultiSelect)="onDiagnosisSelect($event)" (onClose)="closeDiagSearch()">
+                        </inline-diagnosis-search>
+
+                      </div>
+                    </div>
+
+                    <div class="form-group col-12 col-md-12">
+                      <label for="input014">Diagnosis/Comments:</label>
+                      <textarea class="form-control" id="input014" rows="10" formControlName="txtcomments"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 d-flex flex-column">
+              <div class="info-box-stipes rounded">
+                <div class="p-8 pt-0">
+                  <div class="form-row form-dashboard">
+
+                    <div class="form-group col-12 mt-1">
+                      <label for="input026">Refer To:</label>
+                      <!-- <input class="form-control" id="input026" type="text" placeholder="Enter criteria and press Enter to search"> -->
+                      <div class="form-group has-search position-relative">
+                        <input class="form-control" placeholder="ICDs Search" type="text" id="txtReferralSearch"
+                          #txtReferralSearch formControlName="txtReferralSearch" placeholder="Search Referral"
+                          (input)="onReferralSearchKeydown(txtReferralSearch.value)" autocomplete="off">
+                        <span class="fa fa-search form-control-feedback"></span>
+                        <inline-ref-physician-search *ngIf="isSearchReferral" [searchValue]="txtReferralSearch.value"
+                          [refConsultlist]="lstReferralSearch" (onSelect)="addRefPhysician($event)"
+                          (onClose)="closeRefPhysicianSearch($event)">
+                        </inline-ref-physician-search>
+                      </div>
+                    </div>
+
+
+                    <div class="form-group col-12">
+                      <label for="input027">Address:</label>
+                      <input readonly class="form-control" id="input027" type="text"
+                        formControlName="txtreferralAddress">
+                    </div>
+
+                    <div class="form-group col-md-6 col-12">
+                      <label for="input028">Phone:</label>
+                      <input readonly class="form-control" id="input028" type="tel" formControlName="txtreferralPhone">
+                    </div>
+
+                    <div class="form-group col-md-6 col-12">
+                      <label for="input029">Fax:</label>
+                      <input readonly class="form-control" id="input029" type="tel" formControlName="txtreferralfax">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-box-stipes rounded mt-8">
+                <div class="p-8 pt-0">
+                  <div class="form-row form-dashboard">
+                    <div class="form-group col-12">
+                      <label for="input031">Provider:</label>
+                      <select class="form-control" labelForId="input1" formControlName="drpProvider">
+                        <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-12">
+                      <label for="input032">Location:</label>
+                      <select class="form-control" labelForId="input2" formControlName="drpLocation">
+                        <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && !addEditView && canView">
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="showReferralLog()">View Log</button>
+  </div>
+
+</div>

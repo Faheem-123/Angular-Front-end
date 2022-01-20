@@ -1,0 +1,50 @@
+<div class="dashboard-billing position-relative">
+  <div class="dashboard-title position-relative">
+    <div class="icon light-gray" title="Claim Aging">
+      <img class="img-h-24" src="./assets/images/icons/dashboard_claim_aging.svg" alt="">
+    </div>
+
+    <div class="title">
+      Claim Aging
+    </div>
+    <div class="custom-control custom-radio green-radio">
+      <input  class="custom-control-input" id="rdoAll" name="rdoclaim" type="radio" value="all" (change)="onOptionChange($event)">
+      <label  class="custom-control-label" for="rdoAll">All</label>
+    </div>
+    <div class="custom-control custom-radio green-radio">
+      <input  class="custom-control-input" id="rdoInsurance" name="rdoclaim" type="radio" value="insurance" (change)="onOptionChange($event)">
+      <label  class="custom-control-label" for="rdoInsurance">Insurance</label>
+    </div>
+    <div class="custom-control custom-radio green-radio">
+      <input  class="custom-control-input" id="rdoPatient" name="rdoclaim" type="radio" value="patient" (change)="onOptionChange($event)">
+      <label  class="custom-control-label" for="rdoPatient">Patient</label>
+    </div>
+    <!-- <label class="form-check-label pr-4" style="font-size: small">
+      <input checked class="form-check-input" type="radio" name="rdoclaim" id="rdoclaim" value="all" (change)="onOptionChange($event)"> All
+  </label>
+  <label class="form-check-label" style="font-size: small">
+      <input class="form-check-input" type="radio" name="rdoclaim" id="rdoclaim" value="insurance" (change)="onOptionChange($event)"> Insurance
+  </label>
+  <label class="form-check-label" style="font-size: small">
+    <input class="form-check-input" type="radio" name="rdoclaim" id="rdoclaim" value="patient" (change)="onOptionChange($event)"> Patient
+</label> -->
+    <div class="title-btn p-0">
+      <a class="line-height-1" (click)="refreshRecord()"><img class="img-h-25"
+          src="./assets/images/icons/ico_refresh_green.svg" alt=""></a>
+    </div>
+  </div>
+  <div class="dashboard-content">
+    <!-- <canvas #myCanvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [legend]="false" [colors]="colorsEmptyObject"
+      [options]="barChartOptions" [chartType]="barChartType"></canvas> -->
+
+      <canvas id="myCanvas" #myCanvas >{{chart}}</canvas>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,27 @@
+<div class="modal-header dialog px-3 py-2 alert alert-primary" style="height: 40px" role="alert">
+  <h6><img class="mr-2" src="./assets/images/logo-small.png">HCFA Print</h6>
+</div>
+<div class="dialog mb-2" style="min-height: 50px;padding-left: 15px;">
+  <div class="d-flex align-items-center">
+    <i class="fa fa-2x mr-3 fas fa-question-circle text-primary"></i>
+
+    <div class="col col-10 pl-0">
+
+      <p class="fz-14">Claim printing format CMS 1500 Form - Version 02/12</p>
+
+      <div class="form-check-cont d-flex flex-grow-1 align-item-center">
+        <div class="custom-control custom-checkbox green-checkbox ">
+          <input type="checkbox" class="custom-control-input" id="chkHcfaPrintWithBG"
+            (change)="onChkHcfaPrintWithBGChanged($event)">
+          <label class="custom-control-label" for="chkHcfaPrintWithBG">Print with background</label>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+<div class="modal-footer custom">
+  <button type="button" style="width: 80px;" class="btn btn-success btn-sm" (click)="okClick()">Ok</button>
+  <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="activeModal.dismiss()">Cancel</button>
+</div>

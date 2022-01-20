@@ -1,0 +1,20 @@
+export class ORMPatientHealthCheck {
+     health_check_id:string;
+	patient_id:string;
+	chart_id:string;
+	form_id:string;
+	health_check_date:string;
+	health_check_html:string;
+	practice_id:string;
+	deleted:Boolean;
+	created_user:string;
+	client_date_created:string;
+	modified_user:string;
+	client_date_modified:string;
+	date_created:string;
+	date_modified:string;
+	provider1_sign_info:string;
+	provider2_sign_info:string;
+	system_ip:string;
+	file_link:string;
+}

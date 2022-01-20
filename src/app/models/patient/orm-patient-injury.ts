@@ -1,0 +1,21 @@
+export class ORMPatientInjury {
+    injury_id:number;
+    patient_id:number;
+    attornery_id:number;
+    acc_date:string;
+    claim_no:string;
+    adj_name:string;
+    adj_phone:string;
+    adj_fax:string;
+    insurance_id:number;
+    start_date:string;
+    end_date:string;
+    practice_id:number;
+    deleted:boolean;
+    created_user:string;
+    date_created:string;
+    modified_user:string;
+    date_modified:string;
+    client_date_created:string;
+    client_date_modified:string;
+}

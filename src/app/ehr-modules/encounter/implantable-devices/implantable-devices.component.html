@@ -1,0 +1,418 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Implantable Devices</div>
+  <ul class="nav color-buttons align-items-center">
+
+    <button  *ngIf="canAddEdit" (click)="onAddNewDevice()" class="nav-link green px-2 py-0 top-right-radius">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </button>
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+      (click)="saveImplantableDevice(ImplForm.value)" [disabled]="!ImplForm.valid && UDIVerified">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="onCancel()">
+      <i class="fas fa-times  pr-1"></i>Cancel
+    </button>
+
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading &&  !addEditView">
+    <form [formGroup]="filterForm">
+      <div class="btn-group radio-btn-tabs px-1">
+        <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (dataFilterOption === 'all')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="all"
+            (ngModelChange)="onRadioOptionChange($event)"> All
+        </label>
+        <label class="btn btn-sm btn-secondary"
+          [ngClass]="{'active' : (dataFilterOption === 'active')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption" value="active"
+            (ngModelChange)="onRadioOptionChange($event)"> Active
+        </label>
+        <label class="btn btn-sm btn-secondary "
+          [ngClass]="{'active' : (dataFilterOption === 'inactive')}">
+          <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+            value="inactive" (ngModelChange)="onRadioOptionChange($event)"> In Active
+        </label>
+
+      </div>
+    </form>
+  </div>
+
+
+
+  <div *ngIf="!isLoading && !addEditView && noRecordFound" class="no-content">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+  <div *ngIf="!noRecordFound && !addEditView" class="encounter-view flex-grow-1 mt-0">
+
+    <div class="encounter-data-accordian accordian-data" *ngFor="let device of lstPatImplantableDevicesSummaryFiltered">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5>
+          <a data-toggle="collapse" href="#summaryImpDevice{{device.implantable_device_id}}" aria-expanded="false">
+            <span class="accordian-header-date">{{device.implant_date}}</span>
+            {{device.gmdn_pt_name}}
+          </a>
+        </h5>
+        <button type="button" class="btn btn-link btn-md text-primary"
+          (click)="onEditDevice(device.implantable_device_id)">
+          <i class="far fa-edit"></i>
+        </button>
+        <button type="button" class="btn btn-link btn-md btn-delete"
+          (click)="onDeleteDevice(device.implantable_device_id)">
+          <i class="far fa-trash-alt"></i>
+        </button>
+      </div>
+
+      <div id="summaryImpDevice{{device.implantable_device_id}}" class="collapse" class="collapse">
+        <div class="accordian-body">
+          <div class="row">
+            <div class="col col-3">
+              <p>Device ID:<strong class="mr-5">{{device.device_id}}</strong>
+              </p>
+            </div>
+            <div class="col col-3">
+              <p>Implant Date:<strong class="mr-5">{{device.implant_date}}</strong>
+              </p>
+            </div>
+            <div class="col col-3">
+              <p>Expiry Date:<strong class="mr-5">{{device.expiry_date}}</strong>
+              </p>
+            </div>
+
+            <div class="col col-3">
+              <p>Status:<strong class="mr-5">{{device.device_active ? 'Active' : 'Inactive'}}</strong>
+              </p>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col">
+              <p>GMDN PT NAME:<strong class="mr-5">{{device.gmdn_pt_name}}</strong>
+              </p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <p>GMDN PT DESCRIPTION:<strong class="mr-5">{{device.gmdn_pt_description}}</strong>
+              </p>
+            </div>
+          </div>
+
+          <div class="accordian-footer">
+            <p class="form-text text-muted">Last Modified by {{device.modified_user}} at {{device.date_modified}}
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+
+  <div *ngIf="addEditView" class="light-sky-blue p-6">
+
+    <div class="p-6">
+
+
+      <form [formGroup]="searchUDIForm" (ngSubmit)="verifyUDI()">
+
+        <div class="form-row form-dashboard mb-2" *ngIf="addEditOperation=='add'">
+          <div class="form-group col-12">
+            <div class="alert alert-primary rounded-3 fz-12 mb-0" role="alert">
+              Enter and Verify a Unique Device Identification to populate data from Global UDI Database
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-row form-dashboard">
+          <div class="form-group col-12">
+            <label for="txtDate">Unique Device Identification (UDI)</label>
+            <div class="input-group">
+
+              <div class="input-group-prepend" *ngIf="UDIVerified">
+                <span class="input-group-text input-group-text-success"> <i aria-hidden="true"
+                    class="fas fa-check-circle fa-lg"></i></span>
+              </div>
+
+         
+              <input class="form-control form-control-with-button required" type="text" formControlName="txtUDI"
+                [ngClass]="{'border-success': UDIVerified}" />
+
+              <span class="input-group-btn" *ngIf="addEditOperation=='add'">
+                <button class="btn btn-outline-danger fz-12" type="button" *ngIf="!VerifyicationInProgress && UDIVerified"
+                  (click)="clearVerifiedUDIInfo()">
+                  <i class="fas fa-times mr-1"></i> Remove
+                </button>
+
+                <button class="btn btn-success fz-12" (click)="verifyUDI()" type="submit" *ngIf="!UDIVerified"
+                  [disabled]="VerifyicationInProgress">
+                  <span *ngIf="VerifyicationInProgress"> <i *ngIf="VerifyicationInProgress"
+                      class="fas fa-spinner fa-spin mr-1"></i> Verifying</span>
+                  <span *ngIf="!VerifyicationInProgress"> Verify</span>
+                </button>
+              </span>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard my-2"
+          *ngIf="udiVerificationErrorMsg!=undefined && udiVerificationErrorMsg!=''">
+          <div class="form-group col-12">
+            <div class="alert alert-danger rounded-3 fz-12 mb-0" role="alert">
+              {{udiVerificationErrorMsg}}
+            </div>
+          </div>
+        </div>
+
+
+      </form>
+
+
+      <form [formGroup]="ImplForm">
+        <div class="form-row form-dashboard">
+
+          <div class="form-group col-2">
+            <label class="col-form-label required">Implant Date</label>
+            <div class="input-group">
+              <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="implantDate"
+                formControlName="implantDate" ngbDatepicker #implantDate="ngbDatepicker"
+                [ngClass]="{'is-invalid': ImplForm.controls.implantDate.errors?.invalidDate}">
+
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="implantDate.toggle()" type="button">
+                </button>
+              </span>
+
+            </div>
+          </div>
+
+
+          <div class="form-group col-2">
+            <label for="rbDevicedActive" class="col-form-label">Status</label>
+            <div class="form-control form-check form-check-inline mt-0 pt-0">
+              <input class="form-check-input" id="rbStatusActive" type="radio" name="rbDevicedActive"
+                formControlName="rbDevicedActive" [value]="true">
+              <label class="form-check-label" for="rbStatusActive">Active</label>
+              <input class="form-check-input ml-3" id="rbStatusInactive" type="radio" name="rbDevicedActive"
+                formControlName="rbDevicedActive" [value]="false">
+              <label class="form-check-label" for="rbStatusInactive">Inactive</label>
+            </div>
+          </div>
+
+         
+
+
+        </div>
+
+        <div class="form-row form-dashboard">
+          <div class="form-group col">
+            <label class="col-form-label">Notes:</label>
+            <textarea class="form-control" formControlName="notes"></textarea>
+          </div>
+        </div>
+
+       
+
+      </form>
+
+
+      <ng-template id="Global_UDI_Info" [ngIf]="showGlobalUDIInfo">
+
+        <div class="alert alert-info rounded-3 mt-2" role="alert">
+          <h6 class="alert-heading mb-0 fz-12">Data populated from the Global UDI Database</h6>
+          <hr class="my-1">
+
+          <div class="form-row form-dashboard">
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">DEVICE IDENTIFIER</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{deviceID}}
+              </label>
+
+            </div>
+
+            <div class="form-group col-xl-3">
+              <label class="col-form-label module-view-headding">ISSUING AGENCY</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{issuingAgencey}}
+              </label>
+
+            </div>
+
+
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group">
+              <label class="col-form-label module-view-headding">GMDN PT NAME</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{gmdNptName}}
+              </label>
+
+            </div>
+
+
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group">
+              <label class="col-form-label module-view-headding">GMDN PT DESCRIPTION</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{gmdNptDescription}}
+              </label>
+
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+
+
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">EXPIRATION DATE</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{expirationDate}}
+              </label>
+
+            </div>
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">MANUFACTURERING DATE</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{manufacturingDate}}
+              </label>
+
+            </div>
+
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">COMPANY NAME</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{companyName}}
+              </label>
+
+            </div>
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">BRAND NAME</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{brandName}}
+              </label>
+
+            </div>
+
+          </div>
+
+          <div class="form-row form-dashboard">
+
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">SERIAL NUMBER</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{serialNumber}}
+              </label>
+
+            </div>
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">LOT/BATCH</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{lotNumber}}
+              </label>
+
+            </div>
+
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">VERSION/MODEL</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{versionModelNumber}}
+              </label>
+
+            </div>
+
+            <div class="form-group col-3">
+              <label class="col-form-label module-view-headding">HCT/P</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{deviceHCTP}}
+              </label>
+            </div>
+
+          </div>
+
+
+          <div class="form-row form-dashboard">
+            <div class="form-group">
+              <label class="col-form-label module-view-headding">WHAT MRI SAFETY STATUS INFORMATION DOES THE LABELING
+                CONTAIN?</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{MRISafetyStatusInfo}}
+              </label>
+
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group">
+              <label class="col-form-label module-view-headding">WHAT NRL INFORMATION DOES THE LABELING
+                CONTAIN?</label>
+
+              <div class="input-group">
+
+                <div class="form-view col-6">
+                  <div class="text-muted">NO NRL:</div>
+                  <div class="value">{{labledAsNoNRL}}</div>
+                </div>
+
+                <div class="form-view col-6">
+                  <div class="text-muted">CONTAINS NRL:</div>
+                  <div class="value">{{labledAsContainsNRL}}</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+          <div class="form-row form-dashboard">
+            <div class="form-group">
+              <label class="col-form-label module-view-headding">DEVICE DESCRIPTION</label>
+              <label class="col-form-label module-view-value pt-0">
+                {{deviceDescription}}
+              </label>
+
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group ">
+              <label class="col-form-label module-view-headding">SNOMED-CT</label>
+              <label class="col-form-label module-view-value pt-0">
+                <span>{{snomedCTCode}}</span>
+                <span class="mx-1">|</span>
+                <span>{{snomedCTDescription}}</span>
+              </label>
+            </div>
+
+          </div>
+
+        </div>
+
+      </ng-template>
+
+    </div>
+  </div>
+
+  <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && !addEditView">
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLogHistory()">View Log</button>
+  </div>
+</div>

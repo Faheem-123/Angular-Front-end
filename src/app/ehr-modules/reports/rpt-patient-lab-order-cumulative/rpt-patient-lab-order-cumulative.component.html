@@ -1,0 +1,178 @@
+<div class="encounter-module rounded d-flex flex-column flex-grow-1 position-relative">
+  <div class="header flex-shrink-0 d-flex justify-content-between">
+    <div class="title">Cumulative Report</div>
+  </div>
+
+  <div class="encounter-body rounded-bottom p-8 flex-grow-1 d-flex flex-column light-gray-bg">
+    <form [formGroup]="frmSearch">
+
+      <div class="border rounded bg-white pb-2 flex-shrink-0">
+        <div class="form-row form-dashboard">
+
+          <div class="form-group col-2">
+            <label class="col-form-label required" for="dateFrom">From:</label>
+            <div class="input-group">
+              <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtDateFrom"
+                formControlName="txtDateFrom" ngbDatepicker #txtDateFrom="ngbDatepicker">
+
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txtDateFrom.toggle()" type="button">
+                </button>
+              </span>
+
+
+
+            </div>
+          </div>
+
+          <div class="form-group col-2">
+            <label class="col-form-label required" for="dateFrom">To:</label>
+            <div class="input-group">
+              <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtDateTo"
+                formControlName="txtDateTo" ngbDatepicker #txtDateTo="ngbDatepicker">
+
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txtDateTo.toggle()" type="button">
+                </button>
+              </span>
+
+
+            </div>
+          </div>
+
+
+          <div class="form-group col-7">
+            <form [formGroup]="filterForm">
+              <label for="cntrlpatientSearch" class="col-form-label">Patient:</label>
+              <div class="form-group">
+                <div class="input-icon d-flex flex-grow-3">
+                  <input labelForId="cntrlpatientSearch" class="form-control search-highlight flex-grow-3" type="text"
+                    #cntrlpatientSearch formControlName="cntrlpatientSearch" placeholder="Search Patient"
+                    (keydown)="onKeydown($event)" autocomplete="off">
+                  <!-- <input type="text" formControlName="txtPatientIdHidden" hidden> -->
+                  <div class="icon">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </div>
+                  <inline-patient-search *ngIf="showPatientSearch" [searchValue]="cntrlpatientSearch.value"
+                    (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                  </inline-patient-search>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="form-group col-1 d-flex align-items-end">
+            <button type="button" class="btn btn-success w-100" (click)="onFilter(frmSearch.value)">Search</button>
+          </div>
+
+        </div>
+      </div>
+    </form>
+
+
+    <div *ngIf="!isAttachment"
+      class="border custom-select-box bg-white mt-2 d-flex flex-column flex-grow-1 overflow-height">
+      
+      <!-- <table class="table light-striped-border">
+        <thead>
+          <tr>
+            <th>Result</th>
+            <th>unit</th>
+            <th>Rec.Range</th>
+            <th *ngFor="let res of lstResultHeader" class="col-2">{{res.order_date}}</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let res of lstFinalReport" >
+              <td>{{res.result_description}}</td>  
+              <td>{{res.result_value_unit}} </td>  
+              <td>{{res.recomended_value}}</td>
+              <td [ngClass]="{
+                'text-deep-orange' : (res.abnormal_range_code!='normal')}"
+            *ngFor="let hdr of lstResultHeader"  class="col-2">{{res[hdr.order_date]}}</td>
+            </tr>
+        </tbody>
+        </table> -->
+      <h4 class="form-edit-sub-heading m-1 mb-1 pl-1 flex-shrink-0">Patient Results</h4>
+      <div class="dashboard-sub flex-grow-1 overflow-auto max-height-100" *ngIf="!isLoading">
+        <div role="tablist">
+          <!-- <div class="card dashboard-card" *ngFor="let med of lstresult | unique:'test_code'"> -->
+          <!-- <div class="card-header" role="tab" id="headingOne">
+                      <h5 class="mb-0">
+                        <a data-toggle="collapse" href="#summaryPatient{{med.patient_id}}" aria-expanded="true">
+                          <span class="fas fa-user card-header-date font-weight-bold"> {{med.test_description}}</span>
+                        </a>
+                      </h5>
+                    </div> -->
+          <!-- <div id="summaryPatient{{med.test_code}}" class="collapse">
+                      <div class="card-body"> -->
+          <!-- <p>Prescription:
+                      <strong>{{med.test_description}}</strong>
+                    </p> -->
+          <div class="card dashboard-card" *ngFor="let sub of lstFinalReport | unique:'test_code'">
+            <div class="card-header" role="tab" id="headingTwo">
+              <h5 class="mb-0">
+                <a class="d-flex align-items-center" data-toggle="collapse" href="#summarytest{{sub.test_code}}"
+                  aria-expanded="true">
+                  <img class="mr-2" src="./assets/images/icons/test-tube.svg" alt="" style="height: 15px;">
+                  <span>
+                    {{sub.test_description}}
+                  </span>
+                </a>
+              </h5>
+            </div>
+            <div id="summarytest{{sub.test_code}}" class="collapse">
+              <div class="card-body">
+                <div class="table-container border">
+                  <table class="table light-striped-border">
+                    <thead>
+                      <tr>
+                        <th>Result</th>
+                        <th>unit</th>
+                        <th>Rec.Range</th>
+                        <th width="30%" style="width: 30%" *ngFor="let res of lstResultHeader">{{res.order_date}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let res of lstFinalReport |listFilter :'test_code' :sub.test_code">
+                        <td>
+                          <img class="mr-2" src="./assets/images/icons/ico_report.svg"
+                            style="height: 14px;">{{res.result_description}}
+                        </td>
+                        <td>{{res.result_value_unit}}</td>
+                        <td>{{res.result_value}}
+                          {{res.recomended_value}}</td>
+                        <td width="30%" style="width: 30%" [ngClass]="{
+                              'text-deep-orange' : (res.abnormal_range_code!='normal')}"
+                          *ngFor="let hdr of lstResultHeader">{{res[hdr.order_date]}}</td>
+                      </tr>
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- </div>
+          
+                    </div> -->
+
+          <!-- </div> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+          <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+  </div>
+</div>

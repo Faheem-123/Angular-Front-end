@@ -1,0 +1,106 @@
+<div class="inner-tool-tab h-26 d-flex pl-2 justify-content-end pr-0 flex-shrink-0">
+  <button class="btn rounded-0 btn-sm bg-green-ihc text-white h-26" (click)="onSaveAll()">Save</button>
+  <button class="btn rounded-0 btn-sm bg-dark text-white h-26">Cancel</button>  
+</div>
+
+<div class="bg-white d-flex flex-row flex-grow-1 p-8 overflow-height max-height-100">
+  <div class="border rounded bg-white d-flex flex-column flex-2 max-height-100">
+    <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+      <span>Setting Names</span>
+      <button class="btn btn-sm btn-link line-height-1 p-0" (click)="onSettingNew()">New</button>
+    </div>
+    <div *ngIf="settingOperation!=''" class="d-flex border-bottom flex-shrink-0 p-2">
+      <form  [formGroup]="settingInputForm">
+        <div class="form-group flex-grow-1 mb-0">
+          <input formControlName="txtSettingName" #txtSettingName class="form-control" type="text" placeholder="Enter Setting Name">
+        </div>
+      </form>
+      <button class="btn btn-sm btn-success ml-1" type="button" (click)="onSettingSave()"><i class="far fa-save"></i></button>
+      <button class="btn btn-sm btn-danger ml-1" type="button"  (click)="onSettingCancel()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="flex-grow-1 overflow-auto">
+      <table class="table light-striped-border">
+        <tbody>
+          <tr *ngFor="let u of arrModuleSetting;let i = index" (click)="onSettingSelectionChange(i,u)" 
+          [ngClass]="{ 'active': i==selectedSetting}">
+            <td>{{u.setting_name}}</td>
+            <td class="text-right">
+              <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onSettingEdit(u)"><i class="far fa-edit"></i></button>
+              <button class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onSettingDelete(u)"><i class="far fa-trash-alt"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="border rounded bg-white d-flex flex-column flex-1 ml-8 max-height-100">
+    <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+      <span>Pages</span>
+      <button class="btn btn-sm btn-link line-height-1 p-0" (click)="onNewPage()">New</button>
+    </div>
+    <div class="flex-grow-1 overflow-auto">
+      <table class="table light-striped-border">
+        <tbody>
+          <tr *ngFor="let u of arrPageNo;let i = index" (click)="onPageSelectionChange(i,u)" 
+          [ngClass]="{ 'active': i==selectedPage}">
+            <td>{{u.page_no}}</td>
+            <td class="text-right">
+              <button class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onPageDelete(u)"><i class="far fa-trash-alt"></i></button>
+            </td>
+          </tr>         
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="border rounded bg-white d-flex flex-column flex-6 ml-8">
+    <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+      <span>Page Detail</span>
+    </div>
+
+    <div class="flex-grow-1 d-flex overflow-height max-height-100">
+      <div class="flex-1 overflow-auto border-right max-height-100">
+        <table class="table light-striped-border">
+          <tbody>
+            <tr *ngFor="let u of arrModuleDetailFiltered;let i = index" (click)="onUserModuleSelectionChange(i,u)" 
+            [ngClass]="{ 'active': i==selectedModule}">
+              <td>{{u.display_name}}</td>
+              <td class="text-right">
+                <button class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onModuleDelete(u)"><i class="far fa-trash-alt"></i></button>
+              </td>
+            </tr>
+
+           
+          </tbody>
+        </table>
+      </div>
+
+      <div class="px-1 d-flex flex-column align-items-center justify-content-center">
+        <button class="btn btn-sm btn-primary rounded-circle h-26 w-26 p-0 d-flex align-items-center justify-content-center"
+        [disabled]="!(selectedModule > 0)"
+        (click)="moveModule('up')">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+        <button class="btn btn-sm btn-primary rounded-circle h-26 w-26 p-0 mt-2 d-flex align-items-center justify-content-center"
+        (click)="moveModule('down')" 
+            [disabled]="!(arrModuleDetailFiltered!=undefined && arrModuleDetailFiltered.length > (selectedModule+1))" >
+            <i class="fas fa-chevron-down"></i>
+          </button>
+      </div>
+
+      <div class="flex-1 overflow-auto border-left max-height-100">
+        <table class="table light-striped-border">
+          <tbody> 
+            <tr *ngFor="let u of arrAllFiltered;let i = index" >
+              <td>{{u.display_name}}</td>
+              <td class="text-right">
+                <button class="btn btn-link fz-14 text-success line-height-1 p-0" (click)="onModuleAdd(i,u)"><i class="fas fa-plus"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

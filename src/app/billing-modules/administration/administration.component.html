@@ -1,0 +1,20 @@
+<ngb-tabset class="inner-vertical-tab white d-flex flex-row max-height-100">
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Users</span></ng-template>
+    <ng-template ngbTabContent>
+      <billing-users class="d-flex flex-column flex-grow-1 overflow-height p-8"></billing-users>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>User Roles</span></ng-template>
+    <ng-template ngbTabContent>
+      <user-roles class="d-flex flex-row flex-grow-1 overflow-height p-8" [callingFrom]="callingFrom"></user-roles>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab>
+    <ng-template ngbTabTitle><span>Practices</span></ng-template>
+    <ng-template ngbTabContent>
+      <practice-setup class="d-flex flex-row flex-grow-1 overflow-height p-8"></practice-setup>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

@@ -1,0 +1,200 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+  <div class="title pl-8">Surgeries</div>
+  <ul class="nav color-buttons align-items-center">
+
+
+    <button  *ngIf="!addEditView && canView && canAddEdit" (click)="OnAddNew('CHART_SURGERY')"
+      class="nav-link green px-2 py-0 top-right-radius">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </button>
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="onSaveSurgery(InputForm.value)">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel  px-2 py-0 top-right-radius" (click)="onCancel()">
+        <i class="fas fa-times  pr-1"></i>Cancel
+    </button>
+
+
+
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <p>
+      <i class="fas fa-ban"></i> Access Denied</p>
+  </div>
+
+  <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content ml-2 p-6">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+
+  <div *ngIf="!noRecordFound && !addEditView" class="encounter-view bg-white p-0">
+
+    <div class="encounter-data-accordian accordian-data" *ngFor="let sur of lstSurgeryView; ">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 style="width: 94%;">
+          <a data-toggle="collapse" href="#summarySurgery{{sur.chart_procedures_id}}" aria-expanded="false">
+            <span class="accordian-header-date-time">{{sur.procedure_date}}</span>
+            <span class="icd-code">{{sur.procedure_code}}</span> {{sur.description}}
+          </a>
+        </h5>
+        <td class="text-right encounter-data-accordian accordian-header button">
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md text-primary  line-height-1 p-0" (click)='onEdit(sur)'>
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-md btn-link btn-delete  line-height-1 p-0" (click)="onDelete(sur)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </td>
+      </div>
+
+      <div id="summarySurgery{{sur.chart_procedures_id}}" class="collapse" class="collapse">
+        <div class="accordian-body">
+          <div class="row">
+            <div class="col col-9">
+              <p>Date:
+                <strong class="mr-5">{{sur.procedure_date}}</strong>
+                <strong class="mr-15">{{sur.entry_type}}</strong>
+              </p>
+              <p>Code Type: {{sur.code_type}}
+                <strong>{{sur.procedure_code}}</strong>
+                <strong>{{sur.description}}</strong>
+              </p>
+              <p *ngIf="sur.comments">Notes: 
+                  <strong class="mr-5">{{sur.comments}}</strong></p>
+
+            </div>
+          </div>       
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <div *ngIf="addEditView" class="p-2 pt-0">
+
+    <form [formGroup]="InputForm">
+      <div class="p-8">
+        <div class="form-row form-dashboard">
+
+
+          <div class="form-group col-12">
+
+            <div class="d-flex justify-content-between">
+
+            
+
+              <div class="btn-group radio-btn-tabs required">
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (codeType === 'CPT')}">
+                  <input type="radio" name="rbCodeType" autocomplete="off" checked formControlName="rbCodeType"
+                    value="CPT" (ngModelChange)="onCodeTypeChange($event)"> CPT
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (codeType === 'SnomedCT')}">
+                  <input type="radio" name="rbCodeType" autocomplete="off" checked formControlName="rbCodeType"
+                    value="SnomedCT" (ngModelChange)="onCodeTypeChange($event)"> SnomedCT
+                </label>
+              </div>
+
+             
+              
+
+              <div class="form-check-cont d-flex align-item-center mx-1">
+
+                <div class="custom-control custom-radio green-radio">
+                  <input class="custom-control-input" type="radio" id="rbmylistSurgery_{{objencounterToOpen.controlUniqueId}}"
+                    formControlName="rbCondition" name="rbCondition" value="mylist" (ngModelChange)="onRadioOptionChange($event)">
+                  <label class="custom-control-label" for="rbmylistSurgery_{{objencounterToOpen.controlUniqueId}}">My
+                    List</label>
+                </div>
+
+
+                <div class="custom-control custom-radio green-radio">
+                  <input class="custom-control-input" type="radio" id="rballSurgery_{{objencounterToOpen.controlUniqueId}}"
+                    formControlName="rbCondition" name="rbCondition" value="all"
+                    (ngModelChange)="onRadioOptionChange($event)">
+                  
+                  <label class="custom-control-label" for="rballSurgery_{{objencounterToOpen.controlUniqueId}}">All</label>
+                </div>
+
+
+              </div>
+
+
+
+            </div>
+
+            <div class="input-icon d-flex flex-grow-3">
+
+              <input id="txtProcedureSearch" class="form-control search-highlight flex-grow-3  bl-0" type="text"
+                #txtProcedureSearch formControlName="txtProcedureSearch" placeholder="Search Procedure"
+                (keydown)="onProcedureSearchKeydown($event)" autocomplete="off"
+                (input)="onProcedureSearcInputChange(txtProcedureSearch.value)" (blur)="onProcedureSearcBlur()">
+
+              <div class="icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </div>
+
+              <inline-procedure-search *ngIf="showProcSearch" [procSearchCriteria]="procSearchCriteria"
+                (onSelect)="onProcedureSelect($event)" (onClose)="closeDiagSearch()"></inline-procedure-search>
+
+
+            </div>
+          </div>
+
+
+
+
+          <div class="form-group col-md-2 col-sm-4 col-12">
+            <label class="col-form-label required" for="txtDate">Date</label>
+            <div class="input-group">
+              <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="txtDate"
+                formControlName="txtDate" ngbDatepicker #txtDate="ngbDatepicker">
+
+              <span class="input-group-btn">
+                <button class="btn date-control-btn" (click)="txtDate.toggle()" type="button">
+                </button>
+              </span>
+
+            </div>
+          </div>
+
+
+          <div class="form-group col-md-2 col-sm-3 col-12">
+            <label for="txtIcdCode">Code <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="txtIcdCode" readonly>
+          </div>
+          <div class="form-group col-md-8 col-sm-6 col-12">
+            <label for="txtIcdDescription">Description <span class="text-danger">*</span></label>
+            <input id="txtIcdDescription" class="form-control" type="text" formControlName="txtIcdDescription" readonly>
+          </div>
+
+          <div class="form-group col-12">
+            <label for="txtComments">Comments</label>
+            <textarea rows="4" class="form-control" id="txtComments" placeholder="Comments"
+              formControlName="txtComments"></textarea>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && canView && !addEditView">
+    <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLogHistory()">View Log</button>
+  </div>
+
+</div>

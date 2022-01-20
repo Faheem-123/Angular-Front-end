@@ -1,0 +1,173 @@
+<div class="dashboard">
+    <div class="dashboard-title">
+        <div class="icon light-gray">
+            <!-- <i class="ihc-report"></i> -->
+            <img class="img-h-24" src="./assets/images/icons/Dashboard_PendingResults.svg" alt="" style="opacity:.9">
+        </div>
+        <div class="title">
+            Pending Results <span class="text-danger ml-2"> ({{pendingresultcount}}) </span>
+        </div>
+
+        <div class="title-btn-link dropdown position-initial">
+            <button class="btn-dropdown p-0 line-height-1" type="button" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" (click)="showHidetoggle()">
+                <img class="img-h-25" src="./assets/images/icons/ico_filter_green.svg" alt="">
+            </button>
+
+            <div class="dropdown-menu dashboard-dropdown rounded shadow-md m-0 t-0"
+                [ngClass]="{'hide': showHideSearch}">
+                <div class="dropdown-title rounded-top">Provider & Location Selection
+                    <button class="close"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
+                </div>
+
+                <form [formGroup]="filterForm" (ngSubmit)="onFilter(filterForm.value)" ng-if='!booleanCheck'>
+                    <div class="form-row form-dashboard">
+
+                        <div class="form-group row col-12 pl-3 pt-1">
+
+                            <div class="form-check-cont d-flex align-item-center mx-1">
+
+                                <div class="custom-control custom-radio green-radio">
+                                    <input class="custom-control-input" id="rdobtnPendingResultAll" name="rdobtn"
+                                        type="radio" value="All" checked formControlName="rdobtn">
+                                    <label class="custom-control-label" for="rdobtnPendingResultAll">All</label>
+                                </div>
+                                <div class="custom-control custom-radio green-radio">
+                                    <input class="custom-control-input" id="rdobtnPendingResultResults" name="rdobtn"
+                                        type="radio" value="Results" formControlName="rdobtn">
+                                    <label class="custom-control-label" for="rdobtnPendingResultResults">Results</label>
+                                </div>
+                                <div class="custom-control custom-radio green-radio">
+                                    <input class="custom-control-input" id="rdobtnPendingResultAttachment" name="rdobtn"
+                                        type="radio" value="Attachment" formControlName="rdobtn">
+                                    <label class="custom-control-label"
+                                        for="rdobtnPendingResultAttachment">Attachment</label>
+                                </div>
+
+
+                            </div>
+
+                            <!--
+                            <input type="radio" checked name="rdobtn" value="All" formControlName="rdobtn">
+                            <label for="all" class="pr-1 pl-1">All</label>
+                            <input type="radio" name="rdobtn" value="Results" formControlName="rdobtn">
+                            <label for="Results" class="pr-1  pl-1">Results</label>
+                            <input type="radio" name="rdobtn" value="Attachment" formControlName="rdobtn">
+                            <label for="Attachments" class="pr-1  pl-1">Attachment</label>
+                            -->
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="input1">Provider</label>
+                            <select class="form-control" formControlName="ctrlproviderSearch">
+                                <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="input1">Location</label>
+                            <select class="form-control" formControlName="ctrllocationSearch">
+                                <option value="all">All</option>
+                                <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12 text-right">
+                            <button type="submit" class="btn btn-success btn-search mt-2">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="title-btn">
+            <a class="line-height-1" (click)="onRefresh(filterForm.value)"><img class="img-h-25"
+                    src="./assets/images/icons/ico_refresh_green.svg" alt=""></a>
+        </div>
+    </div>
+
+    <div class="dashboard-content position-relative">
+
+        <table id="bi" class="table light-striped-border wide">
+            <thead>
+                <tr>
+                    <th class="width-20"></th>
+                    <th>Order Date</th>
+                    <th>Patient</th>
+                    <th>Provider</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr st-select-row="row" *ngFor="let results of listDashboardPendingResult">
+                    <td>
+                        <button type="button" class="link-btn" title="View Result Report" (click)="ViewResult(results)">
+                            <img class="img-h-16" src="./assets/images/icons/view_ico.svg" alt="">
+                        </button>
+                    </td>
+                    <!--<td [ngClass]="{colfollowuprequired: (results.followup_notes.toUpperCase().trim() == 'FOLLOW UP REQUIRED')}"> <p> {{results.order_date}} </p> </td>    -->
+
+                    <td [ngClass]="{
+                        'colfollowuprequired' : (results.followup_notes.toUpperCase().search('FOLLOW UP REQUIRED') > -1),
+                        'colfollowupcompleted' : (results.followup_notes.toUpperCase().search('FOLLOW UP COMPLETED') > -1),
+                        'collettersent' : (results.followup_notes.toUpperCase().search('LETTER SENT') > -1),
+                        'colappointmentmade' : (results.followup_notes.toUpperCase().search('APPOINTMENT MADE') > -1)                    
+                    }">
+                        {{results.order_date}}
+                    </td>
+                    <td [ngClass]="{
+                        'colsignoffreq' : (results.is_abnormal.toString() == 'false'),
+                        'colabnormalresult' : (results.is_abnormal.toString() == 'true')
+                    }">
+                        <button type="button" [disabled]="!this.lookupList.UserRights.patient_view" class="link-btn"
+                            [ngClass]="{'colabnormalresult':  (results.is_abnormal.toString() == 'true')}"
+                            (click)="openPatientSummary(results)">{{results.patient_name}}</button>
+                    </td>
+                    <td>
+                        {{results.provider_name}}
+                    </td>
+                    <td class="text-right">
+                        <button [disabled]="!this.lookupList.UserRights.lab_result_view"
+                            *ngIf="results.result_name == 'Result'" type="button" (click)="openResult(results)"
+                            class="link-btn"><img alt="" class="img-h-15"
+                                src="./assets/images/icons/ico_report.svg"></button>
+                        <button [disabled]="!this.lookupList.UserRights.lab_attachment_view"
+                            *ngIf="results.result_name == 'Attachment'" type="button" (click)="openResult(results)"
+                            class="link-btn text-info"><i class="fas fa-lg fa-paperclip"></i></button>
+
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+        <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+            <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+            </div>
+        </div>
+    </div>
+    <div class="title-btn-link dropdown position-initial">
+        <div class="dropdown-menu dashboard-dropdown rounded shadow-md m-0 t-0">
+            <div class="dropdown-title rounded-top">Assign Result
+                <button class="close">
+                    <i class="fa fa-times-circle fa-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+            <form [formGroup]="assignForm" (ngSubmit)="onAssignSave(assignForm.value)">
+                <div class="form-row form-dashboard">
+                    <div class="form-group col-12">
+                        <label for="input1">Assigned To</label>
+                        <select formControlName="drpAssignedTo" class="form-control col-sm-9">
+                            <option *ngFor="let s of lookupList.listpracticeUserName" [value]="s.id">{{s.name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-12 text-right">
+                        <button type="submit" class="btn btn-success mt-2">Assign</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

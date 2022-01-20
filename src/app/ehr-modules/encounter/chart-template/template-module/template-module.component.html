@@ -1,0 +1,36 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-gray-200 d-flex flex-row flex-grow-1 p-0 rounded-0">
+    <div class="flex-3 info-box-stipes p-0 rounded-0 bg-white overflow-auto" style="height: 485px;overflow: auto;">
+      <table class="table layout-fixed sm light-striped-border" >
+        <thead>
+          <tr>
+            <th width="20%">&nbsp;</th>
+            <th>{{DisplayName}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tmp of lstTemplate" (click)="onAssignText(tmp)" 
+          [ngClass]="{'active' : (tmp.id === rowId)}">
+            <td class="text-left">
+              <button  (click)="onAdd(tmp.text)"
+              class="btn btn-link btn-md  line-height-1 p-0 mr-2">
+              <i class="far fa-plus-square pr-1"></i>
+            </button>
+          </td>
+            <td>{{tmp.name}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    
+      <form [formGroup]="inputForm"  class="flex-3 d-flex">
+         
+          <textarea class="form-control flex-control rounded-0" formControlName="tmptxt" style="max-height: 485px;overflow: auto;"></textarea>
+         
+      </form>
+    
+
+    
+  </div>
+</div>

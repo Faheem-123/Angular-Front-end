@@ -1,0 +1,20 @@
+export class ORMFaxContactSave {
+    contact_id:number;
+	organization_name:string;
+	fax_no:string;
+	contact_person:string;
+	phone_no:string;
+	address:string;
+	zip:string;
+	city:string;
+	state:string;
+	practice_id:number;
+	deleted:boolean;
+	created_user:string;
+	client_date_created:string;
+	modified_user:string;
+	client_date_modified:string;
+	date_created:string;
+	date_modified:string;
+	system_ip:string;
+}

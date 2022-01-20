@@ -1,0 +1,48 @@
+<div class="mt-8">
+  <div id="main-follow-up" class="rounded-top" [ngClass]="{
+      'encounter-header-highlight': addEditView==true,
+      'encounter-header': addEditView==false
+    }">
+    <div class="title pl-8">Pre Natal</div>
+
+    <ul class="nav color-buttons align-items-center" >
+
+      <button *ngIf="!addEditView " class="nav-link green px-2 py-0 top-right-radius">
+        <i class="far fa-plus-square pr-1"></i>Add
+      </button>
+
+
+
+    </ul>
+
+  </div>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <!--<div *ngIf="isLoading" class="div-loader"></div>-->
+
+  <!--
+      <div *ngIf="!isLoading && !canView" class="access-denied">
+    <i class="fas fa-ban mr-2"></i> Access Denied
+  </div>
+
+
+  <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+     -->
+
+
+  <p>Pre Natal .... </p>
+
+
+  <!--
+    <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && !addEditView && canView">
+        <button class="btn btn-sm btn-link pr-0" type="button">View Log</button>
+    </div>
+  -->
+
+
+</div>

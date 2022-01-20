@@ -1,0 +1,139 @@
+<div class="d-flex flex-column flex-grow-1">
+
+  <div class="d-flex flex-grow-1 overflow-height">
+    <div class="w-30 d-flex flex-column ">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 mr-1">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 pr-0">
+          New
+        </div>
+
+        <form [formGroup]="addLogFormGroup" class="d-flex flex-column flex-grow-1 overflow-auto max-height-100">
+
+          <div class="d-flex flex-grow-1 overflow-auto max-height-100 ">
+
+            <div class="dashboard-content col mt-1">
+              <div class="form-row form-dashboard">
+
+                <div class="form-group col">
+                  <label class="col-form-label required" for="ddStatus">Status</label>
+                  <select class="form-control" id="ddStatus" formControlName="ddStatus">
+                    <option *ngFor="let status of lookupList.appStatusList" [value]="status.id">
+                      {{status.description}}</option>
+                  </select>
+                </div>
+
+
+              </div>
+
+              <div class="form-row form-dashboard">
+                <div class="form-group col">
+                  <label for="txtCallDetail" class="col-form-label required">Comments</label>
+                  <textarea class="form-control" id="txtCallDetail" rows="10" formControlName="txtCallDetail"></textarea>
+                </div>
+
+              </div>
+            </div>
+
+
+          </div>
+
+          <div class="modal-footer custom pl-0">
+            <button style="width: 80px;" class="btn btn-success btn-sm" type="button" (click)="saveCallLog(addLogFormGroup.value)">Save</button>
+          </div>
+
+
+        </form>
+      </div>
+
+
+
+    </div>
+
+    <div class="w-70 d-flex flex-column">
+
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1">
+
+
+        <div class="radio-btns-bar green-sel">
+          <form [formGroup]="radioFormGroup">
+
+            <div class="btn-group btn-group-toggle">
+              <label class="btn rounded-3-top-left" [ngClass]="{'active' : (selectedTab === 'current_appointment')}">
+                <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                  value="current_appointment" (ngModelChange)="onRadioOptionChange ($event)"> Current Appointment Call Log
+              </label>
+              <label class="btn" [ngClass]="{'active' : (selectedTab === 'all')}">
+                <input type="radio" name="radioOption" autocomplete="off" checked formControlName="radioOption"
+                  value="all" (ngModelChange)="onRadioOptionChange ($event)"> All Calls Log
+              </label>
+            </div>
+
+
+            <!--
+            <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic">
+              <label ngbButtonLabel class="btn" [ngClass]="{'active' : (radioOption == 'current_appointment')}">
+                <input ngbButton type="radio" name="rdbtab" formControlName="rdbtab" value="current_appointment"
+                  (ngModelChange)="onradioChange('current_appointment')">
+                Current Appointment History
+              </label>
+              <label ngbButtonLabel class="btn" [ngClass]="{'active' : (radioOption == 'all')}">
+                <input ngbButton type="radio" name="rdbtab" formControlName="rdbtab" value="all"
+                  (ngModelChange)="onradioChange('all')"> All Calls History
+              </label>
+
+            </div>
+            -->
+
+          </form>
+        </div>
+
+        <div class="rounded-3-bottom bg-white d-flex flex-column flex-grow-1">
+
+
+          <div *ngIf="!isLoading &&  (lstCallLogs==undefined || lstCallLogs.length==0)" class="no-content">
+            <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+          </div>
+
+
+          <div class="rounded-3-bottom overflow-auto bg-white flex-grow-1 max-height-100"
+            *ngIf="!isLoading && lstCallLogs!=undefined && lstCallLogs.length>0">
+
+            <table class="table sm td-normal-wrap light-striped-border">
+              <thead>
+                <tr>
+                  <td class="width-80">App. Date</td>
+                  <td class="width-120">Status</td>
+                  <td>Call Details</td>
+                  <td class="width-150">By</td>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let log of lstCallLogs">
+                  <td>{{log.appointment_date}}</td>
+                  <td>{{log.status}}</td>
+                  <td>{{log.detail}}</td>
+                  <td>{{log.created_user}}  {{log.client_date_created}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+  </div>
+
+  <div class="div-loader-message-box" *ngIf="isLoading">
+    <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+  </div>
+
+
+</div>

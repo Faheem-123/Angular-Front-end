@@ -1,0 +1,243 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)" (keydown.enter)="$event.preventDefault()">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">{{title}}</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom position-relative" style="min-height: 200px;">
+
+
+
+    <div class="form-row form-dashboard" *ngIf="errorMsg!=''">
+      <div class="form-group col-12">
+        <div class="alert alert-danger rounded-0 m-0" role="alert">
+          {{errorMsg}}
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="!isLoading" class="dashboard-content p-2 border">
+
+      <div class="form-row form-dashboard mb-1">
+
+
+
+        <div class="form-group horizental row zero col-7">
+          <label class="col-form-label required width-100 pt-1" for="dpFilingDate">Filing Date</label>
+          <div class="input-group col">
+            <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpFilingDate"
+              formControlName="dpFilingDate" ngbDatepicker #dpFilingDate="ngbDatepicker"
+              (blur)="onDateFocusOut($event.currentTarget.value,'dpFilingDate')">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="dpFilingDate.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+
+
+
+
+      </div>
+
+
+      <div class="form-row form-dashboard">
+
+        <div class="form-group horizental row zero col-6">
+          <label class="col-form-label required width-100  pt-1" for="chkPaymentType">Payment Type</label>
+
+          <div class="form-group horizental d-flex col-4">
+            <div class="custom-control custom-radio green-radio">
+              <input type="radio" class="custom-control-input" name="chkPaymentType" id="eob"
+                formControlName="chkPaymentType" checked value="EOB" (ngModelChange)="onPaymentTypeChanged($event)">
+              <label class="custom-control-label" for="eob">EOB</label>
+            </div>
+
+            <div class="custom-control custom-radio green-radio">
+              <input type="radio" class="custom-control-input" name="chkPaymentType" id="patient"
+                formControlName="chkPaymentType" value="Patient" (ngModelChange)="onPaymentTypeChanged($event)">
+              <label class="custom-control-label" for="patient">Patient</label>
+            </div>
+          </div>
+
+
+
+
+          <!--
+          <select class="form-control col" id="paymentType" formControlName="ddPaymentType"
+            (change)="ddPaymentTypeChanged($event)">
+            <option value='EOB'>EOB</option>
+            <option value='Patient'>Patient</option>
+          </select>
+        -->
+
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group horizental row zero col" *ngIf="(paymentType=='EOB' || paymentType=='ACA')">
+          <label for="txtPayerSearch" class="col-form-label required width-100  pt-1">Payer</label>
+          <div class="form-group col">
+            <div class="input-icon d-flex flex-grow-3">
+              <input id="txtPayerSearch" class="form-control flex-grow-3 " type="text" placeholder="Search Payer"
+                (keydown)="onPayerSearchKeydown($event)" (blur)="onPayerSearchBlur()" autocomplete="off" #txtPayerSearch
+                formControlName="txtPayerSearch" (input)="onPayerSearchInputChange(txtPayerSearch.value)">
+              <input type="text" hidden>
+              <div class="icon">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </div>
+              <inline-payer-search *ngIf="showPayerSearch" #inlinePayerSearch [searchValue]="txtPayerSearch.value"
+                (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()"></inline-payer-search>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group horizental row zero col" *ngIf="paymentType=='Patient'">
+          <label for="txtPatSearch" class="col-form-label required width-100  pt-1">Patient</label>
+          <div class="form-group col">
+            <div class="input-icon d-flex flex-grow-3">
+              <input labelForId="txtPatSearch" class="form-control flex-grow-3" type="text" #txtPatSearch
+                formControlName="txtPatSearch" placeholder="Search Patient" (keydown)="onPatSearchKeydown($event)"
+                autocomplete="off" (blur)="onPatSearchBlur()" #txtPatSearch
+                (input)="onPatientSearchInputChange(txtPatSearch.value)" (keydown)="onPatSearchKeydown($event)">
+              <input type="text" hidden>
+              <div class="icon">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </div>
+              <inline-patient-search *ngIf="showPatSearch" #inlinePatSearch [searchValue]="txtPatSearch.value"
+                (onPatientSelect)="openSelectPat($event)" (onClose)="closePatSearch()">
+              </inline-patient-search>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group horizental row zero col-7">
+          <label for="ddPaymentMode" class="col-form-label required width-100 pt-1">Payment Source</label>
+          <!--
+          <div class="form-group mb-1 horizental d-flex col-4">
+            <div class="custom-control custom-radio green-radio">
+              <input type="radio" class="custom-control-input" name="chkPaymentMode" id="check"
+                formControlName="chkPaymentMode" checked value="check">
+              <label class="custom-control-label" for="check">Check</label>
+            </div>
+
+            <div class="custom-control custom-radio green-radio">
+              <input type="radio" class="custom-control-input" name="chkPaymentMode" id="creditCard"
+                formControlName="chkPaymentMode" value="credit">
+              <label class="custom-control-label" for="creditCard">Credit Card</label>
+            </div>
+          </div>
+-->
+          <select class="form-control col" id="ddPaymentMode" formControlName="ddPaymentMode">
+            <option value='Check'>Check</option>
+            <option value='Credit Card'>Credit Card</option>
+          </select>
+
+        </div>
+
+        <div class="form-group horizental row zero col-5">
+          <label class="col-form-label required width-80" for="txtTotalAmount">Total Amount</label>
+
+          <div class="input-group col">
+            <div class="input-group-prepend table-td-input-group-prepend">
+              <span class="input-group-text">$</span>
+            </div>
+            <input type="text" class="form-control text-right" id="txtTotalAmount" formControlName="txtTotalAmount"
+              autocomplete="off" (blur)="formateCurrencyInputs('txtTotalAmount')">
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="form-row form-dashboard mb-1">
+
+        <div class="form-group horizental row zero col-7">
+          <label class="col-form-label required width-100" for="txtCheckNo">Check Number</label>
+          <input class="form-control col" type="text" id="txtCheckNo" formControlName="txtCheckNo">
+        </div>
+
+        <div class="form-group horizental row zero col-5">
+          <label class="col-form-label required width-70" for="dpCheckDate">Check Date</label>
+          <div class="input-group col">
+            <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpCheckDate"
+              formControlName="dpCheckDate" ngbDatepicker #dpCheckDate="ngbDatepicker"
+              (blur)="onDateFocusOut($event.currentTarget.value,'dpCheckDate')">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="dpCheckDate.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="form-row form-dashboard mb-1">
+
+        <div class="form-group horizental row zero col" *ngIf="(operation==='new' || docRemove==true)">
+          <label for="txtDocCategorySearch" class="col-form-label required width-100">Attachment:</label>
+          <div class="input-group d-flex col">
+
+            <label class="form-control pt-1 bg-disabled overflow-hidden">
+              {{selectedDocName}}</label>
+
+            <input id="txtFile" type="file" style="display:none;" (change)="onFileChange($event)"
+              formControlName="txtFile" />
+
+            <span class="input-group-btn">
+              <button class="btn btn-sm btn-outline-primary fz-12 width-80"
+                onclick="document.getElementById('txtFile').click();" type="button"> <i class="far fa-folder-open"></i>
+                Browse</button>
+            </span>
+          </div>
+          <p *ngIf="formGroup.controls.txtFile.errors?.required" class="text-danger p-0 m-0 w-100 text-right pt-1">
+            Please select file to upload!</p>
+        </div>
+
+        <div class="form-group horizental row zero col" *ngIf="(operation!='new' && docRemove==false)">
+          <label for="txtDocCategorySearch" class="col-form-label required width-100">Attachment:</label>
+          <div class="input-group d-flex col">
+            <label class="form-control pt-1 bg-disabled overflow-hidden">
+              {{selectedDocName}}</label>
+            <span class="input-group-btn">
+              <button class="btn btn-sm btn-outline-primary fz-12 width-80" (click)="onDocRemove()"
+                type="button">Remove</button>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isSaving">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Saving...
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer custom" *ngIf="!isLoading && !isSaving">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+    <button style="width: 80px;" class="btn btn-success btn-sm" type="submit">Save</button>
+  </div>
+</form>

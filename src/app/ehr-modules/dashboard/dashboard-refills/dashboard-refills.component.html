@@ -1,0 +1,115 @@
+<div class="dashboard">
+    <div class="dashboard-title">
+        <div class="icon light-gray">
+            <img class="img-h-24" src="./assets/images/icons/Dashboard_ico_refill.svg" alt="">
+        </div>
+        <div class="title">
+            {{ModuleName}} <span class="text-danger ml-2"> ({{totalpending}}) </span>
+        </div>
+        <div *ngIf="isShowPatient">
+            <form [formGroup]="frmSearch">
+                <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero col-sm-12  col-12">
+                        <label for="input2" class="col-sm-3 col-form-label">Patient:</label>
+                        <div class="form-group has-search col-sm-9">
+                            <span class="fa fa-search form-control-feedback"></span>
+                            <input formControlName="cntrlpatientSearch" class="form-control search-highlight"
+                                type="text" placeholder="Search Patient" #txtPatientSearch>
+                            <inline-patient-search [searchValue]="txtPatientSearch.value"
+                                (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+                            </inline-patient-search>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <button type="button" (click)="enlargeScreen()"  class="link-btn" title="Full Screen"><i class="fas fa-expand"></i></button>
+    </div>
+    
+    <div>
+        <form [formGroup]="frmRadio">
+            <div class="btn-group radio-btn-tabs pt-2">
+                <label class="btn btn-sm btn-secondary"
+                    [ngClass]="{'active' : (radioOption  === 'physician_pending')}">
+                    <input type="radio" name="entryOption" id="appointment" autocomplete="off" checked
+                        formControlName="entryOption" value="physician_pending"
+                        (ngModelChange)="onOptionChange($event)">
+                    Physician Pending ({{Physician_Pending}})
+                </label>
+                <label class="btn btn-sm btn-secondary"
+                    [ngClass]="{'active' : (radioOption === 'staff_pending')}">
+                    <input type="radio" name="entryOption" id="appointment" autocomplete="off" value="staff_pending"
+                        formControlName="entryOption" (ngModelChange)="onOptionChange($event)">
+                    Staff Pending ({{Staff_Pending}})
+                </label>
+
+                <label class="btn btn-sm btn-secondary"
+                    [ngClass]="{'active' : (radioOption === 'failed')}">
+                    <input type="radio" name="entryOption" id="appointment" autocomplete="off" value="failed"
+                        formControlName="entryOption" (ngModelChange)="onOptionChange($event)">
+                    Failed ({{Failed}})
+                </label>
+
+                <label class="btn btn-sm btn-secondary"
+                    [ngClass]="{'active' : (radioOption === 'refills')}">
+                    <input type="radio" name="entryOption" id="appointment" autocomplete="off" value="refills"
+                        formControlName="entryOption" (ngModelChange)="onOptionChange($event)">
+                    Refills ({{Refills}})
+                </label>
+
+                <label class="btn btn-sm btn-secondary"
+                    [ngClass]="{'active' : (radioOption === 'for_physician_review')}">
+                    <input type="radio" name="entryOption" id="appointment" autocomplete="off"
+                        value="for_physician_review" formControlName="entryOption"
+                        (ngModelChange)="onOptionChange($event)">
+                    For Physician Review ({{Physician_Review}})
+                </label>
+            </div>
+        </form>
+
+        <!--
+        <button type="button" (click)="getData('Physician Pending')" style="font-size: 12px;text-align: right;"
+            class="link-btn pr-2">Physician Pending({{Physician_Pending}})</button>
+        <button type="button" (click)="getData('Staff Pending')" style="font-size: 12px; text-align: right; "
+            class="link-btn pr-2">Staff Pending({{Staff_Pending}})</button>
+        <button type="button" (click)="getData('Failed')" style="font-size: 12px; text-align: right;"
+            class="link-btn pr-2">Failed({{Failed}})</button>
+        <button type="button" (click)="getData('Refills')" style="font-size: 12px; text-align: right;"
+            class="link-btn pr-2">Refills({{Refills}})</button>
+        <button type="button" (click)="getData('For Physician Review')" style="font-size: 12px; text-align: right;"
+            class="link-btn pr-2">For Physician Review({{Physician_Review}})</button>
+            -->
+    </div>
+
+    <div class="dashboard-content position-relative">
+
+        <!-- <div *ngIf="!showHide" id ="loading" class="loading">
+            <p>Please wait, while Failed Data is being loaded from server...</p>
+        </div>  -->
+        <table *ngIf="showHide" id="bi" class="table light-striped-border wide">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Patient Info</th>
+                    <th>Medication</th>
+                    <th>Provider Location</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr st-select-row="row" *ngFor="let results of lstPrescription;let i=index;">
+                    <td>{{results.prescription_date}}</td>
+                    <td>{{results.pat_lastname}}, {{results.pat_firstname}} <br> {{results.pat_dob}}</td>
+                    <td><button type="button" style="text-align: left; text-decoration: underline;" class="link-btn"
+                            (click)="openNewCrop(results)">{{results.drug_info}}</button></td>
+                    <td>{{results.prov_lastname}}, {{results.prov_firstname}} <br> {{results.location_name}} </td>
+            </tbody>
+        </table>
+        <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+            <div class="div-ui-blocker-message-box ">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+            </div>
+        </div>
+    </div>
+
+</div>

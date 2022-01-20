@@ -1,0 +1,23 @@
+export class ORMEOBSave
+{
+        eob_id:string;		
+		eob_date:string;
+		check_date:string;
+		check_number:string;
+		check_amount:string;
+		payer_id:string;
+		practice_id:string;
+		system_ip:string;
+		is_posted:Boolean;
+		deleted:Boolean;
+		created_user:string;
+		client_date_created:string;
+		modified_user:string;
+		client_date_modified:string;
+		date_created:string;
+		date_modified:string;
+		payment_type:string;
+		patient_id:string;
+		payment_source:string;
+		attorney_id:string;
+}

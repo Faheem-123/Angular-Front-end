@@ -1,0 +1,492 @@
+<div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 max-height-100 m-0 position-relative">
+
+  <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0">
+
+    Import Procedures/Diagnosis
+    <ul class="nav color-buttons align-items-center">
+
+      <button class="nav-link btn btn-success rounded-0 px-2 py-0" *ngIf="!isLoading" (click)="onImportCodes()"
+        type="button">
+        Import
+      </button>
+
+      <button class="nav-link btn btn-dark rounded-0 px-2 py-0" (click)="onCancel.emit()" type="button">
+        Cancel
+      </button>
+
+    </ul>
+
+  </div>
+
+
+
+  <div class="px6-py3 flex-grow-1 overflow-auto overflow-height">
+    <div class="row p8">
+
+
+      <div class="col-8 d-flex flex-column">
+
+        <div class="row mb-2">
+
+          <div class="col d-flex flex-column">
+            <div class="info-box-stipes  flex-grow-1">
+
+              <div class="title-bar px-2">
+                <div class="d-flex flex-grow-1 justify-content-between">
+                  <div>Encounter Procedures/Diagnosis</div>
+                </div>
+              </div>
+
+              <div class="row m-0 pt-0 p-1">
+
+                <div class="col-6 d-flex flex-column p-1">
+
+                  <div class="info-box-stipes  flex-grow-1" style="min-height: 100px;">
+                    <div class="title-bar px-2">
+                      <div class="d-flex flex-grow-1 justify-content-between">
+                        <div>Encounter Procedures</div>
+                      </div>
+                    </div>
+
+                    <div class="overflow-auto flex-grow-1 ">
+
+                      <div class="no-content p-2"
+                        *ngIf="(lstEncounterProcedures==undefined || lstEncounterProcedures.length==0 )">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+                      </div>
+
+
+                      <table class="table sm layout-fixed light-striped-border"
+                        *ngIf="(lstEncounterProcedures!=undefined && lstEncounterProcedures.length>0 )">
+
+                        <tbody>
+                          <tr *ngFor="let proc of lstEncounterProcedures" [ngClass]="{'text-danger': proc.is_expired}">
+                            <td class="width-65">{{proc.code}}</td>
+                            <td title="{{proc.description}}">{{proc.description}}</td>
+                            <td class="px-1 text-right width-25">
+                              <a class="btn-add " (click)="addProcToSelectedList(proc)"
+                                *ngIf="!isProcedureAdded(proc.code) && !proc.is_expired"><i
+                                  class="fa fa-plus-square fa-md"></i></a>
+                              <i *ngIf="proc.is_expired" class="fas fa-info-circle text-info fa-md"
+                                title="Code is Expired."></i>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+                <div class="col-6 d-flex flex-column p-1">
+                  <div class="info-box-stipes  flex-grow-1" style="min-height: 100px;">
+                    <div class="title-bar px-2">
+                      <div class="d-flex flex-grow-1 justify-content-between">
+                        <div>Encounter Diagnosis</div>
+                      </div>
+                    </div>
+
+                    <div class="overflow-auto flex-grow-1 ">
+
+                      <div class="no-content p-2"
+                        *ngIf="(lstEncounterDiagnosis==undefined || lstEncounterDiagnosis.length==0 )">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+                      </div>
+
+                      <table class="table sm layout-fixed light-striped-border"
+                        *ngIf="(lstEncounterDiagnosis!=undefined && lstEncounterDiagnosis.length>0 )">
+                        <tbody>
+                          <tr *ngFor="let diag of lstEncounterDiagnosis" [ngClass]="{'text-danger': diag.is_expired}">
+                            <td class="width-80">{{diag.diag_date}}</td>
+                            <td class="width-65">{{diag.code}}</td>
+                            <td title="{{diag.description}}">{{diag.description}}</td>
+                            <td class="px-1 text-right width-25"> <a class="btn-add" (click)="addDiagToSelectedList(diag)"
+                                *ngIf="!isDiagnosisAdded(diag.code) && !diag.is_expired"><i
+                                  class="fa fa-plus-square fa-md"></i></a>
+                              <i *ngIf="diag.is_expired" class="fas fa-info-circle text-info fa-md"
+                                title="Code is Expired."></i>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-0">
+          <div class="col d-flex flex-column">
+            <div class="info-box-stipes  flex-grow-1">
+              <div class="title-bar px-2">
+                <div class="d-flex flex-grow-1 justify-content-between">
+                  <div>Lab Procedures/Diagnosis</div>
+                </div>
+              </div>
+
+              <div class="row m-0 pt-0 p-1">
+
+                <div class="col-4 d-flex flex-column p-1">
+
+                  <div class="info-box-stipes flex-grow-1" style="min-height: 100px;">
+                    <div class="title-bar px-2">
+                      <div class="d-flex flex-grow-1 justify-content-between">
+                        <div>Order Detail</div>
+                      </div>
+                    </div>
+
+                    <div class="overflow-auto flex-grow-1 ">
+
+                      <div class="no-content p-2" *ngIf="(lstLabOrders==undefined || lstLabOrders.length==0 )">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+                      </div>
+
+
+                      <table class="table sm layout-fixed light-striped-border"
+                        *ngIf="(lstLabOrders!=undefined && lstLabOrders.length>0 )">
+
+                        <tbody>
+                          <tr *ngFor="let order of lstLabOrders ; let i = index"
+                            (click)="labSelectionChanged(order.order_id)"
+                            [ngClass]="{'active': order.order_id==selectedLabOrderId}">
+                            <td class="width-80">{{order.order_date}}</td>
+                            <td title="{{order.lab_name}}">{{order.lab_name}}</td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+                <div class="col-4 d-flex flex-column p-1">
+                  <div class="info-box-stipes  flex-grow-1" style="min-height: 100px;">
+                    <div class="title-bar px-2">
+                      <div class="d-flex flex-grow-1 justify-content-between">
+                        <div>Lab Procedures</div>
+                      </div>
+                    </div>
+
+                    <div class="overflow-auto flex-grow-1 ">
+
+                      <div class="no-content p-2" *ngIf="(lstLabProcedures==undefined || lstLabProcedures.length==0 )">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+                      </div>
+
+
+                      <table class="table sm layout-fixed light-striped-border"
+                        *ngIf="(lstLabProcedures!=undefined && lstLabProcedures.length>0 )">
+                        <tbody>
+                          <tr *ngFor="let proc of lstLabProceduresFiltered"
+                            [ngClass]="{'text-danger': proc.is_expired}">
+                            <td class="width-65">{{proc.code}}</td>
+                            <td title="{{proc.description}}">{{proc.description}}</td>
+                            <td class="px-1 text-right width-25"> <a class="btn-add" (click)="addProcToSelectedList(proc)"
+                                *ngIf="!isProcedureAdded(proc.code) && !proc.is_expired"><i
+                                  class="fa fa-plus-square fa-md"></i></a>
+                              <i *ngIf="proc.is_expired" class="fas fa-info-circle text-info fa-md"
+                                title="Code is Expired."></i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+
+                <div class="
+                          col-4 d-flex flex-column p-1">
+                  <div class="info-box-stipes  flex-grow-1" style="min-height: 100px;">
+                    <div class="title-bar px-2">
+                      <div class="d-flex flex-grow-1 justify-content-between">
+                        <div>Lab Diagnosis</div>
+                      </div>
+                    </div>
+
+                    <div class="overflow-auto flex-grow-1 ">
+
+                      <div class="no-content p-2" *ngIf="(lstLabDiagnosis==undefined || lstLabDiagnosis.length==0 )">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+                      </div>
+
+                      <table class="table sm layout-fixed light-striped-border"
+                        *ngIf="(lstLabDiagnosis!=undefined && lstLabDiagnosis.length>=0 )">
+
+                        <tbody>
+                          <tr *ngFor="let diag of lstLabDiagnosisFiltered" [ngClass]="{'text-danger': diag.is_expired}">
+                            <td class="width-65">{{diag.code}}</td>
+                            <td title="{{diag.description}}">{{diag.description}}</td>
+                            <td class="px-1 text-right width-25"> <a class="btn-add" (click)="addDiagToSelectedList(diag)"
+                                *ngIf="!isDiagnosisAdded(diag.code) && !diag.is_expired"><i
+                                  class="fa fa-plus-square fa-md"></i></a>
+                              <i *ngIf="diag.is_expired" class="fas fa-info-circle text-info fa-md"
+                                title="Code is Expired."></i>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-0 pt-2">
+          <div class="col d-flex flex-column">
+            <div class="info-box-stipes  flex-grow-1">
+              <div class="title-bar px-2">
+                <div class="d-flex flex-grow-1 justify-content-between">
+                  <div>Previous Claim Procedures/Diagnosis</div>
+                </div>
+              </div>
+
+              <div class="row m-0 pt-0 p-1">
+
+                <div class="col-4 d-flex flex-column p-1">
+
+                  <div class="info-box-stipes  flex-grow-1" style="min-height: 100px;">
+                    <div class="title-bar px-2">
+                      <div class="d-flex flex-grow-1 justify-content-between">
+                        <div>Claim Detail</div>
+                      </div>
+                    </div>
+
+                    <div class="overflow-auto flex-grow-1 ">
+
+                      <div class="no-content p-2" *ngIf="(lstPreviousClaims==undefined || lstPreviousClaims.length==0 )">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+                      </div>
+
+
+                      <table class="table sm layout-fixed light-striped-border"
+                        *ngIf="(lstPreviousClaims!=undefined && lstPreviousClaims.length>0 )">
+
+                        <tbody>
+                          <tr *ngFor="let order of lstPreviousClaims ; let i = index"
+                            (click)="previousClaimSelectionChanged(order.claim_id)"
+                            [ngClass]="{'active': order.claim_id==selectedClaimId}">
+                            <td class="width-80">{{order.dos}}</td>
+                            <td title="{{order.facility_name}}">{{order.facility_name}}</td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+                <div class="col-4 d-flex flex-column p-1">
+                  <div class="info-box-stipes  flex-grow-1" style="min-height: 100px;">
+                    <div class="title-bar px-2">
+                      <div class="d-flex flex-grow-1 justify-content-between">
+                        <div>Claim Procedures</div>
+                      </div>
+                    </div>
+
+                    <div class="overflow-auto flex-grow-1 ">
+
+                      <div class="no-content p-2" *ngIf="(lstPreviousClaimProcedures==undefined || lstPreviousClaimProcedures.length==0 )">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+                      </div>
+
+
+                      <table class="table sm layout-fixed light-striped-border"
+                        *ngIf="(lstPreviousClaimProcedures!=undefined && lstPreviousClaimProcedures.length>0 )">
+                        <tbody>
+                          <tr *ngFor="let proc of lstPreviousClaimProcedures">
+                            <td class="width-65">{{proc.proc_code}}</td>
+                            <td title="{{proc.description}}">{{proc.description}}</td>
+                            <td class="px-1 text-right width-25"> <a class="btn-add" (click)="addClaimProcToSelectedList(proc)"
+                                *ngIf="!isProcedureAdded(proc.proc_code)"><i
+                                  class="fa fa-plus-square fa-md"></i></a>
+                              <!-- <i *ngIf="proc.is_expired" class="fas fa-info-circle text-info fa-md"
+                                title="Code is Expired."></i> -->
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+
+                <div class="
+                          col-4 d-flex flex-column p-1">
+                  <div class="info-box-stipes  flex-grow-1" style="min-height: 100px;">
+                    <div class="title-bar px-2">
+                      <div class="d-flex flex-grow-1 justify-content-between">
+                        <div>Claim Diagnosis</div>
+                      </div>
+                    </div>
+
+                    <div class="overflow-auto flex-grow-1 ">
+
+                      <div class="no-content p-2" *ngIf="(lstPreviousClaimDiagnosis==undefined || lstPreviousClaimDiagnosis.length==0 )">
+                        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No record found.
+                      </div>
+
+                      <table class="table sm layout-fixed light-striped-border"
+                        *ngIf="(lstPreviousClaimDiagnosis!=undefined && lstPreviousClaimDiagnosis.length>=0 )">
+
+                        <tbody>
+                          <tr *ngFor="let diag of lstPreviousClaimDiagnosis">
+                            <td class="width-65">{{diag.diag_code}}</td>
+                            <td title="{{diag.description}}">{{diag.description}}</td>
+                            <td class="px-1 text-right width-25"> <a class="btn-add" (click)="addClaimDiagToSelectedList(diag)"
+                                *ngIf="!isDiagnosisAdded(diag.diag_code)"><i
+                                  class="fa fa-plus-square fa-md"></i></a>
+                              <!-- <i *ngIf="diag.is_expired" class="fas fa-info-circle text-info fa-md"
+                                title="Code is Expired."></i> -->
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="col-4 d-flex flex-column">
+
+        <div class="info-box-stipes  flex-grow-1">
+
+          <h4 class="form-edit-sub-heading m-0 pl-2 pr-2 pt-2 mb-0">Selected Procedures
+            <a class="fz-12 float-right font-weight-normal cursor-pointer btn-delete"
+              *ngIf="(lstSelectedProcedures!=undefined && lstSelectedProcedures.length>=0 )"
+              (click)="removeAllSelectedProcedures()">Remove
+              All Procedures</a>
+          </h4>
+
+          <div class="overflow-auto flex-grow-1 pb-2">
+
+            <div class="no-content p-2" *ngIf="(lstSelectedProcedures==undefined || lstSelectedProcedures.length==0 )">
+              <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Procedure is selected.
+            </div>
+
+            <table class="table sm layout-fixed light-striped-border"
+              *ngIf="(lstSelectedProcedures!=undefined && lstSelectedProcedures.length>=0 )">
+              <tbody>
+                <tr *ngFor="let proc of lstSelectedProcedures; let i = index">
+                  <td class="width-65">{{proc.code}}</td>
+                  <td title="{{proc.description}}">{{proc.description}}</td>
+                  <td class="width-35"> <a class="btn-delete pl-2" (click)="removeProcFromSelectedList(i)"><i
+                        class="fas fa-minus-square fa-sm "></i></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <h4 class="form-edit-sub-heading m-0 pl-2 pr-2 pt-2 mb-1">Selected Diagnosis
+            <a class="fz-12 float-right font-weight-normal cursor-pointer btn-delete"
+              *ngIf="(lstSelectedDiagnosis!=undefined && lstSelectedDiagnosis.length>0 )"
+              (click)="removeAllSelectedDiagnosis()">Remove
+              All Diagnosis</a>
+          </h4>
+
+          <div class="overflow-auto flex-grow-1 ">
+
+            <div class="no-content p-2" *ngIf="(lstSelectedDiagnosis==undefined || lstSelectedDiagnosis.length==0 )">
+              <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Diagnosis is selected.
+            </div>
+
+
+            <table class="table sm layout-fixed light-striped-border"
+              *ngIf="(lstSelectedDiagnosis!=undefined && lstSelectedDiagnosis.length>0 )">
+              <tbody>
+
+                <tr *ngFor="let diag of lstSelectedDiagnosis ; let i = index">
+                  <td class="width-65">{{diag.diag_code}}</td>
+                  <td title="{{diag.description}}">{{diag.diag_description}}</td>
+                  <td class="width-35"> <a class="btn-delete pl-2" (click)="removeDiagFromSelectedList(i)"><i
+                        class="fas fa-minus-square fa-sm"></i></a></td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+
+</div>
+
+
+<!--
+<div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-25" *ngIf="!isLoading">
+
+  <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 pl-1 font-weight-400">Import Procedures/Diagnosis</h4> 
+  <ul class="nav color-buttons align-items-center">
+
+    <button class="nav-link btn btn-success rounded-0 px-2 py-0" (click)="onImportCodes()" type="button">
+      Import
+    </button>
+
+    <button class="nav-link btn btn-dark rounded-0 px-2 py-0" (click)="onCancel()" type="button">
+      Cancel
+    </button>
+
+
+
+  </ul>
+</div>
+-->
+
+<!--
+<div class="patient-info-top-bar flex-shrink-0 overflow-visible mt-1 h-25" *ngIf="!isLoading">
+
+
+
+  <div class="title mt-1 ml-2">Import Procedures/Diagnosis</div>
+
+  <div class="flex-grow-1">&nbsp;</div>
+  <ul class="nav color-buttons align-items-center">
+    <a class="nav-link green px-2 py-0" (click)="onImportCodes()">Import</a>
+    <a class="nav-link bg-dark px-2 py-0" (click)="onCancel()">Cancel</a>
+  </ul>
+
+</div>
+-->

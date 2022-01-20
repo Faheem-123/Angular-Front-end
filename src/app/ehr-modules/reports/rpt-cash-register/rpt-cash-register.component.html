@@ -1,0 +1,566 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">{{rpt_title}}</div>
+
+
+
+    <div class="d-flex align-item-center mx-1">
+
+
+      <div class="custom-control custom-radio blue-radio">
+        <input class="custom-control-input" type="radio" name="rdopay" id="userpay"
+          (change)="generalReportChange('user-payment')">
+        <label class="custom-control-label text-white" for="userpay">User Payments</label>
+      </div>
+
+      <div class="custom-control custom-radio blue-radio">
+        <input class="custom-control-input" type="radio" name="rdopay" id="patpay"
+          (change)="generalReportChange('patient-payment')" checked>
+        <label class="custom-control-label  text-white" for="patpay">Patient Payments</label>
+      </div>
+
+
+      <div class="custom-control custom-radio blue-radio">
+        <input class="custom-control-input" type="radio" name="rdopay" id="collpay"
+          (change)="generalReportChange('collect-payment')">
+        <label class="custom-control-label  text-white" for="collpay">Collect Payments</label>
+      </div>
+
+      <div class="custom-control custom-radio blue-radio">
+        <input class="custom-control-input" type="radio" name="rdopay" id="yearlycoll"
+          (change)="generalReportChange('yearly-payment')">
+        <label class="custom-control-label  text-white" for="yearlycoll">Yearly Payments</label>
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+
+
+
+
+
+    <!-- ****************************** -->
+    <div *ngIf="reportType == 'user-payment'">
+
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaUserPayment" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+        <div id="SearchCriteriaUserPayment" class="show">
+          <div class="accordian-body bg-transparent">
+            <form [formGroup]="userPaymentReportForm" (ngSubmit)="onSubmit(userPaymentReportForm.value)">
+
+
+              <div class="p-2 pt-0">
+                <div class="form-row form-dashboard">
+
+
+                  <div class="form-group col-4">
+                    <label class="col-form-label required" for="userPaymentDateFrom">Date Range:</label>
+                    <div class="d-flex flex-grow-3">
+
+                      <div class="input-group mr-1">
+
+                        <div class="input-group-prepend ">
+                          <span class="input-group-text px-1">From</span>
+                        </div>
+
+                        <input id="userPaymentDateFrom" formControlName="userPaymentDateFrom"
+                          class="form-control date-control " placeholder="mm/dd/yyyy" name="userPaymentDateFrom"
+                          ngbDatepicker #userPaymentDateFrom="ngbDatepicker">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="userPaymentDateFrom.toggle()" type="button"
+                            focusable="false" tabindex="-1">
+                          </button>
+                        </span>
+
+                      </div>
+
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text px-1">To</span>
+                        </div>
+
+                        <input id="userPaymentDateTo" formControlName="userPaymentDateTo"
+                          class="form-control date-control " placeholder="mm/dd/yyyy" name="userPaymentDateTo"
+                          ngbDatepicker #userPaymentDateTo="ngbDatepicker">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="userPaymentDateTo.toggle()" type="button"
+                            focusable="false" tabindex="-1">
+                          </button>
+                        </span>
+
+                      </div>
+
+
+                    </div>
+                  </div>
+
+
+
+                  <div class="form-group col-2">
+                    <label for="input2" class="col-form-label">Location:</label>
+
+                    <select class="form-control" labelForId="userCmbLocation" formControlName="userCmbLocation">
+                      <option value="">All</option>
+                      <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                    </select>
+
+                  </div>
+
+                  <div class="form-group col-2">
+                    <label for="userCmbProvider" class="col-form-label">Provider:</label>
+                    <select class="form-control" labelForId="userCmbProvider" formControlName="userCmbProvider">
+                      <option value="">All</option>
+                      <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-3">
+                    <label class="col-form-label">Type:</label>
+
+                    <div class="d-flex align-item-center">
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="userall" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="all">
+                        <label class="custom-control-label" for="userall">All</label>
+                      </div>
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="usercash" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="cash">
+                        <label class="custom-control-label" for="usercash">Cash</label>
+                      </div>
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="usercredit" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="credit">
+                        <label class="custom-control-label" for="usercredit">Credit</label>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+
+                  <div class="form-group col d-flex flex-column justify-content-end mb-2">
+                    <button type="button" class="btn btn-success w-100"
+                      (click)="searchUserPayment(userPaymentReportForm.value)">Search</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+    <!-- ****************************** -->
+    <div *ngIf="reportType == 'patient-payment'">
+
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaPatPayment" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+        <div id="SearchCriteriaPatPayment" class="show">
+          <div class="accordian-body bg-transparent">
+            <form [formGroup]="patientPaymentReportForm" (ngSubmit)="onSubmit(patientPaymentReportForm.value)">
+
+
+              <div class="p-2 pt-0">
+                <div class="form-row form-dashboard">
+
+
+                  <div class="form-group col-4">
+                    <label class="col-form-label required" for="patPayDateFrom">Date Range:</label>
+                    <div class="d-flex flex-grow-3">
+
+                      <div class="input-group mr-1">
+
+                        <div class="input-group-prepend ">
+                          <span class="input-group-text px-1">From</span>
+                        </div>
+
+                        <input id="patPayDateFrom" formControlName="patPayDateFrom" class="form-control date-control "
+                          placeholder="mm/dd/yyyy" name="patPayDateFrom" ngbDatepicker #patPayDateFrom="ngbDatepicker">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="patPayDateFrom.toggle()" type="button"
+                            focusable="false" tabindex="-1">
+                          </button>
+                        </span>
+
+                      </div>
+
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text px-1">To</span>
+                        </div>
+
+                        <input id="patPayDateTo" formControlName="patPayDateTo" class="form-control date-control "
+                          placeholder="mm/dd/yyyy" name="patPayDateTo" ngbDatepicker #patPayDateTo="ngbDatepicker">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="patPayDateTo.toggle()" type="button"
+                            focusable="false" tabindex="-1">
+                          </button>
+                        </span>
+
+                      </div>
+
+
+                    </div>
+                  </div>
+
+
+
+                  <div class="form-group col-2">
+                    <label for="patPayDdlLocation" class="col-form-label">Location:</label>
+
+                    <select class="form-control" labelForId="patPayDdlLocation" formControlName="patPayDdlLocation">
+                      <option value="">All</option>
+                      <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                    </select>
+
+                  </div>
+
+                  <div class="form-group col-2">
+                    <label for="patPayDdlProvider" class="col-form-label">Provider:</label>
+                    <select class="form-control" labelForId="patPayDdlProvider" formControlName="patPayDdlProvider">
+                      <option value="">All</option>
+                      <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-3">
+                    <label class="col-form-label">Type:</label>
+
+                    <div class="d-flex align-item-center">
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="userall" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="all">
+                        <label class="custom-control-label" for="userall">All</label>
+                      </div>
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="usercash" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="cash">
+                        <label class="custom-control-label" for="usercash">Cash</label>
+                      </div>
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="usercredit" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="credit">
+                        <label class="custom-control-label" for="usercredit">Credit</label>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+
+
+                </div>
+                <div class="form-row form-dashboard justify-content-end">
+                  <div class="form-group col-12 mt-6 text-right">
+                    <button type="button" class="btn btn-primary mr-1">Collect Payments</button>
+                    <button type="button" class="btn btn-info mr-1">Print</button>
+                    <button type="button" class="btn btn-success"
+                      (click)="searchUserPayment(patientPaymentReportForm.value)">Search</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ****************************** -->
+    <div *ngIf="reportType == 'collect-payment'">
+
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaCollectionRpt" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+        <div id="SearchCriteriaCollectionRpt" class="show">
+          <div class="accordian-body bg-transparent">
+            <form [formGroup]="collectPaymentReportForm" (ngSubmit)="onSubmit(collectPaymentReportForm.value)">
+
+
+              <div class="p-2 pt-0">
+                <div class="form-row form-dashboard">
+
+
+                  <div class="form-group col-4">
+                    <label class="col-form-label required" for="collPayDateFrom">Date Range:</label>
+                    <div class="d-flex flex-grow-3">
+
+                      <div class="input-group mr-1">
+
+                        <div class="input-group-prepend ">
+                          <span class="input-group-text px-1">From</span>
+                        </div>
+
+                        <input id="collPayDateFrom" formControlName="collPayDateFrom" class="form-control date-control "
+                          placeholder="mm/dd/yyyy" name="collPayDateFrom" ngbDatepicker
+                          #collPayDateFrom="ngbDatepicker">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="collPayDateFrom.toggle()" type="button"
+                            focusable="false" tabindex="-1">
+                          </button>
+                        </span>
+
+                      </div>
+
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text px-1">To</span>
+                        </div>
+
+                        <input id="collPayDateTo" formControlName="collPayDateTo" class="form-control date-control "
+                          placeholder="mm/dd/yyyy" name="collPayDateTo" ngbDatepicker #collPayDateTo="ngbDatepicker">
+
+                        <span class="input-group-btn">
+                          <button class="btn date-control-btn" (click)="collPayDateTo.toggle()" type="button"
+                            focusable="false" tabindex="-1">
+                          </button>
+                        </span>
+
+                      </div>
+
+
+                    </div>
+                  </div>
+
+
+
+                  <div class="form-group col-3">
+                    <label for="input2" class="col-form-label">Location:</label>
+
+                    <select class="form-control" labelForId="collPayDdlLocation" formControlName="collPayDdlLocation">
+                      <option value="">All</option>
+                      <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                    </select>
+
+                  </div>
+
+
+
+                  <div class="col-3">
+                    <label class="col-form-label">Type:</label>
+
+                    <div class="d-flex align-item-center">
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="userall" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="all">
+                        <label class="custom-control-label" for="userall">All</label>
+                      </div>
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="usercash" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="cash">
+                        <label class="custom-control-label" for="usercash">Cash</label>
+                      </div>
+
+
+                      <div class="custom-control custom-radio green-radio">
+                        <input class="custom-control-input" type="radio" id="usercredit" name="rdoTypePatPay"
+                          formControlName="rdoTypePatPay" value="credit">
+                        <label class="custom-control-label" for="usercredit">Credit</label>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+
+                  <div class="form-group col d-flex flex-column justify-content-end mb-2">
+                    <button type="button" class="btn btn-success w-100"
+                      (click)="searchUserPayment(collectPaymentReportForm.value)">Search</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- ****************************** -->
+    <div class="d-flex flex-column flex-grow-1" *ngIf="reportType == 'yearly-payment'">
+      <rpt-cash-reg-yearly-collection class="d-flex flex-column flex-grow-1" *ngIf="reportType == 'yearly-payment'">
+      </rpt-cash-reg-yearly-collection>
+    </div>
+    <!-- ************************************************************** -->
+    <div class="d-flex flex-column flex-grow-1 overflow-height overflow-auto max-height-100"
+      *ngIf="reportType != 'yearly-payment'">
+
+      <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+
+      <div class="overflow-auto">
+        <table class="table light-striped-border" *ngIf="reportType == 'user-payment'">
+          <thead>
+            <tr>
+              <th>User Name</th>
+              <th>Cash</th>
+              <th>Check</th>
+              <th>Credit Card</th>
+              <th>Money Order</th>
+              <th>Adjusted</th>
+              <th class="font-weight-bold">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let userpay of arrCashReg">
+              <td>{{userpay.User}}</td>
+              <td>{{userpay.Cash}}</td>
+              <td>{{userpay.Check}}</td>
+              <td>{{userpay.CCard}}</td>
+              <td>{{userpay.MOrder}}</td>
+              <td>{{userpay.adjusted}}</td>
+              <td class="font-weight-bold">{{userpay.Total}}</td>
+            </tr>
+            <tr class="font-weight-bold" *ngFor="let tes of test">
+              <td>{{tes.User}}</td>
+              <td>{{tes.Cash}}</td>
+              <td>{{tes.Check}}</td>
+              <td>{{tes.CCard}}</td>
+              <td>{{tes.MOrder}}</td>
+              <td>{{tes.adjusted}}</td>
+              <td>{{tes.Total}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="table light-striped-border" *ngIf="reportType == 'patient-payment'">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>DOB</th>
+              <th>Receipt#</th>
+              <th>Cash Amt</th>
+              <th>Check#</th>
+              <th>Check Amt</th>
+              <th>Credit Card</th>
+              <th>Trans Money Order</th>
+              <th>Adjustments</th>
+              <th>Collected By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pat of lstPatientPayment">
+              <td>{{pat.pat_name}}</td>
+              <td>{{pat.dob}}</td>
+              <td>{{pat.receipt_no}}</td>
+              <td>{{pat.cash_amt | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{pat.check_number}}</td>
+              <td>{{pat.check_amt | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{pat.credit_amt | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{pat.moneyorder_amt | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{pat.adjustments | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{pat.modified_user}}</td>
+            </tr>
+
+            <tr *ngFor="let pattotal of patTotal" class="font-weight-bold">
+              <td>TOTAL</td>
+              <td></td>
+              <td></td>
+              <td>{{pattotal.Cash}}</td>
+              <td></td>
+              <td>{{pattotal.Check}}</td>
+              <td>{{pattotal.CCard}}</td>
+              <td>{{pattotal.MOrder}}</td>
+              <td>{{pattotal.adjusted}}</td>
+              <td>{{pattotal.Total}}</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+
+
+        <table class="table light-striped-border" *ngIf="reportType == 'collect-payment'">
+          <thead>
+            <tr>
+              <th>Location</th>
+              <th>Collected By</th>
+              <th>Collected Date</th>
+              <th>Cash Amt</th>
+              <th>Credit Card Amt</th>
+              <th>Check Amt</th>
+              <th>Money Order Amt</th>
+              <th>Adjusted Amt</th>
+              <th>Total Amt</th>
+              <th>Comments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let col of lstCollectPayment">
+              <td>{{col.location_name}}</td>
+              <td>{{col.collect_by}}</td>
+              <td>{{col.collect_date}}</td>
+              <td>{{col.cash}}</td>
+              <td>{{col.cradit_card}}</td>
+              <td>{{col.check_amt}}</td>
+              <td>{{col.mony_order}}</td>
+              <td>{{col.adjusted_amt}}</td>
+              <td>{{col.total}}</td>
+              <td>{{col.comments}}</td>
+            </tr>
+            <tr *ngFor="let colTotal of lstCollectPaymentTotal" class="font-weight-bold">
+              <td></td>
+              <td></td>
+              <td>{{colTotal.User}}</td>
+              <td>{{colTotal.Cash}}</td>
+              <td>{{colTotal.CCard}}</td>
+              <td>{{colTotal.Check}}</td>
+              <td>{{colTotal.MOrder}}</td>
+              <td>{{colTotal.adjusted}}</td>
+              <td>{{colTotal.Total}}</td>
+              <td></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!--****************************************************************-->
+
+  </div>

@@ -1,0 +1,134 @@
+<form [formGroup]="taskForm" (ngSubmit)="onSubmit(taskForm.value)" (keydown.enter)="$event.preventDefault()">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">{{title}}</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div class="form-row form-dashboard" *ngIf="errorMsg!=''">
+      <div class="form-group col-12">
+        <div class="alert alert-danger rounded-0 m-0" role="alert">
+          {{errorMsg}}
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="!isLoading" class="dashboard-content p-2 border">
+
+      <div class="form-row form-dashboard mb-1">
+        <div class="form-group horizental row zero col-12">
+          <label class="col-form-label  width-65" [ngClass]="{'required': opertaionType!='forward'}"
+            for="txtTitle">Title</label>
+          <input class="form-control col" id="txtTitle" formControlName="txtTitle" *ngIf="opertaionType!='forward'" />
+          <label class="form-control pt-1 col" *ngIf="opertaionType=='forward'">{{taskDetail.title}}</label>
+        </div>
+      </div>
+      <div class="form-row form-dashboard mb-1">
+
+        <div class="form-group horizental row zero col-8">
+          <label class="col-form-label required width-65" for="ddUsers">Assign To</label>
+          <label class="form-control pt-1 col bg-disabled" *ngIf="opertaionType=='edit'">{{taskDetail.assigned_to_name}}
+            ({{taskDetail.assigned_to}})</label>
+          <select id="ddUsers" class="form-control col" formControlName="ddUsers" *ngIf="opertaionType!='edit'">
+            <option *ngFor="let user of lookupList.practiceUsersList" [value]="user.user_name">
+              {{user.display_name}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group horizental row zero col-4" *ngIf="opertaionType!='forward'">
+          <label class="col-form-label required width-50" for="ddPriority">Priority</label>
+
+          <select class="form-control col" labelForId="ddPriority" formControlName="ddPriority">
+            <option value='Normal'>Normal</option>
+            <option value='Low'>Low</option>
+            <option value='Medium'>Medium</option>
+            <option value='High'>High</option>
+          </select>
+        </div>
+
+      </div>
+
+
+
+      <div class="form-row form-dashboard mb-1" *ngIf="opertaionType!='forward'">
+
+        <div class="form-group horizental row zero col-6">
+          <label class="col-form-label required width-65" for="ddStatus">Status</label>
+
+          <select class="form-control col" labelForId="ddStatus" formControlName="ddStatus">
+            <option value='New'>New</option>
+            <option value='In Progress'>In Progress</option>
+            <option value='Completed'>Completed</option>
+          </select>
+        </div>
+
+        <div class="form-group horizental row zero col-6">
+          <label class="col-form-label required width-65" for="dpDateDue">Due Date</label>
+          <div class="input-group col">
+            <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpDateDue"
+              formControlName="dpDateDue" ngbDatepicker #dpDateDue="ngbDatepicker">
+            <span class="input-group-btn">
+              <button class="btn date-control-btn" (click)="dpDateDue.toggle()" type="button">
+              </button>
+            </span>
+          </div>
+        </div>
+
+
+
+      </div>
+
+
+      <div class="form-row form-dashboard mb-1">
+
+        <div class="form-group horizental row zero col-12">
+          <label for="txtDetail" class="col-form-label width-65">Detail</label>
+
+          <textarea class="form-control col" id="txtDetail" rows="4" formControlName="txtDetail"></textarea>
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard mb-1" *ngIf="opertaionType!='forward'">
+        <div class="form-group horizental row zero col-12">
+          <label for="txtPatientSearch" class="col-form-label width-65">Patient </label>
+          <label class="form-control pt-1 col disabled" *ngIf="chartId!=undefined">{{patientName}} |
+            Encounter:{{encounterDate}}</label>
+          <label class="form-control pt-1 col disabled" *ngIf="claimId!=undefined">{{patientName}} |
+            Claim:{{dos}}</label>
+          <label class="form-control pt-1 col disabled"
+            *ngIf="patientId!=undefined && callingFrom=='patient'">{{patientName}}</label>
+
+          <div class="input-icon d-flex flex-grow-3" *ngIf="chartId==undefined && claimId==undefined && (patientId==undefined || callingFrom!='patient')">
+            <input labelForId="txtPatientSearch" class="form-control flex-grow-3" type="text" #txtPatientSearch
+              placeholder="Search Patient" autocomplete="off"
+              (input)="onPatientSearchInputChange(txtPatientSearch.value)" (blur)="onPatientSearchBlur()"
+              formControlName="txtPatientSearch" (keydown)="onPatientSearchKeydown($event)">
+
+            <div class="icon">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+
+            <inline-patient-search *ngIf="showPatientSearch" [searchValue]="txtPatientSearch.value"
+              (onPatientSelect)="openSelectPatient($event)" (onClose)="closePatientSearch()">
+            </inline-patient-search>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer custom">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm"
+      (click)="activeModal.dismiss('Cross click')">Cancel</button>
+    <button style="width: 80px;" class="btn btn-success btn-sm" type="submit">Save</button>
+  </div>
+</form>

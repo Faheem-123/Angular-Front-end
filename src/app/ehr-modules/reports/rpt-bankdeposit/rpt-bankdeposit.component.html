@@ -1,0 +1,283 @@
+<div class="d-flex flex-column flex-grow-1 mt-0 position-relative">
+  <div class="bg-green-ihc  px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0" [ngClass]="{'light-title-bar h-25': callingFrom=='billing_reports',
+    'h-30': callingFrom!='billing_reports'}">
+    <div class="fz-15 font-weight-400" [ngClass]="{'text-white': callingFrom=='reports'}">Bank Deposit Report <span
+        class="badge badge-pill"></span></div>
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+
+    <div class="d-flex flex-column flex-shrink-0">
+      <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#SearchCriteriaBankDepositReport" aria-expanded="true"
+              class="accordian-link rounded-0">
+              <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+            </a>
+          </h5>
+        </div>
+        <div id="SearchCriteriaBankDepositReport" class="show">
+
+          <div class="accordian-body bg-transparent">
+            <form [formGroup]="bankDepostReportForm" (keydown.enter)="$event.preventDefault()">
+
+
+
+              <div class="form-row form-dashboard ">
+
+                <div class="form-group col-5">
+                  <div class="btn-group radio-btn-tabs ">
+
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'check_date')}">
+                      <input type="radio" name="dateType" autocomplete="off" checked formControlName="dateType"
+                        value="check_date" (ngModelChange)="onDateTypeChange($event)"> Check Date
+                    </label>
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'receiving_date')}">
+                      <input type="radio" name="dateType" autocomplete="off" formControlName="dateType"
+                        value="receiving_date" (ngModelChange)="onDateTypeChange($event)"> Receiving Date
+                    </label>
+                    <label class="btn btn-secondary" [ngClass]="{'active' : (dateType === 'posting_date')}">
+                      <input type="radio" name="dateType" autocomplete="off" formControlName="dateType"
+                        value="posting_date" (ngModelChange)="onDateTypeChange($event)"> Posting Date
+                    </label>
+
+                  </div>
+
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dateFrom" formControlName="dateFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker"
+                        (blur)="onDateFocusOut($event.currentTarget.value,'dateFrom')">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateFrom.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dateTo" formControlName="dateTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateTo" ngbDatepicker #dateTo="ngbDatepicker"
+                        (blur)="onDateFocusOut($event.currentTarget.value,'dateTo')">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateTo.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+                <div class="form-group col-4">
+                  <label class="col-form-label" for="txtpayerSearch">Payer</label>
+                  <div class="input-icon d-flex flex-grow-3">
+                    <input id="txtpayerSearch" class="form-control flex-grow-3" type="text" placeholder="Search Payer"
+                      (keydown)="onPayerSearchKeydown($event)" (blur)="onPayerSearchBlur()" autocomplete="off"
+                      #txtpayerSearch formControlName="txtpayerSearch">
+                    <div class="icon">
+                      <i class="fa fa-search" aria-hidden="true"></i>
+                    </div>
+                    <inline-payer-search *ngIf="showPayerSearch" [searchValue]="txtpayerSearch.value"
+                      (onPayerSelect)="openSelectPayer($event)" (onClose)="closePayerSearch()">
+                    </inline-payer-search>
+                  </div>
+                </div>
+
+                <div class="form-group col-3">
+
+                  <label class="col-form-label" for="txtCheckNo">Check Number</label>
+                  <input class="form-control" name="txtCheckNo" id="txtCheckNo" formControlName="txtCheckNo">
+
+                </div>
+              </div>
+
+              <div class="form-row form-dashboard">
+                <div class="col-10 d-flex mt-2">
+                  <div class="custom-control custom-checkbox green-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_eoberapay_BankDeposit_{{unique_id}}"
+                      type="checkbox" name="chkbox_eoberapay" formControlName="chk_eoberapayment" checked>
+                    <label class="custom-control-label" for="chkbox_eoberapay_BankDeposit_{{unique_id}}">EOB/ERA
+                      Payments</label>
+                  </div>
+
+                  <div class="custom-control custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_acapay_BankDeposit_{{unique_id}}"
+                      type="checkbox" name="chkbox_acapay" formControlName="chkbox_acapayment" checked>
+                    <label class="custom-control-label" for="chkbox_acapay_BankDeposit_{{unique_id}}">ACA
+                      Payments</label>
+                  </div>
+
+                  <div class="custom-control custom-checkbox green-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chkbox_patpay_BankDeposit_{{unique_id}}"
+                      type="checkbox" name="chkbox_patpay" formControlName="chkbox_patpayment" checked>
+                    <label class="custom-control-label" for="chkbox_patpay_BankDeposit_{{unique_id}}">Patient
+                      Payments</label>
+                  </div>
+                </div>
+                <div class="form-group col-2">
+                  <div class="form-group d-flex flex-grow-1 justify-content-end">
+                    <button type="button" class="btn btn-success width-80"
+                      (click)="searchBankDepost(bankDepostReportForm.value)">Search</button>
+                  </div>
+                </div>
+              </div>
+
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ************************************************************** -->
+
+    <!-- ************************************************************** -->
+
+    <div class="flex-2 d-flex overflow-height mt-0">
+
+      <!-- ************************************************************** -->
+
+      <div class="border bg-white flex-1 d-flex flex-column mr-1 width-300">
+
+
+
+        <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+          <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Check Details
+            <span *ngIf="lstChecksDetail!=undefined" class="fz-12">({{lstChecksDetail.length}})</span>
+          </h4>
+          <div class="d-flex align-items-center justify-content-end flex-shrink-0">
+            <button class="btn btn-link title-bar-blue-btn px-2 py-0 fz-12 " (click)="exportAsXLSX()"><i
+                class="fas fa-file-excel fa-md text-ihc-blue mr-1"></i> Export to Excel</button>
+          </div>
+        </div>
+
+        <div class="overflow-auto flex-grow-1  overflow-height">
+          <table class="table light-striped-border layout-fixed">
+            <thead>
+              <tr>
+                <th class="width-80">Check Date</th>
+                <th class="width-100">Check Number</th>
+                <th class="width-80">Check Amt.</th>
+                <th class="width-90">Posted Amt.</th>
+                <th class="width-100">Date Received</th>
+                <th class="width-100">Payment Type</th>
+                <th class="width-110">Payment Source</th>
+                <th class="width-80">EOB/ERA ID</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr st-select-row="row" *ngFor="let chk of lstChecksDetail; let i = index"
+                (click)="getSummaryChange(i,chk,bankDepostReportForm.value)"
+                [ngClass]="{'active': i==selectedSummaryRow}">
+                <td>{{chk.check_date}}</td>
+                <td>{{chk.check_number}}</td>
+                <td>{{chk.check_amount | currency:'USD':'symbol-narrow'}}</td>
+                <td>{{chk.total_posted_amount | currency:'USD':'symbol-narrow'}}</td>
+                <td>{{chk.date_created}}</td>
+                <td>{{chk.payment_type}}</td>
+                <td>{{chk.payment_source}}</td>
+                <td>{{chk.eob_era_id}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="border-content-box border-top-0 rounded-bottom flex-shrink-0 overflow-auto bg-white">
+          <table class="table light-striped-border">
+            <thead>
+              <tr>
+                <th>Total Check Amount</th>
+                <th>Total Posted Amount</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr st-select-row="row">
+                <td>{{total_check_amount | currency:'USD':'symbol-narrow'}}</td>
+                <td>{{total_posted_amount | currency:'USD':'symbol-narrow'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- <div class="border-content-box border-top-0 rounded-bottom flex-shrink-0 overflow-auto bg-white">
+                  <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Total Check Amount :
+                    <span class="fz-12">{{total_check_amount | currency:'USD':'symbol-narrow'}}</span>
+                  </h4>
+                  <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Total Posted Amount :
+                    <span class="fz-12">{{total_posted_amount | currency:'USD':'symbol-narrow'}}</span>
+                  </h4>
+                </div> -->
+      </div>
+
+      <!-- ************************************************************** -->
+      <!-- ************************************************************** -->
+
+      <div class="border rounded bg-white flex-1 d-flex flex-column mr-2 width-600">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Posting Detail
+          <span *ngIf="lstChecksPaymentDetail!=undefined" class="fz-12">({{lstChecksPaymentDetail.length}})</span>
+        </h4>
+        <div class="overflow-auto flex-grow-1  overflow-height">
+          <table class="table light-striped-border">
+            <thead>
+              <tr>
+                <!--  -->
+                <th scope="col" sortable="patient_name" type="alpha" (sort)="onSort($event)">Patient Name</th>
+                <th scope="col" sortable="dos" type="datetime" formate="MM/DD/YYYY" (sort)="onSort($event)">DOS</th>
+                <th scope="col" sortable="proc_code" type="alpha" (sort)="onSort($event)">CPT</th>
+                <th scope="col" sortable="billed_amount" type="numeric" (sort)="onSort($event)">Billed Amt.</th>
+                <th scope="col" sortable="allowed_amount" type="numeric" (sort)="onSort($event)">Allowed Amt.</th>
+                <th scope="col" sortable="paid_amount" type="numeric" (sort)="onSort($event)">Paid Amt.</th>
+                <th scope="col" sortable="adjusted_amount" type="numeric" (sort)="onSort($event)">Adjusted Amt.</th>
+                <th scope="col" sortable="claim_id" type="numeric" (sort)="onSort($event)">Claim ID</th>
+                <th scope="col" sortable="modified_user" type="alpha" (sort)="onSort($event)">Last Modified By</th>
+                <th scope="col" sortable="client_date_modified" type="alpha" (sort)="onSort($event)">Date Modified</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr st-select-row="row" *ngFor="let pd of lstChecksPaymentDetail; let i = index"
+                (click)="getDetailChange(i,pd)">
+                <td>{{pd.patient_name}}</td>
+                <td>
+                  <button type="button" class="link-btn" (click)="openClaim(pd)">{{pd.dos}}</button>
+                </td>
+                <td>{{pd.proc_code}}</td>
+                <td>{{pd.billed_amount | currency:'USD':'symbol-narrow'}}</td>
+                <td>{{pd.allowed_amount | currency:'USD':'symbol-narrow'}}</td>
+                <td>{{pd.paid_amount | currency:'USD':'symbol-narrow'}}</td>
+                <td>{{pd.adjusted_amount | currency:'USD':'symbol-narrow'}}</td>
+                <td>{{pd.claim_id}}</td>
+                <td>{{pd.modified_user}}</td>
+                <td>{{pd.client_date_modified}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ************************************************************** -->
+
+    </div>
+
+  </div>
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+</div>

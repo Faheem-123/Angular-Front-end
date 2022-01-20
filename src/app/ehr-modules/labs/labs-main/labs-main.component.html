@@ -1,0 +1,38 @@
+<div class="dashboard-container d-flex flex-column">
+    <div class="dashboard m-2">
+        <ngb-tabset class="inner-horizental-green-tab rounded-10" [destroyOnHide]="false" (tabChange)="onTabChange($event)">
+            <ngb-tab id="lab-order-search">
+                <ng-template ngbTabTitle>Order Search</ng-template>
+                <ng-template ngbTabContent>
+                    <patient-lab-order-search class="d-flex flex-column flex-grow-1 p-8"></patient-lab-order-search>
+                </ng-template>
+            </ngb-tab>
+
+            <ngb-tab id="lab-pending" [disabled]="!this.lookupList.UserRights.lab_result_view ">
+                <ng-template ngbTabTitle>Pending Results</ng-template>
+                <ng-template ngbTabContent>
+                    <patient-lab-order-pending class="d-flex flex-column flex-grow-1 p-8"></patient-lab-order-pending>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="lab-signed" [disabled]="!this.lookupList.UserRights.lab_result_view ">
+                <ng-template ngbTabTitle>Signed Results</ng-template>
+                <ng-template ngbTabContent>
+                    <patient-lab-order-signed class="d-flex flex-column flex-grow-1 p-8"></patient-lab-order-signed>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="lab-cumulative" [disabled]="!this.lookupList.UserRights.lab_result_view ">
+                <ng-template ngbTabTitle>Cumulative Report</ng-template>
+                <ng-template ngbTabContent>
+                    <rpt-patient-lab-order-cumulative class="d-flex flex-column flex-grow-1 p-8">
+                    </rpt-patient-lab-order-cumulative>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="lab-followup">
+                <ng-template ngbTabTitle>Follow Up</ng-template>
+                <ng-template ngbTabContent>
+                    <patient-lab-order-followup class="d-flex flex-column flex-grow-1 p-8"></patient-lab-order-followup>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

@@ -1,0 +1,124 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">Provider Work Report
+    </div>
+    <button class="btn btn-link fz-13 font-weight-400 py-0 text-white" (click)="exportAsXLSX()"><i
+      class="fas fa-file-excel fa-md  mr-1"></i>Export to Excel</button>
+
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+    <form [formGroup]="providerWorkReportForm">
+      <div class="rounded bg-white flex-shrink-0">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+
+        <div class="p-2 pt-0">
+          <div class="form-row form-dashboard">
+            <div class="form-group col-2">
+              <label class="col-form-label required" for="dpfromDate">From:</label>
+              <div class="input-group">
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dateFrom"
+                  formControlName="dateFrom" ngbDatepicker #dpfromDate="ngbDatepicker">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="form-group col-2">
+              <label class="col-form-label required" for="dptoDate">To:</label>
+              <div class="input-group">
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo"
+                  ngbDatepicker #dptoDate="ngbDatepicker">
+                <span class="input-group-btn">
+                  <button class="btn date-control-btn" (click)="dptoDate.toggle()" type="button">
+                  </button>
+                </span>
+              </div>
+            </div>
+            <div class="form-group col-2">
+              <label for="cmbProvider" class="col-form-label">Provider:</label>
+              <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider">
+                <option value=''>All</option>
+                <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+              </select>
+            </div>
+            <div class="form-group col-2">
+              <label for="cmbLocation" class="col-form-label">Location:</label>
+              <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                <option value=''>All</option>
+                <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+              </select>
+            </div>
+            <div class="form-group col-1 d-flex justify-content-end align-items-end">
+              <button type="button" class="btn btn-success w-100"
+                (click)="onSearch(providerWorkReportForm.value)">Search</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2 overflow-height">
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border table-sticky-header">
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Location</th>
+              <th>Appointment</th>
+              <th>Encounter</th>
+              <th>Encounter not Created</th>
+              <th>Claims</th>
+              <th>Amount</th>
+              <th>Provider App</th>
+              <th>Provider Encounters</th>
+              <th>Provider Claims</th>
+              <th>Provider Amt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let pw of lstProviderWork"
+            [ngClass]="{'active': pw.row_id==selectedRow}" (click)="onSelectionChange(pw)">
+              <td>{{pw.provider_name}}</td>
+              <td>{{pw.location_name}}</td>
+              <td>{{pw.loc_total}}</td>
+              <td>{{pw.enc_total}}</td>
+              <td>{{pw.notexist}}</td>
+              <td>{{pw.claim_loc_total}}</td>
+              <td>{{pw.amt_loc_total}}</td>
+              <td>{{pw.total_app}}</td>
+              <td>{{pw.total_enc}}</td>
+              <td>{{pw.claim_total}}</td>
+              <td>{{pw.amt_total}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+
+    <div class="border-content-box border-top-0 rounded-bottom flex-shrink-0 overflow-auto bg-white">
+      <table class="table light-striped-border">
+        <tbody>
+          <tr st-select-row="row">
+            <td class="font-weight-bold">Total App:({{totalApp}})</td>
+            <td class="font-weight-bold">Total Encounter:({{totalEncounter}})</td>
+            <td class="font-weight-bold">Total Claim:({{Totalclaim}})</td>
+            <td class="font-weight-bold">Total Amt: ${{TotalAmt}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+
+  </div>
+</div>

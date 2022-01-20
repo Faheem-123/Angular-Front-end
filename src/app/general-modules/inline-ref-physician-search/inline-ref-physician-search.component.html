@@ -1,0 +1,39 @@
+<div class="inline-search" style="width: 500px;" >
+    <div class="inline-search-header">    
+        <h6 class="title">Referring Provider Search</h6>
+        <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    <div class="body m-0">
+      <div *ngIf="isLoading" class="div-loader"></div>
+      <table class="table layout-fixed light-striped-border" *ngIf="!isLoading">
+        <thead>
+          <tr>
+            <th style="width: 200px;">Name</th>                      
+            <th style="width: 100px;">Phone</th>
+            <th>Address</th>
+            <th style="width: 90px;">NPI</th>   
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let refPhy of lstRefPhysician;let i=index"
+          [ngClass]="{'active': i==selectedIndex }">
+            <td>
+              <button #buttons id="btn_{{i}}" name="btn_{{i}}"
+              type="button" class="link-btn" (click)="onSelect.emit(refPhy)"
+              (keyup.arrowdown)="shiftFocusDown(i)"
+              (keydown.enter)="onSelect.emit(refPhy)"  
+              (keydown.esc) ="onClose.emit()"           
+              (keyup.arrowup)="shiftFocusUp(i)"
+              >
+              {{refPhy.first_name}} {{refPhy.last_name}}<span *ngIf="refPhy.title!=undefined">, {{refPhy.title}}</span></button>
+            </td>         
+            <td>{{refPhy.phone | phonePipe }}</td>
+            <td>{{refPhy.address}}</td>
+            <td>{{refPhy.npi}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

@@ -1,0 +1,35 @@
+<div class="dashboard-container d-flex flex-column">
+  <div class="dashboard">
+
+    <div class="flex-grow-1 d-flex flex-column">
+
+      <ngb-tabset class="inner-vertical-tab messages first-tab-as-button d-flex flex-row rounded-10-top"
+        (tabChange)="onTabChange($event)" [activeId]="selectedTab">
+        <ngb-tab id="tab_back">
+          <ng-template ngbTabTitle> <i class="fas fa-arrow-left mr-1"></i>Back To Messages</ng-template>
+          <ng-template ngbTabContent>
+          </ng-template>
+        </ngb-tab>
+
+        <ngb-tab id="tab_my_tasks">
+          <ng-template ngbTabTitle>My Tasks</ng-template>
+          <ng-template ngbTabContent>
+            <tasks class="d-flex flex-column flex-grow-1" taskFlowType='INBOX'></tasks>
+            <!--<fax-received class="d-flex flex-column flex-grow-1"></fax-received>-->
+          </ng-template>
+        </ngb-tab>
+
+        <ngb-tab id="tab_send_taks">
+          <ng-template ngbTabTitle>Send Tasks</ng-template>
+          <ng-template ngbTabContent>
+            <tasks class="d-flex flex-column flex-grow-1" taskFlowType='OUTBOX'></tasks>
+
+          </ng-template>
+        </ngb-tab>
+
+      </ngb-tabset>
+
+
+    </div>
+  </div>
+</div>

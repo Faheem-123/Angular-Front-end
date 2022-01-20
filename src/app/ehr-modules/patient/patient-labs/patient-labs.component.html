@@ -1,0 +1,32 @@
+<div class="dashboard-container d-flex flex-column mb-0">
+    <div class="dashboard mx-1">
+
+        <ngb-tabset class="inner-sub-horizental-tab" [destroyOnHide]="false"
+            (tabChange)="onTabChange($event)">
+            
+            <ngb-tab id="lab-pending">
+                <ng-template ngbTabTitle>Pending Results</ng-template>
+                <ng-template ngbTabContent>
+                    <patient-lab-order-pending [patientId]="patientId" [callingFrom]='patient'
+                        [openPatientInfo]="openPatientInfo" class="dashboard-container d-flex flex-column m-1 ">
+                    </patient-lab-order-pending>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="lab-signed">
+                <ng-template ngbTabTitle>Signed Results</ng-template>
+                <ng-template ngbTabContent>
+                    <patient-lab-order-signed [patientId]="patientId" [openPatientInfo]="openPatientInfo"
+                        class="dashboard-container d-flex flex-column  m-1"></patient-lab-order-signed>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="lab-cumulative">
+                <ng-template ngbTabTitle>Cumulative Report</ng-template>
+                <ng-template ngbTabContent>
+                    <rpt-patient-lab-order-cumulative [patientId]="patientId" [openPatientInfo]="openPatientInfo"
+                        class="dashboard-container d-flex flex-column  m-1"></rpt-patient-lab-order-cumulative>
+                </ng-template>
+            </ngb-tab>
+           
+        </ngb-tabset>
+    </div>
+</div>

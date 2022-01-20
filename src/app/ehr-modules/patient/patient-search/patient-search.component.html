@@ -1,0 +1,411 @@
+<div class="patient-search-bar">
+  <div class="normal-search">
+    <form [formGroup]="patSearchForm" (ngSubmit)="onSearchPatient(patSearchForm.value)">
+      <h4>Search Patient</h4>
+
+      <input type="text" class="form-control" formControlName="ctrlPatientSearch" id="ctrlPatientSearch"
+        (paste)="onPaste($event,'ctrlPatientSearch')" value="DOB"
+        placeholder="First Name, Last Name, SSN, DOB(12/31/1999 or 12/31/99 or 123199 or 12311999), Patient ID"
+        autocomplete="off" />
+
+      <button class="btn">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </button>
+    </form>
+  </div>
+
+  <div class="advance-search">
+    <form [formGroup]="patAdvanceSearchForm" (ngSubmit)="onSearchPatientAdvance(patAdvanceSearchForm.value)">
+      <h4>Advance Search</h4>
+      <input type="text" class="form-control" formControlName="ctrlPatientSearchAdvance"
+        (paste)="onPaste($event,'ctrlPatientSearchAdvance')" id="ctrlPatientSearchAdvance" placeholder="Search here...">
+      <select class="form-control" formControlName="ctrlPatientSearchAdvanceOption">
+        <option value="PATIENT_ID">Patient ID</option>
+        <option value="CLAIM_ID">Claim ID</option>
+        <option value="SSN">SSN</option>
+        <option value="PHONE_NO">Phone No</option>
+        <option value="POLICY_NO">Policy Number</option>
+      </select>
+      <button class="btn">
+        <i class="fa fa-search" aria-hidden="true"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+
+<div class="dashboard-container d-flex flex-column m-0 position-relative">
+  <div class="dashboard">
+    <div class="dashboard-title">
+      <div class="title">Patient List
+        <span class="badge badge-pill"> {{total}}</span>
+        <button [disabled]="!this.lookupList.UserRights.patient_view" class="btn btn-outline-info btn-sm mx-2 "
+          (click)="loadLatestViewedPaients()" type="button">
+          Current Viewed Patients
+        </button>
+
+
+        <div class="btn-group">
+          <button class="btn btn-outline-info btn-sm w-100 rounded-10" type="button"
+            [disabled]="!this.lookupList.UserRights.patient_view" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            Today's Scheduled
+            <span class="v-separtor" *ngIf="scheduledPatientsOption!='' "></span>
+            <span *ngIf="scheduledPatientsOption!=''" class="title-other-info">
+              {{scheduledPatientsOption}}
+            </span>
+          </button>
+
+          <!--
+          <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle dropdown-toggle-split"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          -->
+
+          <div class="dropdown-menu schedular-card" *ngIf="lookupList.providerList!=undefined">
+            <button class="dropdown-item  px-2" (click)="loadTodayScheduledPatients('','','All')">
+              All
+            </button>
+            <button class="dropdown-item  px-2" *ngFor="let pro of lookupList.providerList"
+              (click)="loadTodayScheduledPatients('',pro.id,pro.name)">
+              {{pro.name}}
+            </button>
+
+          </div>
+        </div>
+
+
+      </div>
+
+
+      <button type="button" [disabled]="!this.lookupList.UserRights.patient_edit"
+        class="btn btn-outline-info btn-sm mx-2" (click)="OnCreatePatient()" type="button">
+        <i class="fas fa-user-plus"></i> Create Patient
+      </button>
+
+
+      <div class="dropdown">
+        <button class="btn btn-sm btn-link p-0" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-left schedular-card" aria-labelledby="dropdownMenuButton">
+          <!-- <button class="dropdown-item" (click)="onShowFlexApp('QRDA')">
+              <i class="fas fa-file-import text-info pr-1" aria-hidden="true"></i> Import QRDA
+            </button>
+            <button class="dropdown-item" (click)="onShowFlexApp('CCDA')">
+              <i class="fas fa-file-import text-info pr-1" aria-hidden="true"></i> Import/Export CCDA
+            </button> -->
+          <button class="dropdown-item px-2" (click)="OnMergePatient()">
+            Merge Patient
+          </button>
+        </div>
+      </div>
+
+
+      <!--
+        <button type="button" class="btn btn-info btn-sm" (click)="onFlexCall('QRDA')"><i
+            class="fas fa-file-import mr-1"></i>Import QRDA</button>
+        <button type="button" class="btn btn-info btn-sm ml-2" (click)="onFlexCall('CCDA')"><i
+            class="fas fa-file-import mr-1"></i>Import/Export CCDA</button>
+
+        <button type="button" class="btn btn-success btn-sm ml-2" (click)="OnCreatePatient()" type="button">
+          <i class="fas fa-user-plus"></i> Merge Patient
+        </button>
+
+-->
+
+      <!--
+        <div class="title-link">
+          <button class="btn btn-primary btn-sm" (click)="loadLatestViewedPaients()" type="button">
+            Latest Viewed Patients
+          </button>
+        </div>
+        -->
+    </div>
+
+    <div class="dashboard-content mt-0">
+
+
+      <!-- <iframe *ngIf="isShowFlexApp" frameborder="0" src="http://localhost:8001/ihc-mu/Main.html?patient_id=132&user_id=500101&user_name=admin&practice_id=500" scrolling="yes" width="900px" height="550px" id="irxIFrame" name="irxIFrame"></iframe>  -->
+
+      <div *ngIf="!isLoading && !this.lookupList.UserRights.patient_view" class="access-denied">
+        <i class="fas fa-ban mr-2"></i> Access Denied
+      </div>
+
+      <table class="table light-striped-border wide table-sticky-header"
+        *ngIf="this.lookupList.UserRights.patient_view">
+        <thead>
+          <tr>
+            <th class="width-20"></th>
+            <th scope="col" sortable="name" type="alpha" (sort)="onSort($event)">Name</th>
+            <th scope="col" sortable="dob" type="datetime" formate="MM/DD/YYYY" (sort)="onSort($event)">DOB</th>
+
+            <th scope="col" sortable="ssn" type="alpha" (sort)="onSort($event)" *ngIf="recordType=='PATIENT'">SSN</th>
+
+            <th scope="col" sortable="alternate_account" type="numeric" (sort)="onSort($event)">PID</th>
+
+
+            <th scope="col" sortable="home_phone" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='PATIENT' || recordType=='APPOINTMENT'">Home Phone</th>
+            <th scope="col" sortable="cell_phone" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='PATIENT' || recordType=='APPOINTMENT'">Cell Phone</th>
+            <th scope="col" sortable="gender" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='PATIENT' || recordType=='APPOINTMENT'">Gender</th>
+
+
+
+
+            <th scope="col" sortable="address" type="alpha" (sort)="onSort($event)" *ngIf="recordType=='PATIENT'">
+              Address</th>
+
+            <th scope="col" sortable="patient_status" type="alpha" (sort)="onSort($event)">Status</th>
+
+            <th scope="col" sortable="app_location_name" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='APPOINTMENT'">Location</th>
+
+            <th scope="col" sortable="app_provider_name" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='APPOINTMENT'">Provider</th>
+
+
+            <th *ngIf="recordType=='APPOINTMENT'" scope="col" sortable="app_datetime" type="datetime"
+              formate="MM/DD/YYYY hh:mm A" (sort)="onSort($event)">App Datetime</th>
+            <th *ngIf="recordType=='APPOINTMENT'" scope="col" sortable="app_type" type="alpha" (sort)="onSort($event)">
+              App Type</th>
+            <th *ngIf="recordType=='APPOINTMENT'" scope="col" sortable="app_status" type="alpha"
+              (sort)="onSort($event)">App Status</th>
+
+
+            <th class="width-75 pr-0" scope="col" sortable="dos" type="datetime" formate="MM/DD/YYYY"
+              (sort)="onSort($event)" *ngIf="recordType=='CLAIM'">DOS </th>
+            <th title="Billing Physician  pr-0" scope="col" sortable="billing_physician" type="alpha"
+              (sort)="onSort($event)" *ngIf="recordType=='CLAIM'">Billing
+              Physician</th>
+            <th title="Attending Physician  pr-0" scope="col" sortable="attending_physician" type="alpha"
+              (sort)="onSort($event)" *ngIf="recordType=='CLAIM'">Attending
+              Physician</th>
+            <th class="text-right width-70  pr-0" scope="col" sortable="claim_total" type="numeric"
+              (sort)="onSort($event)" *ngIf="recordType=='CLAIM'">Total</th>
+            <th class="text-right width-70  pr-0" scope="col" sortable="pri_paid" type="numeric" (sort)="onSort($event)"
+              *ngIf="recordType=='CLAIM'">
+              Pri. Paid</th>
+            <th class="text-right width-70  pr-0" scope="col" sortable="sec_paid" type="numeric" (sort)="onSort($event)"
+              *ngIf="recordType=='CLAIM'">
+              Sec. Paid</th>
+            <th class="text-right width-70  pr-0" scope="col" sortable="oth_paid" type="numeric" (sort)="onSort($event)"
+              *ngIf="recordType=='CLAIM'">
+              Oth. Paid</th>
+            <th class="text-right width-70  pr-0" scope="col" sortable="patient_paid" type="numeric"
+              (sort)="onSort($event)" *ngIf="recordType=='CLAIM'">Pat. Paid</th>
+            <th class="text-right width-70  pr-0" scope="col" sortable="total_adjustments" type="numeric"
+              (sort)="onSort($event)" *ngIf="recordType=='CLAIM'">Adj.</th>
+            <th class="text-right width-70  pr-0" scope="col" sortable="amt_due" type="numeric" (sort)="onSort($event)"
+              *ngIf="recordType=='CLAIM'">Amt. Due</th>
+            <th class="border width-25 px-0" scope="col" sortable="pri_status" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='CLAIM'">Pri</th>
+            <th class="border width-25 px-0" scope="col" sortable="sec_status" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='CLAIM'">Sec</th>
+            <th class="border width-25 px-0" scope="col" sortable="oth_status" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='CLAIM'">Oth</th>
+            <th class="border width-25 px-0 " scope="col" sortable="pat_status" type="alpha" (sort)="onSort($event)"
+              *ngIf="recordType=='CLAIM'">Pat</th>
+
+          </tr>
+        </thead>
+        <tbody>
+
+
+          <tr *ngFor="let pat of lstPatient" [ngClass]="{
+                      'text-success' : (pat.patient_status === 'ACTIVE'),
+                      'text-danger' : (pat.patient_status === 'INACTIVE'),
+                      'text-warning' : (pat.patient_status === 'CLINIC DISCHARGED'),
+                      'text-warning' : (pat.patient_status === 'DECEASED')
+                    }">
+            <!--
+            <tr *ngFor="let pat of lstPatient" [ngClass]="{
+                      'tr-success' : (pat.patient_status === 'ACTIVE'),
+                      'tr-danger' : (pat.patient_status === 'INACTIVE'),
+                      'tr-warning' : (pat.patient_status === 'CLINIC DISCHARGED'),
+                      'tr-warning' : (pat.patient_status === 'DECEASED')
+                    }">
+                    -->
+
+            <td>
+              <div class="dropdown" *ngIf="recordType=='PATIENT' || recordType=='APPOINTMENT'">
+                <button class="table-link-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-bars fa-md" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right schedular-card" aria-labelledby="dropdownMenuButton">
+                  <button [disabled]="!this.lookupList.UserRights.patient_edit" class="dropdown-item"
+                    (click)="onMenuClick(pat,'modify')">
+                    <i> <img class="img-h-16" src="./assets/images/icons/ico_edit.svg" alt=""></i> Modify
+                  </button>
+                  <button [disabled]="!this.lookupList.UserRights.patient_delete" class="dropdown-item"
+                    (click)="onMenuClick(pat,'delete')">
+                    <i> <img class="img-h-16" src="./assets/images/icons/ico_delete.svg" alt=""></i> Delete
+                  </button>
+                  <button [disabled]="!lookupList.UserRights.canViewChart" class="dropdown-item"
+                    (click)="onMenuClick(pat,'encounter')">
+                    <i> <img class="img-h-16" src="./assets/images/icons/ico_chart.svg" alt=""></i> Encounter
+                  </button>
+                  <button class="dropdown-item" (click)="onMenuClick(pat,'claim')">
+                    <i> <img class="img-h-16" src="./assets/images/icons/ico_claim.svg" alt=""></i> Claim
+                  </button>
+                  <button class="dropdown-item" (click)="onMenuClick(pat,'document')">
+                    <i> <img class="img-h-16" src="./assets/images/icons/ico_document.svg" alt=""></i> Document
+                  </button>
+                  <button class="dropdown-item" (click)="onMenuClick(pat,'referral')">
+                    <i> <img class="img-h-16" src="./assets/images/icons/ico_referral.svg" alt=""></i>
+                    Referral
+                  </button>
+                  <button class="dropdown-item" (click)="onMenuClick(pat,'appointment')">
+                    <i> <img class="img-h-16" src="./assets/images/icons/ico_calender.svg" alt=""></i> Appointment
+                  </button>
+                  <button [disabled]="!this.lookupList.UserRights.phr_access" class="dropdown-item"
+                    (click)="onMenuClick(pat,'TimelyAccess')">
+                    <i> <img class="img-h-16" src="./assets/images/icons/ico_timely_access.svg" alt=""></i> Timely
+                    Access
+                  </button>
+                  <div class="dropdown submenu">
+                    <button class="dropdown-item" id="patient-option" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                      <i> <img class="img-h-16" src="./assets/images/icons/ico_log.svg" alt=""></i>
+                      <div class="d-flex flex-grow-1 align-items-center justify-content-between pr-2">Log <span
+                          class="fa fa-caret-right text-info pr-1" aria-hidden="true"></span></div>
+                    </button>
+
+                    <div class="dropdown-menu dropdown-sub-menu schedular-card" aria-labelledby="patient-option">
+                      <button class="dropdown-item rounded-0-top px-2" (click)="onMenuClick(pat,'patient_log')">
+                        Patient Log
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <a class="p-0 text-info" [ngbPopover]="popContent" *ngIf="recordType=='CLAIM'"
+                popoverTitle="Diagnosis/Procedures [{{pat.claim_id}}]" triggers="mouseenter:mouseleave" container="body"
+                placement="right" popoverClass="ihc-popover width-300">
+                <i class="fas fa-info-circle fa-md"></i>
+                <ng-template #popContent>
+                  <strong>Diagnosis: </strong>
+                  <ul class="pl-4 pr-2">
+                    <li *ngFor="let icd of getTooltipIcdsCptsAsList(pat.icd)">
+                      {{icd}}
+                    </li>
+                  </ul>
+
+                  <strong>Procedures: </strong>
+                  <ul class="pl-4 pr-2">
+                    <li *ngFor="let cpt of getTooltipIcdsCptsAsList(pat.cpt)">
+                      {{cpt}}
+                    </li>
+                  </ul>
+
+                </ng-template>
+              </a>
+            </td>
+            <td>
+              <button type="button" class="link-btn d-flex align-items-center"
+                (click)="openPatientClick(pat,undefined)">
+                <img class="img-h-15 mr-1" *ngIf="pat.gender_code =='F'" src="./assets/images/icons/woman_ico.svg"
+                  alt="">
+                <img class="img-h-15 mr-1" *ngIf="pat.gender_code =='M'" src="./assets/images/icons/man_ico.svg" alt="">
+                {{pat.name}}
+              </button>
+            </td>
+            <td>{{pat.dob}} </td>
+            <td *ngIf="recordType=='PATIENT'">{{pat.ssn}} </td>
+            <td>{{pat.alternate_account}}</td>
+            <td *ngIf="recordType=='PATIENT' || recordType=='APPOINTMENT'">{{pat.home_phone | phonePipe}}</td>
+            <td *ngIf="recordType=='PATIENT' || recordType=='APPOINTMENT'">{{pat.cell_phone | phonePipe}}</td>
+            <td *ngIf="recordType=='PATIENT' || recordType=='APPOINTMENT'">
+              <span *ngIf="pat.gender_code =='M' ">Male</span>
+              <span *ngIf="pat.gender_code =='F' ">Female</span>
+            </td>
+
+            <td *ngIf="recordType=='PATIENT'">{{pat.address}}</td>
+            <td>{{pat.patient_status}}</td>
+
+            <td title="{{pat.app_location_name}}" *ngIf="recordType=='APPOINTMENT'">{{pat.app_location_name}}</td>
+            <td title="{{pat.app_provider_name}}" *ngIf="recordType=='APPOINTMENT'">{{pat.app_provider_name}}</td>
+
+            <td *ngIf="recordType=='APPOINTMENT'">{{pat.app_datetime}}</td>
+            <td *ngIf="recordType=='APPOINTMENT'">{{pat.app_type}}</td>
+            <td *ngIf="recordType=='APPOINTMENT'">{{pat.app_status}}</td>
+            <td title="{{pat.dos}}" class="px-1" *ngIf="recordType=='CLAIM'">
+              <a class="p-0 text-primary cursor-default" (click)="openClaim(pat)">{{pat.dos}}</a>
+            </td>
+            <td title="{{pat.billing_physician}}" *ngIf="recordType=='CLAIM'">{{pat.billing_physician}}</td>
+            <td title="{{pat.attending_physician}}" *ngIf="recordType=='CLAIM'">{{pat.attending_physician}}</td>
+            <td title="{{pat.claim_total | currency:'USD':'symbol-narrow'}}" class="text-right"
+              *ngIf="recordType=='CLAIM'">
+              {{pat.claim_total | currency:'USD':'symbol-narrow'}}</td>
+            <td title="{{pat.pri_paid | currency:'USD':'symbol-narrow'}}" class="text-right"
+              *ngIf="recordType=='CLAIM'">
+              {{pat.pri_paid | currency:'USD':'symbol-narrow'}}</td>
+            <td title="{{pat.sec_paid | currency:'USD':'symbol-narrow'}}" class="text-right"
+              *ngIf="recordType=='CLAIM'">
+              {{pat.sec_paid | currency:'USD':'symbol-narrow'}}</td>
+            <td title="{{pat.oth_paid | currency:'USD':'symbol-narrow'}}" class="text-right"
+              *ngIf="recordType=='CLAIM'">
+              {{pat.oth_paid | currency:'USD':'symbol-narrow'}}</td>
+            <td title="{{pat.patient_paid | currency:'USD':'symbol-narrow'}}" class="text-right"
+              *ngIf="recordType=='CLAIM'">
+              {{pat.patient_paid | currency:'USD':'symbol-narrow'}}</td>
+            <td title="{{pat.total_adjustments | currency:'USD':'symbol-narrow'}}" class="text-right"
+              *ngIf="recordType=='CLAIM'">
+              {{pat.total_adjustments | currency:'USD':'symbol-narrow'}}</td>
+            <td title="{{pat.amt_due | currency:'USD':'symbol-narrow'}}" class="text-right" *ngIf="recordType=='CLAIM'">
+              {{pat.amt_due | currency:'USD':'symbol-narrow'}}
+            </td>
+
+            <td class="border font-weight-bold text-dark px-1" [ngClass]="{'bg-success' : pat.pri_status=='P',
+        'bg-info' : pat.pri_status=='PP',
+        'bg-warning' : pat.pri_status=='B'}" *ngIf="recordType=='CLAIM'">{{pat.pri_status}}</td>
+            <td class="border font-weight-bold text-dark  px-1" [ngClass]="{'bg-success' : pat.sec_status=='P',
+        'bg-info' : pat.sec_status=='PP',
+        'bg-warning' : pat.sec_status=='B'}" *ngIf="recordType=='CLAIM'">{{pat.sec_status}}</td>
+            <td class="border font-weight-bold text-dark  px-1" [ngClass]="{'bg-success' : pat.oth_status=='P',
+        'bg-info' : pat.oth_status=='PP',
+        'bg-warning' : pat.oth_status=='B'}" *ngIf="recordType=='CLAIM'">{{pat.oth_status}}</td>
+            <td class="border font-weight-bold text-dark  px-1" [ngClass]="{'bg-success' : pat.pat_status=='P',
+        'bg-info' : pat.pat_status=='PP',
+        'bg-warning' : pat.pat_status=='B'}" *ngIf="recordType=='CLAIM'">{{pat.pat_status}}</td>
+
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+      </div>
+    </div>
+
+  </div>
+  <!-- Modal section -->
+  <div id="pnlDeleteNotes" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header custom">
+          <h4 class="modal-title">Inactive Patient Notes</h4>
+          <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- model body section -->
+        <div class="modal-body" style="height: 400px !important;">
+          <textarea></textarea>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

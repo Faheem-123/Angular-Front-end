@@ -1,0 +1,236 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="d-flex flex-grow-1">
+    <div class="d-flex flex-column">
+      <div class="border-content-box rounded-3 bg-white d-flex flex-column flex-grow-1 ml-6">
+        <div class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0">
+          Practice Details
+          <div class="d-flex align-items-center">
+            <button type="button" (click)="onAdd()" *ngIf="strOperation==''"
+              class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"><i class="fas fa-plus"></i>
+              Add</button>
+            <button type="button" (click)="onEdit()" *ngIf="strOperation==''"
+              class="btn btn-link fz-12 title-bar-blue-btn px-2 py-0"><i class="far fa-edit"></i>
+              Edit</button>
+            <button *ngIf="strOperation!=''" class="btn rounded-0 btn-sm bg-green-ihc text-white h-20" type="button"
+              (click)="onSave(inputForm.value)">Save</button>
+            <button *ngIf="strOperation!=''" class="btn btn-sm btn-dark top-right-radius h-20" type="button"
+              (click)="onCancel()">Cancel</button>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-grow-1">
+          <div class="border rounded-3 bg-white m-2">
+            <div class="p-8 py-6">
+              <form [formGroup]="inputForm">
+                <div class="form-row form-dashboard">
+                  <div class="col-8 px-2">
+                    <!-- <div class="form-row form-dashboard">
+
+
+                        <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+                            <label for="txtPracticeID" class="col-form-label label-w-80 required">Practice ID</label>
+                            <input type="text" class="form-control flex-grow-1" id="input1" formControlName="txtPracticeID">
+                          </div>
+                          <div class="form-group horizental d-flex col-md-2 col-sm-6 col-12">
+                              <label for="input1" class="col-form-label label-w-80 required">Status</label>
+                              <select class="form-control col" labelForId="ddlPracticeStatus" 
+                        formControlName="ddlPracticeStatus" *ngIf="addEditView">
+                          <option [value]="active">ACTIVE</option>
+                          <option [value]="inactive">INACTIVE</option>
+                        </select>
+                            </div>
+
+
+                           
+                          
+
+
+                    </div>
+                    <div class="form-row form-dashboard">
+                        <div class="form-group col-12 pb-1 ">
+                          <label class="col-form-label" for="txtPracticeName">Practice Name:</label>
+                          <input type="text" class="form-control col" formControlName="txtPracticeName">
+                        </div>
+                      </div>
+                      <div class="form-row form-dashboard">
+                          <div class="form-group col-12 pb-1 ">
+                            <label class="col-form-label" for="txtPracticeAddress">Address:</label>
+                            <textarea class="form-control" id="txtPracticeAddress" formControlName="txtPracticeAddress" rows="2"></textarea>
+                          </div>
+                        </div> -->
+                      
+
+                        <div class="form-row form-dashboard align-items-start">
+                  
+                              <div class="form-group horizental d-flex col-3">
+                                <label for="txtPracticeID" class="col-form-label label-w-80">Practice ID</label>
+                                <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeID" disabled>
+                              </div>
+                              <div class="form-group horizental d-flex col-3">
+                                <label for="ddlPracticeStatus" class="col-form-label label-w-80">Status</label>
+                                <select class="form-control col" labelForId="ddlPracticeStatus" 
+                                formControlName="ddlPracticeStatus">
+                                  <option>ACTIVE</option>
+                                  <option>INACTIVE</option>
+                                </select>
+                              </div>
+                              <div class="form-group horizental d-flex col-3">
+                                <label for="txtPracticeZip" class="col-form-label label-w-80">Zip</label>
+                                <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeZip" (focusout)="searchZipCode()">
+                              </div>
+                              <div class="form-group horizental d-flex col-3">
+                                  <label for="txtPracticeState" class="col-form-label label-w-80">State</label>
+                                  <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeState">
+                                </div>
+                  
+                        </div>
+                   
+
+
+
+
+
+
+<div class="form-row form-dashboard align-items-start">
+                  
+    <div class="form-group horizental d-flex col-6">
+      <label for="txtPracticeName" class="col-form-label label-w-80">Practice Name</label>
+      <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeName">
+    </div>
+    <div class="form-group horizental d-flex col-6">
+      <label for="ddlCity" class="col-form-label label-w-80">City</label>
+      <select class="form-control col" id="ddlCity" formControlName="ddlCity">
+          <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+            {{obj.city}}
+          </option>
+        </select>
+    </div>
+   
+</div>
+<div class="form-row form-dashboard align-items-start">
+                  
+    <div class="form-group horizental d-flex col-6">
+      <label for="txtPracticeAddress" class="col-form-label label-w-80">Address</label>
+      <!-- <textarea class="form-control" id="txtPracticeAddress" formControlName="txtPracticeAddress" rows="3"></textarea> -->
+      <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeAddress">
+    </div>
+    <div class="form-group horizental d-flex col-3">
+      <label for="txtPracticePhone" class="col-form-label label-w-80">Phone</label>
+      <input type="text" class="form-control flex-grow-1" formControlName="txtPracticePhone">
+    </div>
+    <div class="form-group horizental d-flex col-3">
+        <label for="txtPracticeFax" class="col-form-label label-w-80">Fax</label>
+        <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeFax">
+      </div>
+   
+</div>
+
+<div class="form-row form-dashboard align-items-start">
+                  
+    <div class="form-group horizental d-flex col-6">
+      <label for="txtPracticeWebsite" class="col-form-label label-w-80">Website</label>
+      <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeWebsite">
+    </div>
+    <div class="form-group horizental d-flex col-3">
+      <label for="txtPracticeContactNo" class="col-form-label label-w-80">Contact No</label>
+      <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeContactNo">
+    </div>
+    <div class="form-group horizental d-flex col-3">
+        <label for="txtPracticePerson" class="col-form-label label-w-80">Person</label>
+        <input type="text" class="form-control flex-grow-1" formControlName="txtPracticePerson">
+      </div>
+   
+</div>
+
+<div class="form-row form-dashboard align-items-start">
+                  
+    <div class="form-group horizental d-flex col-3">
+      <label for="txtPracticeNPI" class="col-form-label label-w-80">NPI</label>
+      <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeNPI">
+    </div>
+    <div class="form-group horizental d-flex col-3">
+        <label for="txtPracticeUserDomain" class="col-form-label label-w-80">User Domain</label>
+        <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeUserDomain">
+      </div>
+    <div class="form-group horizental d-flex col-6">
+      <label for="txtPracticeComments" class="col-form-label label-w-80">Comments</label>
+      <input type="text" class="form-control flex-grow-1" formControlName="txtPracticeComments">
+    </div>
+</div>
+
+                        
+                  </div>
+                 
+                  <div class="col-4 px-2">
+                    <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100 d-flex flex-row">
+                      <table class="table sm layout-fixed light-striped-border">
+                        <thead>
+                          <tr>
+                            <td class="width-40"></td>
+                            <td>Practice Name</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let servc of acPracticeServicesFiltered;">
+                            <!-- <td></td>
+                            <td></td>  -->
+                            <td class="text-right width-40 align-middle">
+                              <input class="v-align-middle" [disabled]="strOperation==''"
+                              (change)="serviceCheckBoxChk(servc.service_id,$event.currentTarget.checked)" [checked]="servc.active"
+                                type="checkbox" >
+                            </td>
+                            <td class="width-100">{{servc.service_description}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+
+
+
+          <div class="border rounded-3 bg-white d-flex flex-column flex-grow-1 m-2 mt-0 overflow-height">
+            <div class="rounded-bottom overflow-auto bg-white flex-grow-1 max-height-100 d-flex flex-row">
+              <table class="table sm layout-fixed light-striped-border">
+                <thead>
+                  <tr>
+                    <td class="width-60">Practice ID</td>
+                    <td>Practice Name</td>
+                    <td>Address</td>
+                    <td>Website</td>
+                    <td>Zip</td>
+                    <td>City</td>
+                    <td>State</td>
+                    <td>Phone</td>
+                    <td>Fax</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let prac of lstAllPractices;" (click)="changePracticeRow(prac)"
+                  [ngClass]="{'active': selectedPracticeID == prac.practice_id}">
+                    <td class="width-60">{{prac.practice_id}}</td>
+                    <td>{{prac.practice_name}}</td>
+                    <td>{{prac.address1}}</td>
+                    <td>{{prac.website}}</td>
+                    <td>{{prac.zip}}</td>
+                    <td>{{prac.city}}</td>
+                    <td>{{prac.state}}</td>
+                    <td>{{prac.phone}}</td>
+                    <td>{{prac.Fax}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

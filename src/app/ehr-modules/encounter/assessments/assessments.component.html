@@ -1,0 +1,194 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+    <div class="title pl-8">Assessments</div>
+    <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+
+        <button (click)="refreshAssessments()" title="Refresh Assessments" *ngIf="!addEditView"
+            class="nav-link green  px-2 py-0 ">
+            <i class="fas fa-redo"></i>
+           <!--<img class="img-h-20" src="./assets/images/icons/ico_refresh_green.svg" alt="">-->
+        </button>
+
+
+
+        <button *ngIf="!addEditView && canAddEdit" (click)="onAddNew()"
+            class="nav-link green px-2 py-0 top-right-radius">
+            <i class="far fa-plus-square pr-1"></i>Add
+        </button>
+
+        <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0"
+            (click)="onSaveAssessments(AssessmentFormGroup.value)">
+            <i class="far fa-save pr-1"></i>Save
+        </button>
+
+
+        <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius"
+            (click)="onCancel()">
+            <i class="fas fa-times  pr-1"></i>Cancel
+        </button>
+    </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading && !canView" class="access-denied">
+        <i class="fas fa-ban mr-2"></i> Access Denied
+    </div>
+    <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content">
+        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+    <div *ngIf="!isLoading && !noRecordFound && !addEditView && canView" class="p-0">
+        <table class="table sm layout-fixed light-striped-border">
+            <thead>
+                <tr>
+                    <th class="width-80">Date</th>
+                    <th class="width-100">Code</th>
+                    <th>Description</th>
+                    <th>Notes</th>
+                    <th class="width-60"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let a of lstAssessmentView">
+                    <td>{{a.date}}</td>
+                    <td>{{a.code}}</td>
+                    <td>{{a.description}}</td>
+                    <td title="{{a.notes}}">{{a.notes}}</td>
+                    <td class="text-right ">
+                        <button type="button" [disabled]="!canAddEdit"
+                            class="btn btn-link btn-md  line-height-1 p-0 mr-2" (click)="onEdit(a)">
+                            <i class="far fa-edit"></i>
+                        </button>
+
+                        <button type="button" [disabled]="!canAddEdit"
+                            class="btn btn-link  btn-md btn-delete  line-height-1 p-0" (click)="onDelete(a)">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div *ngIf="addEditView">
+
+        <form [formGroup]="AssessmentFormGroup">
+            <div class="p-8">
+
+
+                <div class="form-row form-dashboard">
+                    <div class="form-group col-12">
+                        <div class="d-flex justify-content-between">
+
+                            <div class="form-group input-icon d-flex flex-grow-3">
+
+                                <input id="txtProblemSearch" class="form-control search-highlight flex-grow-3  bl-0"
+                                    type="text" #txtProblemSearch formControlName="txtProblemSearch"
+                                    placeholder="Search Problem" (keydown)="onProblemSearchKeydown($event)"
+                                    autocomplete="off" (blur)="onProblemSearcBlur()">
+
+                                <div class="icon">
+                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                </div>
+
+                                <inline-diagnosis-search *ngIf="showDiagSearch"
+                                    [diagSearchCriteria]="diagSearchCriteria" (onDiagSelect)="onDiagnosisSelect($event)"
+                                    (onClose)="closeDiagSearch()"></inline-diagnosis-search>
+
+
+                            </div>
+
+                            <div class=" form-check-cont d-flex align-item-center mx-1">
+
+                                <div class="custom-control custom-radio green-radio">
+                                    <input class="custom-control-input" type="radio"
+                                        id="rbmylistFamilyHx_{{objencounterToOpen.controlUniqueId}}"
+                                        formControlName="rbCondition" name="rbCondition" value="mylist"
+                                        (ngModelChange)="onRadioOptionChange($event)">
+                                    <label class="custom-control-label"
+                                        for="rbmylistFamilyHx_{{objencounterToOpen.controlUniqueId}}">My
+                                        List</label>
+                                </div>
+
+
+                                <div class="custom-control custom-radio green-radio">
+                                    <input class="custom-control-input" type="radio"
+                                        id="rballFamilyHx_{{objencounterToOpen.controlUniqueId}}"
+                                        formControlName="rbCondition" name="rbCondition" value="all"
+                                        (ngModelChange)="onRadioOptionChange($event)">
+
+                                    <label class="custom-control-label"
+                                        for="rballFamilyHx_{{objencounterToOpen.controlUniqueId}}">All</label>
+                                </div>
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                
+                <div class="form-row form-dashboard">
+
+                 
+
+                    <div class="form-group col-md-2 col-sm-4 col-12">
+                        <label for="txtDate">Date <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input id="txtDate" formControlName="txtDate" class="form-control date-control"
+                                placeholder="mm/dd/yyyy" name="txtDate" ngbDatepicker #txtDate="ngbDatepicker"
+                                [ngClass]="{'is-invalid': AssessmentFormGroup.controls.txtDate.errors?.invalidDate}">
+
+                            <span class="input-group-btn">
+                                <button class="btn date-control-btn" (click)="txtDate.toggle()" type="button">
+                                </button>
+                            </span>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2 col-sm-3 col-12">
+                        <label for="txtIcdCode">Code <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" formControlName="txtIcdCode" readonly>
+                    </div>
+
+                    <div class="form-group col-md-8 col-sm-6 col-12">
+                        <label for="txtIcdDescription">Description <span class="text-danger">*</span></label>
+                        <input id="txtIcdDescription" class="form-control" type="text"
+                            formControlName="txtIcdDescription" readonly>
+                    </div>
+
+
+
+                    <div class="form-group col-12">
+                        <label for="txtComments">Comments</label>
+                        <textarea rows="2" class="form-control" id="txtComments" placeholder="Comments"
+                            formControlName="txtComments"></textarea>
+                    </div>
+                </div>
+             
+            </div>
+        </form>
+    </div>
+
+
+
+    <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && !addEditView && canView">
+        <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLogHistory()">View Log</button>
+    </div>
+
+</div>

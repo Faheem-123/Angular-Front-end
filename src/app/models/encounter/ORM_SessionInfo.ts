@@ -1,0 +1,37 @@
+export class ORMSessionInfo {
+    sessional_id:number;
+	patient_id:String;
+	chart_id:String;
+	practice_id:String;
+	time_in:String;
+	time_out:String;
+	session_no:String;
+	individual:Boolean;
+	couple_family:Boolean;
+	initial_assessment:Boolean;
+	collateral_consult:Boolean;
+	grouptype:Boolean;
+	significant_improv:Boolean;
+	suicide:Boolean;
+	homicide:Boolean;
+	violence:Boolean;
+	ddl_shv:String;
+	moderate_improv:Boolean;
+	mental_status:Boolean;
+	ddl_msc:String;
+	minimal_improv:Boolean;
+	no_change:Boolean;
+	deteriorated:Boolean;
+	changeinmedno:Boolean;
+	changeinmedyes:Boolean;
+	treatmentplanunchanged:Boolean;
+	treatmentplanmodified:Boolean;
+	notes:String;
+	deleted:Boolean;
+	created_user:String;
+	client_date_created:String;
+	modified_user:String;
+	client_date_modified:String;
+	date_created:String;
+	date_modified:String;
+}

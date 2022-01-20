@@ -1,0 +1,238 @@
+<div class="light-title-bar rounded-top h-30 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
+  <div class="fz-15 font-weight-400">Lab Category</div>
+  <div class="d-flex align-items-center">
+    <button *ngIf="detailCategoryOperation==''" type="button" 
+    class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0" (click)="onAddNewDetail()">
+      <i class="fas fa-plus"></i>
+      Add</button>
+    <!-- <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0">
+      <i class="far fa-edit"></i>
+      Edit</button>
+    <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0">
+      <i class="far fa-trash-alt"></i>
+      Delete</button> -->
+    <button *ngIf="detailCategoryOperation!=''"  class="btn rounded-0 btn-sm bg-green-ihc text-white h-30" (click)="onSaveDetail()">Save</button>
+    <button *ngIf="detailCategoryOperation!=''"  class="btn btn-sm btn-dark top-right-radius h-30"  (click)="onDetailCancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="d-flex flex-row flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue p-1">
+    <div class="flex-1 d-flex flex-row max-height-100">
+    <div class="border  bg-white d-flex flex-column flex-1">
+      <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+        <span>Lab Category</span>
+        <button class="btn btn-sm btn-link line-height-1 p-0" (click)="onAddLabCategory()">Add</button>
+      </div>
+      <div class="d-flex border-bottom flex-shrink-0 p-2"  *ngIf="showCategory">
+        <form [formGroup]="frmNewCategory">
+        <div class="form-group flex-grow-1 mb-0">
+          <input class="form-control" type="text" placeholder="Enter Main Category" formControlName="txtCategoryName">
+        </div>
+
+        <button class="btn btn-sm btn-success ml-1" type="button" (click)="onSaveLabCategory()">
+          <i class="far fa-save"></i>
+        </button>
+        <button class="btn btn-sm btn-danger ml-1" type="button" (click)="onCancelLabCategory()">
+          <i class="fas fa-times"></i>
+        </button>
+        </form>
+      </div>
+      <div class="flex-grow-1 overflow-auto overflow-height">
+        <table class="table sm layout-fixed light-striped-border">
+          <tbody>
+              <tr *ngFor="let a of arrLabCategory;let i = index" (click)="onLabCategorySelectionChange(i,a)" [ngClass]="{ 'active': i==labCategoryIndex,
+              'disabled': isDisable
+              }">
+              <td>{{a.category_name}}</td>
+              <td class="text-right width-60">
+                <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEditCategory(a)">
+                  <i class="far fa-edit"></i></button>
+                <button class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDeleteCategory(a)">
+                  <i class="far fa-trash-alt"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="border  bg-white d-flex flex-column flex-1 ml-1">
+      <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+        <span>Lab Sub Category</span>
+        <button class="btn btn-sm btn-link line-height-1 p-0" (click)="onAddSubCategory()">Add</button>
+      </div>
+      <div class="d-flex border-bottom flex-shrink-0 p-2" *ngIf="showSubCategory">
+          <form [formGroup]="frmNewSubCategory">
+        <div class="form-group flex-grow-1 mb-0">
+          <input class="form-control" type="text" placeholder="Enter Sub Category" formControlName="txtSubCategoryName">
+        </div>
+        <button class="btn btn-sm btn-success ml-1" type="button" (click)="onSaveSubCategory()">
+          <i class="far fa-save"></i>
+        </button>
+        <button class="btn btn-sm btn-danger ml-1" type="button" (click)="onCancelSubCategory()">
+          <i class="fas fa-times"></i>
+        </button>
+      </form>
+      </div>
+      <div class="flex-grow-1 overflow-auto overflow-height">
+        <table class="table sm layout-fixed light-striped-border">
+          <tbody>
+              <tr *ngFor="let b of arrSubLabCategory;let i = index" (click)="onSubCategorySelectionChange(i,b)"
+              [ngClass]="{ 'active': i==labSubCategoryIndex,
+              'disabled': isDisable
+              }">
+              <td>{{b.sub_category_name}}</td>
+              <td class="text-right width-60">
+                <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEditSubCatgeory(b)">
+                  <i class="far fa-edit"></i></button>
+                <button class="btn btn-link fz-14 text-danger line-height-1 p-0"  (click)="onDeleteSubCategory(b)">
+                  <i class="far fa-trash-alt"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-3 ml-1">
+      <div class="border  bg-white d-flex flex-column">
+        <div class="rounded-box-title-bar border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+          <span>Lab Category Detail</span>
+          <!-- <button class="btn btn-sm btn-link line-height-1 p-0" (click)="onAddNewDetail()">Add New</button> -->
+        </div>
+
+        <div class="d-flex flex-grow-1 px-2 py-1">
+          <form [formGroup]="inputForm">
+            <div class="form-row form-dashboard align-items-start">
+              <div class="form-group horizental d-flex col-md-12 col-sm-12 col-12">
+                <label class="col-form-label label-w-70" for="input1">Search Code</label>
+                <input class="form-control col-sm-8" placeholder="Enter Code or Description to Search" type="text" id="txtcodeSearch"
+                  #txtcodeSearch formControlName="txtcodeSearch" placeholder="Search Code"
+                  (input)="onCodeSearchKeydown(txtcodeSearch.value)" autocomplete="off">
+                <!-- <inline-procedure-search *ngIf="showProcSearch" [procSearchCriteria]="procSearchCriteria"
+                  (onSelect)="onProcCodeSelect($event)" (onClose)="closeProcSearch()">
+                </inline-procedure-search> -->
+                <inline-lab-test-search *ngIf="showProcSearch" [testSearchCriteria]="testSearchCriteria"
+                (onLabTestSelect)="onTestSelect($event)" (onClose)="closeTestSearch()"></inline-lab-test-search>
+                <inline-labtest-search *ngIf="showLabSearch" [testSearchCriteria]="testSearchCriteria"
+                (onLabTestSelect)="onLabTestSelect($event)" (onClose)="closeLabTestSearch()">
+                </inline-labtest-search>
+                <div class="form-check-inline pt-1 pl-2">
+                  <input formControlName="rbCodeType" id="rbcpt" value="cpt" (ngModelChange)="onCodeTypeChange($event)"
+                    class="form-check-input" type="radio">
+                  <label class="col-form-label pr-2" for="rbcpt">CPT</label>
+                  <input *ngIf="showLabRadio" formControlName="rbCodeType" id="rbSnomedCT" value="lab" (ngModelChange)="onCodeTypeChange($event)"
+                    class="form-check-input" type="radio">
+                  <label *ngIf="showLabRadio" class="col-form-label" for="rbSnomedCT">Lab</label>
+                </div>
+                </div>
+
+              <div class="form-group horizental d-flex col-md-4 col-sm-4 col-12">
+                <label class="col-form-label label-w-70" for="input1">CPT Code:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtCode" readonly>
+              </div>
+
+              <div class="form-group horizental d-flex col-md-8 col-sm-8 col-12">
+                <label class="col-form-label label-w-70" for="input1">CPT Desc:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtDesc">
+              </div>
+
+              <div class="form-group horizental d-flex col-md-4 col-sm-4 col-12" *ngIf="showLabRadio">
+                <label class="col-form-label label-w-70" for="input1">Lab Code:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtLabCode" readonly>
+              </div>
+
+              <div class="form-group horizental d-flex col-md-8 col-sm-8 col-12"  *ngIf="showLabRadio">
+                <label class="col-form-label label-w-70" for="input1">Lab Desc:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtLabDesc" readonly>
+              </div>
+
+              <div class="form-group horizental d-flex col-md-4 col-sm-6 col-12">
+                <label class="col-form-label label-w-70" for="input1">Unit Price:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtCharge">
+              </div>
+
+              <div class="form-group horizental row zero col-md-2 col-sm-6 col-12">
+                <label class="col-sm-4 col-form-label" for="input1">Unit:</label>
+                <input class="form-control col-sm-8" labelForId="input1" type="text" formControlName="txtUnit">
+              </div>
+
+              <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+                <label class="col-form-label label-w-50" for="input1">Modifier:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtModifier">
+              </div>
+
+              <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
+                <label class="col-form-label label-w-40" for="input1">NDC:</label>
+                <input class="form-control flex-grow-1" id="input1" type="text" formControlName="txtNDC">
+              </div>
+
+              <div class="form-group horizental row zero col-md-8 col-sm-6 col-12">
+                <label class="col-sm-2 col-form-label" for="input1">Instruction:</label>
+                <input class="form-control col-sm-10" labelForId="input1" type="text" formControlName="txtInstruction">
+              </div>
+
+              <div class="form-group horizental col-md-4 col-sm-6 col-12">
+                <input class="form-control" labelForId="input1" type="text" formControlName="txtPosition">
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="bg-light rounded-bottom px-2 py-1 border-top d-flex align-items-center justify-content-between">
+          <span class="fz-11 text-muted">&nbsp;</span>
+          <button  *ngIf="detailCategoryOperation=='new'" class="btn btn-sm btn-success" (click)="onAddToList()">Add</button>
+        </div>
+
+      </div>
+
+      <div class="border bg-white d-flex flex-column flex-1 mt-1">
+        <div class="rounded-box-title-bar d-flex align-items-center justify-content-between flex-shrink-0">
+          <span>Category Details</span>
+        </div>
+        <div class="flex-grow-1 overflow-auto max-height-100 overflow-height">
+          <table class="table layout-fixed sm light-striped-border">
+            <thead>
+              <tr>
+                <th class="width-40">Code</th>
+                <th class="width-120">Description</th>
+                <!-- <th>Amount</th>
+                <th>Unit</th>
+                <th>Modifier</th>
+                <th>NDC</th>
+                <th>Instruction</th> -->
+                <th class="width-40">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of arrLabCategoryDetail;let i = index"
+                (click)="onLabCategoryDetailSelectionChange(i,c)" [ngClass]="{ 'active': i==labDetailCategoryIndex,
+                'disabled': isDisable
+                }">
+                <td *ngIf="showLabRadio==false">{{c.proc_code}}</td>
+                <td *ngIf="showLabRadio==true">{{c.lab_assigned_cpt}}</td>
+                <td style="width: 500px" *ngIf="showLabRadio==false">{{c.proc_description}}</td>
+                <td style="width: 500px" *ngIf="showLabRadio==true">{{c.lab_assigned_desc}}</td>
+                <!-- <td>{{c.amount}}</td>
+                <td>{{c.units}}</td>
+                <td>{{c.modifier}}</td>
+                <td>{{c.ndc}}</td>
+                <td>{{c.test_instructions}}</td> -->
+                
+                <td class="text-right">
+                  <button class="btn btn-link btn-sm text-primary line-height-1 p-0 mr-2" (click)="onEditDetail(c)">
+                    <i class="far fa-edit"></i>
+                  </button>
+                  <button class="btn btn-link fz-14 text-danger line-height-1 p-0" (click)="onDeleteDetail(c)">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+</div>

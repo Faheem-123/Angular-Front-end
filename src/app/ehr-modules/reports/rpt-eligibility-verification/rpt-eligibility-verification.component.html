@@ -1,0 +1,165 @@
+<div class="d-flex flex-column flex-grow-1">
+  <div class="bg-green-ihc h-30 px-3 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400 text-white">Eligibility Verification Report
+    </div>
+  </div>
+
+  <div
+    class="d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue position-relative">
+
+    <div class="encounter-data-accordian accordian-data accordian-search rounded-0 border-bottom border-top-0">
+      <div class="accordian-header" role="tab" id="headingOne">
+        <h5 class="mb-0">
+          <a data-toggle="collapse" href="#SearchCriteriaEligVerification" aria-expanded="true"
+            class="accordian-link rounded-0">
+            <span class="accordian-main-header-title pl-1 pr-1"> Search Criteria</span>
+          </a>
+        </h5>
+      </div>
+
+      <div id="SearchCriteriaEligVerification" class="show">
+        <div class="accordian-body bg-transparent">
+
+
+          <form [formGroup]="eligibilityVerificationReportForm">
+
+            <div class="p-2 pt-0">
+              <div class="form-row form-dashboard">
+
+                <div class="form-group col-6">
+                  <label class="col-form-label required" for="dpfromDate">Date Range:</label>
+                  <div class="d-flex flex-grow-3">
+
+                    <div class="input-group mr-1">
+
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">From</span>
+                      </div>
+
+                      <input id="dateFrom" formControlName="dateFrom" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateFrom.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">To</span>
+                      </div>
+
+                      <input id="dateTo" formControlName="dateTo" class="form-control date-control "
+                        placeholder="mm/dd/yyyy" name="dateTo" ngbDatepicker #dateTo="ngbDatepicker">
+
+                      <span class="input-group-btn">
+                        <button class="btn date-control-btn" (click)="dateTo.toggle()" type="button" focusable="false"
+                          tabindex="-1">
+                        </button>
+                      </span>
+
+                    </div>
+
+
+                  </div>
+                </div>
+
+
+
+
+                <div class="form-group col-3">
+                  <label for="cmbProvider" class="col-form-label">Provider:</label>
+                  <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider">
+                    <option value=''>All</option>
+                    <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+                  </select>
+                </div>
+                <div class="form-group col-3">
+                  <label for="cmbLocation" class="col-form-label">Location:</label>
+                  <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                    <option value=''>All</option>
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group col-6">
+                  <label for="txtCategorySearch">Category:</label>
+
+
+                  <div class="input-group">
+
+                    <input type="text" class="form-control" id="txtCategorySearch" placeholder="Document" disabled
+                      formControlName="txtCategorySearch">
+                    <input type="text" class="form-control" id="txtCategoryIdHidden" hidden placeholder="Document"
+                      formControlName="txtCategoryIdHidden">
+                    <span class="input-group-btn">
+                      <button class="btn btn-sm btn-outline-primary fz-12" (click)="openCateogrySearch()"
+                        type="button"><i class="fas fa-search"></i></button>
+                    </span>
+
+
+
+                    <inline-doc-category-search *ngIf="showCategSearch" (onCategorySelect)="onDocCategorySelect($event)"
+                      (onClose)="closeDocCategorySearch()">
+
+                    </inline-doc-category-search>
+                  </div>
+
+                </div>
+                <div class="form-group col-1 d-flex align-items-end justify-content-end">
+                  <button type="button" class="btn btn-success w-100"
+                    (click)="searchEligverifReport(eligibilityVerificationReportForm.value)">Search</button>
+                </div>
+              </div>
+            </div>
+
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="border  d-flex flex-column flex-grow-1  overflow-height">
+      <h4 class="form-edit-sub-heading border-bottom-0 flex-shrink-0 m-1 mb-0 pl-1">Details ({{recordCount}})</h4>
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border table-sticky-header">
+          <thead>
+            <tr>
+              <th>PID</th>
+              <th>Patient</th>
+              <th>App Date</th>
+              <th>Provider</th>
+              <th>Location</th>
+              <th>Doc Date</th>
+              <th>Is Doc</th>
+              <th>Checked User</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let eleg of lstEligibiltyVerif">
+              <td>{{eleg.pid}}</td>
+              <td>{{eleg.patient}}</td>
+              <td>{{eleg.appointment_date}}</td>
+              <td>{{eleg.provider}}</td>
+              <td>{{eleg.location}}</td>
+              <td>{{eleg.document_date}}</td>
+              <td>{{eleg.doc_avaliable}}</td>
+              <td>{{eleg.checked_in_by}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+      <div class="div-ui-blocker-message-box ">
+        <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+      </div>
+    </div>
+
+  </div>
+</div>

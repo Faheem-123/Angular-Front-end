@@ -1,0 +1,5 @@
+
+<login *ngIf="!lookupList.isEhrDataLoad || lookupList.isEhrLocked"></login>
+
+<ehr-main id="ehr_main" *ngIf="lookupList.isEhrDataLoad" (practiceSwitch)="practiceSwitch($event)"
+[style.visibility]="this.lookupList.isEhrLocked? 'hidden': 'visible'"></ehr-main>

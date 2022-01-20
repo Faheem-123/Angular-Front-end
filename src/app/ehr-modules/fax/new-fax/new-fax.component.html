@@ -1,0 +1,316 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Fax
+
+    <span class="v-separtor" *ngIf="subTitle!=undefined && subTitle!=''"></span>
+    <span *ngIf="subTitle!=undefined && subTitle!=''" class="title-other-info-light-blue">
+      {{subTitle}}
+    </span>
+  </h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body custom d-flex position-relative p-0" [ngClass]="{'p-0': showDocuments,'p-1': !showDocuments}">
+
+  <div class="d-flex flex-column flex-grow-1 border-content-box light-sky-blue rounded-3-bottom" *ngIf="!showDocuments">
+
+    <form [formGroup]="sendFaxFormGroup" (keydown.enter)="$event.preventDefault()"
+      class="d-flex flex-column flex-grow-1">
+
+
+      <div class="inner-tool-tab h-25 justify-content-between pr-0 flex-shrink-0 border-top-0">
+
+
+        <div class="align-items-center px-1 bg-white">
+          <img class="h-100" src="./assets/images/faxage-logo.png" alt="" *ngIf="lookupList.faxServer=='FAXAGE'">
+          <img class="h-100" src="./assets/images/mfax-logo.png" alt="" *ngIf="lookupList.faxServer=='MFAX'">
+        </div>
+
+        <ul class="nav color-buttons align-items-center" *ngIf="!isSending && !isLoading">
+          <button class="nav-link btn btn-dark rounded-0 py-0" type="button"
+            *ngIf="callingFrom=='fax' && operation=='new_fax'" (click)="clearFeilds()">
+            Clear
+          </button>
+
+          <button class="nav-link btn btn-success rounded-0 py-0" type="button" *ngIf="operation=='new_fax'"
+            (click)="sendFax(sendFaxFormGroup.value)">
+            Send
+          </button>
+
+          <button class="nav-link btn btn-success rounded-0 py-0" type="button" *ngIf="operation=='resend_fax'"
+            (click)="reSendFax()">
+            Re Send
+          </button>
+
+        </ul>
+
+
+      </div>
+
+
+      <div class="p-6 d-flex flex-column flex-grow-1">
+
+
+        <div class="row p-0 m-0 mb-2">
+          <div class="col-sm-6 col-12 d-flex flex-column pr-1 pl-0">
+            <div class="rounded bg-white flex-1 d-flex flex-column">
+              <div
+                class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0 rounded-top flex-shrink-0">
+                <div class="title">Receiver</div>
+              </div>
+              <div class="border border-top-0 rounded-bottom p-2 flex-grow-1">
+                <div class="form-row form-dashboard">
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label width-80" for="txtRecFaxNumber">Fax No:</label>
+                    <div class="form-group has-search col" *ngIf="operation=='new_fax'">
+
+                      <span class="fa fa-search form-control-feedback"></span>
+
+                      <input type="text" class="form-control font-weight-500" id="txtRecFaxNumber"
+                        formControlName="txtRecFaxNumber" placeholder="Search Fax Number or Phone Number"
+                        autocomplete="off" #txtRecFaxNumber (input)="onContactSearchInputChange($event,'fax_no')"
+                        (keyup.arrowdown)="shiftFocusToConctactSearch()" (keydown.esc)="closeSearch()">
+
+                      <inline-fax-contact-search id="inlineFaxContactSearchByFaxNo" name="inlineFaxContactSearchByFaxNo"
+                        #inlineFaxContactSearchByFaxNo *ngIf="showContactSearchByFaxNo"
+                        [lstFaxContacts]="lstFaxContactsFiltered" (onSelect)="addDataFromSearch($event)"
+                        (onClose)="closeSearch()">
+                      </inline-fax-contact-search>
+
+                    </div>
+                    <div class="col-sm-1 d-flex align-items-center justify-content-around" *ngIf="operation=='new_fax'">
+                      <a class="text-primary pl-1" (click)="refreshContactList()"><i class="fas fa-sync-alt"></i></a>
+                      <a class="text-success" (click)="onAddContact(sendFaxFormGroup.value)"><i
+                          class="fas fa-plus"></i></a>
+                    </div>
+
+                    <label class="form-control font-weight-500 col pt-1 bg-disabled"
+                      *ngIf="operation=='resend_fax'">{{recepientFaxNo | phonePipe}}
+                    </label>
+                  </div>
+
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label width-80" for="txtRecName">Name:</label>
+                    <input class="form-control col" *ngIf="operation=='new_fax'" formControlName="txtRecName"
+                      labelForId="txtRecName" type="text">
+                    <label class="form-control col pt-1 bg-disabled" *ngIf="operation=='resend_fax'">{{recepientName }}
+                    </label>
+                  </div>
+
+                  <div class="form-group horizental row zero col-12">
+
+                    <label class="col-form-label width-80" for="txtRecOrganization">Organization:</label>
+                    <div class="form-group has-search col" *ngIf="operation=='new_fax'">
+
+
+                      <span class="fa fa-search form-control-feedback"></span>
+
+                      <input type="text" class="form-control" id="txtRecOrganization"
+                        formControlName="txtRecOrganization" placeholder="Search Organization Name" autocomplete="off"
+                        #txtRecOrgNumber (input)="onContactSearchInputChange($event,'organization')"
+                        (keyup.arrowdown)="shiftFocusToConctactSearch()" (keydown.esc)="closeSearch()">
+
+                      <inline-fax-contact-search id="inlineFaxContactSearchByOrg" name="inlineFaxContactSearchByOrg"
+                        #inlineFaxContactSearchByOrg *ngIf="showContactSearchByOrg"
+                        [lstFaxContacts]="lstFaxContactsFiltered" (onSelect)="addDataFromSearch($event)"
+                        (onClose)="closeSearch()">
+                      </inline-fax-contact-search>
+
+
+                    </div>
+                    <label class="form-control col pt-1 bg-disabled"
+                      *ngIf="operation=='resend_fax'">{{recepientOrganization}}
+                    </label>
+
+                  </div>
+
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label width-80" for="txtRecPhoneNo">Phone No:</label>
+                    <input class="form-control col" id="txtRecPhoneNo" formControlName="txtRecPhoneNo"
+                      labelForId="input2" type="text" *ngIf="operation=='new_fax'">
+                    <label class="form-control col pt-1 bg-disabled" *ngIf="operation=='resend_fax'">{{recepientPhone |
+                      phonePipe }}
+                    </label>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-12 d-flex flex-column pl-1 pr-0">
+            <div class="rounded bg-white flex-1 d-flex flex-column">
+              <div
+                class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0 rounded-top flex-shrink-0">
+                <div class="title">Sender</div>
+              </div>
+              <div class="border border-top-0 rounded-bottom p-2 flex-grow-1">
+                <div class="form-row form-dashboard">
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label width-80" for="ddSenderFaxNo">Fax No:</label>
+
+                    <select class="form-control col font-weight-500" id="ddSenderFaxNo" formControlName="ddSenderFaxNo"
+                      *ngIf="operation=='new_fax'">
+                      <option *ngFor="let configFax of lookupList.lstFaxConfigFaxNumbers" [value]="configFax.id">
+                        {{configFax.description}}</option>
+                    </select>
+
+                    <label class="form-control col pt-1 font-weight-500 bg-disabled"
+                      *ngIf="operation=='resend_fax'">{{senderFaxNo | phonePipe}}
+                    </label>
+
+                  </div>
+
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label width-80" for="txtSenderName">Name:</label>
+                    <input class="form-control col" id="txtSenderName" formControlName="txtSenderName"
+                      labelForId="txtSenderName" type="text" *ngIf="operation=='new_fax'">
+
+                    <label class="form-control col pt-1 bg-disabled" *ngIf="operation=='resend_fax'">{{senderName}}
+                    </label>
+                  </div>
+
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label width-80" for="txtSenderOrganization">Organization:</label>
+                    <input class="form-control col" id="txtSenderOrganization" formControlName="txtSenderOrganization"
+                      labelForId="txtSenderOrganization" type="text" *ngIf="operation=='new_fax'">
+
+                    <label class="form-control col pt-1 bg-disabled"
+                      *ngIf="operation=='resend_fax'">{{senderOrganization}}
+                    </label>
+                  </div>
+
+                  <div class="form-group horizental row zero col-12">
+                    <label class="col-form-label width-80" for="txtSenderPhoneNo">Phone No:</label>
+                    <input class="form-control col" id="txtSenderPhoneNo" formControlName="txtSenderPhoneNo"
+                      labelForId="txtSenderPhoneNo" type="text" *ngIf="operation=='new_fax'">
+
+                    <label class="form-control col pt-1 bg-disabled" *ngIf="operation=='resend_fax'">{{senderPhone |
+                      phonePipe}}
+                    </label>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border rounded bg-white px-2 py-1 mb-6 flex-shrink-0">
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental row zero col-12">
+              <label for="txtSubject" class="col-form-label width-80">Fax Subject:</label>
+              <input type="text" class="form-control col" id="txtSubject" formControlName="txtSubject"
+                labelForId="txtSubject" *ngIf="operation=='new_fax'">
+
+              <label class="form-control col pt-1 bg-disabled" *ngIf="operation=='resend_fax'">{{faxSubject}}
+              </label>
+
+            </div>
+          </div>
+
+          <div class="form-row form-dashboard">
+            <div class="form-group horizental row zero col-12">
+              <label for="txtNotes" class="col-form-label width-80">Notes:</label>
+              <textarea class="form-control col" id="txtNotes" formControlName="txtNotes" rows="6"
+                *ngIf="operation=='new_fax'"></textarea>
+
+              <div class="form-control col pt-1 bg-disabled h-80-px overflow-auto" *ngIf="operation=='resend_fax'">
+                {{faxNotes}}
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1">
+          <div class="rounded bg-white flex-1 d-flex flex-column overflow-height">
+            <div
+              class="rounded-box-title-bar light-title-bar flex-shrink-0 justify-content-between pr-0 rounded-top flex-shrink-0">
+              <span>Attachments</span>
+
+              <input id="attachFile" type="file" style="display: none" file-handler (change)="onFileChange($event)">
+
+              <div class="d-flex">
+                <button type="button" class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+                  *ngIf="(callingFrom=='encounter' || callingFrom=='referral')" (click)="onDocumentClicked()">Patient
+                  Document</button>
+
+                <button type="button"
+                  *ngIf="(callingFrom=='encounter' || callingFrom=='fax' || callingFrom=='referral') && operation=='new_fax'"
+                  class="btn btn-link fz-13 title-bar-blue-btn font-weight-400 py-0"
+                  onclick="document.getElementById('attachFile').click();">Attach
+                  File</button>
+              </div>
+
+            </div>
+            <div class="border border-top-0 rounded-bottom flex-grow-1 overflow-auto max-height-100">
+              <table class="table sm layout-fixed sm light-striped-border">
+                <tbody>
+                  <tr *ngFor="let att of lstAttachments; let i = index">
+                    <td class="align-middle pl-2 pr-1">
+                      <span>
+                        <i class="fa fa-paperclip fa-md text-ihc-blue mr-1" aria-hidden="true"></i>
+                        {{att.document_name}}</span>
+                    </td>
+                    <!-- <td class="width-40">
+                      <button class="btn btn-link btn-sm text-danger line-height-1 p-0 mr-2"
+                       
+                        (click)="onRemoveAttachment(i)" 
+                        *ngIf="operation!='resend_fax' && att.read_only==false">
+                        <i aria-hidden="true" class="far fa-trash-alt"></i></button>
+                    </td>  -->
+                    <td *ngIf="operation!='resend_fax' ">
+                      <div class="text-right">
+
+                        <button class="btn btn-link btn-sm text-danger line-height-1 p-0 mr-4"
+                          (click)="onRemoveAttachment(i)" *ngIf="att.read_only==false">
+                          <i aria-hidden="true" class="far fa-trash-alt"></i></button>
+
+                        <button type="button" class="btn btn-link p-0" (click)="moveAttachmentUpsDown('down',i)"
+                          [disabled]="lstAttachments.length == (i+1)"><i
+                            class="fas fa-arrow-alt-circle-down text-info"></i></button>
+                        <button type="button" class="btn btn-link p-0" [disabled]="(i == 0)"
+                          (click)="moveAttachmentUpsDown('up',i)"><i
+                            class="fas fa-arrow-alt-circle-up text-info"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <patient-documents class="patient-all-comp d-flex flex-column flex-grow-1" [patientId]="patientId" callingFrom="fax"
+    *ngIf="showDocuments" (onDocumentSelectionCallBack)="onDocumentSelectionCallBack($event)">
+  </patient-documents>
+
+  <!--
+<div class="bg-light-gray rounded-bottom h-35 px-2 d-flex align-items-center justify-content-end flex-shrink-0">
+  <button class="btn btn-sm btn-dark mr-1">Clear</button>
+  <button class="btn btn-sm btn-success">Send</button>
+</div>
+-->
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isSending">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Sending Fax...
+    </div>
+  </div>
+</div>

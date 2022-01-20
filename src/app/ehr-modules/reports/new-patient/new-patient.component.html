@@ -1,0 +1,115 @@
+<div class="d-flex flex-column flex-grow-1 m-8 mt-0">
+  <div class="light-title-bar rounded-top h-30 px-3 pr-0 d-flex align-items-center justify-content-between flex-shrink-0">
+    <div class="fz-15 font-weight-400">New Patient <span class="badge badge-pill">{{recordCount}}</span></div>
+  </div>
+
+  <div class="p-8 d-flex flex-column flex-grow-1 rounded-bottom border-content-box border-top-0 light-sky-blue">
+    <form [formGroup]="frmPregSubmit">
+      <div class="border rounded bg-white flex-shrink-0">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+
+        <div class="p-2 pt-0">
+            <div class="form-row form-dashboard">
+                <div class="form-group col-2">
+      
+                  <label for="cmbCriteria" class="col-form-label">Select Criteria:</label>
+                  <select class="form-control" formControlName="cmbCriteria" (change)="cmbChagne($event)">
+                    <option [selected]="true">By Claim</option>
+                    <option>By Patient</option>
+                  </select>
+                </div>
+      
+                <div class="form-group col-2">
+                  <label for="dateFrom" class="col-form-label required">From:</label>
+                  <div class="form-row form-dashboard">
+                    <div class="form-group">
+      
+                      <div class="input-group">
+                        <input class="form-control" placeholder="mm/dd/yyyy" names="dateFrom" formControlName="dateFrom"
+                          ngbDatepicker #dateFrom="ngbDatepicker">
+                        <span class="input-group-btn">
+                          <button class="btn btn-outline-primary" (click)="dateFrom.toggle()" type="button">
+                            <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                          </button>
+                        </span>
+                      </div>
+      
+                    </div>
+                  </div>
+                </div>
+      
+      
+      
+                <div class="form-group col-2">
+                  <label for="dateTo" class="col-form-label required">To:</label>
+      
+                  <div class="input-group">
+                    <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo" ngbDatepicker
+                      #dateTo="ngbDatepicker">
+                    <span class="input-group-btn">
+                      <button class="btn btn-outline-primary" (click)="dateTo.toggle()" type="button">
+                        <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </div>
+      
+                </div>
+                <div class="form-group col-2">
+                  <label for="input2" class="col-form-label">Provider:</label>
+                  <select class="form-control" labelForId="cmbProvider" formControlName="cmbProvider" ng-model="data.singleSelect">
+                    <option [ngValue]="null">Select Location</option>
+                    <option *ngFor="let prov of lookupList.providerList" [value]="prov.id">{{prov.name}}</option>
+                  </select>
+                </div>
+      
+                <div class="form-group col-3">
+                  <label for="input2" class="col-form-label">Location:</label>
+      
+                  <select class="form-control" labelForId="cmbLocation" formControlName="cmbLocation">
+                    <option [ngValue]="null">Select Location</option>
+                    <option *ngFor="let loc of lookupList.locationList" [value]="loc.id">{{loc.name}}</option>
+                  </select>
+                </div>
+      
+                <div class="form-group col-1 d-flex align-items-end">
+                  <button type="button" ng-disabled="btnHide" class="btn btn-success w-100" (click)="searchNewPatient(frmPregSubmit.value)">Search</button>
+                </div>
+              </div>
+        </div>
+        
+      </div>
+    </form>
+
+    <div class="border rounded bg-white d-flex flex-column flex-grow-1 mt-2">
+      <h4 class="form-edit-sub-heading border-bottom-0 flex-shrink-0 m-1 mb-0 pl-1">Details</h4>
+      <div class="overflow-auto flex-grow-1">
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th>PID</th>
+              <th>Patient</th>
+              <th>Gender</th>
+              <th>DOB</th>
+              <th>Address</th>
+              <th>Facility</th>
+              <th>Created Date</th>
+              <th>Created By</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr st-select-row="row" *ngFor="let lstdetails of lstNewPatient">
+              <td>{{lstdetails.alternate_account}}</td>
+              <td>{{lstdetails.patientname}}</td>
+              <td>{{lstdetails.gender}}</td>
+              <td>{{lstdetails.dob}}</td>
+              <td>{{lstdetails.address}}</td>
+              <td>{{lstdetails.date_created}}</td>
+              <td>{{lstdetails.created_user}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>

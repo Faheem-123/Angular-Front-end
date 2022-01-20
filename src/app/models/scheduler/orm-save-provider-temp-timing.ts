@@ -1,0 +1,21 @@
+export class ORMSaveProviderTempTiming {
+    temp_timing_id:number;
+    provider_id:number;
+    location_id:number;
+    practice_id:number;
+    date_from:string;
+    date_to:string;
+    time_from:string;
+    time_to:string;
+    slot_size:number;
+    off_day:boolean;
+    enable_break:boolean;
+    break_from:string;
+    break_to:string;
+    created_user:string;
+    date_created:string;
+    modified_user:string;    
+    client_date_created:string;
+    client_date_modified:string;
+    system_ip:string;
+}

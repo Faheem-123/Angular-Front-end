@@ -1,0 +1,36 @@
+export class ormpatientimplantabledevice {
+    implantable_device_id:number;
+	patient_id:number;
+	chart_id:number;
+	implant_date:string;
+	device_active:boolean;
+	notes:string;
+	udi:string;
+	device_id:string;
+	device_id_issuing_agency:string;
+	device_description:string;
+	company_name:string;
+	brand_name:string;
+	gmdn_pt_name:string;
+	gmdn_pt_description:string;
+	mri_safety_status:string;
+	labeled_contains_nrl:string;
+	labeled_no_nrl:string;
+	device_hctp:string;
+	expiry_date:string;
+	manufacturing_date:string;
+	lot_batch_number:string;
+	version_model_number:string;
+	serial_number:string;
+	snomed_ct_id:string;
+	snomed_ct_description:string;
+	practice_id:number;
+	deleted:boolean;
+	created_user:string;
+	modified_user:string;
+	date_created:string;
+	client_date_created:string;
+	date_modified:string;
+	client_date_modified:string;
+	system_ip:string;
+}

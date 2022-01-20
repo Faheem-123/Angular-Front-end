@@ -1,0 +1,212 @@
+<ng-template [ngIf]="!printView">
+  <div class="dashboard-sub-nav encounter justify-content-between pr-0">
+
+
+    <div class="color-box bg-success"></div>
+    <p> Resolved</p>
+
+    <div class="color-box bg-danger"></div>
+    <p> Check Bounce</p>
+
+    <div class="color-box bg-brown"></div>
+    <p> Voided</p>
+
+    <div class="color-box bg-primary"></div>
+    <p> Refunded</p>
+
+
+    <div class="flex-grow-1">&nbsp;</div>
+
+    <ul class="nav align-items-center" *ngIf="!isLoading">
+
+      <button [disabled]="!this.lookupList.UserRights.cashregister_add"
+        *ngIf="lookupList.UserRights.cashregister_add && lookupList.UserRights.cashregister_view"
+        class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0" (click)="addNewPaymentClicked()">
+        <i class="fas fa-plus mr-1"></i> Add Payment
+      </button>
+
+
+      <button class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0 " *ngIf="lookupList.UserRights.cashregister_view"
+        (click)="loadPatientPayment()">
+        <i class="fas fa-redo"></i>
+      </button>
+
+
+    </ul>
+    <!--
+    <button class="btn btn-sub-nav rounded-0 btn-success" 
+    *ngIf="lookupList.UserRights.cashregister_add && lookupList.UserRights.cashregister_view"
+      (click)="addNewPaymentClicked()">Add Payment</button>
+    <button type="button" class="btn btn-sub-nav rounded-0 btn-info" 
+    *ngIf="lookupList.UserRights.cashregister_view"
+    (click)="loadPatientPayment()">Refresh</button>
+    -->
+  </div>
+</ng-template>
+
+<div class="dashboard-container d-flex flex-column m-0 p-0 position-relative" style="padding-top: 1px">
+  <div class="dashboard no-border m-0 p-0 runded-0">
+
+    <div class="dashboard-content p-0">
+
+      <ng-template id="noAccessView" [ngIf]="!lookupList.UserRights.cashregister_view">
+
+        <div class="border-content-box border-top-0 rounded-bottom norecord-found">
+          <p class="no-content p-6">
+            <i class="text-danger fas fa-ban mr-2"></i> Access Denied
+          </p>
+        </div>
+
+      </ng-template>
+
+      <ng-template id="normalView" [ngIf]="!printView && lookupList.UserRights.cashregister_view">
+
+
+
+        <table class="table light-striped-border">
+          <thead>
+            <tr>
+              <th class="width-20"></th>
+              <th>Receipt No</th>
+              <th>DOS</th>
+              <th>Entry Date</th>
+              <th>Location</th>
+              <th>Provider</th>
+              <th>Toal Paid</th>
+              <th>Copay Paid</th>
+              <th>Copay From Advance</th>
+              <th>Copay W/O</th>
+              <th>Selfpay Paid</th>
+              <th>Selfpay From Advance</th>
+              <th>Selfpay W/O</th>
+              <th>Prev. Bal. Paid</th>
+              <th>Prev. Bal. From Advance</th>
+              <th>Prev. Bal. W/O</th>
+              <th>Other Paid</th>
+              <th>Other From Advance</th>
+              <th>Advance Paid</th>
+              <th>Payment Mehotd</th>
+              <th>Check #</th>
+              <th>Check Date</th>
+              <th>Transaction ID</th>
+              <th>Transaction Date</th>
+              <th>Aut. No</th>
+              <th>CC Amount</th>
+              <th>CC Message</th>
+              <th>Comments</th>
+              <th>W/O Code</th>
+              <th>Entered By</th>
+              <th>Modified By</th>
+              <th>Date Modified</th>
+              <th>Modification Notes</th>
+              <th>Amt. Refunded</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let payment of lstPatientPayment;let i = index" [ngClass]="{ 
+              'text-primary':payment.main_refunded,
+              'text-danger':payment.check_bounce,
+              'text-brown':payment.voided,
+              'text-success': (payment.resolved && !payment.main_refunded && !payment.check_bounce && !payment.voided),
+              'active': selectedRow==i
+            }" (click)="selectRow(i)">
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-link p-0 fz-12" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"><i class="fa fa-bars" aria-hidden="true"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right custome-menu">
+
+                    <a class="dropdown-item cursor-default" (click)="printCashRegister(payment)"
+                      *ngIf="!payment.voided && !payment.check_bounce && !payment.is_refund">
+                      Print
+                    </a>
+                    <a class="dropdown-item cursor-default" (click)="showClaimPostedDetails(payment.cash_register_id)"
+                      [ngClass]="{disabled: (payment.voided || payment.check_bounce)}">
+                      Posting Details
+                    </a>
+                    <a class="dropdown-item cursor-default" (click)="addModificationNotes(payment,'Resolve')"
+                      [ngClass]="{disabled: (payment.resolved || payment.main_refunded || payment.voided || payment.check_bounce)}">
+                      Resolve
+                    </a>
+                    <a class="dropdown-item cursor-default" (click)="addModificationNotes(payment,'Void')"
+                      *ngIf="lookupList.UserRights.cashregister_void"
+                      [ngClass]="{disabled: disableVoidButton(payment)}">
+                      Void
+                    </a>
+
+                    <a class="dropdown-item cursor-default" *ngIf="lookupList.UserRights.cashregister_modify"
+                      [ngClass]="{disabled: (payment.resolved || payment.main_refunded || payment.voided || payment.check_bounce)}"
+                      (click)="editCashRgistrEntry(payment)">
+                      Edit
+                    </a>
+                    <a class="dropdown-item cursor-default" (click)="addModificationNotes(payment,'CheckBounce')"
+                      *ngIf="lookupList.UserRights.cashregister_check_bounce"
+                      [ngClass]="{disabled: (payment.payment_method!='CHECK' || payment.main_refunded || payment.voided || payment.check_bounce)}">
+                      Check Bounce
+                    </a>
+                    <a class="dropdown-item cursor-default" (click)="refundPatientPayment(payment)"
+                      *ngIf="lookupList.UserRights.payment_refund"
+                      [ngClass]="{disabled: (payment.main_refunded || payment.voided || payment.check_bounce)}">
+                      Refund
+                    </a>
+                  </div>
+                </div>
+
+              </td>
+              <td>{{payment.receipt_no}}</td>
+              <td>{{payment.dos}}</td>
+              <td>{{payment.date_created}}</td>
+              <td>{{payment.location_name}}</td>
+              <td>{{payment.provider_name}}</td>
+              <td class="text-right">{{payment.total_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.copay_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.copay_advance_adjusted | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.copay_write_off | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.selfpay_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.selfpay_advance_adjusted | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.selfpay_write_off | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.previous_balance_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.prev_balance_advance_adjusted | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.prev_balance_write_off | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.other_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.other_advance_adjusted | currency:'USD':'symbol-narrow'}}</td>
+              <td class="text-right">{{payment.advance_paid | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{payment.payment_method}}</td>
+              <td>{{payment.check_no}}</td>
+              <td>{{payment.check_date}}</td>
+              <td>{{payment.transaction_id}}</td>
+              <td>{{payment.transaction_datetime}}</td>
+              <td>{{payment.authcode}}</td>
+              <td class="text-right">{{payment.cc_charges | currency:'USD':'symbol-narrow'}}</td>
+              <td>{{payment.api_message}}</td>
+              <td>{{payment.comments}}</td>
+              <td>{{payment.write_off_code}}</td>
+              <td>{{payment.created_user}}</td>
+              <td>{{payment.modified_user}}</td>
+              <td>{{payment.client_date_modified}}</td>
+              <td>{{payment.modification_comments}}</td>
+              <td class="text-right">{{payment.refund_amount | currency:'USD':'symbol-narrow'}}</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+      </ng-template>
+
+      <ng-template id="printView" [ngIf]="printView">
+        <cash-register-print [cashRegisterData]="cashRegisterPrintData" [patientId]="patientId"
+          class="d-flex flex-column flex-grow-1 h-100" (close)="closePrintView()"></cash-register-print>
+      </ng-template>
+
+    </div>
+  </div>
+
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+
+</div>

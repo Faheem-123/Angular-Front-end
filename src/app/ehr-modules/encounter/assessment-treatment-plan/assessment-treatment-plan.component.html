@@ -1,0 +1,531 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false}">
+  <div class="title pl-8">Assessment & Treatment Plan</div>
+
+
+  <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+    <button *ngIf="!addEditView && canAddEdit && canView" class="nav-link green px-2 py-0 top-right-radius"
+      (click)="onAdd()">
+      <i class="far fa-plus-square pr-1"></i>Add
+    </button>
+
+
+    <!--
+    <button *ngIf="!addEditView && canAddEdit && !noRecordFound" class="nav-link btn-dark px-2 py-0 top-right-radius"
+      (click)="deleteDischargeDisposition()">
+      <i class="far fa-trash-alt pr-1"></i>Delete
+    </button>
+    -->
+
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="onSave(formGroup.value)">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius" (click)="cancelAddEdit()">
+      <i class="fas fa-times pr-1"></i>Cancel
+    </button>
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <ng-template id="sectionAccessDenied" [ngIf]="!isLoading && !canView">
+    <div class="access-denied">
+      <i class="fas fa-ban mr-2"></i> Access Denied
+    </div>
+  </ng-template>
+
+  <ng-template id="sectionView" [ngIf]="!isLoading && canView && !addEditView">
+
+
+    <div *ngIf="noRecordFound" class="no-content">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+
+
+    <div *ngIf="canView && !noRecordFound && !addEditView" class="encounter-view flex-grow-1 mt-0">
+
+      <div class="encounter-data-accordian accordian-data" *ngFor="let assMain of lstPlanMain ">
+        <div class="accordian-header" role="tab" id="headingOne">
+          <h5>
+            <a data-toggle="collapse" href="#assessPOT{{assMain.assess_plan_id}}" aria-expanded="false">
+              <span class="accordian-header-date">{{assMain.date_created | date :'MM/dd/yyyy' }}</span>
+              <span>{{assMain.status}}</span>
+            </a>
+          </h5>
+          <button type="button" class="btn btn-link btn-md text-primary" (click)="onEdit(assMain)">
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" class="btn btn-link btn-md btn-delete" (click)="onDelete(assMain)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </div>
+
+        <div id="assessPOT{{assMain.assess_plan_id}}" class="collapse" class="collapse">
+          <div class="accordian-body">
+
+            <div class="form-row form-dashboard">
+
+              <div class="col-12 col-md-12 p-0 m-0">
+
+
+                
+                <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+                  <h6 class="form-edit-sub-heading-small m-0 p-0 pt-1">Assessment</h6>
+                  <button class="btn btn-sm btn-link pr-0" type="button" (click)="viewAssessmentRecordLog(assMain.assess_plan_id)">View Log</button>
+                </div>
+
+                <div class="form-view">
+                  <ul class="m-0 pl-4">
+                    <li
+                      *ngFor="let assess of lstAssessment | listFilter : 'assess_plan_id' : assMain.assess_plan_id ; let i = index">
+                      {{assess.assessment}}
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+
+            <div class="form-row form-dashboard">
+
+              <div class="col-12 col-md-12 p-0 m-0">
+
+                
+                <div class="d-flex align-items-center justify-content-between flex-shrink-0">
+                  <h6 class="form-edit-sub-heading-small m-0 p-0 pt-1">Plan of Treatment</h6>
+                  <button class="btn btn-sm btn-link pr-0" type="button" (click)="viewTreatmentRecordLog(assMain.assess_plan_id)">View Log</button>
+                </div>
+                <!-- <button class="btn btn-sm btn-link pr-0" type="button" (click)="viewSelectedRecordLog()">View Log</button> -->
+
+                <div class="form-view">
+                  <ul class="m-0 pl-4">
+                    <li
+                      *ngFor="let pot of lstPlanOfTreatment | listFilter : 'assess_plan_id' : assMain.assess_plan_id ; let i = index">
+                      {{pot.plan_date}} - {{pot.plan_of_treatment}}
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+
+            <div class="accordian-footer">
+              <p class="form-text text-muted">Last Modified by {{assMain.modified_user}} at {{assMain.date_modified}}
+              </p>
+              <!-- <button class="btn btn-sm btn-link pr-0" type="button" (click)="viewSelectedRecordLog()">View Log</button> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading">
+        <button class="btn btn-sm btn-link pr-0" type="button" (click)="viewLogMain()">View Log</button>
+      </div> -->
+
+
+    </div>
+
+  </ng-template>
+
+  <ng-template id="sectionAddEdit" [ngIf]="addEditView">
+
+
+    <div *ngIf="addEditView">
+
+      <div class="light-gray-bg p-2">
+
+        <div class="d-flex flex-column">
+
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1 mb-2">
+
+            <form [formGroup]="formGroup" (keydown.enter)="$event.preventDefault()">
+
+              <div class="form-row form-dashboard px-1 py-2">
+                <div class="col-3 px-2">
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero flex-grow-1">
+                      <label class="col-form-label px-1 required" for="ddOffice">Status</label>
+                      <select class="col form-control px-1 required" id="ddStatus" formControlName="ddStatus">
+                        <option *ngFor="let status of lstStatus" [value]="status.code">
+                          {{status.description}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+
+
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1 mb-2">
+
+            <form [formGroup]="formGroupAddAssessment" (keydown.enter)="$event.preventDefault()">
+
+              <div class="form-row form-dashboard px-1 py-2">
+                <h6 class="col form-edit-sub-heading m-0 mb-1 px-2 d-flex justify-content-between">
+                  <span>Assessment:</span>
+
+                  <button type="button" class="btn btn-outline-primary btn-sm py-0" (click)="addNewAssesment()"
+                    *ngIf="!showAssessmentAddEdit">
+                    Add Assessment
+                  </button>
+
+                </h6>
+              </div>
+
+              <div class="form-row form-dashboard px-1 py-1" *ngIf="showAssessmentAddEdit">
+                <div class="col-12 px-2">
+
+                  <div class="form-row form-dashboard">
+                    <div class="form-group horizental row zero flex-grow-1">
+                      <label class="col-form-label px-1 required" for="txtAssesmentAddEdit">Assessment</label>
+
+                      <div class="col input-group">
+
+
+                        <input class="form-control" #txtAssesmentAddEdit formControlName="txtAssesmentAddEdit">
+
+
+                        <span class="input-group-btn">
+                          <button class="btn btn-outline-primary" (click)="addUpdateAssessmentToList()">
+                            {{assessmentOperation =='edit' ? 'Update' : 'Add' }}</button>
+
+                        </span>
+
+                      </div>
+
+
+                      <!--
+                      <button class="btn btn-outline-primary mx-1" (click)="addUpdateAssessmentToList()">
+                        {{assessmentOperation =='edit' ? 'Update' : 'Add' }}</button>
+                      <button class="btn btn-outline-dark mx-1" (click)="cancelAssessmentEdit()"
+                        *ngIf="assessmentOperation =='edit'">
+                        Cancel
+                      </button>
+                      -->
+
+                      <button class="btn btn-outline-dark mx-1" (click)="closeaddEditAssesment()">
+                        Close
+                      </button>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="flex-grow-1 overflow-auto">
+                <table class="table sm layout-fixed light-striped-border">
+                  <thead>
+                    <tr>
+                      <th>Assessment</th>
+                      <th class="width-30">&nbsp;</th>
+                      <th class="width-30">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let assesment of lstAssessmentAddEdit"
+                      [ngClass]="{active: (assessmentOperation =='edit' &&  assessmentToEdit.assessment_id==assesment.assessment_id)}">
+                      <td>{{assesment.assessment}}</td>
+                      <td><button type="button" class="link-btn" (click)="editAssessment(assesment)"
+                          *ngIf="assessmentOperation !='edit'"><i class="far fa-edit fz-13"></i></button>
+                      </td>
+                      <td>
+                        <button type="button" class="link-btn btn-delete" *ngIf="assessmentOperation !='edit'"
+                          (click)="removeAssessment(assesment.assessment_id)"><i
+                            class="far fa-trash-alt fz-13"></i></button>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </form>
+
+          </div>
+
+          <div class="border-content-box rounded d-flex flex-column flex-grow-1">
+
+            <form [formGroup]="formGroformGroupAddPOT" (keydown.enter)="$event.preventDefault()">
+
+              <div class="form-row form-dashboard px-1 py-2">
+                <h6 class="col form-edit-sub-heading m-0 mb-1 px-2 d-flex justify-content-between"><span>Plan of
+                    Treatment:</span>
+
+                  <button type="button" class="btn btn-outline-primary btn-sm py-0" (click)="addNewPOT()"
+                    *ngIf="!showPOTAddEdit">
+                    Add Plan of Treatment
+                  </button>
+                </h6>
+              </div>
+
+
+              <ng-template id="sectionPOTAddEdit" [ngIf]="showPOTAddEdit">
+
+
+
+                <div class="form-row form-dashboard px-1">
+                  <div class="col-3 px-2">
+                    <div class="form-row form-dashboard">
+                      <div class="form-group horizental row zero flex-grow-1">
+                        <label class="col-form-label px-1 required" for="dfPlanDate">Plan Date</label>
+                        <div class="input-group col">
+                          <input id="dfPlanDate" formControlName="dfPlanDate" class="form-control date-control"
+                            placeholder="mm/dd/yyyy" name="dfPlanDate" ngbDatepicker #dfPlanDate="ngbDatepicker">
+
+                          <span class="input-group-btn">
+                            <button class="btn date-control-btn" (click)="dfPlanDate.toggle()" type="button">
+                            </button>
+                          </span>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row form-dashboard px-1 py-1">
+
+
+                  <div class="col-12 px-2">
+
+                    <div class="horizental row zero flex-grow-1">
+
+                      <label class="col-form-label px-1 required" for="txtTreatmentPlanTextAddEdit">Treatment
+                        Plan</label>
+
+                      <div class="d-flex flex-column flex-grow-1">
+
+                        <div class="d-flex flex-row flex-grow-1">
+                          <div class="form-group">
+
+
+
+                            <select class="form-control px-1 mx-1" id="ddPlanTextType" formControlName="ddPlanTextType"
+                              (change)="planCodeTypeChanged($event)">
+                              <option value='text'>Free Text</option>
+                              <option value='SnomedCT'>Snomed CT</option>
+                            </select>
+
+                          </div>
+
+
+                          <div class="form-group col pr-1" *ngIf="treatmentPlanCodeType=='SnomedCT'">
+                            <div class="input-icon d-flex flex-row">
+
+                              <input id="txtPOTCodeSearch" class="form-control flex-grow-3  bl-0" type="text"
+                                #txtPOTCodeSearch formControlName="txtPOTCodeSearch" placeholder="Search Snomed"
+                                (keydown)="onPOTCodeSearchKeydown($event)" autocomplete="off">
+
+                              <div class="icon">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                              </div>
+
+                              <inline-diagnosis-search *ngIf="showPOTCodeSearch"
+                                [diagSearchCriteria]="potCodeSearchCriteria" title="SnomedCT Search"
+                                (onDiagSelect)="onPOTCodeSearchSelect($event)" (onClose)="closePOTCodeSearch()">
+                              </inline-diagnosis-search>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="d-flex flex-row flex-grow-1 mx-0 px-0 mt-1">
+                          <div class="form-group horizental row zero flex-grow-1 px-0">
+
+                            <div class="input-group col ml-1">
+
+
+                              <div class="input-group-prepend bg-white" *ngIf="treatmentPlanCodeType=='SnomedCT'">
+                                <span class="input-group-text">{{potCode}} </span>
+                              </div>
+
+                              <span class="form-control pt-1" *ngIf="treatmentPlanCodeType=='SnomedCT'">
+                                {{potText}}
+                              </span>
+
+                              <input class="form-control px-1" id="txtTreatmentPlanTextAddEdit"
+                                *ngIf="treatmentPlanCodeType=='text'" #txtTreatmentPlanTextAddEdit
+                                formControlName="txtTreatmentPlanTextAddEdit">
+
+                              <!--
+                              <span class="input-group-btn" *ngIf="expression">
+                                <button class="btn btn-outline-dark fz-12" type="button">
+                                  <i class="fas fa-times mr-1"></i> Remove
+                                </button>
+                              </span>
+                              -->
+
+                              <span class="input-group-btn">
+                                <button class="btn btn-outline-primary" (click)="addUpdatePlanOfTreatmentToList()">
+                                  {{planOfTreatmentOperation =='edit' ? 'Update' : 'Add' }}</button>
+
+                              </span>
+
+
+                            </div>
+
+                            <button class="btn  btn-sm btn-outline-dark mx-1" (click)="closeaddEditPOT()">
+                              Close
+                            </button>
+
+
+
+                          </div>
+                        </div>
+
+                        <!--
+                        <div class="d-flex flex-row flex-grow-1 mx-0 px-0 mt-1" *ngIf="treatmentPlanCodeType=='text'">
+                          <div class="form-group col-12 pr-1 px-0">
+                            <div class="input-group col px-0">
+                              <input class="form-control px-1 ml-1" id="txtTreatmentPlanTextAddEdit"
+                                #txtTreatmentPlanTextAddEdit formControlName="txtTreatmentPlanTextAddEdit">
+                            </div>
+
+                          </div>
+                        </div>
+                        -->
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--
+
+                  <div class="col-12 px-2 d-flex justify-content-end mt-1">
+                    <button class="btn btn-sm btn-outline-primary mx-1" (click)="addUpdatePlanOfTreatmentToList()">
+                      {{planOfTreatmentOperation =='edit' ? 'Update' : 'Add' }}
+                    </button>
+
+                    <button class="btn  btn-sm btn-outline-dark mx-1" (click)="closeaddEditPOT()">
+                      Close
+                    </button>
+
+                  </div>
+                  -->
+
+                </div>
+
+              </ng-template>
+
+              <!--
+              <div class="form-row form-dashboard px-1">
+                <div class="col-12 px-2">
+
+
+                  <div class="form-group horizental row zero flex-grow-1">
+                    <label class="col-form-label px-1 required" for="txtTreatmentPlanTextAddEdit">Treatment
+                      Plan</label>
+
+                    <div class="input-group col-2">
+                      <select class="form-control px-1 mx-1" id="ddPlanTextType" formControlName="ddPlanTextType"
+                        (change)="planCodeTypeChanged($event)">
+                        <option value='text'>Free Text</option>
+                        <option value='SnomedCT'>Snomed CT</option>
+                      </select>
+
+
+                    </div>
+
+
+                    <div class="input-group col" *ngIf="treatmentPlanCodeType=='text'">
+                      <input class="form-control px-1 mx-1" id="txtTreatmentPlanTextAddEdit"
+                        #txtTreatmentPlanTextAddEdit formControlName="txtTreatmentPlanTextAddEdit">
+                    </div>
+
+
+
+
+                    <div class="input-icon d-flex felx-row col" *ngIf="treatmentPlanCodeType=='SnomedCT'">
+                      <input type="text" class="form-control mr-1" formControlName="txtDiagCode" style="width: 100px;"
+                        readonly>
+
+                      <input id="txtProblemSearch" class="form-control flex-grow-3  bl-0" type="text" #txtProblemSearch
+                        formControlName="txtProblemSearch" placeholder="Search Snomed"
+                        (keydown)="onProblemSearchKeydown($event)" autocomplete="off"
+                        (input)="onProblemSearcInputChange(txtProblemSearch.value)" (blur)="onProblemSearcBlur()">
+
+                      <div class="icon">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                      </div>
+
+                      <inline-diagnosis-search *ngIf="showDiagSearch" [diagSearchCriteria]="diagSearchCriteria"
+                        (onDiagSelect)="onDiagnosisSelect($event)" (onClose)="closeDiagSearch()">
+                      </inline-diagnosis-search>
+
+
+                    </div>
+
+                    <button class="btn btn-outline-primary mx-1" (click)="addUpdatePlanOfTreatmentToList()">
+                      {{planOfTreatmentOperation =='edit' ? 'Update' : 'Add' }}
+                    </button>
+
+                    <button class="btn btn-outline-dark mx-1" (click)="cancelPlanOfTreatmentEdit()"
+                      *ngIf="planOfTreatmentOperation =='edit'">
+                      Cancel
+                    </button>
+
+                  </div>
+
+
+                </div>
+              </div>
+-->
+
+              <div class="flex-grow-1 overflow-auto">
+                <table class="table sm layout-fixed light-striped-border">
+                  <thead>
+                    <tr>
+                      <th class="width-80">Plan Date</th>
+                      <th>Plan Of Treatment</th>
+                      <th class="width-30">&nbsp;</th>
+                      <th class="width-30">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let pot of lstPlanOfTreatmentAddEdit"
+                      [ngClass]="{active: (planOfTreatmentOperation =='edit' &&  planOfTreatmentToEdit.planoftreatment_id==pot.planoftreatment_id)}">
+                      <td>{{pot.plan_date}}</td>
+                      <td>{{pot.plan_of_treatment}}</td>
+                      <td><button type="button" class="link-btn" *ngIf="planOfTreatmentOperation !='edit'"
+                          (click)="editPlanOfTreatment(pot)"><i class="far fa-edit fz-13"></i></button>
+                      </td>
+                      <td>
+                        <button type="button" class="link-btn btn-delete" *ngIf="planOfTreatmentOperation !='edit'"
+                          (click)="removePlanOfTreatment(pot.planoftreatment_id)"><i
+                            class="far fa-trash-alt fz-13"></i></button>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+    </div>
+
+
+  </ng-template>
+
+</div>

@@ -1,0 +1,73 @@
+
+<ngb-tabset class="inner-horizental-green-tab d-flex flex-column" [destroyOnHide]="false">
+
+  <ngb-tab id="billing-claim">
+    <ng-template ngbTabTitle>Claims</ng-template>
+    <ng-template ngbTabContent>
+      <billing-summary class="d-flex flex-column flex-grow-1"></billing-summary>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="billing-era">
+    <ng-template ngbTabTitle>ERA</ng-template>
+    <ng-template ngbTabContent>
+      <era class="d-flex flex-column flex-grow-1 " callingFrom="era"></era>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="billing-eob">
+    <ng-template ngbTabTitle>EOB</ng-template>
+    <ng-template ngbTabContent>
+      <eob class="d-flex flex-column flex-grow-1" callingFrom="eob"></eob>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="billing-claim-status">
+    <ng-template ngbTabTitle>Claim Status</ng-template>
+    <ng-template ngbTabContent>
+      <edi-claim-status class="d-flex flex-column flex-grow-1" callingFrom="edi_claim_status"></edi-claim-status>
+    </ng-template>
+  </ngb-tab>
+
+
+  <!--
+  <ngb-tab id="billing-aca">
+    <ng-template ngbTabTitle>ACA</ng-template>
+    <ng-template ngbTabContent>
+      <aca class="d-flex flex-column flex-grow-1 p-8"></aca>
+    </ng-template>
+  </ngb-tab>
+  -->
+  <ngb-tab id="billing-insurance">
+    <ng-template ngbTabTitle>Insurance</ng-template>
+    <ng-template ngbTabContent>
+      <insurance-main class="d-flex flex-row flex-grow-1"></insurance-main>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="billing-repots">
+    <ng-template ngbTabTitle>Reports</ng-template>
+    <ng-template ngbTabContent>
+      <billing-reports class="d-flex flex-row flex-grow-1 "></billing-reports>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="billing-setting">
+    <ng-template ngbTabTitle>Settings</ng-template>
+    <ng-template ngbTabContent>
+      <setting class="d-flex flex-column flex-grow-1"></setting>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="billing-administration"
+    *ngIf="((this.lookupList.practiceInfo.practiceId.toString()=='524' || this.lookupList.practiceInfo.practiceId.toString()=='521')  && this.lookupList.logedInUser.user_name.toString().toLowerCase() !='bill@ihc') ? false : true">
+    <ng-template ngbTabTitle>Administration</ng-template>
+    <ng-template ngbTabContent>
+      <administration class="d-flex flex-column flex-grow-1"></administration>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="billing-admin-repots">
+    <ng-template ngbTabTitle>Admin Reports</ng-template>
+    <ng-template ngbTabContent>
+      <admin-reports class="d-flex flex-column flex-grow-1"></admin-reports>
+      <!--<rpt-payment-collection [calling_from]="admin_reports" class="d-flex flex-column flex-grow-1">
+      </rpt-payment-collection>
+    -->
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

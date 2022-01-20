@@ -1,0 +1,51 @@
+<div class="dashboard patient-summary-graph">
+  <div class="dashboard-title red-light-title">
+    <div class="icon light-gray">
+      <!-- <i class="fas fa-syringe" aria-hidden="true"></i> -->
+      <img class="img-h-24" src="./assets/images/icons/vaccination-ico.svg" alt="">
+    </div>
+
+    <div class="title">
+      Immunization
+    </div>
+
+    <div class="title-btn-link">
+      <button type="button" (click)="getImmunizationSummary()">
+        <img class="img-h-25"
+        src="./assets/images/icons/ico_refresh_green.svg" alt="">
+      </button>
+    </div>
+  </div>
+  <div class="dashboard-content">
+    <div *ngIf="isLoding" class="div-loader"></div>
+
+    <div *ngIf="!isLoding" role="tablist">
+      <div class="card dashboard-card"
+        *ngFor="let vaccine of lstImmunizationUnique | unique: 'immunization_name'; let i = index">
+        <div class="card-header" role="tab">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#summaryvaccine{{i}}" aria-expanded="false" class="accordian-link">
+              <span class="card-header-date">{{vaccine.datetime_administered | date: 'dd/MM/yyyy' }}</span>
+              {{vaccine.immunization_name}}
+            </a>
+          </h5>
+        </div>
+
+        <div id="summaryvaccine{{i}}" class="collapse">
+          <div class="card-body">
+            <p *ngFor="let v of lstImmunization | listFilter : 'cvx_code' : vaccine.cvx_code">
+              <span class="card-header-date"><strong>{{v.datetime_administered}}</strong></span>
+              <span>
+                <strong *ngIf="v.entry_type" [ngClass]="{               
+                'text-danger' : (v.entry_type.startsWith('Refused') || v.entry_type.startsWith('Not Administered'))
+              }">{{v.entry_type}}</strong>
+                <strong *ngIf="v.administering_user_info && v.administering_user_info.split('^').length>=3">by
+                  {{v.administering_user_info.split('^')[1]}}, {{v.administering_user_info.split('^')[2]}}</strong>
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

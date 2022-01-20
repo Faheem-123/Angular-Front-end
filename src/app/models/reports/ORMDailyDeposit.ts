@@ -1,0 +1,20 @@
+export class ORMDailyDeposit {
+	dailydeposit_id:String;
+	check_number:String;
+	check_date:String;
+	check_amount:String;
+	insurance_name:String;
+	comments:String;
+	created_user:String;
+	date_created:String;
+	modified_user:String;
+	date_modified:String;
+	client_date_created:String;
+	client_date_modified:String;
+	system_ip:String;
+	deleted:String;
+	practice_id:String;
+	original_file_name:String;
+	file_link:String;
+	check_received_date:String;
+}

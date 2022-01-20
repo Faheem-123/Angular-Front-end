@@ -1,0 +1,129 @@
+<div class="encounter-module">
+    <div class="header" >
+      <div class="title">Pregnancy Register</div>
+      <span class="badge badge-pill">{{recordCount}}</span>
+    </div>
+    
+    <form [formGroup]="frmPregSubmit" >
+      <div class="custom-select-box pb-1" style="overflow: visible;">
+        <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Search Criteria</h4>
+       
+        <div class="form-row form-dashboard">
+            <div class="form-group">
+
+                <label for="cmbCriteria" class="col-form-label">Select Criteria:</label>
+                <!-- <select class="form-control" formControlName="cmbCriteria" (change)="cmbChagne($event)">
+                  <option [value]="reg date">Registered Date</option>
+                  <option [value]="EDD">EDD</option>
+                </select> -->
+                <select class="form-control" formControlName="cmbCriteria" (change)="cmbChagne($event)">
+                    <option [selected]="true">Registered Date</option>
+                    <option>EDD</option>
+                  </select>
+              </div>
+
+          <div class="form-group col-2">
+            <label for="dateFrom" class="col-form-label required">From:</label>
+            <div class="form-row form-dashboard">
+              <div class="form-group">
+  
+                  <div class="input-group">
+                      <input class="form-control" placeholder="mm/dd/yyyy" names="dateFrom"
+                        formControlName="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker">
+                        <span class="input-group-btn">
+                            <button class="btn btn-outline-primary" (click)="dateFrom.toggle()" type="button">
+                              <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                            </button>
+                          </span>
+                    </div>
+                  
+              </div>
+            </div>
+          </div>
+
+          
+
+          <div class="form-group col-2">
+            <label for="dateTo" class="col-form-label required">To:</label>
+            
+            <div class="input-group">
+                <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" 
+                formControlName="dateTo" ngbDatepicker #dateTo="ngbDatepicker">
+                <span class="input-group-btn">
+                    <button class="btn btn-outline-primary" (click)="dateTo.toggle()" type="button">
+                      <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                    </button>
+                  </span>
+              </div>
+  
+  
+          </div>
+          <div class="form-group col-2">
+              <label for="input2" class="col-form-label">Provider:</label>
+               <select class="form-control" id="cmbProvider" formControlName="cmbProvider" ng-model="data.singleSelect">
+               <option *ngFor="let prov of lookupList.providerList" [value]="prov.name">{{prov.name}}</option>
+               </select>
+              </div>
+
+              <div class="form-group col-3">
+                  <label for="rbPregComp" class="col-form-label">Pregnancy</label>
+                  <div class="form-control form-check form-check-inline mt-0">
+                    <input class="form-check-input" id="rbPregCompYes" type="radio" name="rbPregComp"
+                      formControlName="rbPregComp" [value]="true">
+                    <label class="form-check-label" for="rbPregCompYes">Complated</label>
+                    <input class="form-check-input ml-3" id="rbPregCompNo" type="radio" name="rbPregComp"
+                      formControlName="rbPregComp" [value]="false">
+                    <label class="form-check-label" for="rbPregCompNo">Not Complated</label>
+                  </div>
+                </div>
+
+               
+
+                
+          <div class="form-group text-right">
+            <button type="button" ng-disabled="btnHide" class="btn btn-success ml-2 mt-3" (click)="searchPregnancy(frmPregSubmit.value)">Search</button>
+          </div>
+        </div>
+      </div>
+      </form>
+      <div class="custom-select-box pb-1 mt-2">
+          <h4 class="form-edit-sub-heading m-1 mb-1 pl-1">Details</h4>
+          <div class="form-row form-dashboard">
+            <table class="table light-striped-border">
+              <thead>
+                <tr>
+                  <th>Registered Date</th>
+                  <th>EDD</th>
+                  <th>Patient Name</th>
+                  <th>Registered By</th>
+                  <th>Assigned By</th>
+                  <th>Facility</th>
+                  <th>Hospital</th>
+                  <th>Complated</th>
+                  <th>Complated Date</th>
+                </tr>
+              </thead>
+            <tbody>
+               <tr st-select-row="row" *ngFor="let lstPreg of lstPregnancy">
+                  <td>{{lstPreg.date_created}}</td>
+                  <td>{{lstPreg.edd_date}}</td>
+                  <td>{{lstPreg.patient_name}}</td>
+                  <td>{{lstPreg.created_user}}</td>
+                  <td>{{lstPreg.provider_name}}</td>
+                  <td>{{lstPreg.facility}}</td>
+                  <td>{{lstPreg.hospital}}</td>
+                  <td>{{lstPreg.completed}}</td>
+                  <td>{{lstPreg.completed_date}}</td>
+                </tr>
+              </tbody> 
+            </table>
+      
+           
+          </div>
+        </div>
+  
+    </div>
+  
+  
+  
+  

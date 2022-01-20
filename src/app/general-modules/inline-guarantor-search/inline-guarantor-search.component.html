@@ -1,0 +1,29 @@
+<div class="inline-search" >
+  <div class="inline-search-header">    
+      <h6 class="title">Gurantor Search</h6>
+      <button type="button" class="close" aria-label="Close" (click)="onClose.emit(recordId)">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <table class="table light-striped-border" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>Name</th>          
+          <th>Phone</th>
+          <th>Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let gurantor of lstGurantors">
+          <td>
+            <button type="button" class="link-btn" (click)="onSelect.emit({gurantor:gurantor,record_id:recordId})">{{gurantor.name}}</button>
+          </td>         
+          <td>{{gurantor.phone | phonePipe }}</td>
+          <td>{{gurantor.address}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

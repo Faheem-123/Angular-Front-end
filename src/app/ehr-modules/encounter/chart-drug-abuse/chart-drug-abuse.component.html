@@ -1,0 +1,66 @@
+<div class="mt-8">
+  <div id="main-drug-abuse" class="rounded-top" [ngClass]="{
+      'encounter-header-highlight': addEditView==true,
+      'encounter-header': addEditView==false
+    }">
+    <div class="title pl-8">Drug Abuse Test</div>
+    <ul class="nav color-buttons align-items-center">
+      <div class="dropdown">
+        <button class="nav-link blue px-2 py-0 top-right-radius" type="button" id="dropdownMenuButton"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  
+          *ngIf="!addEditView && canView && canAddEdit">Drug Abuse For
+          <i class="fas fa-caret-down ml-1"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-left custome-menu health-check-drop-height"
+          aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" (click)="openDrugAbuse('adults')">DAST-Adults</a>
+          <a class="dropdown-item" (click)="openDrugAbuse('children')">DAST-Children</a>
+        </div>
+      </div>
+
+    </ul>
+  </div>
+</div>
+
+
+
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+  
+  <div *ngIf="isLoading" class="div-loader"></div>  
+    <div *ngIf="!isLoading && !canView" class="access-denied">
+        <p><i class="fas fa-ban"></i> Access Denied</p>
+    </div>
+  <div *ngIf="!isLoading && canView &&  (lstDrugsResult==undefined || lstDrugsResult.length==0)" class="no-content ml-2 p-6">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+
+  <div class="p-0" *ngIf="!isLoading &&  (lstDrugsResult!=undefined && lstDrugsResult.length>0)">
+
+    <table class="table light-striped-border">
+      <tr *ngFor="let ds of lstDrugsResult"
+      [ngClass]="{'text-green' : (ds.reference_id != 'null' && ds.reference_id != '')}">
+        <td>{{ds.visit_date}}</td>
+        <td>{{ds.form_name}}</td>
+        <td>{{ds.created_user}}</td>
+        <td>{{ds.drugresults}}</td>
+        <td class="text-right">
+          <button [disabled]="!canAddEdit" 
+          *ngIf="(this.lookupList.practiceInfo.practiceId == '524')"
+          class="btn btn-link btn-md text-success line-height-1 p-0 mr-2" (click)="onPreview(ds)">
+            <i class="fas fa-search" aria-hidden="true"></i>
+          </button>
+          <!-- *ngIf="ds.reference_id !='' || ds.reference_id !='null'" -->
+          <button *ngIf="(ds.reference_id == ''|| ds.reference_id == null)"
+          [disabled]="!canAddEdit" class="btn btn-md btn-link line-height-1 p-0 mr-2" (click)="onEdit(ds)">
+            <i class="far fa-edit" aria-hidden="true"></i>
+          </button>
+          <button [disabled]="!canAddEdit" class="btn btn-md btn-link btn-delete line-height-1  p-0" (click)="onDelete(ds)">
+            <i class="far fa-trash-alt" aria-hidden="true"></i>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

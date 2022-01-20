@@ -1,0 +1,132 @@
+<div class="rounded-top mt-8" [ngClass]="{
+      'encounter-header-highlight': addEditView==true,
+      'encounter-header': addEditView==false}">
+  <div class="title pl-8">Reason for Visit / History of Presenting Illness</div>
+
+
+  <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+    <button  *ngIf="!addEditView && canAddEdit && canView" class="nav-link green px-2 py-0 top-right-radius"
+      (click)="onEdit()">
+      <i class="far fa-edit pr-1"></i>Edit
+    </button>
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="saveEditHPI($event)"
+    [disabled]="isSaving">
+      <i class="far fa-save pr-1"></i>Save
+    </button>
+
+    <button *ngIf="addEditView" class="nav-link encounter-btn-cancel  px-2 py-0 top-right-radius" (click)="cancelAddEdit()">
+        <i class="fas fa-times  pr-1"></i>Cancel
+    </button>
+  </ul>
+</div>
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <ng-template id="sectionAccessDenied" [ngIf]="!isLoading && !canView">
+    <div class="access-denied">
+      <i class="fas fa-ban mr-2"></i> Access Denied
+    </div>
+  </ng-template>
+
+  <ng-template id="sectionView" [ngIf]="!isLoading && canView && !addEditView">
+
+
+    <div *ngIf="noRecordFound" class="no-content">
+      <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+
+    <div *ngIf="!noRecordFound">
+      <div class="p-6">
+
+        <div class="form-row form-dashboard">
+
+
+          <div class="form-group">
+            <label class="col-form-label module-view-headding">Reason for Visit:</label>
+            <label class="col-form-label module-view-value pt-0">
+              {{ROV}}
+            </label>
+
+          </div>
+        </div>
+
+        <div class="form-row form-dashboard">
+
+          <div class="form-group">
+            <label class="col-form-label module-view-headding">History of Presenting Illness:</label>
+             <label class="col-form-label module-view-value pt-0 text-pre-wrap">
+               {{HPI}}
+            </label>
+         
+
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="encounter-footer-credential rounded-bottom">
+        <p class="form-text text-muted" *ngIf="lastModifiedMsg">Last Modified by {{lastModifiedMsg}}</p>
+        <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLogHistory()">View Log</button>
+      </div>
+
+    </div>
+
+
+  </ng-template>
+
+  <ng-template id="sectionAddEdit" [ngIf]="addEditView">
+    <div class="p-6">
+      <form [formGroup]="reasonforvisitHPIForm">
+        <div class="form-row form-dashboard">
+          <div class="form-group col-md-9 col-sm-6 col-12">
+            <div class="d-flex justify-content-between">
+                <label for="txt_reasonforvisit" class="col-form-label">Reason for Visit</label>
+                <button class="btn btn-link p-0 btn-sm m-0 pl-2" (click)="onRFVTemplateClick()">[Template]</button>
+            </div>
+            
+            <input type="text" class="form-control" id="txt_reasonforvisit" placeholder="visitreason"
+              formControlName="visitreason">
+          </div>
+
+          <div class="form-group col-md-3 col-sm-6 col-12">
+            <label for="input2">History Provided By:</label>
+            <select class="form-control" id="txthistoryprovidedby" placeholder="historyprovidedby"
+              formControlName="historyprovidedby">
+              <option></option>
+              <option>Aunt</option>
+              <option>Brother</option>
+              <option>Patient</option>
+              <option>Sister</option>
+              <option>Spouse</option>
+              <option>Mother</option>
+              <option>Father</option>
+              <option>Other</option>
+            </select>
+          </div>
+          
+
+          <div class="form-group col-md-12 col-sm-12 col-12">
+              <div class="d-flex justify-content-between">
+            <label for="input3" class="col-form-label">HPI:</label>
+              <div class="d-flex justify-content-between">    
+                  <button class="btn btn-link p-0 btn-sm m-0 pl-2" (click)="onHPITemplateClick()">[ Template ]</button>
+                  <button class="btn btn-link p-0 btn-sm m-0 pl-2" (click)="onLastROSClick()">[ Last HPI ]</button>
+              </div>
+            </div>
+            <textarea class="form-control" id="txt_hpi_comments" rows="10" placeholder="hpicomments"
+              formControlName="hpicomments"></textarea>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+
+  </ng-template>
+
+</div>

@@ -1,0 +1,134 @@
+<ngb-tabset #appTabSet class="navbar main-left-nav" [destroyOnHide]=false (tabChange)="onTabChange($event)">
+  <ngb-tab id="home-tab-main">
+    <ng-template ngbTabTitle>
+
+      <i class="ihc-home"></i> <span>Home</span>
+    </ng-template>
+    <ng-template ngbTabContent>
+      <dashboard-main id="div_dashboard_main" #div_dashboard_main class="main-app d-flex flex-column">
+      </dashboard-main>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="scheduelr-tab-main" *ngIf="lookupList.UserRights.scheduler_view">
+    <ng-template ngbTabTitle>
+
+      <i class="ihc-appointment"></i> <span>Scheduler</span>
+    </ng-template>
+    <ng-template ngbTabContent>
+      <scheduler-main class="main-app d-flex flex-column" *ngIf="loadScheduler"></scheduler-main>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="patient-tab-main">
+    <ng-template ngbTabTitle>
+
+      <i class="ihc-patient"></i> <span>Find/Open Patient</span>
+
+
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <patient-main class="main-app d-flex flex-column p-0"></patient-main>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="messages-tab-main" *ngIf="this.lookupList.UserRights.message_view">
+    <ng-template ngbTabTitle>
+
+      <i class="ihc-message"></i><span>Internal Messages</span>
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <messages-main #messagesMain class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadMessages">
+      </messages-main>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="labs-tab-main" *ngIf="lookupList.UserRights.lab_order_view">
+    <ng-template ngbTabTitle>
+      <i class="ihc-lab"></i><span>Lab Order Search</span>
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <labs-main class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadLab"></labs-main>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="letters-tab-main" *ngIf="lookupList.UserRights.letter_view">
+    <ng-template ngbTabTitle>
+      <i class="ihc-letter"></i> <span>Patient Letters</span>
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <letters-main class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadLetter"></letters-main>
+    </ng-template>
+  </ngb-tab>
+
+
+  <ngb-tab id="reports-tab-main" *ngIf="lookupList.UserRights.view_reports">
+    <ng-template ngbTabTitle>
+      <i class="ihc-report"></i><span>Reports</span>
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <reports-main class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadReports"></reports-main>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="admin-tab-main" *ngIf="lookupList.UserRights.administration">
+    <ng-template ngbTabTitle>
+      <i class="ihc-admin"></i> <span>Admin Setting</span>
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <setting-main class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadSettings">
+      </setting-main>
+    </ng-template>
+  </ngb-tab>
+
+
+
+  <ngb-tab id="user-admin-tab-main">
+    <ng-template ngbTabTitle>
+      <i class="ihc-user-admin"></i> <span>User Admin</span>
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <users-admin-settings class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadUserSettings">
+      </users-admin-settings>
+    </ng-template>
+  </ngb-tab>
+
+  <ngb-tab id="fax-tab-main" *ngIf="lookupList.UserRights.fax_enable">
+    <ng-template ngbTabTitle>
+
+      <i class="ihc-fax"></i> <span>Fax Send/Receive</span>
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <fax-main class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadFax"></fax-main>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="billing-tab-main" *ngIf="(this.lookupList.logedInUser.userType.toUpperCase() == 'BILLING')">
+    <ng-template ngbTabTitle>
+
+      <i class="ihc-billing fz-28"></i> <span>Billing</span>
+
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <billing-main class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadBilling"></billing-main>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="log-tab-main">
+    <ng-template ngbTabTitle>
+      <i class="ihc-log"></i> <span>Log</span>
+
+
+    </ng-template>
+    <ng-template ngbTabContent>
+      <log-main class="main-app d-flex flex-column flex-grow-1 p-0" *ngIf="loadLog"></log-main>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

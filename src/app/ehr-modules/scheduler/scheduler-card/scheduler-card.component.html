@@ -1,0 +1,129 @@
+<div class="appointment-box" [style.background-color]="bgColor">
+  <div class="title" [ngClass]="{'title-highlited' : (heighligh) }">
+    <div class="status-box">
+      <p (click)="doAction('show_eligibility')" class="m-0 text-center" [ngClass]="{
+            'bg-success' : (appointment.elig_status==='A'),
+            'bg-primary' : (appointment.elig_status==='U'),
+            'bg-danger' : (appointment.elig_status==='I')
+          }">{{appointment.elig_status}}</p>
+    </div>
+    <ng-template #tipPatient>
+      <div class="tool-tip" *ngIf="appointment.patient_id > 0">
+        <p>
+          Patient :
+          <strong>{{patientName }}</strong>
+          <br>PID :
+          <strong>{{appointment.pid}}</strong>
+          <br> DOB :
+          <strong>{{appointment.dob}}</strong>
+          <br>Age :
+          <strong>{{patientAge }}</strong>
+          <br>Interpreter Req :
+          <!-- <strong>{{appointment.interpreter_req==0?' No':' Yes' }}</strong> -->
+          <strong>{{appointment.interpreter_req }}</strong>
+          <br>Phone :
+          <strong>{{appointment.phone_number | phonePipe}}</strong>
+
+        </p>
+      </div>
+      <div class="tool-tip" *ngIf="appointment.patient_id < 0">
+        <p>
+          <strong>{{patientName}}</strong>
+        </p>
+      </div>
+    </ng-template>
+
+    <span *ngIf="appointment.patient_id < 0">{{patientName }} </span>
+    <button *ngIf="appointment.patient_id > 0" class="btn-patient"
+      [ngClass]="{'btn-patient-heighlighted' : (heighligh) }" (click)="openPatient()" placement="bottom"
+      [ngbTooltip]="tipPatient">{{patientName}}</button>
+
+    <div class="dropdown pt-2-px pr-1">
+      <button class="btn-link" type="button" id="schedular-card-option" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+      </button>
+      <div class="dropdown-menu schedular-card" aria-labelledby="schedular-card-option" [ngClass]="{'dropdown-menu-right': colIndex <= 1,
+      'dropdown-menu-left': colIndex > 1}">
+        <button class="dropdown-item" *ngIf="appointment.patient_id > 0 && lookupList.UserRights.scheduler_edit"
+          (click)="doAction('edit')">
+          <i> <img class="img-h-16" src="./assets/images/icons/ico_app_edit.svg" alt=""></i> Modify
+        </button>
+        <button class="dropdown-item" (click)="doAction('delete')" *ngIf="lookupList.UserRights.scheduler_delete">
+          <i> <img class="img-h-16" src="./assets/images/icons/ico_app_del.svg" alt=""></i> Delete
+        </button>
+        <div class="dropdown-divider" *ngIf="appointment.patient_id > 0"></div>
+
+        <button class="dropdown-item" *ngIf="appointment.patient_id > 0" (click)="doAction('checkin_checkout')">
+          <i> <img class="img-h-16" src="./assets/images/icons/ico_checkin.svg" alt=""></i> Check In/Check Out
+        </button>
+
+        <button class="dropdown-item" (click)="doAction('check_live_eligibility')" *ngIf="appointment.patient_id > 0">
+          <i> <img class="img-h-16" src="./assets/images/icons/ico_elgibilty.svg" alt=""></i>
+
+          Eligibility
+        </button>
+        <div class="dropdown-divider" *ngIf="appointment.patient_id > 0"></div>
+        <button class="dropdown-item" *ngIf="appointment.patient_id > 0 && lookupList.UserRights.cashregister_view"
+          (click)="doAction('cash_register')">
+          <i class="fas fa-dollar-sign fa-lg text-ihc-dark-blue"></i> Patient Payment
+        </button>
+        <div class="dropdown-divider" *ngIf="appointment.patient_id > 0"></div>
+
+        <div class="dropdown submenu " *ngIf="appointment.patient_id > 0">
+          <button class="dropdown-item d-flex flex-row align-items-center justify-content-between rounded-0" id="patient-option"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i> <img class="img-h-16" src="./assets/images/icons/ico_patient.svg" alt=""></i>
+            <div class="d-flex flex-grow-1 align-items-center justify-content-between pr-2">
+              Patient <span class="fa fa-caret-right" aria-hidden="true"></span>
+            </div>
+          </button>
+
+          <div class="dropdown-menu dropdown-sub-menu schedular-card" aria-labelledby="patient-option"
+            *ngIf="appointment.patient_id > 0" [ngClass]="{'dropdown-sub-menu-left': colIndex > 1 }">
+            <button class="dropdown-item px-2" (click)="doAction('print_demographics')">
+              Print Demographics
+            </button>
+            <button class="dropdown-item px-2" (click)="openPatient()">
+              Open
+            </button>
+            <button class="dropdown-item px-2" *ngIf="lookupList.UserRights.CanAddChart"
+              (click)="doAction('create_encounter')">
+              Create Encounter
+            </button>
+            <button class="dropdown-item px-2" (click)="doAction('encounter_snapshot')">
+              Visit Snapshot/Followup Task
+            </button>
+            <button class="dropdown-item px-2" (click)="doAction('modify_patient')"
+              *ngIf="lookupList.UserRights.patient_edit">
+              Modify Demographics
+            </button>
+            <button class="dropdown-item px-2" (click)="doAction('patient_notes')">
+              Notes
+            </button>
+            <button class="dropdown-item px-2" (click)="doAction('scheduler_patient_appiontment_report')">
+              Appointment Report
+            </button>
+          </div>
+        </div>
+        <div class="dropdown-divider" *ngIf="appointment.patient_id > 0"></div>
+        <button class="dropdown-item" *ngIf="appointment.patient_id > 0" (click)="doAction('call_log')">
+          <i> <img class="img-h-16" src="./assets/images/icons/ico_call_log.svg" alt=""></i> Call Log
+        </button>
+
+        <button class="dropdown-item" *ngIf="appointment.patient_id > 0" (click)="doAction('appt_log')">
+          <i> <img class="img-h-16" src="./assets/images/icons/ico_log.svg"> </i>Log
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <p class="status text-right" [style.color]="lblColor" *ngIf="appointment.patient_id > 0">
+      {{appointment.app_status}}</p>
+
+    <p class="info" [style.color]="commentsColor">{{appointment.appointment_comments}}</p>
+
+    <p class="type" [style.color]="lblColor" *ngIf="appointment.patient_id > 0"> {{appointment.app_type}}</p>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+<div class="dashboard patient-summary-graph">
+    <div class="dashboard-title red-light-title ">
+        <div class="icon light-gray">
+            <!-- <i class="fa fa-thermometer-empty" aria-hidden="true"></i> -->
+            <img class="img-h-24" src="./assets/images/icons/health-maintenance-ico.svg" alt="">
+        </div>
+
+        <div class="title">
+            Health Maintenance
+        </div>
+
+
+        <!-- <label class="form-check-label">
+            <input checked class="form-check-input" type="radio" name="filterOption" id="filterOption" value="all" (change)="onOptionChange($event)"> All
+        </label>
+
+        <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="filterOption" id="filterOption" value="past" (change)="onOptionChange($event)"> Past
+        </label>
+
+        <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="filterOption" id="filterOption" value="future" (change)="onOptionChange($event)"> Future
+        </label> -->
+
+        <form [formGroup]="radioForm">
+            <div class="btn-group radio-btn-tabs pt-2">
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (radioOption  === 'all')}">
+                    <input type="radio" name="entryOption" autocomplete="off" checked formControlName="entryOption"
+                        value="all" (ngModelChange)="onOptionChange($event)">
+                    All
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (radioOption === 'past')}">
+                    <input type="radio" name="entryOption" autocomplete="off" value="past"
+                        formControlName="entryOption" (ngModelChange)="onOptionChange($event)">
+                    Past
+                </label>
+                <label class="btn btn-sm btn-secondary" [ngClass]="{'active' : (radioOption === 'future')}">
+                    <input type="radio" name="entryOption" autocomplete="off" value="future"
+                        formControlName="entryOption" (ngModelChange)="onOptionChange($event)">
+                    Past
+                </label>
+            </div>
+        </form>
+
+        <!--
+
+        <div class="custom-control custom-radio green-radio">
+            <input type="radio" class="custom-control-input" id="filterOptionAll" name="filterOption" value="all"
+                checked (change)="onOptionChange($event)">
+            <label class="custom-control-label" for="filterOptionAll">All</label>
+        </div>
+
+        <div class="custom-control custom-radio green-radio">
+            <input type="radio" class="custom-control-input" id="filterOptionPast" name="filterOption" value="past"
+                (change)="onOptionChange($event)">
+            <label class="custom-control-label" for="filterOptionPast">Past</label>
+        </div>
+
+        <div class="custom-control custom-radio green-radio">
+            <input type="radio" class="custom-control-input" id="filterOptionFuture" name="filterOption" value="future"
+                (change)="onOptionChange($event)">
+            <label class="custom-control-label" for="filterOptionFuture">Future</label>
+        </div>
+
+        -->
+
+
+
+
+        <!--
+        <div class="custom-radio green-radio">
+            <input type="radio" class="custom-control-input" name="filterOption" id="filterOptionAll" value="all"
+                (change)="onOptionChange($event)">
+            <label class="custom-control-label" for="filterOptionAll">All</label>
+        </div>
+
+        <div class="custom-radio green-radio">
+            <input type="radio" class="custom-control-input" name="filterOption" id="filterOptionPast" value="past"
+                (change)="onOptionChange($event)">
+            <label class="custom-control-label" for="filterOptionPast">Past</label>
+        </div>
+
+        <div class="custom-radio green-radio mr-2">
+            <input type="radio" class="custom-control-input" name="filterOption" id="filterOptionFuture" value="future"
+                (change)="onOptionChange($event)">
+            <label class="custom-control-label" for="filterOptionFuture">Future</label>
+        </div>
+        -->
+
+        <div class="title-btn-link">
+            <button type="button" (click)="getHealthMaintenanceSummary()">
+                <img class="img-h-25"
+                src="./assets/images/icons/ico_refresh_green.svg" alt="">
+            </button>
+        </div>
+    </div>
+    <div class="dashboard-content">
+        <div *ngIf="isLoding" class="div-loader"></div>
+
+        <table class="table light-striped-border wide table-sticky-header" *ngIf="!isLoding">
+            <thead>
+                <tr>
+                    <th width='100'>Test Category</th>
+                    <th width='100'>Test</th>
+                    <th width='75'>Complete Date</th>
+                    <th width='75'>Due Date</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let hm of lstHealthMaintenance | listFilter:'resulttype':radioOption">
+                    <td>{{hm.test_category}}</td>
+                    <td>{{hm.test_name}}</td>
+                    <td>{{hm.test_date}}</td>
+                    <td>{{hm.due_date}}</td>
+                    <td>{{hm.test_value}}</td>
+                </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+</div>

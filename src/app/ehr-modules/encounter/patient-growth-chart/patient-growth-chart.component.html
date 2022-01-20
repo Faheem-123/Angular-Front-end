@@ -1,0 +1,79 @@
+<div class="dashboard-container d-flex flex-column p-1">
+  <div class="dashboard">
+    <div class="dashboard-content d-flex flex-row mt-0">
+      <div class="scheduler-left width-200">
+        <div class="d-flex flex-column flex-grow-1">
+          <!-- ******************** -->
+          <aside class="reports-main-sidebar">
+            <section class="reports-sidebar">
+              <ul class="reports-sidebar-menu">
+                <li class="active treeview">
+                  <a href="#">
+                    <i class="fas fa-angle-right"></i>
+                    <span class="ml-2">Birth to 24 Months</span>
+                  </a>
+                  <ul class="reports-treeview-menu">
+                    <li class="rpt-pointer" [ngClass]="{  
+                      'active' : (chartName=='Birth_Weight_For_Age')
+                     }"><a
+                        (click)="generalOnChange('Birth_Weight_For_Age')">Weight For Age</a></li>
+                    <li class="rpt-pointer" [ngClass]="{  
+                      'active' : (chartName=='Birth_Length_For_Age')
+                     }"><a
+                        (click)="generalOnChange('Birth_Length_For_Age')">Length For Age</a></li>
+                    <li class="rpt-pointer" [ngClass]="{  
+                      'active' : (chartName=='Birth_Head_Circumference')
+                     }"><a
+                        (click)="generalOnChange('Birth_Head_Circumference')">Head Circumference</a></li>
+                    <li class="rpt-pointer" [ngClass]="{  
+                      'active' : (chartName=='Birth_Weight_For_Length')
+                     }"><a
+                        (click)="generalOnChange('Birth_Weight_For_Length')">Weight For Length</a></li>
+                  </ul>
+                </li>
+                <li class="treeview">
+                  <a href="#">
+                    <i class="fas fa-angle-right"></i>
+                    <span class="ml-2">2 to 20 Years</span>
+                  </a>
+                  <ul class="reports-treeview-menu">
+                    <li class="rpt-pointer" [ngClass]="{  
+                      'active' : (chartName=='Adults_Weight_For_Age')
+                     }"><a
+                        (click)="generalOnChange('Adults_Weight_For_Age')">Weight For Age</a></li>
+                    <li class="rpt-pointer" [ngClass]="{  
+                      'active' : (chartName=='Adults_Stature_For_Age')
+                     }"><a
+                        (click)="generalOnChange('Adults_Stature_For_Age')">Stature For Age</a></li>
+                    <li class="rpt-pointer" [ngClass]="{  
+                      'active' : (chartName=='Adults_BMI')
+                     }"><a
+                        (click)="generalOnChange('Adults_BMI')">Body Mass Index(BMI)</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </section>
+          </aside>
+          <!-- ******************* -->
+        </div>
+      </div>
+      <div class="pl-0 d-flex flex-column flex-grow-1">
+        <birth-weight-for-age [lstVitalData]="lstVitalData" [gender]="openPatientInfo.patient_gender" class="d-flex flex-column flex-grow-1"
+          *ngIf="chartName=='Birth_Weight_For_Age'"></birth-weight-for-age>
+        <birth-length-for-age [lstVitalData]="lstVitalData" [gender]="openPatientInfo.patient_gender" class="d-flex flex-column flex-grow-1"
+          *ngIf="chartName=='Birth_Length_For_Age'"></birth-length-for-age>
+        <birth-head-circumference [lstVitalData]="lstVitalData" [gender]="openPatientInfo.patient_gender" class="d-flex flex-column flex-grow-1"
+          *ngIf="chartName=='Birth_Head_Circumference'"></birth-head-circumference>
+        <birth-weight-for-length [lstVitalData]="lstVitalData" [gender]="openPatientInfo.patient_gender" class="d-flex flex-column flex-grow-1"
+          *ngIf="chartName=='Birth_Weight_For_Length'"></birth-weight-for-length>
+
+        <adult-weight-for-age [lstVitalData]="lstVitalData" [gender]="openPatientInfo.patient_gender" class="d-flex flex-column flex-grow-1"
+          *ngIf="chartName=='Adults_Weight_For_Age'"></adult-weight-for-age>
+        <adult-stature-for-age [lstVitalData]="lstVitalData" [gender]="openPatientInfo.patient_gender" class="d-flex flex-column flex-grow-1"
+          *ngIf="chartName=='Adults_Stature_For_Age'"></adult-stature-for-age>
+        <adult-bmi [lstVitalData]="lstVitalData" [gender]="openPatientInfo.patient_gender" class="d-flex flex-column flex-grow-1"
+          *ngIf="chartName=='Adults_BMI'"></adult-bmi>
+      </div>
+    </div>
+  </div>
+</div>

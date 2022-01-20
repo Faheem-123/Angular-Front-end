@@ -1,0 +1,357 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Patient Demographics Print View</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-sub-header d-flex justify-content-end" *ngIf="!isLoading">
+  <button class="btn btn-success btn-sm rounded-0 h-100 width-80" type="button" (click)="print()">Print</button>
+</div>
+
+<div class="modal-body custom p-0 overflow-auto" style="max-height: 600px;">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+  <div id="patient_demo_report" class="report" *ngIf="!isLoading">
+    <div class="report">
+      <div class="header border-bottom-green">
+        <img class="logo" src="{{lookupList.practiceInfo.logo}}" width="175"
+          (error)="$event.target.style.display = 'none';"
+          *ngIf="lookupList.practiceInfo.logo!=undefined && lookupList.practiceInfo.logo != '' ">
+        <div class="title d-flex flex-column flex-grow-1">
+          <h4 class="maintitle">{{lookupList.practiceInfo.practiceName}}</h4>
+          <h6 class="subtitle font-weight-500">{{printLocationName}}</h6>
+          <h6 class="subtitle">{{printLocationAddress}}, {{printLocationCityStateZip}}</h6>
+          <h6 class="subtitle d-flex justify-content-between">
+            <span>
+              Phone:&nbsp; {{printLocationPhone | phonePipe}}&nbsp;&nbsp;|&nbsp;&nbsp;
+              Fax:&nbsp;{{printLocationFax | phonePipe}}
+            </span>
+            <small class="mt-auto text-dark">Print Date: {{printDateTime}}</small>
+          </h6>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="content-header border-bottom-green col-12">
+          <div class="content-header-title">PATIENT DEMOGRAPHIC INFORMATION</div>
+
+          <!--<div class="content-header-title col-4 text-right">
+            <small>Print Date: {{printDateTime}}</small>
+          </div>
+          -->
+        </div>
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border mt-4 w-100">
+          <tbody>
+            <tr>
+              <td class="w-10">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Title</label>
+                  <label class="report-form-group-value">{{patientInfo.preffix | uppercase}}</label>
+                </div>
+
+              </td>
+              <td class="w-20">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">First Name</label>
+                  <label class="report-form-group-value">{{patientInfo.first_name | uppercase}}</label>
+                </div>
+              </td>
+              <td class="w-20">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Middle Name</label>
+                  <label class="report-form-group-value">{{patientInfo.mname | uppercase}}</label>
+                </div>
+              </td>
+              <td class="w-20">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Last Name</label>
+                  <label class="report-form-group-value">{{patientInfo.last_name | uppercase}}</label>
+                </div>
+              </td>
+
+              <td class="w-10">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Suffix</label>
+                  <label class="report-form-group-value">{{patientInfo.suffix | uppercase}}</label>
+                </div>
+
+              </td>
+
+            </tr>
+            <tr>
+              <td colspan="5">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Previous Name</label>
+                  <label class="report-form-group-value">{{patientInfo.previous_name | uppercase}}</label>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="2">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Date of Birth</label>
+                  <label class="report-form-group-value">{{patientInfo.dob}}</label>
+                </div>
+              </td>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Gender</label>
+                  <label class="report-form-group-value">{{patientInfo.gender | uppercase}}</label>
+                </div>
+              </td>
+              <td colspan="2">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Social Security Number</label>
+                  <label class="report-form-group-value">{{maskedSSN}}</label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border mt-4">
+          <tbody>
+            <tr>
+              <td class="w-50" rowspan="3">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Address</label>
+
+                  <label class="report-form-group-value">{{patientInfo.address | uppercase}}</label>
+                  <label class="report-form-group-value"
+                    *ngIf="patientInfo!=undefined && patientInfo.address2!=undefined && patientInfo.address2!=''">{{patientInfo.address2 | uppercase}}</label>
+                  <label class="report-form-group-value">{{patientInfo.city | uppercase}},
+                    {{patientInfo.state | uppercase}}
+                    {{patientInfo.zip}}</label>
+                </div>
+
+              </td>
+              <td class="w-16">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Home Phone</label>
+                  <label class="report-form-group-value">{{patientInfo.home_phone | phonePipe}}</label>
+                </div>
+              </td>
+              <td class="w-16">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Cell Phone</label>
+                  <label class="report-form-group-value">{{patientInfo.cell_phone | phonePipe}}</label>
+                </div>
+              </td>
+              <td class="w-18">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Work Phone</label>
+                  <label class="report-form-group-value">{{patientInfo.work_phone | phonePipe}}</label>
+                </div>
+              </td>
+
+            </tr>
+            <tr>
+              <td colspan="3">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Email</label>
+                  <label class="report-form-group-value">{{patientInfo.email}}</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Emergency Contact</label>
+                  <label class="report-form-group-value">{{patientInfo.emrg_contact_name | uppercase}}</label>
+                </div>
+              </td>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Contact Number</label>
+                  <label class="report-form-group-value">{{patientInfo.emrg_contact}}</label>
+                </div>
+              </td>
+              <td>
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Relationship</label>
+                  <label class="report-form-group-value">{{patientInfo.emrg_contact_relation | uppercase}}</label>
+                </div>
+              </td>
+            </tr>
+
+
+          </tbody>
+        </table>
+
+
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border mt-4">
+          <tbody>
+
+            <tr>
+              <td class="w-50">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Primary Physician</label>
+                  <label class="report-form-group-value">{{patientInfo.primary_provider_name | uppercase}}</label>
+                </div>
+              </td>
+              <td class="w-50">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Preferred Language</label>
+                  <label class="report-form-group-value">{{patientInfo.patient_language | uppercase}}</label>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+
+
+        <table class="table sm layout-fixed light-blue-striped-row-column-border mt-4">
+          <tbody>
+
+            <tr>
+              <td class="w-50">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Race</label>
+
+                  <div class="report-form-group-value">
+
+                    <span *ngIf="patientInfo != undefined && patientInfo.race_code=='ASKU'">Declined to specify</span>
+
+                    <ul class="px-3 mb-1" *ngIf="lstPatRace !=undefined && lstPatRace.length > 0">
+                      <li *ngFor="let raceOMB of lstPatRace | unique: 'omb_code'; let i = index">
+                        {{raceOMB.omb_description | uppercase}}
+                        <ul class="px-4">
+                          <li *ngFor="let raceCDC of lstPatCDCRace | listFilter : 'omb_code' : raceOMB.omb_code">
+                            {{raceCDC.cdc_description | uppercase}}
+                          </li>
+                        </ul>
+
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </td>
+              <td class="w-50">
+                <div class="form-group mb-0">
+                  <label class="report-form-group-title">Ethnicity</label>
+
+                  <div class="report-form-group-value">
+                    <span *ngIf="patientInfo != undefined && patientInfo.ethnicity_code=='ASKU'">Declined to
+                      specify</span>
+
+                    <ul class="px-3 mb-1" *ngIf="lstPatEthnicity !=undefined && lstPatEthnicity.length > 0">
+                      <li *ngFor="let ethOMB of lstPatEthnicity | unique: 'omb_code'; let i = index">
+                        {{ethOMB.omb_description | uppercase}}
+                        <ul class="px-4">
+                          <li *ngFor="let ethCDC of lstPatCDCEthnicity | listFilter : 'omb_code' : ethOMB.omb_code">
+                            {{ethCDC.cdc_description | uppercase}}
+                          </li>
+                        </ul>
+
+                      </li>
+                    </ul>
+
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+
+
+        <div class="content-header border-bottom-green col-12 mt-4">
+          <div class="content-header-title col-8 ">PATIENT INSURANCE INFORMATION</div>
+        </div>
+
+
+
+        <div class="form-row form-dashboard col-12 mt-1" *ngIf="patientInfo!=undefined && patientInfo.self_pay">
+          <div class="form-group mb-0">
+            <label class="report-form-group-value">PATIENT IS SELFPAY.</label>
+          </div>
+        </div>
+
+
+        <div class="form-row form-dashboard col-12 mt-1"
+          *ngIf="patientInfo!=undefined && !patientInfo.self_pay && (lstPatientInsurance==undefined || lstPatientInsurance.length == 0)">
+          <div class="form-group mb-0">
+            <label class="report-form-group-value">INSURANCE INFORMATION NOT FOUND.</label>
+          </div>
+        </div>
+
+        <div class="overflow-auto mt-2"
+          *ngIf="patientInfo!=undefined && !patientInfo.self_pay && lstPatientInsurance!=undefined && lstPatientInsurance.length > 0">
+
+
+          <table class="table sm layout-fixed light-blue-striped-row-column-border mb-2"
+            *ngFor="let ins of lstPatientInsurance">
+            <tbody>
+              <tr>
+                <td class="w-50" rowspan="2">
+                  <div class="form-group mb-0">
+                    <label class="report-form-group-title font-weight-500">{{ins.insurace_type | uppercase }}</label>
+                    <label class="report-form-group-value font-weight-500">{{ins.name | uppercase }}</label>
+                    <label class="report-form-group-value">{{ins.address | uppercase }}</label>
+                    <label class="report-form-group-value">{{ins.phone}}</label>
+                    <!--<label class="report-form-group-value">{{ins.insurace_type}}</label>-->
+                  </div>
+
+                </td>
+                <td class="w-10">
+                  <div class="form-group mb-0">
+                    <label class="report-form-group-title">Copay</label>
+                    <label class="report-form-group-value">{{ins.copay}}</label>
+                  </div>
+                </td>
+                <td class="w-20">
+                  <div class="form-group mb-0">
+                    <label class="report-form-group-title">Policy Number</label>
+                    <label class="report-form-group-value">{{ins.policy_number}}</label>
+                  </div>
+                </td>
+                <td class="w-20">
+                  <div class="form-group mb-0">
+                    <label class="report-form-group-title">Group Number</label>
+                    <label class="report-form-group-value">{{ins.group_number}}</label>
+                  </div>
+                </td>
+
+              </tr>
+
+              <tr>
+                <td colspan="2">
+                  <div class="form-group mb-0">
+                    <label class="report-form-group-title">Guarantor</label>
+                    <label class="report-form-group-value">{{ins.guarantor_name | uppercase }}</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group mb-0">
+                    <label class="report-form-group-title">Relationship</label>
+                    <label class="report-form-group-value">{{ins.guarantor_relationship | uppercase }}</label>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+
+
+
+      </div>
+      <div class="footer-credential mt-4 pr-2 justify-content-start">
+        <small>The Information on this page is confidential. Any release of this information requires the written
+          authorization of the patient mention above.</small>
+      </div>
+
+    </div>
+  </div>
+</div>

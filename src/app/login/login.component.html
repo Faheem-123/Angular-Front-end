@@ -1,0 +1,108 @@
+<div class="login-page" style="background-image: url('./assets/images/login-bg.jpg')">
+
+  <div class="login-container">
+
+    
+    <div class="login-card" [ngClass]="{'w-100': showPracticeSelection}">
+      <div class="d-flex justify-content-center">
+        <div class="m-4">
+          <img class="login-img" src="./assets/images/ihc_logo_left_txt.png" alt="Logo">
+        </div>
+
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)" *ngIf="!showPracticeSelection && !lookupList.isEhrLocked"
+        class="d-flex flex-column ">
+        <h3>Login</h3>
+        <div class="form-group">
+          <label for="txtuser">User Name</label>
+          <input type="text" class="form-control required" id="txtuser" formControlName="txtuser"
+            aria-describedby="txtuser" placeholder="Enter User Name">
+
+        </div>
+        <div class="form-group">
+          <label for="txtpassword">Password</label>
+          <input type="password" formControlName="txtpassword" class="form-control required" id="txtpassword"
+            placeholder="Password">
+        </div>
+
+        <button type="submit" class="btn login-button"
+          [disabled]="!loginForm.valid || loginStatus=='verify_login' ||  loginStatus=='loading_data'">
+
+          <span *ngIf="loginStatus!='verify_login'">
+            LOGIN
+          </span>
+          <span *ngIf="loginStatus=='verify_login'">
+            <i class="fas fa-spinner fa-spin mr-1"></i>
+            Verifying login information
+          </span>
+
+        </button>
+      </form>
+
+      <form [formGroup]="formPracticeSelection" (ngSubmit)="onPracticeSelectionSubmit(formPracticeSelection.value)" *ngIf="showPracticeSelection">
+        <h3 class="font-weight-normal text-center">Select Practice</h3>
+        <div class="input-group flex-nowrap mt-3">
+          <select class="form-control fz-12" id="drpPracticeSelection" formControlName="drpPracticeSelection" autofocus
+            (keydown.enter)="onPracticeSelectionSubmit(formPracticeSelection.value)">
+            <option *ngFor="let prc of lstPracticeSelection" [value]="prc.col1">
+              {{prc.col2+' ('+prc.col1+' )'}}
+            </option>
+          </select>
+        </div>
+        <button type="submit" class="btn login-button w-100 mt-3 mb-3"
+          [disabled]="!formPracticeSelection.valid || loginStatus=='loading_data'">OK</button>
+      </form>
+
+      <form [formGroup]="lockForm" (ngSubmit)="onUnlock(lockForm.value)" *ngIf="lookupList.isEhrLocked"
+        class="d-flex flex-column ">
+        <h3>EHR Is Locked</h3>
+        <div class="form-group">
+          <label >User Name</label>
+          <label  class="form-control px-3 font-weight-500">{{lookupList.logedInUser.user_name}}</label>
+ 
+        </div>
+        <div class="form-group">
+          <label for="txtpassword">Password</label>
+          <input type="password" formControlName="txtpassword" class="form-control required" id="txtpassword"
+            placeholder="Password">
+        </div>
+
+        <button type="submit" class="btn login-button"
+          [disabled]="!lockForm.valid || loginStatus=='verify_login' ||  loginStatus=='loading_data'">
+
+          <span *ngIf="loginStatus!='verify_login'">
+            UnLock
+          </span>
+          <span *ngIf="loginStatus=='verify_login'">
+            <i class="fas fa-spinner fa-spin mr-1"></i>
+            Varifying login information
+          </span>
+
+        </button>
+      </form>
+
+
+      <div *ngIf="loginStatus=='login_required' || loginStatus=='login_failed' ||  loginStatus=='loading_data'"
+        class="fz-12" [ngClass]="{  
+    'text-danger' : (loginStatus == 'login_failed' || loginStatus == 'login_required'),
+    'text-success' : (loginStatus == 'loading_data')
+   }">
+        <p class="my-2 fz-14">
+          <i class="fas fa-spinner fa-spin mr-1"
+            *ngIf="loginStatus=='verify_login' || loginStatus=='loading_data'"></i>{{loginStatusMessage}}
+        </p>
+      </div>
+
+
+    </div>
+
+    <div class="mu_seals">
+      <p>DataQ Health 2021 © All Rights Reserved.</p>
+      <!-- <img class="certification-seal" src="./assets/images/ONC_Certification_HIT_2014.png" alt="Logo">
+      <img class="certification-seal" src="./assets/images/drummondSeal_2014.png" alt="Logo">
+      <img class="certification-seal" src="./assets/images/drummondSeal_2011.png" alt="Logo"> -->
+    </div>
+
+  </div>
+</div>

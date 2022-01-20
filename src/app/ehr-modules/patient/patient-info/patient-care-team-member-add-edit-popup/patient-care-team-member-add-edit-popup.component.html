@@ -1,0 +1,157 @@
+<form [formGroup]="memberForm" (ngSubmit)="onSubmit(memberForm.value)" (keydown.enter)="$event.preventDefault()">
+  <div class="modal-header custom">
+    <img class="logo" src="./assets/images/logo-small.png">
+    <h4 class="modal-title">Patient Care Team Member</h4>
+    <br>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body custom">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading" class="dashboard-content mt-0">
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-6">
+          <label class="col-form-label required" for="ddMemberType">Team Member Type</label>
+          <select class="form-control" id="ddMemberType" formControlName="ddMemberType" (change)="ddMemberTypeChanged($event.target.value)">
+            <option *ngFor="let type of lstMemberType" value="{{type}}">{{type}}</option>
+          </select>
+        </div>
+        <div class="form-group col-6" *ngIf="memberForm.get('ddMemberType').value=='Provider in Practice'">
+          <label class="col-form-label required" for="ddProvider">Provider</label>
+          <select class="form-control" id="ddProvider" formControlName="ddProvider" (change)="providerChanged($event.target.value)">
+            <option [ngValue]="null">Select Provider</option>
+            <option *ngFor="let pro of lookupList.providerList" [value]="pro.id">{{pro.name}}</option>
+          </select>
+        </div>
+        <div class="form-group col-6" *ngIf="memberForm.get('ddMemberType').value=='Other'">
+          <label class="col-form-label required" for="ddRelationship">Relationship</label>
+          <select class="form-control" id="ddRelationship" formControlName="ddRelationship" 
+          (change)="relationsSelectionchange($event)">
+            <option [ngValue]="null">Select Relationship</option>
+            <option *ngFor="let rel of lookupList.lstSnomedRelationship " [value]="rel.code">{{rel.description}}</option>
+          </select>
+        </div>
+        <div class="form-group col-6" *ngIf="memberForm.get('ddMemberType').value=='Referring Provider'">
+          <label for="txtRefPhy" class="col-form-label required">Referring Physician</label>
+          <div class="input-icon d-flex flex-grow-3">
+
+            <input id="txtRefPhy" class="form-control flex-grow-3" type="text" #txtRefPhy placeholder="Search Referring"
+              (keydown)="onRefPhysicianSearchKeydown($event)" (focusout)="onRefPhysicianFocusOut()" autocomplete="off"
+              formControlName="txtRefPhy">
+            <input type="text" formControlName="txtRefPhyIDHidden" hidden>
+            <div class="icon">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+
+            <inline-ref-physician-search *ngIf="showRefPhySearch" [searchValue]="txtRefPhy.value" (onSelect)="addRefPhysician($event)"
+              (onClose)="closeRefPhysicianSearch($event)">
+            </inline-ref-physician-search>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-row form-dashboard" *ngIf="memberForm.get('ddMemberType').value=='Provider in Practice' || memberForm.get('ddMemberType').value=='Referring Provider' ">
+
+        <div class="form-group col">
+          <label for="txtSpecialtiy" class="col-form-label">Speciality</label>
+          <div class="input-icon d-flex flex-grow-3">
+
+            <input id="txtSpecialtiy" class="form-control flex-grow-3" type="text" #txtSpecialtiy placeholder="Search Speciality"
+              (keydown)="onSpecialtiySearchKeydown($event)" (focusout)="onSpecialtiySearchFocusOut()" autocomplete="off"
+              formControlName="txtSpecialtiy">
+            <input type="text" formControlName="txtSpecialtiyCode" hidden>
+            <div class="icon">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </div>
+
+            <inline-speciality-search *ngIf="showSpecialitySearch" [searchValue]="txtSpecialtiy.value" (onSelect)="addSpecialtiy($event)"
+            (onClose)="closeSpecialtiySearch($event)">
+            </inline-speciality-search>            
+          </div>
+        </div>
+      </div>
+      <div class="form-row form-dashboard" *ngIf="memberForm.get('ddMemberType').value=='Provider in Practice' || memberForm.get('ddMemberType').value=='Referring Provider' ">
+
+
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtNPI">NPI</label>
+          <input class="form-control" id="txtNPI" formControlName="txtNPI" />
+        </div>
+
+        <div class="form-group col-6">
+          <div class="form-control form-check form-check-inline pt-0">
+            <input class="form-check-input" type="checkbox" id="chkPCP" formControlName="chkPCP">
+            <label class="form-check-label" for="chkPCP">PCP</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtTitle">Title</label>
+          <input class="form-control" id="txtTitle" formControlName="txtTitle" />
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtFName" [ngClass]="{'required' : memberType=='Other'}">First Name</label>
+          <input class="form-control" id="txtFName" formControlName="txtFName" />
+        </div>
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtLName" [ngClass]="{'required' : memberType=='Other'}">Last Name</label>
+          <input class="form-control" id="txtLName" formControlName="txtLName" />
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtAddressL1">Address Line 1</label>
+          <input class="form-control" id="txtAddressL1" formControlName="txtAddressL1" />
+        </div>
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtAddressL2">Address Line 2</label>
+          <input class="form-control" id="txtAddressL2" formControlName="txtAddressL2" />
+        </div>
+      </div>
+      <div class="form-row form-dashboard">
+        <div class="form-group col-4">
+          <label class="col-form-label" for="txtZipCode">Zip</label>
+          <input type="text" class="form-control" id="txtZipCode" formControlName="txtZipCode" (focusout)="zipFocusOut($event.target.value)"
+            (change)="zipChanged()">
+        </div>
+        <div class="form-group col-2">
+          <label class="col-form-label" for="txtState1">state</label>
+          <input class="form-control" id="txtState1" disabled value="{{state}}" />
+          <input class="form-control" id="txtState" hidden value="{{state}}" formControlName="txtState" />
+        </div>
+        <div class="form-group col-6">
+          <label class="col-form-label" for="ddCity">City</label>
+          <select class="form-control" id="ddCity" formControlName="ddCity">
+            <option *ngFor="let obj of lstZipCityState" [value]="obj.city">
+              {{obj.city}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row form-dashboard">
+        <div class="form-group col-6">
+          <label class="col-form-label" for="txtPhone">Phone</label>
+          <input class="form-control" id="txtPhone" formControlName="txtPhone" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer custom">
+    <button type="button" style="width: 80px;" class="btn btn-dark btn-sm" (click)="activeModal.dismiss('Cross click')">Cancel</button>
+    <button style="width: 80px;" class="btn btn-success btn-sm" [disabled]="!memberForm.valid" type="submit">Add</button>
+  </div>
+</form>

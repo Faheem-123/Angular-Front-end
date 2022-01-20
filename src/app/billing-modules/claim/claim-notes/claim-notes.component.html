@@ -1,0 +1,150 @@
+<div
+  class="border-content-box light-gray-bg border-top-0 rounded-bottom d-flex flex-column flex-grow-1 position-relative">
+  <div class="inner-tool-tab justify-content-between pr-0 flex-shrink-0 h-25">
+    <h4 class="form-edit-sub-heading border-bottom-0 m-1 mb-0 px-1 font-weight-400  d-flex ">Claim Notes
+
+      <span class="v-separtor"></span>
+      <span *ngIf="openedClaimInfo.claimId!=undefined" class="title-other-info">
+        Claim ID: {{openedClaimInfo.claimId}}
+      </span>
+      <span class="v-separtor"></span>
+      <span *ngIf="openedClaimInfo.dos!=undefined" class="title-other-info">
+        DOS: {{openedClaimInfo.dos}}
+      </span>
+
+    </h4>
+    <button type="button" (click)="onAddEditClaimNote(undefined)" class="btn btn-link fz-13 title-bar-blue-btn">
+      <i class="fas fa-plus mr-1"></i>Add Note
+    </button>
+
+    <!--
+    <ul class="nav color-buttons align-items-center" *ngIf="!openedClaimInfo.deleted">
+      <a class="nav-link bg-info px-2 py-0" (click)="onAddEditClaimNote(undefined)">Add Note</a>
+    </ul>
+    -->
+  </div>
+
+  <div class="d-flex flex-column flex-grow-1 overflow-height">
+
+    <div class="d-flex flex-column flex-grow-1  overflow-auto" *ngIf="!isLoading">
+
+      <table class="table layout-fixed light-striped-border">
+        <tbody>
+
+          <tr *ngFor="let note of lstClaimNotes" [ngClass]="{'bg-disabled': note.is_auto}">
+
+            <td class="width-150 border-right">
+
+              <div class="form-view fz-10 d-flex flex-column">
+                <div class="text-muted font-italic mt-0">
+                  {{note.date_modified}}
+                </div>
+                <div class="text-muted font-italic mt-0">
+                  {{note.modified_user}}
+                </div>
+
+              </div>
+            </td>
+
+            <td>
+              <div class="form-view">
+                <div class="value">
+                  <pre>{{note.notes}}</pre>
+                </div>
+              </div>
+            </td>
+
+            <td class="width-80 text-right border-left">
+              <button class="btn btn-sm btn-link p-0" type="button"
+                *ngIf="canEditNote(note) && !note.is_auto && !openedClaimInfo.deleted"
+                (click)="onAddEditClaimNote(note)">Edit</button>
+
+              <div class="text-info font-italic mt-0" *ngIf="note.is_auto">
+                [ Auto Note ]
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!--
+      <div class="pl-2 pr-2 pt-2 pb-0 d-flex flex-shrink-0" *ngFor="let note of lstClaimNotes">
+        <div class="info-box-stipes note-box-background rounded-3 d-flex flex-column flex-grow-1">
+
+          <div class="form-row form-dashboard pl-2 pr-2" style="height: 18px;">
+
+            <div class="form-view fz-11">
+              <div class="value form-row form-dashboard">
+                <span class="form-text text-muted font-italic mt-0">
+                  {{note.date_modified}}</span>
+                <span class="v-separtor h-75"></span>
+                <span class="form-text text-muted font-italic mt-0">
+                  {{note.modified_user}}</span>
+
+                <span *ngIf="note.is_auto" class="v-separtor h-75 "></span>
+                <span *ngIf="note.is_auto" class="form-text text-info font-italic mt-0">&nbsp;&nbsp;[ Auto Note
+                  ]</span>
+              </div>
+            </div>
+
+            <div class="flex-grow-1">&nbsp;</div>
+
+            <a class="text-primary btn-sm py-0 pr-1 cursor-default" *ngIf="canEditNote(note)"
+              (click)="onAddEditClaimNote(note)">Edit</a>
+          </div>
+
+          <div class="form-row form-dashboard mx-1">
+            <div class="form-view">
+              <div class="value">
+                <pre>{{note.notes}}</pre>
+              </div>
+            </div>
+
+          </div>
+
+
+
+        </div>
+      </div>
+    -->
+
+
+    </div>
+
+    <!--
+    <div class="div-loader-message-box" *ngIf="isLoading">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+    </div>
+    -->
+
+
+  </div>
+
+  <!--
+  <div class="p-6 d-flex flex-grow-1">
+    <div class="info-box-stipes rounded d-flex flex-column flex-grow-1">
+      <div class="p-6 d-flex flex-column flex-grow-1">
+        <div class="overflow-auto mt-8\2">
+          <table class="table sm layout-fixed light-striped-border">
+            <tbody>
+              <tr *ngFor="let notes of lstClaimNotes">
+                <td>
+                  <small class="form-text text-muted font-italic mt-0">{{notes.date_modified}} -
+                    {{notes.modified_user}} </small>
+                  <pre>{{notes.notes}}</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+-->
+
+  <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+    <div class="div-ui-blocker-message-box ">
+      <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
+    </div>
+  </div>
+</div>

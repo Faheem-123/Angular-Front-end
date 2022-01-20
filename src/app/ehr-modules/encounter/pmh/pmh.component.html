@@ -1,0 +1,186 @@
+<div class="rounded-top mt-8" [ngClass]="{
+  'encounter-header-highlight': addEditView==true,
+  'encounter-header': addEditView==false
+}">
+    <div class="title pl-8">PMH</div>
+
+    <ul class="nav color-buttons align-items-center" *ngIf="!isLoading">
+
+
+        <button *ngIf="!addEditView && canView && canAddEdit" (click)="onAddNew()"
+            class="nav-link green px-2 py-0 top-right-radius">
+            <i class="far fa-plus-square pr-1"></i>Add
+        </button>
+
+        <button *ngIf="addEditView" class="nav-link encounter-btn-save px-2 py-0" (click)="onSave(inputForm.value)">
+            <i class="far fa-save pr-1"></i>Save
+        </button>
+
+
+        <button *ngIf="addEditView" class="nav-link encounter-btn-cancel px-2 py-0 top-right-radius"
+            (click)="onCancel()">
+            <i class="fas fa-times  pr-1"></i>Cancel
+        </button>
+    </ul>
+</div>
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+    <div *ngIf="isLoading" class="div-loader"></div>
+
+    <div *ngIf="!isLoading && !canView" class="access-denied">
+        <p>
+            <i class="fas fa-ban"></i> Access Denied
+        </p>
+    </div>
+
+    <div *ngIf="!isLoading &&  noRecordFound && !addEditView && canView" class="no-content ml-2 p-6">
+        <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+    </div>
+
+
+    <div *ngIf="!isLoading && !noRecordFound && !addEditView && canView" class="p-0">
+        <table class="table layout-fixed light-striped-border" *ngIf="!isLoding">
+            <thead>
+                <tr class="encounter-data-accordian accordian-data">
+                    <th>Date</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Notes</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let a of lstAssessmentView" class="encounter-data-accordian accordian-data">
+                    <td>{{a.date}}</td>
+                    <td>{{a.code}}</td>
+                    <td>{{a.description}}</td>
+                    <td>{{a.notes}}</td>
+                    <td class="text-right">
+                        <button type="button" [disabled]="!canAddEdit"
+                            class="btn btn-link btn-md text-primary line-height-1 p-0 mr-2" (click)="onEdit(a)">
+                            <i class="far fa-edit"></i>
+                        </button>
+                        <button type="button" [disabled]="!canAddEdit"
+                            class="btn btn-link btn-md btn-delete line-height-1 p-0" (click)="onDelete(a)">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+    <div *ngIf="addEditView" class="p-2 pt-0">
+
+        <form [formGroup]="inputForm">
+            <div class="p-8">
+
+                <div class="form-row form-dashboard">
+                    <div class="form-group col-12">
+                        <div class="d-flex justify-content-between">
+
+                            <div class="form-group input-icon d-flex flex-grow-3">
+
+                                <input id="txtProblemSearch" class="form-control search-highlight flex-grow-3  bl-0"
+                                    type="text" #txtProblemSearch formControlName="txtProblemSearch"
+                                    placeholder="Search Problem" (keydown)="onProblemSearchKeydown($event)"
+                                    autocomplete="off" (blur)="onProblemSearcBlur()">
+
+                                <div class="icon">
+                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                </div>
+
+                                <inline-diagnosis-search *ngIf="showDiagSearch"
+                                    [diagSearchCriteria]="diagSearchCriteria" (onDiagSelect)="onDiagnosisSelect($event)"
+                                    (onClose)="closeDiagSearch()"></inline-diagnosis-search>
+
+
+                            </div>
+
+                            <div class=" form-check-cont d-flex align-item-center mx-1">
+
+                                <div class="custom-control custom-radio green-radio">
+                                    <input class="custom-control-input" type="radio"
+                                        id="rbmylistpmh_{{objencounterToOpen.controlUniqueId}}"
+                                        formControlName="rbCondition" name="rbCondition" value="mylist"
+                                        (ngModelChange)="onRadioOptionChange($event)">
+                                    <label class="custom-control-label"
+                                        for="rbmylistpmh_{{objencounterToOpen.controlUniqueId}}">My
+                                        List</label>
+                                </div>
+
+
+                                <div class="custom-control custom-radio green-radio">
+                                    <input class="custom-control-input" type="radio"
+                                        id="rballpmh_{{objencounterToOpen.controlUniqueId}}"
+                                        formControlName="rbCondition" name="rbCondition" value="all"
+                                        (ngModelChange)="onRadioOptionChange($event)">
+
+                                    <label class="custom-control-label"
+                                        for="rballpmh_{{objencounterToOpen.controlUniqueId}}">All</label>
+                                </div>
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-row form-dashboard">
+                   
+
+                    <div class="form-group col-md-2 col-sm-4 col-12">
+                        <label class="col-form-label required" for="txtDate">Date</label>
+                        <div class="input-group">
+                            <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="txtDate"
+                                formControlName="txtDate" ngbDatepicker #txtDate="ngbDatepicker">
+
+                            <span class="input-group-btn">
+                                <button class="btn date-control-btn" (click)="txtDate.toggle()" type="button">
+                                </button>
+                            </span>
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group col-md-2 col-sm-3 col-12">
+                        <label for="txtIcdCode">Code <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" formControlName="txtIcdCode" readonly>
+                    </div>
+
+                    <div class="form-group col-md-8 col-sm-6 col-12">
+                        <label for="txtIcdDescription">Description <span class="text-danger">*</span></label>
+                        <input id="txtIcdDescription" class="form-control" type="text"
+                            formControlName="txtIcdDescription" readonly>
+                    </div>
+
+                  
+
+                    <div class="form-group col-12">
+                        <label for="txtComments">Comments</label>
+                        <textarea rows="4" class="form-control" id="txtComments" placeholder="Comments"
+                            formControlName="txtComments"></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="encounter-footer-credential rounded-bottom" *ngIf="!isLoading && canView && !addEditView">
+        <button class="btn btn-sm btn-link pr-0" type="button" (click)="showLog()">View Log</button>
+    </div>
+
+</div>

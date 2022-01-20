@@ -1,0 +1,60 @@
+<div class="dashboard patient-summary-graph">
+  <div class="dashboard-title deep-purple-light-title">
+    <div class="icon light-gray">
+      <!-- <i class="fa fa-thermometer-empty" aria-hidden="true"></i> -->
+      <img class="img-h-24" src="./assets/images/icons/assessments-ico.svg" alt="">
+    </div>
+
+    <div class="title">
+      Assessments
+    </div>
+
+    <div class="title-btn-link">
+      <button type="button" (click)="getAssessmentSummary()">
+        <img class="img-h-25"
+        src="./assets/images/icons/ico_refresh_green.svg" alt="">
+      </button>
+    </div>
+  </div>
+  <div class="dashboard-content">
+    <div *ngIf="isLoding" class="div-loader"></div>
+    <div *ngIf="!isLoding" role="tablist">
+      <div class="card dashboard-card" *ngFor="let assessment of lstAssessments">
+        <div class="card-header" role="tab">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#summaryasssessment{{assessment.pmh_id}}" aria-expanded="false" class="accordian-link" >
+              <span class="icd-code">{{assessment.pmh_code}}</span> {{assessment.pmh_description}}
+            </a>
+          </h5>
+        </div>
+
+        <div id="summaryasssessment{{assessment.pmh_id}}" class="collapse" class="collapse" >
+          <div class="card-body">
+            <p>Code:
+              <strong>{{assessment.pmh_code}}</strong>
+            </p>
+            <p>Description:
+              <strong>{{assessment.pmh_description}}</strong>
+            </p>
+            <p>Date:
+              <strong>{{assessment.pmh_date}}</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--
+      <ul *ngIf="!isLoding">
+      <li *ngFor="let assessment of lstAssessments">
+
+        <div>
+          <small>
+            <span class="icd-code">{{assessment.pmh_code}}</span>
+            <span>{{assessment.pmh_description}}</span>
+          </small>
+        </div>
+      </li>
+    </ul>
+  -->
+  </div>
+</div>

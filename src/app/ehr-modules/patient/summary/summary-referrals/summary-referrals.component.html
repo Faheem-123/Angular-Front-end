@@ -1,0 +1,44 @@
+<div class="dashboard patient-summary-graph">
+  <div class="dashboard-title red-light-title">
+    <div class="icon light-gray">
+      <!-- <i class="fa fa-thermometer-empty" aria-hidden="true"></i> -->
+      <img class="img-h-24" src="./assets/images/icons/referral-ico.svg" alt="">
+    </div>
+
+    <div class="title">
+      Referrals
+    </div>
+
+    <div class="title-btn-link">
+      <button type="button" (click)="getReferralSummary()">
+        <img class="img-h-25"
+        src="./assets/images/icons/ico_refresh_green.svg" alt="">
+      </button>
+    </div>
+  </div>
+  <div class="dashboard-content">
+
+
+    <div *ngIf="isLoding" class="div-loader"></div>
+
+    <table class="table light-striped-border wide table-sticky-header" *ngIf="!isLoding">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Referred To</th>
+          <th>Provider</th>
+          <th>Comments/Instructions</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of lstReferrals">
+          <td width='75'>{{r.date_created}}</td>
+          <td width='150'>{{r.referral_provider_name}}</td>
+          <td width='150'>{{r.provider_name}}</td>
+          <td><p>{{r.referral_reason}}</p></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

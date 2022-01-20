@@ -1,0 +1,60 @@
+<div class="mt-8">
+  <div id="main-follow-up" class="rounded-top" [ngClass]="{
+    'encounter-header-highlight': addEditView==true,
+    'encounter-header': addEditView==false
+  }">
+    <div class="title pl-8">Childhood Asthma Control</div>
+    <!-- <ul class="nav color-buttons align-items-center" >
+          <a class="nav-link green px-2 py-0" >
+            <i class="far fa-plus-square pr-1"></i>Add
+          </a>
+        </ul> -->
+    <div class="nav color-buttons align-items-center">
+      <div class="dropdown">
+        <button [disabled]="!canAddEdit" class="nav-link blue px-2 py-0 top-right-radius" type="button" id="dropdownMenuButton"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add Asthma Exam<i
+            class="fas fa-caret-down ml-1"></i></button>
+        <div class="dropdown-menu dropdown-menu-left custome-menu health-check-drop-height"
+          aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" (click)="onDropDownMenu('81')">Asthma Control Test</a>
+          <a class="dropdown-item" (click)="onDropDownMenu('80')">Test for children 4 to 11 Years</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="border-content-box light-gray-bg border-top-0 rounded-bottom">
+
+  <div *ngIf="isLoading" class="div-loader"></div>
+
+
+  
+  <div *ngIf="!isLoading && !canView" class="access-denied">
+    <p><i class="fas fa-ban"></i> Access Denied</p>
+  </div>
+
+
+  <div *ngIf="!isLoading &&  noRecordFound && canView" class="no-content ml-2 p-6">
+    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>No Record Found
+  </div>
+
+  <div class="p-0" *ngIf="!isLoading &&  !noRecordFound">
+    <table class="table light-striped-border">
+      <tr *ngFor="let hcs of lstExamView">
+        <td>{{hcs.visit_date}}</td>
+        <td>{{hcs.form_description}}</td>
+        <td style="text-align: right"><br>{{hcs.provider1_sign_info}} </td>
+        <td class="text-right" style="width: 50px;">
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md line-height-1 p-0 mr-2" (click)="onEdit(hcs)">
+            <i class="far fa-edit"></i>
+          </button>
+          <button type="button" [disabled]="!canAddEdit" class="btn btn-link btn-md btn-delete line-height-1 p-0" (click)="onDelete(hcs)">
+            <i class="far fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

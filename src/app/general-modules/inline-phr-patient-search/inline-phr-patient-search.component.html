@@ -1,0 +1,38 @@
+<div class="inline-search" >
+  <div class="inline-search-header">    
+      <h6 class="title">Patient Search</h6>
+      <button type="button" class="close" aria-label="Close" (click)="onClose.emit()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <div class="body m-0">
+    <div *ngIf="isLoading" class="div-loader"></div>
+    <table class="table light-striped-border" *ngIf="!isLoading">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Address</th>
+          <th>Status</th>
+          <th>Relationship</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pat of lstPHRPatient" [ngClass]="{
+                      'text-success' : (pat.patient_status === 'ACTIVE'),
+                      'text-danger' : (pat.patient_status === 'INACTIVE'),
+                      'text-warning' : (pat.patient_status === 'CLINIC DISCHARGED'),
+                      'text-warning' : (pat.patient_status === 'DECEASED')
+                    }">
+          <td>
+            <button type="button" class="link-btn" (click)="onPatientSelect.emit(pat)">{{pat.name}}</button>
+          </td>
+          <td>{{pat.gender}}</td>
+          <td>{{pat.address}}</td>
+          <td>{{pat.patient_status}}</td>
+            <td>{{pat.user_relationship}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

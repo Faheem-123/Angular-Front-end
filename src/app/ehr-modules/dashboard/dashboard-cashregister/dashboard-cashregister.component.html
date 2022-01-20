@@ -1,0 +1,97 @@
+<div class="dashboard position-relative">
+    <div class="dashboard-title position-relative">
+        <div class="icon" title="Today's Payment">
+            <img class="img-h-32" src="./assets/images/icons/Dashboard_cash.svg" alt="">
+        </div>
+
+        <div class="title">
+            Cash Register
+        </div>
+
+
+        <div class="title-link">
+            <a class="nav-link" (click)="gotoDetails()">{{view}}</a>
+        </div>
+
+        <div class="title-btn-link dropdown position-initial">
+            <button class="btn-dropdown p-0 line-height-1" type="button" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" (click)="showHidetoggle()">
+                <img class="img-h-25" src="./assets/images/icons/ico_filter_green.svg" alt="">
+            </button>
+
+            <div class="dropdown-menu dashboard-dropdown rounded shadow-md m-0 t-0"
+                [ngClass]="{'hide': showHideSearch}">
+                <div class="dropdown-title">Provider & Location Selection
+                    <button class="close"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
+                </div>
+                <form [formGroup]="filterForm" (ngSubmit)="onFilter(filterForm.value)" ng-if='!booleanCheck'>
+                    <div class="form-row form-dashboard">
+                        <div class="form-group col-12">
+                            <label for="input1">Provider</label>
+                            <select class="form-control" formControlName="ctrlproviderSearch">
+                                <option value="all">All</option>
+                                <option *ngFor="let s of lookupList.providerList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="input1">Location</label>
+                            <select class="form-control" formControlName="ctrllocationSearch">
+                                <option value="all">All</option>
+                                <option *ngFor="let s of lookupList.locationList" [value]="s.id">{{s.name}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-12 text-right">
+                            <button type="submit" class="btn btn-success btn-search mt-2">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="title-btn p-0">
+            <a class="line-height-1" (click)="refreshRecord()"><img class="img-h-25"
+                    src="./assets/images/icons/ico_refresh_green.svg" alt=""></a>
+        </div>
+    </div>
+
+    <div *ngIf="showGraph" class="dashboard-content">
+
+        <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [legend]="false"
+            [colors]="colorsEmptyObject" [options]="barChartOptions" [chartType]="barChartType"
+            (chartClick)="chartClicked($event)"></canvas>
+    </div>
+
+    <div *ngIf="showGrid" class="dashboard-content">
+
+        <table class="table light-striped-border wide">
+            <thead>
+                <tr>
+                    <th style="width: 82px;">Date</th>
+                    <th style="width: 10px;">Patient</th>
+                    <th style="width: 150px;">Type</th>
+                    <th style="width: 150px;">Amount</th>
+                    <th style="width: 150px;">Collected By</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr st-select-row="row" *ngFor="let cash of listCashRegDetailsResult">
+                    <td>{{cash.payment_date}}</td>
+                    <td>{{cash.name}}</td>
+                    <td>{{cash.payment_method}}</td>
+                    <td>{{cash.amount_paid}}</td>
+                    <td>{{cash.created_user}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="div-ui-blocker" id="uiBlocker" *ngIf="isLoading">
+        <div class="div-ui-blocker-message-box ">
+            <i class="fas fa-spinner fa-spin mr-1"></i>Loading
+        </div>
+    </div>
+
+</div>

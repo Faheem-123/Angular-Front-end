@@ -1,0 +1,91 @@
+<div class="dashboard patient-summary-graph">
+  <div class="dashboard-title green-light-title">
+    <div class="icon light-gray">
+        <img class="img-h-24" src="./assets/images/icons/obstetrics_ico.svg" alt="">
+    </div>
+
+    <div class="title">
+      Conception Outcomes 
+    </div>
+
+    <div *ngIf="edd">
+      EDD: {{edd}}
+    </div>
+
+    <div class="title-btn-link">
+      <button type="button" (click)="refreshSummary()">
+        <img class="img-h-25"
+        src="./assets/images/icons/ico_refresh_green.svg" alt="">
+      </button>
+    </div>
+  </div>
+  <div class="dashboard-content">
+
+
+    <div *ngIf="isLoding" class="div-loader"></div>
+    <div *ngIf="!isLoding" role="tablist">
+      <div class="card dashboard-card" *ngFor="let outcome of lstOutcomes; let i = index">
+        <div class="card-header" role="tab">
+          <h5 class="mb-0">
+            <a data-toggle="collapse" href="#outcomesummary{{outcome.outcome_id}}" aria-expanded="false" class="accordian-link">
+              <span class="card-header-date">{{outcome.outcome_date}}</span> <span>{{outcome.outcome}}</span> <span>{{outcome.method}}</span> <span>{{outcome.sex}}</span>
+            </a>
+          </h5>
+        </div>
+
+        <div id="outcomesummary{{outcome.outcome_id}}" class="collapse" >
+          <div class="card-body">
+            <p *ngIf="outcome.outcome_date">Date:
+              <strong>{{outcome.outcome_date}}</strong>
+            </p>
+            <p *ngIf="outcome.outcome">Outcome:
+              <strong>{{outcome.outcome}}</strong>
+            </p>
+            <p *ngIf="outcome.method">Method:
+              <strong>{{outcome.method}}</strong>
+            </p>
+            <p *ngIf="outcome.sex">Gender:
+              <strong>{{outcome.sex}}</strong>
+            </p>
+            <p *ngIf="outcome.weight_lbs || outcome.weight_ozs">Weight:
+              <strong *ngIf="outcome.weight_lbs">{{outcome.weight_lbs}} lb </strong>
+              <strong *ngIf="outcome.weight_ozs">{{outcome.weight_ozs}} oz</strong>
+            </p>
+            <p *ngIf="outcome.childhealthstatus">Child Health:
+              <strong>{{outcome.childhealthstatus}}</strong>
+            </p>
+            <p *ngIf="outcome.maternalcomments" >Comments:
+              <strong>{{outcome.maternalcomments}}</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--
+      <table class="table light-blue-striped" *ngIf="!isLoding">
+          <thead>
+              <tr>
+                  <th>Date</th>
+                  <th>Outcome</th>
+                  <th>Method</th>
+                  <th>Maternal Notes</th>
+                  <th>Gender</th>
+                  <th>Weight</th>
+                  <th>Child Health</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let outcome of lstOutcomes">
+                  <td>{{outcome.outcome_date}}</td>
+                  <td>{{outcome.outcome}}</td>
+                  <td>{{outcome.method}}</td>
+                  <td>{{outcome.maternalcomments}}</td>
+                  <td>{{outcome.sex}}</td>
+                  <td>{{outcome.weight_lbs}} lb  {{outcome.weight_ozs}} oz</td>
+                  <td>{{outcome.childhealthstatus}}</td>
+              </tr>
+          </tbody>
+      </table>
+    -->
+  </div>
+</div>

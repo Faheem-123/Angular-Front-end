@@ -1,0 +1,25 @@
+<div class="modal-header custom">
+  <img class="logo" src="./assets/images/logo-small.png">
+  <h4 class="modal-title">Follow Up</h4>
+  <br>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body custom">
+<div class="encounter-module-scrollable " style="height: 500px !important;">
+  <table class="table layout-fixed light-striped-border" >
+      <thead>
+          <tr>
+              <th></th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let enc of lstdata">
+              <td title="{{enc.col2}}">{{enc.col2}}</td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+</div>
+
