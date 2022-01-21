@@ -254,12 +254,12 @@ export class ClaimCountComponent implements OnInit {
     }    
     
     //refresh record
-    // refreshRecord() {
-    //    // this.getClaim();
-    //    document.getElementById("rdoAll")['checked']=true
-    //    this.getAging();
+    refreshRecord() {
+       // this.getClaim();
+       document.getElementById("rdoAll")['checked']=true
+       this.getAging();
        
-    // }
+    }
     showHidetoggle(){
       this.showHideSearch = false;
     }

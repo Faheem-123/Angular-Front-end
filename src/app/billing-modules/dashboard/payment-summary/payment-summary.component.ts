@@ -262,9 +262,9 @@ export class PaymentSummaryComponent implements OnInit {
   // }
 
   //refresh record
-  // refreshRecord() {
-  //   this.getCashPayment();
-  // }
+  refreshRecord() {
+    this.getCashPayment();
+  }
 
 
 }

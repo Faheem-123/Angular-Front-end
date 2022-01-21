@@ -219,8 +219,8 @@ export class ClaimDenialComponent implements OnInit {
     }    
     
     //refresh record
-    // refreshRecord() {
-    //     this.getDenial();
-    // }
+    refreshRecord() {
+        this.getDenial();
+    }
 
 }
