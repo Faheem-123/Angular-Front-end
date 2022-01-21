@@ -2687,3 +2687,12 @@ button.btn-success:hover{
     background-color: #1a73e8;
     border-color: #1a73e8;
 }
+
+.title-btn-link button img{
+    height: 26px;
+}
+
+.img-h-25{
+    height: 26px;
+}
+
