@@ -303,7 +303,7 @@
 
 .dashboard .dashboard-content {
     flex-grow: 1;
-    background: #f1f4fa;
+    background: white;
     /*margin: 1px 0 0;*/
     overflow: auto;
     position: relative;

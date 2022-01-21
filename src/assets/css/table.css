@@ -573,7 +573,7 @@ font-family: 'Open Sans', sans-serif;
 */
 .table.light-striped-border tbody tr:nth-of-type(odd) {
     /*background-color: rgba(235,242,249,0.5);*/
-    background-color: #f4f4f4;
+    background-color: white;
 }
 .table.sm.light-striped-border tbody tr:nth-of-type(even) {
     background-color: rgba(255,255,255,1.0);

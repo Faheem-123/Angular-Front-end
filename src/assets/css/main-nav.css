@@ -64,6 +64,7 @@
     border-bottom-left-radius: 25rem !important;
     width: 100%;
     font-size: 14px;
+    font-weight: bold
 }
 /*
 .navbar.main-left-nav > .nav-tabs:hover > .nav-item > .nav-link {
