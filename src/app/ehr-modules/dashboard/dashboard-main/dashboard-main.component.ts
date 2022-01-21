@@ -21,6 +21,8 @@ export class DashboardMainComponent implements OnInit {
   @ViewChild(DashboardPendingresultsComponent) dashboardPendingresultsComponent: DashboardPendingresultsComponent;
   @ViewChild(DashboardPendingclaimsComponent) dashboardPendingclaimsComponent: DashboardPendingclaimsComponent;
 
+  User_type="";
+
   loadmodule = false;
   patient_id;
   order_id;
@@ -52,6 +54,7 @@ export class DashboardMainComponent implements OnInit {
     this.getUnReadFaxes_Widget();
     this.getPendingClaims_Widget();
     this.getCashPayment_Widget();
+    this.User_type=this.lookupList.logedInUser.userType.toUpperCase();
     var prac_id: String = this.lookupList.practiceInfo.practiceId.toString();
     if (this.lookupList.logedInUser.user_name.toUpperCase().search("@IHC") > -1 || this.lookupList.logedInUser.userType.toUpperCase() == 'BILLING')//if(this.lookupList.logedInUser.user_name.toUpperCase()=="BILL@IHC")// if(this.lookupList.logedInUser.user_name.toUpperCase().search("@IHC")>-1)
     {

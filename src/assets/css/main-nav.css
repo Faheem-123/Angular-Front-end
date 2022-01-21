@@ -15,7 +15,7 @@
     display: flex;
     flex-direction: column;
     border: none;
-    padding-top: 45px;
+    padding-top: 70px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.19);
     height: 100%;
     z-index: 999;
@@ -58,7 +58,7 @@
     align-items: center;
     text-decoration: none;
     transition: 0.5s;
-    margin: 2px 2px 2px 4px;
+    margin: 2px 2px 17px 4px;
     padding: 4px 2px 4px 8px;
     border-top-left-radius: 25rem !important;
     border-bottom-left-radius: 25rem !important;

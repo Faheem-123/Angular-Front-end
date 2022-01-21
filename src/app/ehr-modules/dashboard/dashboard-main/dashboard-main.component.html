@@ -1,33 +1,105 @@
+<!-- 
+<div class="info" *ngIf="User_type=='BILLING'">
+
+                    <h2 class="count2">35</h2>
+                    <h3 class="title">Total Claims Today</h3>                    
+                </div>
+                <div class="info" *ngIf="User_type!='BILLING'">
+                    <h3 class="title">Today's Schedule</h3>
+                    <h2 class="count">35 -->
+<!-- <h2 class="count">${{widget_Cashregister_Dollar}}.<small>{{widget_Cashregister_Cent}}</small> -->
+<!-- </h2>
+                </div>
+
+ <div class="info" *ngIf="User_type=='BILLING'">                    
+                    <h2 class="count2">$16,991</h2>
+                    <h3 class="title">Total Charged Entered</h3>
+                </div>
+
+                <div class="info" *ngIf="User_type!='BILLING'">
+                    <h3 class="title">Refill Request(s)</h3>
+                    <h2 class="count">{{widget_Refill}}</h2>
+
+                </div>
+    <div class="info" *ngIf="User_type=='BILLING'">
+                    <h3 class="count2">$47,518</h3>
+                    <h2 class="title">Total Payments</h2>
+
+                </div>
+                <div class="info" *ngIf="User_type!='BILLING'">
+                    <h3 class="title">Unread Faxes</h3>
+                    <h2 class="count">{{widget_UnreadFax}}</h2>
+
+                </div>
+
+ <div class="info"  *ngIf="User_type=='BILLING'">
+                    <h2 class="count2">8</h2>
+                    <h3 class="title">Pending Tasks</h3>
+
+                </div>
+                <div class="info" *ngIf="User_type!='BILLING'">
+                    <h3 class="title">Checkedin Patients</h3>
+                    <h2 class="count">{{widget_CheckedInPatient}}</h2>
+
+                </div>
+<div class="info" *ngIf="User_type=='BILLING'">
+                    <h3 class="count2">$19,442,272</h3>
+                    <h2 class="title">Total Adjustement</h2>
+
+                </div>
+                <div class="info" *ngIf="User_type!='BILLING'">
+                    <h3 class="title">Unsigned Notes</h3>
+                    <h2 class="count">65</h2>
+
+                </div>
+
+
+                <div class="info"  *ngIf="User_type=='BILLING'">
+                    <h2 class="count2">35</h2>
+                    <h3 class="title">Total Claims Today</h3>
+                </div>
+                <div class="info"  *ngIf="User_type!='BILLING'">
+
+                    <h3 class="title">Pending Result</h3>
+                    <h2 class="count">{{widget_PendingResult}}</h2>
+
+                </div> -->
+
+
+
+
+
 <div class="dashboard-summary-container" [hidden]="loadmodule" *ngIf="!isLoading">
 
-    <div class="row m-0" >
+    <div class="row m-0">
 
         <div class="col-lg-2 col-md-3 col-6 p-0" *ngFor="let w of lstCountWidgets"
             id="div_top_dashboard_{{w.moduleName}}">
             <!-- 2 -->
             <div class="dashboard-summary" *ngIf="w.moduleName=='cashregister'">
                 <div class="icon " title="Today's Schedule">
+                    <img *ngIf="User_type!='BILLING'" class="img-h-70" src="./assets/images/icons/Today shedule-01.svg"
+                        alt="" (click)="onPendingClaim('div_dashboard_cashregister')">
 
-                    <img class="img-h-70" src="./assets/images/icons/Today shedule-01.svg" alt=""
-                        (click)="onPendingClaim('div_dashboard_cashregister')">
-                        <div class="info">
-                            <h3 class="title">Today's Schedule</h3>
-                        </div>
+                    <div class="info" *ngIf="User_type!='BILLING'">
+                        <h3 class="title">Today's Schedule</h3>
+                    </div>
 
-                    <!--
-                       <i class="ihc-cash" class="img-h-70" (click)="onPendingClaim('div_dashboard_cashregister')"></i>
-                       -->
 
+                    <div class="info" *ngIf="User_type=='BILLING'">
+                        <h4 class="title">35</h4>
+                        <h6 class="title">Total Claims Today</h6>
+                    </div>
 
                 </div>
 
-                <div class="" style="margin-top: -25px;">
+                <div style="margin-top: -25px;" class="info" *ngIf="User_type!='BILLING'">
                     <div>
                         <h4 class="count" style="float: left;position: relative;left: -3px;">{{widget_UnreadFax}}</h4>
                         <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_UnreadFax}}</h4> -->
                     </div>
-                        <progress id="file" value="32" max="100"> 32% </progress>
-                    </div>
+                    <progress id="file" value="32" max="100"> 32% </progress>
+                </div>
 
             </div>
 
@@ -35,18 +107,25 @@
                 <div class="icon" title="Refill Request Assigned to Logined User/Provider">
                     <!-- 5 -->
                     <!-- <i class="ihc-refill-request"></i> -->
-                    <img (click)="onPendingClaim('div_dashboard_refills')" class="img-h-70"
-                        src="./assets/images/icons/Refill request-01.svg" alt="" style="opacity:0.9">
-                        <div class="info">
-                            <h3 class="title">Refill Request(s)</h3>
-                            <!-- <h2 class="count">{{widget_Refill}}</h2> -->
-                        </div>
+                    <img class="info" *ngIf="User_type!='BILLING'" (click)="onPendingClaim('div_dashboard_refills')"
+                        class="img-h-70" src="./assets/images/icons/Refill request-01.svg" alt="" style="opacity:0.9">
+                    <div class="info" *ngIf="User_type!='BILLING'">
+                        <h3 class="title">Refill Request(s)</h3>
+                        <!-- <h2 class="count">{{widget_Refill}}</h2> -->
+                    </div>
+
+                    <div class="info" *ngIf="User_type=='BILLING'">
+                        <h2 class="title">$16,991</h2>
+                        <h3 class="title">Total Charged Entered</h3>
+                    </div>
+
+
                 </div>
-                <div class="" style="margin-top: -25px;">
-                <div>
-                    <h4 class="count" style="float: left;position: relative;left: -3px;">{{widget_Refill}}</h4>
-                    <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_Refill}}</h4> -->
-                </div>
+                <div class="" style="margin-top: -25px;" *ngIf="User_type!='BILLING'">
+                    <div>
+                        <h4 class="count" style="float: left;position: relative;left: -3px;">{{widget_Refill}}</h4>
+                        <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_Refill}}</h4> -->
+                    </div>
                     <progress id="file" value="32" max="100"> 32% </progress>
                 </div>
             </div>
@@ -55,19 +134,28 @@
                 <div class="icon" title="Faxes Assigned to Logined User">
                     <!-- 6 -->
                     <!-- <i class="ihc-fax"></i> -->
-                    <img class="img-h-70" (click)="onPendingClaim('div_dashboard_unreadfaxes')"
+                    <img *ngIf="User_type!='BILLING'" class="img-h-70"
+                        (click)="onPendingClaim('div_dashboard_unreadfaxes')"
                         src="./assets/images/icons/Unread Faxes-01.svg" alt="">
-                        <div class="info">
-                            <h3 class="title">Unread Faxes</h3>
-                        </div>
+                    <div class="info" *ngIf="User_type!='BILLING'">
+                        <h3 class="title">Unread Faxes</h3>
+                    </div>
+
+                    <div class="info" *ngIf="User_type=='BILLING'">
+                        <h3 class="title">$47,518</h3>
+                        <h2 class="title">Total Payments</h2>
+
+                    </div>
+
+
                 </div>
-                <div class="" style="margin-top: -25px;">
+                <div class="" style="margin-top: -25px;" *ngIf="User_type!='BILLING'">
                     <div>
                         <h4 class="count" style="float: left;position: relative;left: -3px;">{{widget_UnreadFax}}</h4>
                         <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_UnreadFax}}</h4> -->
                     </div>
-                        <progress id="file" value="32" max="100"> 32% </progress>
-                    </div>
+                    <progress id="file" value="32" max="100"> 32% </progress>
+                </div>
             </div>
 
             <div class="dashboard-summary" *ngIf="w.moduleName=='pendingclaims'">
@@ -75,57 +163,97 @@
                             <img class="img-h-40" src="./assets/images/icons/Dashboard_ico_pending_claim-white.png" alt="" style="opacity:.9;">
                         </div> -->
                 <div class="icon " title="Draft Claims">
-                    <img (click)="onPendingClaim('div_dashboard_pendingclaims')" class="img-h-70"
-                        src="./assets/images/icons/Unsigned Notes-01.svg" alt="">
-                        <div class="info">
-                            <h3 class="title">Unsigned Notes</h3>
-                        </div>
+                    <img *ngIf="User_type!='BILLING'" (click)="onPendingClaim('div_dashboard_pendingclaims')"
+                        class="img-h-70" src="./assets/images/icons/Unsigned Notes-01.svg" alt="">
+                    <div class="info" *ngIf="User_type!='BILLING'">
+                        <h3 class="title">Unsigned Notes</h3>
+                    </div>
+
+
+
+                    <div class="info" *ngIf="User_type=='BILLING'">
+                        <h3 class="title">$19,442,272</h3>
+                        <h2 class="title">Total Adjustement</h2>
+
+                    </div>
+
+
+
                 </div>
-                <div class="" style="margin-top: -25px;">
+                <div class="" style="margin-top: -25px;" *ngIf="User_type!='BILLING'">
                     <div>
                         <h4 class="count" style="float: left;position: relative;left: -3px;">65</h4>
                         <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">65</h4> -->
                     </div>
-                        <progress id="file" value="32" max="100"> 32% </progress>
-                    </div>
+                    <progress id="file" value="32" max="100"> 32% </progress>
+                </div>
             </div>
 
             <div class="dashboard-summary" *ngIf="w.moduleName=='pendingresults'">
                 <div class="icon" title="UnSigned Lab Results">
                     <!-- <i class="ihc-report"></i> -->
-                    <img class="img-h-70" (click)="onPendingClaim('div_dashboard_pendingresults')"
+                    <img *ngIf="User_type!='BILLING'" class="img-h-70"
+                        (click)="onPendingClaim('div_dashboard_pendingresults')"
                         src="./assets/images/icons/Pending result-01.svg" alt="">
-                        <div class="info">
-                            <h3 class="title">Pending Result</h3>
-                            <!-- <h2 class="count">{{widget_PendingResult}}</h2> -->
-                        </div>
+                    <div class="info" *ngIf="User_type!='BILLING'">
+                        <h3 class="title">Pending Result</h3>
+                        <!-- <h2 class="count">{{widget_PendingResult}}</h2> -->
                     </div>
-                    <div class="" style="margin-top: -25px;">
-                        <div>
-                            <h4 class="count" style="float: left;position: relative;left: -3px;">{{widget_PendingResult}}</h4>
-                            <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_PendingResult}}</h4> -->
-                        </div>
-                            <progress id="file" value="32" max="100"> 32% </progress>
-                        </div>
+
+
+
+
+                    <div class="info" *ngIf="User_type=='BILLING'">
+                        <h2 class="title">35</h2>
+                        <h3 class="title">Total Claims Today</h3>
+                    </div>
+
+
+
+
+                </div>
+                <div class="" style="margin-top: -25px;" *ngIf="User_type!='BILLING'">
+                    <div>
+                        <h4 class="count" style="float: left;position: relative;left: -3px;">{{widget_PendingResult}}
+                        </h4>
+                        <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_PendingResult}}</h4> -->
+                    </div>
+                    <progress id="file" value="32" max="100"> 32% </progress>
+                </div>
             </div>
 
             <div class="dashboard-summary" *ngIf="w.moduleName=='checkedinpatient'">
                 <div class="icon" title="Todays Checked In Patient(s)">
                     <!-- <i class="ihc-patient"></i> -->
-                    <img (click)="onPendingClaim('div_dashboard_checkedinpatient')" class="img-h-70"
-                        src="./assets/images/icons/Checkdin pateint-01.svg" alt="">
-                        <div class="info">
-                            <h3 class="title">Checkedin Patients</h3>
-                        </div>
+                    <img *ngIf="User_type!='BILLING'" (click)="onPendingClaim('div_dashboard_checkedinpatient')"
+                        class="img-h-70" src="./assets/images/icons/Checkdin pateint-01.svg" alt="">
+                    <div class="info" *ngIf="User_type!='BILLING'">
+                        <h3 class="title">Checkedin Patients</h3>
+                    </div>
+
+
+
+
+                    <div class="info" *ngIf="User_type=='BILLING'">
+                        <h2 class="title">8</h2>
+                        <h3 class="title">Pending Tasks</h3>
+
+                    </div>
+
+
+
+
+
                 </div>
-                <div class="" style="margin-top: -25px;">
+                <div class="" style="margin-top: -25px;" *ngIf="User_type!='BILLING'">
                     <div>
-                        <h4 class="count" style="float: left;position: relative;left: -3px;">{{widget_CheckedInPatient}}</h4>
+                        <h4 class="count" style="float: left;position: relative;left: -3px;">{{widget_CheckedInPatient}}
+                        </h4>
                         <!-- <h4 class="count" style="float: right;position: relative;right: 14px;">{{widget_CheckedInPatient}}</h4> -->
                     </div>
-                        <progress id="file" value="32" max="100"> 32% </progress>
-                    </div>
+                    <progress id="file" value="32" max="100"> 32% </progress>
                 </div>
+            </div>
         </div>
 
 
@@ -150,7 +278,8 @@
             <dashboard-gynedd *ngIf="m.name=='gynedd'" (widgetUpdate)=refreshWidgets($event)></dashboard-gynedd>
             <dashboard-pendingclaims *ngIf="m.name=='pendingclaims'" (openModule)=openClaim($event)
                 (widgetUpdate)=refreshWidgets($event)></dashboard-pendingclaims>
-            <dashboard-refills *ngIf="m.name=='refills'" (widgetUpdate)=refreshWidgets($event) (openModule)=enlargeRefill($event)></dashboard-refills>
+            <dashboard-refills *ngIf="m.name=='refills'" (widgetUpdate)=refreshWidgets($event)
+                (openModule)=enlargeRefill($event)></dashboard-refills>
             <payment-summary *ngIf="m.name=='BillingModules/DashboardPaymentSummary.swf'"></payment-summary>
             <claim-aging *ngIf="m.name=='BillingModules/DashboardClaimAging.swf'"></claim-aging>
             <claim-count *ngIf="m.name=='BillingModules/DashboardClaimCount.swf'"></claim-count>
@@ -210,6 +339,6 @@
     <claim-professional class="d-flex flex-column flex-grow-1 single-col" *ngIf="module_name=='claim'"
         [openedClaimInfo]="openedClaimInfo" (onClaimSaved)="onClaimSaved($event)"></claim-professional>
 
-        <dashboard-refills class="d-flex flex-column flex-grow-1" *ngIf="module_name=='refill'"></dashboard-refills>
+    <dashboard-refills class="d-flex flex-column flex-grow-1" *ngIf="module_name=='refill'"></dashboard-refills>
 
 </div>
