@@ -1000,6 +1000,7 @@ width: 35px;
 .nav.color-buttons .nav-link {
     display: flex;
     align-items: center;
+    width: auto!important;
     border: none;
     border-left: 1px solid rgba(255, 255, 255, 0.45); 
     transition: 0.5s;
@@ -1049,7 +1050,7 @@ width: 35px;
 }
 
 .border-content-box.light-sky-blue {
-    background: #f9fcfe;
+    background: #fff;
 }
 
 .green-gray-tabs .nav {
@@ -1369,7 +1370,7 @@ hr.m8 {
 
 
 .border-content-box.light-gray-bg, .light-gray-bg {
-    background-color: #f9fcfe !important;
+    background-color: #fff !important;
 }
 
 .inner-tool-tab {
@@ -2268,6 +2269,7 @@ font-size: 13px;
 
 .fz-15 {
     font-size: 15px !important;
+    color: white;
 }
 
 .fz-28 {

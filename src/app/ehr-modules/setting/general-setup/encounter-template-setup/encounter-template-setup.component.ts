@@ -170,6 +170,19 @@ export class EncounterTemplateSetupComponent implements OnInit {
         break;
     }
   }
+  removeDuplicates(originalArray, prop) {
+    var newArray = [];
+    var lookupObject  = {};
+
+    for(var i in originalArray) {
+       lookupObject[originalArray[i][prop]] = originalArray[i];
+    }
+
+    for(i in lookupObject) {
+        newArray.push(lookupObject[i]);
+    }
+     return newArray;
+}
   getTemplate(value){
     debugger;
     this.setupService.getTemplate(this.lookupList.practiceInfo.practiceId.toString(), value).subscribe(
@@ -177,24 +190,33 @@ export class EncounterTemplateSetupComponent implements OnInit {
         debugger;
         if(value == 'RFV'){
           this.listTemplate_rfv = data as Array<any>;
+          this.listTemplate_rfv = this.removeDuplicates(this.listTemplate_rfv, "name");
           this.listTemplateResult =  data as Array<any>;
         }else if(value == 'HPI'){
           this.listTemplate_hpi =  data as Array<any>;
+          this.listTemplate_hpi = this.removeDuplicates(this.listTemplate_hpi, "name");
           this.listTemplateResult =  data as Array<any>;
         }else if(value == 'PMH'){
           this.listTemplate_pmh =  data as Array<any>;
+          this.listTemplate_pmh = this.removeDuplicates(this.listTemplate_pmh, "name");
           this.listTemplateResult =  data as Array<any>;
         }else if(value == 'ROS'){
           this.listTemplate_ros =  data as Array<any>;
+          this.listTemplate_ros = this.removeDuplicates(this.listTemplate_ros, "name");
           this.listTemplateResult =  data as Array<any>;
         }else if(value == 'PE'){
           this.listTemplate_pe =  data as Array<any>;
+          this.listTemplate_pe = this.removeDuplicates(this.listTemplate_pe, "name");
           this.listTemplateResult =  data as Array<any>;
         }else if(value == 'chart'){
           this.listTemplate_plan =  data as Array<any>;
+          this.listTemplate_plan = this.removeDuplicates(this.listTemplate_plan, "name");
           this.listTemplateResult =  data as Array<any>;
         }
+
         if(this.listTemplateResult.length>0)
+            
+           this.listTemplateResult = this.removeDuplicates(this.listTemplateResult, "name");
           this.PopTemplateSetup(this.listTemplateResult[0]);
       },
       error => {

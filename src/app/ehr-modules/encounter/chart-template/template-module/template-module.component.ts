@@ -18,7 +18,7 @@ export class TemplateModuleComponent implements OnInit {
   @Input() DisplayName: string;
   @Input() provider_id: string;
   @Output() dataUpdated = new EventEmitter<any>();
-  lstTemplate;
+  lstTemplate: Array<any>;
   inputForm: FormGroup;
   @Input() objpatientTemplateData:patientTemplateData;
   constructor(private encounterService: EncounterService,
@@ -31,13 +31,31 @@ export class TemplateModuleComponent implements OnInit {
     this.buildForm();
     this.getTemplateText();
   }
+   removeDuplicates(originalArray, prop) {
+    var newArray = [];
+    var lookupObject  = {};
+
+    for(var i in originalArray) {
+       lookupObject[originalArray[i][prop]] = originalArray[i];
+    }
+
+    for(i in lookupObject) {
+        newArray.push(lookupObject[i]);
+    }
+     return newArray;
+}
+
   getTemplateText() {
     if(this.moduleName=="extender")
     {
       this.encounterService.getTemlplateText(this.lookupList.practiceInfo.practiceId.toString(),"-1",this.moduleName)
       .subscribe(
         data => {
-          this.lstTemplate = data;
+          this.lstTemplate = data as Array<any>;
+           this.lstTemplate = this.removeDuplicates(this.lstTemplate, "name");
+
+          //this.lstTemplate = Array.from(this.lstTemplate.reduce((m, t) => m.set(t.name, t), new Map()).values());
+
           if(this.lstTemplate!=null && this.lstTemplate.length>0)
           {
             this.onAssignText(this.lstTemplate[0]);
@@ -52,7 +70,10 @@ export class TemplateModuleComponent implements OnInit {
     this.encounterService.getTemlplateText(this.lookupList.practiceInfo.practiceId.toString(),this.provider_id,this.moduleName)
       .subscribe(
         data => {
-          this.lstTemplate = data;
+          this.lstTemplate = data as Array<any>;
+          this.lstTemplate = this.removeDuplicates(this.lstTemplate, "name");
+         // this.lstTemplate = Array.from(this.lstTemplate.reduce((m, t) => m.set(t.name, t), new Map()).values());
+
           if(this.lstTemplate!=null && this.lstTemplate.length>0)
           {
             this.onAssignText(this.lstTemplate[0]);
@@ -79,11 +100,11 @@ export class TemplateModuleComponent implements OnInit {
     debugger;
     if(this.objpatientTemplateData!=null && this.objpatientTemplateData!=undefined)
     {
-      value=this.replacePatientDatainTemplateText(value);
+      value=this.qqfesc80rqna4ljmv0ga2m5m6f58twm7nqc27h0gx2(value);
     }
     this.dataUpdated.emit(this.moduleName+"~"+value);
   }
-  replacePatientDatainTemplateText(value)
+  qqfesc80rqna4ljmv0ga2m5m6f58twm7nqc27h0gx2(value)
   {
     //{{date}} {{patient}}  {{datetime}} {{now}} {{office}} {{age}} {{gender}}
     //{{pulse}} {{height}}  {{weight}}{{blood_pressure}}    {{oxygen_saturation}} {{bmi}} {{smoking_status}}

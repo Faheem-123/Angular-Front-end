@@ -33,7 +33,7 @@
   </ngb-tab>
 
   <ngb-tab  *ngIf="(callingFrom=='All' || callingFrom=='PE')">
-    <ng-template ngbTabTitle><span>Physical Exam</span></ng-template>
+    <ng-template ngbTabTitle><span style="font-weight: bold;">Physical Exam</span></ng-template>
     <ng-template ngbTabContent>
       <template-module class="d-flex flex-grow-1" moduleName="PE" DisplayName="Physical Exam"
       [objpatientTemplateData]="objpatientTemplateData"  [provider_id]="objencounterToOpen.provider_id" (dataUpdated)="dataAdd($event)"></template-module>
@@ -63,7 +63,7 @@
   <div class="light-title-bar h-30 pl-3 d-flex align-items-center justify-content-between flex-shrink-0">
     <div class="fz-14 font-weight-500">Preview</div>
     <div class="d-flex align-items-center">
-      <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
+      <button type="button" class="btn fz-12 title-bar-blue-btn font-weight-400 py-0"
         (click)="onApply()">Apply</button>
       <button type="button" class="btn btn-link fz-12 title-bar-blue-btn font-weight-400 py-0"
         (click)="onPreviousEncounter()" *ngIf="callingFrom=='All'">Previous

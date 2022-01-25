@@ -661,7 +661,7 @@ body {
 
 
 .form-group .col-form-label, .col-form-label {
-    font-weight: 400;
+    font-weight: 600;
     font-size: 12px;
     margin-bottom: 2px;
     padding-top: 2px;
@@ -694,6 +694,7 @@ body {
 .form-group > .form-control.required:not(:disabled),
 .form-group .input-group >.form-control.required:not(:disabled) {
     background-color: #f9f9e4 !important;
+    height: 60px!important;
 }
 
 .form-control.has-data:not(:disabled),
@@ -4023,7 +4024,7 @@ td.calendar-day >.appointment_count_sub{
 .dropdown-menu .dropdown-item:hover, 
 .dropdown-menu .dropdown-item:focus{
     background-color: #4788de; /*  #1a73e8; rgba(235,242,249,1); */
-    color: #1a73e8;
+    color: #fff;
 }
 
 .dropdown-menu .dropdown-item:active{

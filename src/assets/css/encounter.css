@@ -328,7 +328,7 @@
 }
 
 .form-group  .btn-group.radio-btn-tabs .btn {
-    color: var(--color-green-dark) !important;
+    color: #fff!important;
     font-size: 12px;
     background-color: var(--bg-title-light) !important;
     border: none;
@@ -375,7 +375,7 @@
     border-bottom-right-radius: 10px !important;
 }
  .form-group  .btn-group.radio-btn-tabs .btn.active {
-    background-color: var(--ihc-green-light) !important;    
+    background-color:#4788de !important;    
     color: #ffffff !important;
   
 }
@@ -413,7 +413,7 @@
     background: none;
     padding: 0;
     border-radius: 1px; */
-    background-color: #eee;/* rgba(150, 200, 241, 0.1);*/
+    background-color: white;/* rgba(150, 200, 241, 0.1);*/
     /* display: flex;     */
 }
 
@@ -720,14 +720,14 @@
 }
 /****/
 .encounter-header {
-    background-color: #eee;
+    background-color: #fff;
     height: 26px;
     overflow: hidden; 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #77469a;
+    border-bottom: 1px solid #1a73e8;
 }
 
 .encounter-header-highlight {
@@ -743,10 +743,10 @@
 }
 
 .encounter-header .title {
-    font-size: 14px;
+    font-size: 15px;
     /* color: var(--color-green-dark); */
-    color: #333;
-    font-weight: 500;
+    color: #000;
+    font-weight: bold;
     margin: 0;
     /*text-shadow: 0px 2px 0px rgba(255, 255, 255, 0.4);*/
 }
@@ -824,7 +824,7 @@
     background-color: #faffbd !important;
 }
 .encounter-btn-save {
-    background-color:  #77469a    !important;
+    background-color:  #1a73e8    !important;
 }
 .encounter-btn-cancel {
     background-color:  #dc3545  !important;
