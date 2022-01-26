@@ -284,7 +284,7 @@
                         <label class="col-form-label px-1 required" for="dfPlanDate">Plan Date</label>
                         <div class="input-group col">
                           <input id="dfPlanDate" formControlName="dfPlanDate" class="form-control date-control"
-                            placeholder="mm/dd/yyyy" name="dfPlanDate" ngbDatepicker #dfPlanDate="ngbDatepicker">
+                            placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dfPlanDate" ngbDatepicker #dfPlanDate="ngbDatepicker">
 
                           <span class="input-group-btn">
                             <button class="btn date-control-btn" (click)="dfPlanDate.toggle()" type="button">

@@ -49,7 +49,7 @@
                   <label class="col-sm-3 col-form-label" for="input2">Date:</label>
 
                   <div class="input-group col-sm-9">
-                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtDate"
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtDate"
                       formControlName="txtDate" ngbDatepicker #txtDate="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" (click)="txtDate.toggle()" type="button">
@@ -86,7 +86,7 @@
                 <div class="form-group horizental row zero col-md-3 col-sm-6 col-12">
                   <label class="col-sm-3 col-form-label" for="input2">Due Date:</label>
                   <div class="input-group col-sm-9">
-                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="txtDueDate"
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtDueDate"
                       formControlName="txtDueDate" ngbDatepicker #txtDueDate="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" (click)="txtDueDate.toggle()" type="button">

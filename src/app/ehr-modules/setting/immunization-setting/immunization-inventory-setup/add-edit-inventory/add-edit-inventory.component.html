@@ -132,7 +132,7 @@
                   <label class="col-form-label module-view-headding required" for="dpExpiryDate">Expiry Date</label>
                   <div class="input-group">
                     <input id="dpExpiryDate" formControlName="dpExpiryDate" class="form-control date-control required"
-                      placeholder="mm/dd/yyyy" name="dpExpiryDate"  ngbDatepicker #dpExpiryDate="ngbDatepicker"
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpExpiryDate"  ngbDatepicker #dpExpiryDate="ngbDatepicker"
                       [ngClass]="{'is-invalid': formGroup.controls.dpExpiryDate.errors?.invalidDate}">
 
                     <span class="input-group-btn">

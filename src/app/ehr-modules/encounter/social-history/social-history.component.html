@@ -652,7 +652,7 @@
 
               <div class="input-group">
                 <input id="dfTobaccoStartDate" formControlName="dfTobaccoStartDate" class="form-control date-control"
-                  placeholder="mm/dd/yyyy" name="dfTobaccoStartDate" ngbDatepicker #dfTobaccoStartDate="ngbDatepicker"
+                  placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dfTobaccoStartDate" ngbDatepicker #dfTobaccoStartDate="ngbDatepicker"
                   [ngClass]="{'is-invalid': socialHistoryForm.controls.dfTobaccoStartDate.errors?.invalidDate}">
 
                 <span class="input-group-btn">
@@ -678,7 +678,7 @@
 
               <div class="input-group">
                 <input id="dfTobaccoEndDate" formControlName="dfTobaccoEndDate" class="form-control date-control"
-                  placeholder="mm/dd/yyyy" name="dfTobaccoEndDate" ngbDatepicker #dfTobaccoEndDate="ngbDatepicker"
+                  placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dfTobaccoEndDate" ngbDatepicker #dfTobaccoEndDate="ngbDatepicker"
                   placement="bottom-right"
                   [ngClass]="{'is-invalid': socialHistoryForm.controls.dfTobaccoEndDate.errors?.invalidDate}">
 
@@ -834,7 +834,7 @@
 
               <div class="input-group">
                 <input id="dfDrugQuiteDate" formControlName="dfDrugQuiteDate" class="form-control date-control"
-                  placeholder="mm/dd/yyyy" name="dfDrugQuiteDate" ngbDatepicker #dfDrugQuiteDate="ngbDatepicker"
+                  placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dfDrugQuiteDate" ngbDatepicker #dfDrugQuiteDate="ngbDatepicker"
                   [ngClass]="{'is-invalid': socialHistoryForm.controls.dfDrugQuiteDate.errors?.invalidDate}">
 
                 <span class="input-group-btn">
@@ -913,7 +913,7 @@
                 [ngClass]="{'is-invalid': socialHistoryForm.controls.dfLMP.errors?.invalidDate}">
                 -->
               <div class="input-group">
-                <input id="dfLMP" formControlName="dfLMP" class="form-control date-control" placeholder="mm/dd/yyyy"
+                <input id="dfLMP" formControlName="dfLMP" class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                   name="dfLMP" ngbDatepicker #dfLMP="ngbDatepicker"
                   [ngClass]="{'is-invalid': socialHistoryForm.controls.dfLMP.errors?.invalidDate}">
 
@@ -1056,7 +1056,7 @@
                 -->
 
               <div class="input-group">
-                <input id="dfEDD" formControlName="dfEDD" class="form-control date-control" placeholder="mm/dd/yyyy"
+                <input id="dfEDD" formControlName="dfEDD" class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                   name="dfEDD" ngbDatepicker #dfEDD="ngbDatepicker"
                   [ngClass]="{'is-invalid': socialHistoryForm.controls.dfEDD.errors?.invalidDate}">
 

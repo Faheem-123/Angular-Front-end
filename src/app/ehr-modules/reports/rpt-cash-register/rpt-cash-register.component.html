@@ -76,7 +76,7 @@
                         </div>
 
                         <input id="userPaymentDateFrom" formControlName="userPaymentDateFrom"
-                          class="form-control date-control " placeholder="mm/dd/yyyy" name="userPaymentDateFrom"
+                          class="form-control date-control " placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="userPaymentDateFrom"
                           ngbDatepicker #userPaymentDateFrom="ngbDatepicker">
 
                         <span class="input-group-btn">
@@ -93,7 +93,7 @@
                         </div>
 
                         <input id="userPaymentDateTo" formControlName="userPaymentDateTo"
-                          class="form-control date-control " placeholder="mm/dd/yyyy" name="userPaymentDateTo"
+                          class="form-control date-control " placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="userPaymentDateTo"
                           ngbDatepicker #userPaymentDateTo="ngbDatepicker">
 
                         <span class="input-group-btn">
@@ -205,7 +205,7 @@
                         </div>
 
                         <input id="patPayDateFrom" formControlName="patPayDateFrom" class="form-control date-control "
-                          placeholder="mm/dd/yyyy" name="patPayDateFrom" ngbDatepicker #patPayDateFrom="ngbDatepicker">
+                          placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="patPayDateFrom" ngbDatepicker #patPayDateFrom="ngbDatepicker">
 
                         <span class="input-group-btn">
                           <button class="btn date-control-btn" (click)="patPayDateFrom.toggle()" type="button"
@@ -221,7 +221,7 @@
                         </div>
 
                         <input id="patPayDateTo" formControlName="patPayDateTo" class="form-control date-control "
-                          placeholder="mm/dd/yyyy" name="patPayDateTo" ngbDatepicker #patPayDateTo="ngbDatepicker">
+                          placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="patPayDateTo" ngbDatepicker #patPayDateTo="ngbDatepicker">
 
                         <span class="input-group-btn">
                           <button class="btn date-control-btn" (click)="patPayDateTo.toggle()" type="button"
@@ -334,7 +334,7 @@
                         </div>
 
                         <input id="collPayDateFrom" formControlName="collPayDateFrom" class="form-control date-control "
-                          placeholder="mm/dd/yyyy" name="collPayDateFrom" ngbDatepicker
+                          placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="collPayDateFrom" ngbDatepicker
                           #collPayDateFrom="ngbDatepicker">
 
                         <span class="input-group-btn">
@@ -351,7 +351,7 @@
                         </div>
 
                         <input id="collPayDateTo" formControlName="collPayDateTo" class="form-control date-control "
-                          placeholder="mm/dd/yyyy" name="collPayDateTo" ngbDatepicker #collPayDateTo="ngbDatepicker">
+                          placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="collPayDateTo" ngbDatepicker #collPayDateTo="ngbDatepicker">
 
                         <span class="input-group-btn">
                           <button class="btn date-control-btn" (click)="collPayDateTo.toggle()" type="button"

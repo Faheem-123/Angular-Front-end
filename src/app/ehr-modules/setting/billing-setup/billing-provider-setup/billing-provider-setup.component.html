@@ -95,7 +95,7 @@
                   <div class="form-group horizental d-flex col-md-6 col-sm-12 col-12">
                     <label class="col-form-label label-w-70" for="input6">DOB <span class="text-danger">*</span></label>
                     <div class="input-group flex-grow-1">
-                      <input id="txtdob" formControlName="txtdob" class="form-control date-control" placeholder="mm/dd/yyyy"
+                      <input id="txtdob" formControlName="txtdob" class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                         name="txtdob" ngbDatepicker #txtdob="ngbDatepicker"
                         [ngClass]="{'is-invalid': inputForm.controls.txtdob.errors?.invalidDate}" maxlength="10">
           
@@ -220,7 +220,7 @@
                   <label class="col-form-label label-w-70" for="input8">Expiry</label>
                   <div class="input-group flex-grow-1">
                     <input id="txtDEAExpiry" formControlName="txtDEAExpiry" class="form-control date-control"
-                      placeholder="mm/dd/yyyy" name="txtDEAExpiry" ngbDatepicker #txtDEAExpiry="ngbDatepicker"
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtDEAExpiry" ngbDatepicker #txtDEAExpiry="ngbDatepicker"
                       [ngClass]="{'is-invalid': inputForm.controls.txtDEAExpiry.errors?.invalidDate}" maxlength="10">
 
                     <span class="input-group-btn">
@@ -276,7 +276,7 @@
                   <label class="col-form-label label-w-70" for="input11">CLIA Expiry</label>
                   <div class="input-group flex-grow-1">
                     <input id="txtCliaExpiry" formControlName="txtCliaExpiry" class="form-control date-control"
-                      placeholder="mm/dd/yyyy" name="txtCliaExpiry" ngbDatepicker #txtCliaExpiry="ngbDatepicker"
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtCliaExpiry" ngbDatepicker #txtCliaExpiry="ngbDatepicker"
                       [ngClass]="{'is-invalid': inputForm.controls.txtCliaExpiry.errors?.invalidDate}" maxlength="10">
 
                     <span class="input-group-btn">

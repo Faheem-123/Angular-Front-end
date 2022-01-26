@@ -125,7 +125,7 @@
         <div *ngIf="hideFields" class="form-group col-md-3 col-sm-6 col-12">
           <label class="col-form-label required" for="txt_provcare_dateStarted">Date Started:</label>
           <div class="input-group">
-            <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="txt_provcare_dateStarted"
+            <input class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txt_provcare_dateStarted"
               formControlName="txt_provcare_dateStarted" ngbDatepicker #txt_provcare_dateStarted="ngbDatepicker">
 
             <span class="input-group-btn">

@@ -32,7 +32,7 @@
                 <label class="col-form-label module-view-headding required" for="dpDateFrom">Date Time From:</label>
                 <div class="d-flex flex-row">
                   <div class="input-group mr-1">
-                    <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDateFrom"
+                    <input class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpDateFrom"
                       ngbDatepicker #dpDateFrom="ngbDatepicker" formControlName="dpDateFrom">
 
                     <span class="input-group-btn">
@@ -61,7 +61,7 @@
                 <label class="col-form-label module-view-headding required" for="dpDateTo">Date Time To:</label>
                 <div class="d-flex flex-row">
                   <div class="input-group mr-1">
-                    <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDateTo"
+                    <input class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpDateTo"
                       ngbDatepicker #dpDateTo="ngbDatepicker" formControlName="dpDateTo">
 
                     <span class="input-group-btn">

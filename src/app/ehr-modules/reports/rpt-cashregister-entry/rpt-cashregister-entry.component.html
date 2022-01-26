@@ -25,7 +25,7 @@
                   <div class="form-group horizental row zero col-2">
                     <label class="col-form-label col-3" for="dpFrom">From</label>
                     <div class="input-group col-9">
-                      <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker
+                      <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpFrom" ngbDatepicker
                         #dpFrom="ngbDatepicker" formControlName="dpFrom">
                       <span class="input-group-btn">
                         <button class="btn date-control-btn" (click)="dpFrom.toggle()" type="button">
@@ -36,7 +36,7 @@
                   <div class="form-group horizental row zero col-2">
                       <label class="col-form-label col-3" for="dpTo">To</label>
                       <div class="input-group col-9">
-                        <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpTo"
+                        <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpTo"
                           ngbDatepicker #dpTo="ngbDatepicker" formControlName="dpTo">
                         <span class="input-group-btn">
                           <button class="btn date-control-btn" (click)="dpTo.toggle()" type="button">

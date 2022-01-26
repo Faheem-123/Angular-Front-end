@@ -58,7 +58,7 @@
                                 <label for="dpDateFrom" class="col-form-label required">Date From</label>
                                 <div class="input-group">
                                     <input id="dpDateFrom" formControlName="dpDateFrom"
-                                        class="form-control date-control" placeholder="mm/dd/yyyy" name="dpDateFrom"
+                                        class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpDateFrom"
                                         ngbDatepicker #dpDateFrom="ngbDatepicker">
 
                                     <span class="input-group-btn ">
@@ -75,7 +75,7 @@
                                 <label for="dpDateTo" class="col-form-label required">Date To</label>
                                 <div class="input-group">
                                     <input id="dpDateTo" formControlName="dpDateTo" class="form-control date-control"
-                                        placeholder="mm/dd/yyyy" name="dpDateTo" ngbDatepicker
+                                        placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpDateTo" ngbDatepicker
                                         #dpDateTo="ngbDatepicker">
 
                                     <span class="input-group-btn">

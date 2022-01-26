@@ -110,7 +110,7 @@
                   <label for="dpImmRegStatusEffectiveDate" class="col-form-label required">Effective Date</label>
                   <div class="input-group">
                     <input id="dpImmRegStatusEffectiveDate" class="form-control date-control required"
-                      placeholder="mm/dd/yyyy" name="dpImmRegStatusEffectiveDate"
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpImmRegStatusEffectiveDate"
                       formControlName="dpImmRegStatusEffectiveDate" ngbDatepicker
                       #dpImmRegStatusEffectiveDate="ngbDatepicker"
                       (blur)="onDateFocusOut($event.currentTarget.value,'dpImmRegStatusEffectiveDate')"
@@ -149,7 +149,7 @@
                     Date</label>
                   <div class="input-group">
                     <input id="dpImmRegPublicityCodeEffectiveDate" class="form-control date-control required"
-                      placeholder="mm/dd/yyyy" name="dpImmRegPublicityCodeEffectiveDate"
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpImmRegPublicityCodeEffectiveDate"
                       formControlName="dpImmRegPublicityCodeEffectiveDate" ngbDatepicker
                       #dpImmRegPublicityCodeEffectiveDate="ngbDatepicker"
                       (blur)="onDateFocusOut($event.currentTarget.value,'dpImmRegPublicityCodeEffectiveDate')"
@@ -191,7 +191,7 @@
                   <div class="input-group">
 
                     <input class="form-control date-control required" id="dpImmRegProtectionIndicatorEffectiveDate"
-                      placeholder="mm/dd/yyyy" formControlName="dpImmRegProtectionIndicatorEffectiveDate"
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="dpImmRegProtectionIndicatorEffectiveDate"
                       name="dpImmRegProtectionIndicatorEffectiveDate" ngbDatepicker
                       #dpImmRegProtectionIndicatorEffectiveDate="ngbDatepicker"
                       (blur)="onDateFocusOut($event.currentTarget.value,'dpImmRegProtectionIndicatorEffectiveDate')"

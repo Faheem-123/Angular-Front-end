@@ -17,7 +17,7 @@
             <label for="dpDateFrom" class="col-form-label width-40">From:</label>
 
             <div class="input-group col">
-              <input class="form-control date-control" placeholder="mm/dd/yyyy" formControlName="dpDateFrom"
+              <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="dpDateFrom"
                 name="dpDateFrom" ngbDatepicker #dpDateFrom="ngbDatepicker" [ngClass]="{ required : (faxSentSearchFormGroup.controls.dpDateFrom.errors?.required),
                       'is-invalid': (faxSentSearchFormGroup.controls.dpDateFrom.errors?.invalidDate)}">
               <span class="input-group-btn">
@@ -32,7 +32,7 @@
             <label for="dpDateTo" class="col-form-label width-40">To:</label>
 
             <div class="input-group col">
-              <input class="form-control date-control" placeholder="mm/dd/yyyy" formControlName="dpDateTo"
+              <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="dpDateTo"
                 name="dpDateTo" ngbDatepicker #dpDateTo="ngbDatepicker" [ngClass]="{ required : (faxSentSearchFormGroup.controls.dpDateTo.errors?.required),
                       'is-invalid': (faxSentSearchFormGroup.controls.dpDateTo.errors?.invalidDate)}">
               <span class="input-group-btn">

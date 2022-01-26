@@ -74,7 +74,7 @@
         <div class="form-group horizental row zero col-6">
           <label class="col-form-label required width-65" for="dpDateDue">Due Date</label>
           <div class="input-group col">
-            <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpDateDue"
+            <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpDateDue"
               formControlName="dpDateDue" ngbDatepicker #dpDateDue="ngbDatepicker">
             <span class="input-group-btn">
               <button class="btn date-control-btn" (click)="dpDateDue.toggle()" type="button">

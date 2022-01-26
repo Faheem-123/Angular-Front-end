@@ -208,7 +208,7 @@
             <label class="col-form-label required" for="dpProblemDate">Date Time:</label>
             <div class="d-flex flex-row">
               <div class="input-group mr-1">
-                <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpProblemDate"
+                <input class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpProblemDate"
                   formControlName="dpProblemDate" ngbDatepicker #dpProblemDate="ngbDatepicker">
 
                 <span class="input-group-btn">
@@ -378,7 +378,7 @@
             *ngIf="problemFormGroup.value['cmbStatus']=='Resolved' || problemFormGroup.value['cmbStatus']=='Completed'">
             <label class="col-form-label" for="dpDateResolved">{{problemFormGroup.value['cmbStatus']}}</label>
             <div class="input-group">
-              <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDateResolved"
+              <input class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpDateResolved"
                 formControlName="dpDateResolved" ngbDatepicker #dpDateResolved="ngbDatepicker">
 
               <span class="input-group-btn">

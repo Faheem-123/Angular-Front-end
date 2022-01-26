@@ -150,7 +150,7 @@
                         <label for="txtDate">Date <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <input id="txtDate" formControlName="txtDate" class="form-control date-control"
-                                placeholder="mm/dd/yyyy" name="txtDate" ngbDatepicker #txtDate="ngbDatepicker"
+                                placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtDate" ngbDatepicker #txtDate="ngbDatepicker"
                                 [ngClass]="{'is-invalid': AssessmentFormGroup.controls.txtDate.errors?.invalidDate}">
 
                             <span class="input-group-btn">

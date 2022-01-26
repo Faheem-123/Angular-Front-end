@@ -42,7 +42,7 @@
                   <div class="form-group col-2">
                     <label class="col-form-label required" for="dateFrom">Date From:</label>
                     <div class="input-group">
-                      <input class="form-control" placeholder="mm/dd/yyyy" name="dateFrom" formControlName="dateFrom"
+                      <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dateFrom" formControlName="dateFrom"
                         ngbDatepicker #dateFrom="ngbDatepicker">
 
                       <span class="input-group-btn">
@@ -57,7 +57,7 @@
                   <div class="form-group col-2">
                     <label class="col-form-label required" for="dateTo">Date To:</label>
                     <div class="input-group">
-                      <input class="form-control" placeholder="mm/dd/yyyy" name="dateTo" formControlName="dateTo"
+                      <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dateTo" formControlName="dateTo"
                         ngbDatepicker #dateTo="ngbDatepicker">
 
                       <span class="input-group-btn">
@@ -148,7 +148,7 @@
               <div class="form-group col-2">
                 <label class="col-form-label required" for="dpCheckDate">Check Date:</label>
                 <div class="input-group">
-                  <input class="form-control" placeholder="mm/dd/yyyy" name="dateCheckDate"
+                  <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dateCheckDate"
                     formControlName="dateCheckDate" ngbDatepicker #dpCheckDate="ngbDatepicker">
                   <span class="input-group-btn">
                     <button class="btn btn-outline-primary" (click)="dpCheckDate.toggle()" type="button">
@@ -161,7 +161,7 @@
               <div class="form-group col-2">
                 <label class="col-form-label required" for="dpCheckReceivedDate">Received Date:</label>
                 <div class="input-group">
-                  <input class="form-control" placeholder="mm/dd/yyyy" name="dateReceivedDate"
+                  <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dateReceivedDate"
                     formControlName="dateReceivedDate" ngbDatepicker #dpCheckReceivedDate="ngbDatepicker">
                   <span class="input-group-btn">
                     <button class="btn btn-outline-primary" (click)="dpCheckReceivedDate.toggle()" type="button">

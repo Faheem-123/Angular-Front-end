@@ -53,7 +53,7 @@
                       </div>
 
                       <input id="dateFrom" formControlName="dateFrom" class="form-control date-control "
-                        placeholder="mm/dd/yyyy" name="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker"
+                        placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dateFrom" ngbDatepicker #dateFrom="ngbDatepicker"
                         (blur)="onDateFocusOut($event.currentTarget.value,'dateFrom')">
 
                       <span class="input-group-btn">
@@ -70,7 +70,7 @@
                       </div>
 
                       <input id="dateTo" formControlName="dateTo" class="form-control date-control "
-                        placeholder="mm/dd/yyyy" name="dateTo" ngbDatepicker #dateTo="ngbDatepicker"
+                        placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dateTo" ngbDatepicker #dateTo="ngbDatepicker"
                         (blur)="onDateFocusOut($event.currentTarget.value,'dateTo')">
 
                       <span class="input-group-btn">

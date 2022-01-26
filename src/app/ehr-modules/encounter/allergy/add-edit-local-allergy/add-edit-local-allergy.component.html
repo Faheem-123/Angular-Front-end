@@ -51,7 +51,7 @@
         <div class="form-group col-4">
           <label class="col-form-label required " for="dpOnsetDate">Onset Date</label>
           <div class="input-group ">
-            <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpOnsetDate"
+            <input class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpOnsetDate"
               formControlName="dpOnsetDate" ngbDatepicker #dpOnsetDate="ngbDatepicker">
             <span class="input-group-btn">
               <button class="btn date-control-btn" (click)="dpOnsetDate.toggle()" type="button">

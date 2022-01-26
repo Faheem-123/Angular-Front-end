@@ -55,7 +55,7 @@
         <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
           <label for="input5" class="col-form-label label-w-80 required">DOB</label>
           <div class="input-group flex-grow-1">
-            <input id="txtdob" formControlName="txtDob" class="form-control date-control" placeholder="mm/dd/yyyy"
+            <input id="txtdob" formControlName="txtDob" class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
               name="txtDob" ngbDatepicker #txtDob="ngbDatepicker"
               [ngClass]="{'is-invalid': inputForm.controls.txtDob.errors?.invalidDate}">
 
@@ -159,7 +159,7 @@
           <label for="input7" class="col-form-label label-w-80">DEA Expiry</label>
           <div class="input-group flex-grow-1">
             <input id="txtDEAExpiry" formControlName="txtDEAExpiry" class="form-control date-control"
-              placeholder="mm/dd/yyyy" name="txtDEAExpiry" ngbDatepicker #txtDEAExpiry="ngbDatepicker"
+              placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtDEAExpiry" ngbDatepicker #txtDEAExpiry="ngbDatepicker"
               [ngClass]="{'is-invalid': inputForm.controls.txtDEAExpiry.errors?.invalidDate}">
             <span class="input-group-btn">
               <button class="btn date-control-btn" (click)="txtDEAExpiry.toggle()" type="button">
@@ -177,7 +177,7 @@
           <label for="input9" class="col-form-label label-w-80">CLIA Expiry</label>
           <div class="input-group flex-grow-1">
             <input id="txtdob" formControlName="txtCLIAExpiry" class="form-control date-control"
-              placeholder="mm/dd/yyyy" name="txtCLIAExpiry" ngbDatepicker #txtCLIAExpiry="ngbDatepicker"
+              placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtCLIAExpiry" ngbDatepicker #txtCLIAExpiry="ngbDatepicker"
               [ngClass]="{'is-invalid': inputForm.controls.txtCLIAExpiry.errors?.invalidDate}">
             <span class="input-group-btn">
               <button class="btn date-control-btn" (click)="txtCLIAExpiry.toggle()" type="button">

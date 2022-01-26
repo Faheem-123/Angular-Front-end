@@ -30,7 +30,7 @@
         <div class="form-group horizental row zero col-7">
           <label class="col-form-label required width-100 pt-1" for="dpFilingDate">Filing Date</label>
           <div class="input-group col">
-            <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpFilingDate"
+            <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpFilingDate"
               formControlName="dpFilingDate" ngbDatepicker #dpFilingDate="ngbDatepicker"
               (blur)="onDateFocusOut($event.currentTarget.value,'dpFilingDate')">
             <span class="input-group-btn">
@@ -170,7 +170,7 @@
         <div class="form-group horizental row zero col-5">
           <label class="col-form-label required width-70" for="dpCheckDate">Check Date</label>
           <div class="input-group col">
-            <input class="form-control date-control" placeholder="mm/dd/yyyy" name="dpCheckDate"
+            <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpCheckDate"
               formControlName="dpCheckDate" ngbDatepicker #dpCheckDate="ngbDatepicker"
               (blur)="onDateFocusOut($event.currentTarget.value,'dpCheckDate')">
             <span class="input-group-btn">

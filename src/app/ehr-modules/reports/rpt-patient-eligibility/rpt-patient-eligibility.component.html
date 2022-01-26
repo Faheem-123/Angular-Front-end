@@ -74,7 +74,7 @@
                 <div class="form-group col-2">
                   <label class="col-form-label required" for="aptDate">Appointment Date:</label>
                   <div class="input-group">
-                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="aptDate"
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="aptDate"
                       formControlName="aptDate" ngbDatepicker #aptDate="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" (click)="aptDate.toggle()" type="button">
@@ -88,7 +88,7 @@
                 <div class="form-group col-2">
                   <label class="col-form-label required" for="eligDate">Eligibility Date:</label>
                   <div class="input-group">
-                    <input class="form-control date-control" placeholder="mm/dd/yyyy" name="eligDate"
+                    <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="eligDate"
                       formControlName="eligDate" ngbDatepicker #eligDate="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" (click)="eligDate.toggle()" type="button">

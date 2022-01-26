@@ -148,7 +148,7 @@
               <label for="dpStartDate" class="col-form-label">Start Date</label>
 
               <div class="input-group ">
-                <input id="dpStartDate" class="form-control date-control required" placeholder="mm/dd/yyyy"
+                <input id="dpStartDate" class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                   name="dpStartDate" [navigation]="navigation" formControlName="dpStartDate" ngbDatepicker
                   #dpStartDate="ngbDatepicker" (blur)="onDateFocusOut($event.currentTarget.value,'dpStartDate')"
                   [ngClass]="{'is-invalid': (insForm.controls.dpStartDate.errors?.invalidDate)}">
@@ -181,7 +181,7 @@
                 Date</label>
 
               <div class="input-group ">
-                <input id="dpEndDate" class="form-control date-control required" placeholder="mm/dd/yyyy"
+                <input id="dpEndDate" class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                   name="dpEndDate" [navigation]="navigation" formControlName="dpEndDate" ngbDatepicker
                   #dpEndDate="ngbDatepicker" (blur)="onDateFocusOut($event.currentTarget.value,'dpEndDate')"
                   [ngClass]="{'is-invalid': (insForm.controls.dpEndDate.errors?.invalidDate)}">

@@ -859,7 +859,7 @@ a:hover {
 }
 
 .h-30 {
-    height: 30px !important;
+    height: 40px !important;
 }
 .h-35 {
     height: 35px !important;
@@ -887,7 +887,7 @@ a:hover {
 
 
 .title-bar-blue-btn {
-    height: 27px;
+    height: 21px;
     /* color: white !important; */
     /* font-weight: bold; */
     /* text-shadow: 1px 1px 5px rgb(255 255 255 / 50%); */
@@ -899,7 +899,8 @@ a:hover {
     background: #fff;
     color: #000;
     margin-right: 5px;
-    padding: 0px;
+    padding: 15px;
+    margin-top: -2px;
 }
 
 .title-bar-blue-btn + .title-bar-blue-btn {

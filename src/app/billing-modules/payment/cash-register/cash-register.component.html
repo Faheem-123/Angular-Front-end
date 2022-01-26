@@ -92,7 +92,7 @@
                 <label for="dpDOS" class="col-form-label" [ngClass]="{ required: !appointmentId}">DOS</label>
                 <input *ngIf="appointmentId" disabled type="text" class="form-control" value="{{dos}}">
                 <div class="input-group" *ngIf="!appointmentId">
-                  <input id="dpDOS" formControlName="dpDOS" class="form-control date-control" placeholder="mm/dd/yyyy"
+                  <input id="dpDOS" formControlName="dpDOS" class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                     name="dpDOS" [navigation]="navigation" ngbDatepicker #dpDOS="ngbDatepicker"
                     (blur)="onDateFocusOut($event.currentTarget.value,'dpDOS')" [ngClass]="{ required : (formGroup.controls.dpDOS.errors?.required),
                       'is-invalid': (formGroup.controls.dpDOS.errors?.invalidDate)}">
@@ -135,7 +135,7 @@
                 <label for="dpDOS" class="col-form-label required">Check Date</label>
                 <div class="input-group">
                   <input id="dpCheckDate" formControlName="dpCheckDate" class="form-control date-control required"
-                    placeholder="mm/dd/yyyy" name="dpCheckDate" ngbDatepicker #dpCheckDate="ngbDatepicker" [ngClass]="{ required : (formGroup.controls.dpCheckDate.errors?.requiredWhen),
+                    placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpCheckDate" ngbDatepicker #dpCheckDate="ngbDatepicker" [ngClass]="{ required : (formGroup.controls.dpCheckDate.errors?.requiredWhen),
                     'is-invalid': (formGroup.controls.dpCheckDate.errors?.invalidDate)}"
                     (blur)="onDateFocusOut($event.currentTarget.value,'dpCheckDate')">
 

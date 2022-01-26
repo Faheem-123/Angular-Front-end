@@ -81,7 +81,7 @@
                 <div class="form-group horizental row zero  col-sm-6 col-12">
                   <label for="input2" class="col-sm-4 col-form-label ">Status From:</label>
                   <div class="input-group col-sm-8">
-                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtStatusFromDate"
+                    <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="txtStatusFromDate"
                       name="txtStatusFromDate" ngbDatepicker #txtStatusFromDate="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" type="button" (click)="txtStatusFromDate.toggle()">
@@ -93,7 +93,7 @@
                 <div class="form-group horizental row zero  col-sm-6 col-12">
                   <label for="input2" class="col-sm-3 col-form-label ">Status To:</label>
                   <div class="input-group col-sm-9">
-                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtStatusToDate"
+                    <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="txtStatusToDate"
                       name="txtStatusToDate" ngbDatepicker #txtStatusToDate="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" type="button" (click)="txtStatusToDate.toggle()">
@@ -108,7 +108,7 @@
                 <div class="form-group horizental row zero  col-sm-6 col-12">
                   <label for="input2" class="col-sm-4 col-form-label">Date From:</label>
                   <div class="input-group col-sm-8">
-                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtDateFrom"
+                    <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="txtDateFrom"
                       name="txtDateFrom" ngbDatepicker #txtDateFrom="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" type="button" (click)="txtDateFrom.toggle()">
@@ -120,7 +120,7 @@
                 <div class="form-group horizental row zero  col-sm-6 col-12">
                   <label for="input2" class="col-sm-3 col-form-label ">Date To:</label>
                   <div class="input-group col-sm-9">
-                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtDateTo" name="txtDateTo"
+                    <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="txtDateTo" name="txtDateTo"
                       ngbDatepicker #txtDateTo="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" type="button" (click)="txtDateTo.toggle()">
@@ -146,7 +146,7 @@
                 <div class="form-group horizental row zero  col-6 ">
                   <label for="input2" class="col-sm-4 col-form-label ">Status Date:</label>
                   <div class="input-group col-sm-8">
-                    <input class="form-control" placeholder="mm/dd/yyyy" formControlName="txtStatusDate"
+                    <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="txtStatusDate"
                       name="txtStatusDate" ngbDatepicker #txtStatusDate="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" type="button" (click)="txtStatusDate.toggle()">

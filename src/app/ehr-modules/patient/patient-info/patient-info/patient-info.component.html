@@ -382,7 +382,7 @@
                                 <label class="width-65 col-form-label required" for="dpBirthDate">Birth Date</label>
                                 <div class="input-group col">
                                   <input id="dpBirthDate" class="form-control date-control required"
-                                    placeholder="mm/dd/yyyy" name="dpBirthDate" data-container="body"
+                                    placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpBirthDate" data-container="body"
                                     [navigation]="navigation" formControlName="dpBirthDate" ngbDatepicker
                                     #dpBirthDate="ngbDatepicker"
                                     (blur)="onDateFocusOut($event.currentTarget.value,'dpBirthDate')"
@@ -1682,9 +1682,9 @@
 
                                 <label for="dpDisabledDate" class="col-form-label width-85">Disabled Date</label>
                                 <div class="input-group col">
-                                  <input id="dpDisabledDate" class="form-control date-control" placeholder="mm/dd/yyyy"
+                                  <input id="dpDisabledDate" class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                                     name="dpDisabledDate" data-container="body" ngbDatepicker
-                                    #dpDisabledDate="ngbDatepicker" formControlName="dpDisabledDate"
+                                    #dpDisabledDate="ngbDatepicker" firstDayOfWeek="7" formControlName="dpDisabledDate"
                                     (blur)="onDateFocusOut($event.currentTarget.value,'dpDisabledDate')"
                                     [ngClass]="{ 'is-invalid': (patInfoFormGroup.controls.dpDisabledDate.errors?.invalidDate)}">
                                   <span class="input-group-btn">
@@ -1700,7 +1700,7 @@
 
                                 <label for="dpDeathDate" class="col-form-label width-70">Death Date</label>
                                 <div class="input-group col">
-                                  <input id="dpDeathDate" class="form-control date-control" placeholder="mm/dd/yyyy"
+                                  <input id="dpDeathDate" class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                                     name="dpDeathDate" data-container="body" ngbDatepicker #dpDeathDate="ngbDatepicker"
                                     formControlName="dpDeathDate"
                                     (blur)="onDateFocusOut($event.currentTarget.value,'dpDeathDate')"
@@ -2166,7 +2166,7 @@
 
                                   <div class="input-group col">
                                     <input id="dpInsStartDate_{{ins.patientinsurance_id}}"
-                                      class="form-control date-control" placeholder="mm/dd/yyyy"
+                                      class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                                       name="dpInsStartDate_{{ins.patientinsurance_id}}" data-container="body"
                                       [navigation]="navigation"
                                       formControlName="dpInsStartDate_{{ins.patientinsurance_id}}" ngbDatepicker
@@ -2194,7 +2194,7 @@
 
                                   <div class="input-group col">
                                     <input id="dpInsEndDate_{{ins.patientinsurance_id}}"
-                                      class="form-control date-control" placeholder="mm/dd/yyyy"
+                                      class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                                       name="dpInsEndDate_{{ins.patientinsurance_id}}" data-container="body"
                                       [navigation]="navigation"
                                       formControlName="dpInsEndDate_{{ins.patientinsurance_id}}" ngbDatepicker

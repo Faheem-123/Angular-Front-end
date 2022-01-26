@@ -64,7 +64,7 @@
                   <label class="col-sm-4 col-form-label" for="dpDOS">Date Of Service:</label>
 
                   <div class="input-group col-sm-8">
-                    <input id="dpDOS" class="form-control date-control required" placeholder="mm/dd/yyyy" name="dpDOS"
+                    <input id="dpDOS" class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpDOS"
                       data-container="body" [navigation]="navigation" formControlName="dpDOS" ngbDatepicker
                       #dpDOS="ngbDatepicker" (ngModelChange)="onDOSChange($event)" (input)="onDOSChangeInput($event)"
                       (keydown)="onDOSChangeInputKeydown($event)"
@@ -412,7 +412,7 @@
 
                       <div class="input-group table-td-input-group width-90">
                         <input id="dpDOSFrom_{{pro.claim_procedures_id}}"
-                          class="form-control date-control table-td-date-input " placeholder="mm/dd/yyyy"
+                          class="form-control date-control table-td-date-input " placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                           name="dpDOSFrom_{{pro.claim_procedures_id}}" ngbDatepicker #dpDOSFrom="ngbDatepicker"
                           data-container="body" formControlName="dpDOSFrom_{{pro.claim_procedures_id}}"
                           (blur)="onDateFocusOut($event.currentTarget.value,'dpDOSFrom_'+pro.claim_procedures_id)"
@@ -432,7 +432,7 @@
 
                       <div class="input-group table-td-input-group width-90">
                         <input id="dpDOSTo_{{pro.claim_procedures_id}}"
-                          class="form-control date-control table-td-date-input " placeholder="mm/dd/yyyy"
+                          class="form-control date-control table-td-date-input " placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                           name="dpDOSTo_{{pro.claim_procedures_id}}" ngbDatepicker #dpDOSTo="ngbDatepicker"
                           data-container="body" formControlName="dpDOSTo_{{pro.claim_procedures_id}}"
                           (blur)="onDateFocusOut($event.currentTarget.value,'dpDOSTo_'+pro.claim_procedures_id)"
@@ -1024,7 +1024,7 @@
 
                               <div class="input-group col">
                                 <input id="dpInsStartDate_{{ins.claiminsurance_id}}"
-                                  class="form-control date-control required" placeholder="mm/dd/yyyy"
+                                  class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                                   name="dpInsStartDate_{{ins.claiminsurance_id}}" data-container="body"
                                   [navigation]="navigation" formControlName="dpInsStartDate_{{ins.claiminsurance_id}}"
                                   ngbDatepicker #dpInsStartDate="ngbDatepicker"
@@ -1055,7 +1055,7 @@
 
                               <div class="input-group col">
                                 <input id="dpInsEndDate_{{ins.claiminsurance_id}}"
-                                  class="form-control date-control required" placeholder="mm/dd/yyyy"
+                                  class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                                   name="dpInsEndDate_{{ins.claiminsurance_id}}" data-container="body"
                                   [navigation]="navigation" formControlName="dpInsEndDate_{{ins.claiminsurance_id}}"
                                   ngbDatepicker #dpInsEndDate="ngbDatepicker"
@@ -1343,7 +1343,7 @@
                             <div class="form-group col-6">
                               <label class="col-form-label" for="dpLMP">LMP:</label>
                               <div class="input-group">
-                                <input id="dpLMP" class="form-control date-control required" placeholder="mm/dd/yyyy"
+                                <input id="dpLMP" class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                                   name="dpLMP" data-container="body" [navigation]="navigation" formControlName="dpLMP"
                                   ngbDatepicker #dpLMP="ngbDatepicker"
                                   (blur)="onDateFocusOut($event.currentTarget.value,'dpLMP')"
@@ -1368,7 +1368,7 @@
 
                               <div class="input-group">
                                 <input id="dpLastXRay" class="form-control date-control required"
-                                  placeholder="mm/dd/yyyy" name="dpLastXRay" data-container="body"
+                                  placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpLastXRay" data-container="body"
                                   [navigation]="navigation" formControlName="dpLastXRay" ngbDatepicker
                                   #dpLastXRay="ngbDatepicker"
                                   (blur)="onDateFocusOut($event.currentTarget.value,'dpLastXRay')"
@@ -1397,7 +1397,7 @@
 
                               <div class="input-group">
                                 <input id="dpStartCareDate" class="form-control date-control required"
-                                  placeholder="mm/dd/yyyy" name="dpStartCareDate" data-container="body"
+                                  placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpStartCareDate" data-container="body"
                                   [navigation]="navigation" formControlName="dpStartCareDate" ngbDatepicker
                                   #dpStartCareDate="ngbDatepicker"
                                   (blur)="onDateFocusOut($event.currentTarget.value,'dpStartCareDate')"
@@ -1478,7 +1478,7 @@
                                   </div>
 
                                   <input id="dpHospitalFrom" class="form-control date-control required"
-                                    placeholder="mm/dd/yyyy" name="dpHospitalFrom" data-container="body"
+                                    placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpHospitalFrom" data-container="body"
                                     [navigation]="navigation" formControlName="dpHospitalFrom" ngbDatepicker
                                     #dpHospitalFrom="ngbDatepicker"
                                     (blur)="onDateFocusOut($event.currentTarget.value,'dpHospitalFrom')"
@@ -1499,7 +1499,7 @@
                                   </div>
 
                                   <input id="dpHospitalTo" class="form-control date-control required"
-                                    placeholder="mm/dd/yyyy" name="dpHospitalTo" data-container="body"
+                                    placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpHospitalTo" data-container="body"
                                     [navigation]="navigation" formControlName="dpHospitalTo" ngbDatepicker
                                     #dpHospitalTo="ngbDatepicker"
                                     (blur)="onDateFocusOut($event.currentTarget.value,'dpHospitalTo')"
@@ -1989,7 +1989,7 @@
 
                               <div class="input-group col">
                                 <input id="dpAccidentDate" class="form-control date-control required"
-                                  placeholder="mm/dd/yyyy" name="dpAccidentDate" data-container="body"
+                                  placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpAccidentDate" data-container="body"
                                   [navigation]="navigation" formControlName="dpAccidentDate" ngbDatepicker
                                   #dpAccidentDate="ngbDatepicker"
                                   (blur)="onDateFocusOut($event.currentTarget.value,'dpAccidentDate')"

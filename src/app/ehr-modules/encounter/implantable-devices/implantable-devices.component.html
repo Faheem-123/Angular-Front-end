@@ -190,7 +190,7 @@
           <div class="form-group col-2">
             <label class="col-form-label required">Implant Date</label>
             <div class="input-group">
-              <input class="form-control date-control required" placeholder="mm/dd/yyyy" name="implantDate"
+              <input class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="implantDate"
                 formControlName="implantDate" ngbDatepicker #implantDate="ngbDatepicker"
                 [ngClass]="{'is-invalid': ImplForm.controls.implantDate.errors?.invalidDate}">
 

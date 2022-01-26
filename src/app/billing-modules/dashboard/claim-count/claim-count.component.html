@@ -47,7 +47,7 @@
                     <div class="form-group col-12">
                         <label for="txtDate">Date From<span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="mm/dd/yyyy" name="datefrom"
+                            <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="datefrom"
                                 formControlName="datefrom" ngbDatepicker #datefrom="ngbDatepicker">
                             <span class="input-group-btn">
                                 <button class="btn btn-outline-primary" (click)="datefrom.toggle()" type="button">
@@ -67,7 +67,7 @@
                     <div class="form-group col-12">
                         <label for="dateto">Date To <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="mm/dd/yyyy" name="dateto"
+                            <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dateto"
                                 formControlName="dateto" ngbDatepicker #dateto="ngbDatepicker">
                             <span class="input-group-btn">
                                 <button class="btn btn-outline-primary" (click)="dateto.toggle()" type="button">

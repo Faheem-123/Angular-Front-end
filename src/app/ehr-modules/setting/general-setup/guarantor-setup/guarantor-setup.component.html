@@ -54,7 +54,7 @@
         <div class="form-group horizental d-flex col-md-3 col-sm-6 col-12">
           <label for="input4" class="col-form-label label-w-80">Date of Birth:</label>
             <div class="input-group">
-              <input id="txtdob" formControlName="txtdob" class="form-control date-control" placeholder="mm/dd/yyyy"
+              <input id="txtdob" formControlName="txtdob" class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                 name="txtdob" ngbDatepicker #txtdob="ngbDatepicker"
                 [ngClass]="{'is-invalid': inputForm.controls.txtdob.errors?.invalidDate}">
 

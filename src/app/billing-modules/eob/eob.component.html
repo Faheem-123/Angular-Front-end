@@ -1,7 +1,7 @@
 <div class="light-title-bar  h-25 pl-3 pr-2 d-flex align-items-center justify-content-between flex-shrink-0"
   *ngIf="callingFrom=='eob'">
   <div class="fz-15 font-weight-400">EOB's
-    <small class="text-muted">(Explanation Of Benefits)</small>
+    <small class="text-muted" style="color: black!important;">(Explanation Of Benefits)</small>
   </div>
 </div>
 
@@ -54,7 +54,7 @@
                       </div>
 
                       <input id="dpFrom" formControlName="dpFrom" class="form-control date-control "
-                        placeholder="mm/dd/yyyy" name="dpFrom" ngbDatepicker #dpFrom="ngbDatepicker"
+                        placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpFrom" ngbDatepicker #dpFrom="ngbDatepicker"
                         (blur)="onDateFocusOut($event.currentTarget.value,'dpFrom')">
 
                       <span class="input-group-btn">
@@ -70,7 +70,7 @@
                       </div>
 
                       <input id="dpTo" formControlName="dpTo" class="form-control date-control "
-                        placeholder="mm/dd/yyyy" name="dpTo" ngbDatepicker #dpTo="ngbDatepicker"
+                        placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpTo" ngbDatepicker #dpTo="ngbDatepicker"
                         (blur)="onDateFocusOut($event.currentTarget.value,'dpTo')">
 
                       <span class="input-group-btn">

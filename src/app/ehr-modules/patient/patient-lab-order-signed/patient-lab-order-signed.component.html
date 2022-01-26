@@ -40,7 +40,7 @@
             <label class="col-form-label required" for="dateFrom">From:</label>
             <div class="input-group">
               <input id="txtDateFrom" formControlName="txtDateFrom" class="form-control date-control"
-                placeholder="mm/dd/yyyy" name="txtDateFrom" ngbDatepicker #txtDateFrom="ngbDatepicker"
+                placeholder="mm/dd/yyyy" firstDayOfWeek="7" firstDayOfWeek="7" name="txtDateFrom" ngbDatepicker #txtDateFrom="ngbDatepicker"
                 [ngClass]="{'is-invalid': frmSearchSignedResults.controls.txtDateFrom.errors?.invalidDate}">
 
               <span class="input-group-btn">
@@ -65,7 +65,7 @@
             <div class="input-group">
 
               <input id="txtDateTo" formControlName="txtDateTo" class="form-control date-control"
-                placeholder="mm/dd/yyyy" name="txtDateTo" ngbDatepicker #txtDateTo="ngbDatepicker"
+                placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtDateTo" ngbDatepicker #txtDateTo="ngbDatepicker"
                 [ngClass]="{'is-invalid': frmSearchSignedResults.controls.txtDateTo.errors?.invalidDate}">
 
               <span class="input-group-btn">

@@ -56,7 +56,7 @@
                     </div>
 
                     <input id="txtFromDate" formControlName="txtFromDate" class="form-control date-control "
-                      placeholder="mm/dd/yyyy" name="txtFromDate" ngbDatepicker #txtFromDate="ngbDatepicker">
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtFromDate" ngbDatepicker #txtFromDate="ngbDatepicker">
 
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" (click)="txtFromDate.toggle()" type="button">
@@ -71,7 +71,7 @@
                     </div>
 
                     <input id="txtToDate" formControlName="txtToDate" class="form-control date-control "
-                      placeholder="mm/dd/yyyy" name="txtToDate" ngbDatepicker #txtToDate="ngbDatepicker">
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtToDate" ngbDatepicker #txtToDate="ngbDatepicker">
 
                     <span class="input-group-btn">
                       <button class="btn date-control-btn" (click)="txtToDate.toggle()" type="button">
@@ -299,7 +299,7 @@
                     <div class="form-group horizental row zero col-12">
                       <label class="col-form-label text-left col-3" for="dpfromDate">Date:</label>
                       <div class="input-group col-sm-9">
-                        <input class="form-control" placeholder="mm/dd/yyyy" name="txtNewBatchDate"
+                        <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtNewBatchDate"
                           formControlName="txtNewBatchDate" ngbDatepicker #txtNewBatchDate="ngbDatepicker">
                         <span class="input-group-btn">
                           <button class="btn btn-outline-primary" (click)="txtNewBatchDate.toggle()" type="button">
@@ -459,7 +459,7 @@
                   <div class="form-group horizental row zero col-12">
                     <label class="col-form-label text-left col-3" for="txtBatchFromDate">Date From:</label>
                     <div class="input-group col-sm-9">
-                      <input class="form-control" placeholder="mm/dd/yyyy" name="txtBatchFromDate"
+                      <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtBatchFromDate"
                         formControlName="txtBatchFromDate" ngbDatepicker #txtBatchFromDate="ngbDatepicker">
                       <span class="input-group-btn">
                         <button class="btn btn-outline-primary" (click)="txtBatchFromDate.toggle()" type="button">
@@ -473,7 +473,7 @@
                   <div class="form-group horizental row zero col-12">
                     <label class="col-form-label text-left col-3" for="txtBatchToDate">Date To:</label>
                     <div class="input-group col-sm-9">
-                      <input class="form-control" placeholder="mm/dd/yyyy" name="txtBatchToDate"
+                      <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtBatchToDate"
                         formControlName="txtBatchToDate" ngbDatepicker #txtBatchToDate="ngbDatepicker">
                       <span class="input-group-btn">
                         <button class="btn btn-outline-primary" (click)="txtBatchToDate.toggle()" type="button">

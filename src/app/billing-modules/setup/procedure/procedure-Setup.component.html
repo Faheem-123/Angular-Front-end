@@ -44,7 +44,7 @@
           <label for="input9" class="col-form-label label-w-80">Expired Date</label>
           <div class="input-group flex-grow-1">
             <input id="txtdob" formControlName="txtExpiredDate" class="form-control date-control"
-              placeholder="mm/dd/yyyy" name="txtExpiredDate" ngbDatepicker #txtExpiredDate="ngbDatepicker"
+              placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="txtExpiredDate" ngbDatepicker #txtExpiredDate="ngbDatepicker"
               [ngClass]="{'is-invalid': inputForm.controls.txtExpiredDate.errors?.invalidDate}" maxlength="10">
 
             <span class="input-group-btn">

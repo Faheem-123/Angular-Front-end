@@ -720,14 +720,27 @@
 }
 /****/
 .encounter-header {
-    background-color: #fff;
+    /* background-color: #fff;
     height: 26px;
     overflow: hidden; 
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #1a73e8; */
+
+
+    background-color: #eee;
+    height: 26px;
+    overflow: initial;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid #1a73e8;
+
+
+
 }
 
 .encounter-header-highlight {

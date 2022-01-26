@@ -373,12 +373,12 @@
 {
     padding: 6px 4px 6px 8px;
     display: block;
-    background-color: #bb88df;
+    background-color: #4a90ec;
     color: rgba(255,255,255,1);
 }
 .reports-sidebar-menu > li.active > a {
     /*background-color: #2ebd6b;*/
-    background: linear-gradient(to bottom, #77469a 0%,#bb88df 100%);
+    background: linear-gradient(to bottom, #1971e3 0%,#87b3ec 100%)
 }
 .reports-sidebar-menu > li > a > .fa, .reports-sidebar-menu > li > a > .glyphicon, .reports-sidebar-menu > li > a > .ion
 {
@@ -470,7 +470,7 @@
 }
 .rpt-pointer {cursor: pointer; color: #0056b3;}
 .rpt-pointer:hover {cursor: pointer; 
-    color: #2ebd6b;
+    color: #000;
 }
 .help {cursor: help;}
 

@@ -16,7 +16,7 @@
                 <button class="input-group-addon" (click)="dDocDate.toggle()" type="button">
                   <i class="fa fa-calendar" aria-hidden="true"></i>
                 </button> -->
-                <input class="form-control date-control" placeholder="mm/dd/yyyy" formControlName="txtDate"
+                <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="txtDate"
                 name="txtDate" ngbDatepicker #txtDate="ngbDatepicker">
             <span class="input-group-btn">
                 <button class="btn date-control-btn" (click)="txtDate.toggle()" type="button">

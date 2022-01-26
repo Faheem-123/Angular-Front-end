@@ -210,7 +210,7 @@
                     Date</label>
                   <div class="input-group">
                     <input id="dpDocDate" class="form-control date-control" [ngClass]="{required: !disalbeFeilds}"
-                      placeholder="mm/dd/yyyy" name="dpDocDate" [disabled]="disalbeFeilds" data-container="body"
+                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpDocDate" [disabled]="disalbeFeilds" data-container="body"
                       ngbDatepicker [(ngModel)]="docDateModel" #dpDocDate="ngbDatepicker">
 
                     <span class="input-group-btn">

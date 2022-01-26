@@ -71,7 +71,7 @@
 
           <form [formGroup]="schedulerForm" class="d-flex flex-column flex-grow-1">
 
-            <ngb-datepicker formControlName="datePicker" #datePicker (ngModelChange)="onDateChange($event)" firstDayOfWeek="7">
+            <ngb-datepicker firstDayOfWeek="7" formControlName="datePicker" #datePicker (ngModelChange)="onDateChange($event)" firstDayOfWeek="7">
             </ngb-datepicker>
 
             <div class="d-flex mt-0 justify-content-center flex-shrink-0">

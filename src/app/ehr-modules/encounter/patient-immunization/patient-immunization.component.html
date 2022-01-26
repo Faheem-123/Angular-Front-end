@@ -357,7 +357,7 @@
                       <label class="col-form-label module-view-headding" for="dpExpiryDate">Expiry Date</label>
                       <div class="input-group">
                         <input id="dpExpiryDate" formControlName="dpExpiryDate" class="form-control date-control"
-                          placeholder="mm/dd/yyyy" name="dpExpiryDate" ngbDatepicker #dpExpiryDate="ngbDatepicker"
+                          placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpExpiryDate" ngbDatepicker #dpExpiryDate="ngbDatepicker"
                           data-container="body" (blur)="onDateFocusOut($event.currentTarget.value,'dpExpiryDate')"
                           [ngClass]="{'is-invalid': (vaccineFormGroup.controls.dpExpiryDate.errors?.invalidDate)}">
 
@@ -431,7 +431,7 @@
                                   <div class="input-group table-td-input-group">
                                     <input id="dpVISPresented"
                                       class="form-control date-control table-td-date-input required"
-                                      placeholder="mm/dd/yyyy" name="dpVISPresented" ngbDatepicker
+                                      placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpVISPresented" ngbDatepicker
                                       #dpVISPresented="ngbDatepicker" data-container="body"
                                       formControlName="dpVISPresented_{{vis.chart_imm_vis_id}}">
 
@@ -477,7 +477,7 @@
                       Administered:</label>
                     <div class="d-flex flex-row">
                       <div class="input-group mr-1">
-                        <input class="form-control date-control required" placeholder="mm/dd/yyyy"
+                        <input class="form-control date-control required" placeholder="mm/dd/yyyy" firstDayOfWeek="7"
                           name="dpAdministeredDate" formControlName="dpAdministeredDate" ngbDatepicker
                           #dpAdministeredDate="ngbDatepicker"
                           (blur)="onDateFocusOut($event.currentTarget.value,'dpAdministeredDate')"

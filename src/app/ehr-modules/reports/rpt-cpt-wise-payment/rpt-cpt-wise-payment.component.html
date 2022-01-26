@@ -61,7 +61,7 @@
                                 </div>
 
                                 <input id="dpfromDate" formControlName="dpfromDate" class="form-control date-control "
-                                  placeholder="mm/dd/yyyy" name="dateFrom" ngbDatepicker #dpfromDate="ngbDatepicker">
+                                  placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dateFrom" ngbDatepicker #dpfromDate="ngbDatepicker">
 
                                 <span class="input-group-btn">
                                   <button class="btn date-control-btn" (click)="dpfromDate.toggle()" type="button"
@@ -77,7 +77,7 @@
                                 </div>
 
                                 <input id="dptoDate" formControlName="dptoDate" class="form-control date-control "
-                                  placeholder="mm/dd/yyyy" name="dptoDate" ngbDatepicker #dptoDate="ngbDatepicker">
+                                  placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dptoDate" ngbDatepicker #dptoDate="ngbDatepicker">
 
                                 <span class="input-group-btn">
                                   <button class="btn date-control-btn" (click)="dptoDate.toggle()" type="button"

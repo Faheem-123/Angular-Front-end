@@ -154,7 +154,7 @@
                 <label for="dpCLIAExpiry" class="col-form-label width-85">CLIA Expiry</label>
                 <div class="input-group flex-grow-1 col">
                   <input id="dpCLIAExpiry" formControlName="dpCLIAExpiry" class="form-control date-control"
-                    placeholder="mm/dd/yyyy" name="dpCLIAExpiry" ngbDatepicker #dpCLIAExpiry="ngbDatepicker"
+                    placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="dpCLIAExpiry" ngbDatepicker #dpCLIAExpiry="ngbDatepicker"
                     [ngClass]="{'is-invalid': inputForm.controls.dpCLIAExpiry.errors?.invalidDate}" maxlength="10">
 
                   <span class="input-group-btn">

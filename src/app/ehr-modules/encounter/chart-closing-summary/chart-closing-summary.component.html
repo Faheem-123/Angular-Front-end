@@ -60,7 +60,7 @@
               <div class="form-group col-12">
                 <label class="col-form-label">select Date:</label>
                 <div class="input-group">
-                    <input class="form-control" placeholder="mm/dd/yyyy" name="date" formControlName="date"
+                    <input class="form-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" name="date" formControlName="date"
                       ngbDatepicker #date="ngbDatepicker">
                     <span class="input-group-btn">
                       <button class="btn btn-outline-primary" (click)="date.toggle()" type="button">

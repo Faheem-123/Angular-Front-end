@@ -135,7 +135,7 @@
                 <div class="form-group col-3">
                     <label class="col-form-label required">When</label>
                     <div class="input-group">
-                        <input class="form-control date-control" placeholder="mm/dd/yyyy" formControlName="dpAppDate"
+                        <input class="form-control date-control" placeholder="mm/dd/yyyy" firstDayOfWeek="7" formControlName="dpAppDate"
                             name="dpAppDate" ngbDatepicker #dpAppDate="ngbDatepicker"
                             (ngModelChange)="onDateChange( $event )" 
                             (blur)="onDateFocusOut($event.currentTarget.value)"
