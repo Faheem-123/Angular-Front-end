@@ -899,6 +899,7 @@ a:hover {
     background: #fff;
     color: #000;
     margin-right: 5px;
+    padding: 0px;
 }
 
 .title-bar-blue-btn + .title-bar-blue-btn {
